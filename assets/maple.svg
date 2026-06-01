@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Team Canada maple leaf">
+  <rect width="64" height="64" rx="12" fill="#0e1c2e"/>
+  <path fill="#c2161a" d="M32 7l2.9 7.8 6.2-4.1-1.4 8.2 7.6-1.6-4 6.4 8.1 1.7-6.2 3.7 5.1 5.2-8 .1 2 7.3-6.6-3.6-.4 7.9L32 49.5l-4.8 4-.4-7.9-6.6 3.6 2-7.3-8-.1 5.1-5.2-6.2-3.7 8.1-1.7-4-6.4 7.6 1.6-1.4-8.2 6.2 4.1z"/>
+  <path fill="#e0a93a" d="M30.4 47.5h3.2l-.5 9.5h-2.2z"/>
+</svg>
