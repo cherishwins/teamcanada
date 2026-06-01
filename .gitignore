@@ -1,0 +1,6 @@
+# scratch / tooling
+verify-shots/
+.imgtool/
+node_modules/
+*.log
+.DS_Store

@@ -1,0 +1,9 @@
+source-material/
+_explore/
+.imgtool/
+.imgrecode.js
+*.zip
+*.pdf
+*.docx
+*.skill
+verify-shots/

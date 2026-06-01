@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Team Canada — The Reads</title>
+    <link>https://primestrength.ca/</link>
+    <atom:link href="https://primestrength.ca/feed.xml" rel="self" type="application/rss+xml"/>
+    <description>An honest, non-partisan case for Canadian unity, backed by hard numbers. Strong. Proud. Free.</description>
+    <language>en-ca</language>
+    <copyright>Free to quote and cite with attribution to Team Canada / primestrength.ca</copyright>
+    <lastBuildDate>Mon, 01 Jun 2026 12:00:00 GMT</lastBuildDate>
+    <image>
+      <url>https://primestrength.ca/assets/seal-512.png</url>
+      <title>Team Canada</title>
+      <link>https://primestrength.ca/</link>
+    </image>
+
+    <item>
+      <title>I Campaigned Against This Man.</title>
+      <link>https://primestrength.ca/read/changed-my-mind</link>
+      <guid isPermaLink="true">https://primestrength.ca/read/changed-my-mind</guid>
+      <pubDate>Mon, 01 Jun 2026 12:00:00 GMT</pubDate>
+      <description>A Conservative campaigner did the homework and changed his mind about Mark Carney — written for the people who felt the way he did.</description>
+    </item>
+    <item>
+      <title>One Question. Seven Leaders. An Honest Answer.</title>
+      <link>https://primestrength.ca/read/honest-answer</link>
+      <guid isPermaLink="true">https://primestrength.ca/read/honest-answer</guid>
+      <pubDate>Mon, 01 Jun 2026 12:00:00 GMT</pubDate>
+      <description>The viral "who's in recession" G7 quiz, answered with every official GDP figure. The trick is in the question.</description>
+    </item>
+    <item>
+      <title>The Wave Hit Every G7 Democracy. Two Leaders Beat It.</title>
+      <link>https://primestrength.ca/read/two-leaders</link>
+      <guid isPermaLink="true">https://primestrength.ca/read/two-leaders</guid>
+      <pubDate>Mon, 01 Jun 2026 12:00:00 GMT</pubDate>
+      <description>Anti-incumbent anger flattened the West. Japan and Canada are the exceptions — and the reason is a method anyone can copy.</description>
+    </item>
+    <item>
+      <title>The Closed Loop — NPSI Working Paper No. 6</title>
+      <link>https://primestrength.ca/read/the-closed-loop</link>
+      <guid isPermaLink="true">https://primestrength.ca/read/the-closed-loop</guid>
+      <pubDate>Mon, 01 Jun 2026 12:00:00 GMT</pubDate>
+      <description>How Canada's energy, minerals, and two-ocean geography resolve into a single forty-year Canada–Korea trade.</description>
+    </item>
+    <item>
+      <title>The Vertical Squeeze — A Fit For Gov Dossier</title>
+      <link>https://primestrength.ca/read/the-vertical-squeeze</link>
+      <guid isPermaLink="true">https://primestrength.ca/read/the-vertical-squeeze</guid>
+      <pubDate>Mon, 01 Jun 2026 12:00:00 GMT</pubDate>
+      <description>Why the order of government closest to the citizen has the least power to pay for it — a per-citizen accounting of the Canadian tax stack.</description>
+    </item>
+  </channel>
+</rss>

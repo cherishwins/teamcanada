@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="canonical" href="https://primestrength.ca/read/the-closed-loop">
+<link rel="alternate" type="application/rss+xml" title="Team Canada — The Reads" href="https://primestrength.ca/feed.xml">
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#F4EFE3">
+<title>The Closed Loop · NPSI Working Paper No. 6</title>
+<meta name="description" content="The three rails become one circuit: how the financial, energy-and-compute, and defence-industrial architectures resolve into a single forty-year Canada–Korea trade.">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400;1,8..60,600&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root{
+  --navy:#0E2B47; --cream:#F4EFE3; --bronze:#A47148; --teal:#3D6A78;
+  --rule:#d9cfba; --soft:#6a6253; --ink:#0E2B47;
+}
+*{ box-sizing:border-box; }
+html{ scroll-behavior:smooth; }
+body{ margin:0; background:var(--cream); color:var(--ink);
+  font-family:'Source Serif 4', Georgia, serif; font-size:19px; line-height:1.62; }
+
+/* compact masthead */
+.masthead{ position:sticky; top:0; z-index:10; background:var(--cream);
+  border-bottom:1px solid var(--rule); padding:14px 0 11px; }
+.masthead .inner{ max-width:760px; margin:0 auto; padding:0 24px; display:flex; align-items:baseline; justify-content:space-between; gap:16px; }
+.masthead .wm{ font-weight:600; letter-spacing:0.14em; font-size:13px; color:var(--navy); text-transform:uppercase; text-decoration:none; }
+.masthead .wm::before{ content:""; display:block; border-top:1.5px solid var(--bronze); width:54px; margin-bottom:6px; }
+.masthead nav a{ font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:1px; color:var(--teal); text-decoration:none; margin-left:14px; text-transform:uppercase; }
+.masthead nav a:hover{ color:var(--bronze); }
+
+/* full-bleed navy hero */
+.hero{ background:var(--navy); color:var(--cream); padding:60px 24px 56px; }
+.hero .inner{ max-width:760px; margin:0 auto; }
+.meridian{ display:flex; align-items:center; margin-bottom:26px; }
+.meridian .line{ height:1.5px; background:var(--bronze); flex:1; }
+.meridian .tick{ width:1.5px; height:6px; background:var(--bronze); }
+.meridian .lbl{ font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:1.5px; color:var(--bronze); padding:0 9px; white-space:nowrap; }
+.hero .docid{ font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:1.5px; color:var(--bronze); margin-bottom:14px; }
+.hero h1{ font-weight:600; font-size:64px; line-height:1.0; letter-spacing:-1px; margin:0 0 22px; color:#fff; }
+.hero .sub{ font-style:italic; font-size:23px; line-height:1.42; color:#e8dcc6; margin:0 0 22px; }
+.hero .rail{ font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:1px; color:var(--teal); border-top:1px solid rgba(164,113,72,0.4); padding-top:18px; }
+.hero .meta{ font-family:'JetBrains Mono',monospace; font-size:12px; color:#cdbfa6; margin-top:16px; line-height:1.9; }
+.hero .meta b{ color:var(--cream); font-weight:500; }
+
+/* body */
+main{ max-width:760px; margin:0 auto; padding:54px 24px 90px; }
+.partmark{ font-family:'JetBrains Mono',monospace; font-size:13px; letter-spacing:3px; text-transform:uppercase; color:var(--teal); margin-top:8px; }
+.eyebrow{ font-family:'JetBrains Mono',monospace; font-size:13px; letter-spacing:2.5px; text-transform:uppercase; color:var(--bronze); }
+h2.title{ font-weight:600; font-size:38px; line-height:1.1; letter-spacing:-0.5px; color:var(--navy); margin:6px 0 14px; }
+h3{ font-weight:600; font-size:23px; color:var(--navy); margin:38px 0 6px; }
+section.part{ border-top:1px solid var(--rule); margin-top:60px; padding-top:40px; }
+section.part:first-of-type{ border-top:none; margin-top:0; }
+p{ margin:0 0 18px; }
+.lead{ font-size:22px; line-height:1.5; color:#283b4d; }
+.bronze-rule{ border:none; border-top:1.5px solid var(--bronze); width:84px; margin:20px 0 26px; }
+.kpi{ font-family:'JetBrains Mono',monospace; font-weight:500; color:var(--bronze); font-size:0.92em; }
+.pull{ border-left:2.5px solid var(--bronze); padding:4px 0 4px 26px; margin:30px 0; font-style:italic; font-size:22px; line-height:1.44; color:#283b4d; }
+.callout{ background:#efe8d8; border-left:2.5px solid var(--teal); padding:20px 26px; margin:30px 0; font-size:18px; }
+.callout b{ color:var(--navy); }
+
+/* rails grid */
+.rails{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin:28px 0; }
+.railbox{ border:1px solid var(--rule); background:#efe8d8; padding:16px; }
+.railbox .rn{ font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:var(--teal); }
+.railbox .rt{ font-weight:600; font-size:18px; color:var(--navy); margin:5px 0; }
+.railbox .rd{ font-size:14px; color:#3a4756; line-height:1.4; }
+
+/* figure */
+.figure{ border:1px solid var(--rule); background:#efe8d8; padding:28px; margin:30px 0; }
+.figure .fcap{ font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--teal); }
+.figure .ftitle{ font-weight:600; font-style:italic; font-size:24px; color:var(--navy); margin:4px 0 22px; }
+.figbig{ font-family:'JetBrains Mono',monospace; font-weight:500; font-size:38px; color:var(--navy); text-align:center; margin:0; }
+.figcap2{ text-align:center; font-style:italic; font-size:15px; color:var(--soft); margin:4px 0 0; }
+.bar{ display:flex; height:62px; margin:22px 0 0; }
+.bar .c{ background:var(--navy); color:#fff; display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-size:15px; }
+.bar .f{ background:var(--bronze); color:#fff; display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-size:15px; }
+.barlab{ display:flex; justify-content:space-between; font-style:italic; font-size:14px; color:var(--soft); margin-top:8px; }
+.fsrc{ font-family:'JetBrains Mono',monospace; text-align:right; font-size:11px; color:var(--soft); margin-top:16px; letter-spacing:0.5px; }
+
+/* table */
+table{ width:100%; border-collapse:collapse; margin:24px 0; font-size:15px; }
+th{ background:var(--navy); color:var(--cream); text-align:left; padding:10px 12px; font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.5px; text-transform:uppercase; font-weight:400; }
+td{ border-bottom:1px solid var(--rule); padding:11px 12px; vertical-align:top; }
+td:first-child{ font-weight:600; color:var(--navy); width:30%; }
+
+/* index + footer */
+.index li{ margin-bottom:9px; }
+.index .mono{ font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--soft); }
+.signoff{ font-style:italic; font-size:21px; color:#283b4d; margin-top:30px; }
+footer{ background:var(--navy); color:#cdbfa6; padding:46px 24px; font-family:'JetBrains Mono',monospace; font-size:12px; line-height:1.8; }
+footer .inner{ max-width:760px; margin:0 auto; }
+footer .wm{ color:var(--cream); font-family:'Source Serif 4',serif; font-weight:600; letter-spacing:0.14em; font-size:14px; text-transform:uppercase; display:block; margin-bottom:6px; }
+footer a{ color:var(--teal); text-decoration:none; }
+footer .desc{ font-family:'Source Serif 4',serif; font-style:italic; font-size:15px; color:var(--bronze); margin-bottom:18px; }
+.small{ font-size:15px; color:var(--soft); }
+@media (max-width:680px){
+  .hero h1{ font-size:44px; } .hero .sub{ font-size:19px; } h2.title{ font-size:29px; }
+  .lead{ font-size:19px; } body{ font-size:17px; } .rails{ grid-template-columns:1fr; }
+  .meridian .lbl{ font-size:8px; padding:0 5px; }
+}
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "The Closed Loop — NPSI Working Paper No. 6",
+  "description": "How Canada's energy, minerals, and two-ocean geography resolve into a single forty-year Canada–Korea trade.",
+  "image": [
+    "https://primestrength.ca/assets/og-seal.jpg"
+  ],
+  "inLanguage": "en-CA",
+  "articleSection": "Strategy",
+  "url": "https://primestrength.ca/read/the-closed-loop",
+  "mainEntityOfPage": "https://primestrength.ca/read/the-closed-loop",
+  "datePublished": "2026-06-01",
+  "dateModified": "2026-06-01",
+  "author": {
+    "@type": "Person",
+    "name": "Jesse James",
+    "url": "https://primestrength.ca/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Team Canada",
+    "url": "https://primestrength.ca/",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://primestrength.ca/assets/seal-512.png"
+    }
+  },
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "Team Canada — Strong. Proud. Free.",
+    "url": "https://primestrength.ca/"
+  }
+}
+</script>
+</head>
+<body>
+<a href="/" style="display:block;max-width:760px;margin:0 auto;padding:20px 28px 0;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#A47148;text-decoration:none">&#8592;&nbsp; Team Canada</a>
+
+<div class="masthead"><div class="inner">
+  <a class="wm" href="https://npsi.ca/">North Pacific Strategy Initiative</a>
+  <nav><a href="https://npsi.ca/">Home</a><a href="https://npsi.ca/about/">About</a><a href="https://npsi.ca/engage/">Engage</a></nav>
+</div></div>
+
+<header class="hero"><div class="inner">
+  <div class="meridian">
+    <span class="tick"></span><span class="lbl" style="padding-left:0;">VICTORIA</span>
+    <span class="line"></span><span class="tick"></span><span class="lbl">MID-PACIFIC</span>
+    <span class="line"></span><span class="lbl">BUSAN</span><span class="tick"></span>
+  </div>
+  <div class="docid">NPSI-WP-006 · v1.0 · MAY 2026 · FOR DISCUSSION</div>
+  <h1>The Closed Loop</h1>
+  <p class="sub">The three rails become one circuit. How the financial, energy-and-compute, and defence-industrial architectures of Working Papers Nos. 1 through 3 resolve into a single forty-year Canada–Korea trade — and where it physically closes.</p>
+  <div class="rail">FINANCIAL · ENERGY &amp; COMPUTE · DEFENCE-INDUSTRIAL → ONE LOOP</div>
+  <div class="meta"><b>AUTHOR</b> Jesse James, Editor &nbsp;·&nbsp; <b>SERIES</b> NPSI Working Papers · No. 6 &nbsp;·&nbsp; <b>RELEASED</b> 31 May 2026 · Victoria, BC<br>UNCLASSIFIED · FOR PUBLIC DISTRIBUTION · CC-BY-4.0</div>
+</div></header>
+
+<main>
+
+<section class="part">
+  <div class="eyebrow">Abstract</div>
+  <h2 class="title">Three papers built three rails. This one closes the circuit.</h2>
+  <hr class="bronze-rule">
+  <p class="lead">The North Pacific Strategy Initiative has, across its first three working papers, described a three-rail architecture for Canadian middle-power independence: a financial rail, an energy-and-compute rail, and a defence-industrial rail. Each rail was argued on its own terms. This paper argues they are not three programmes. They are one.</p>
+  <p>The unifying claim is simple and, on the evidence, under-stated: Canada and Korea are negotiating the same forty years from opposite ends of the same supply chain, and neither has said so out loud. Canada holds the molecules, the electrons, the uranium, and the ocean access. Korea holds the silicon, the reactors, the shipyards, and the capital. Treated as one trade — financed by one instrument, sited in one place, governed by one bilateral architecture — the relationship becomes the most complete industrial pairing available to either country.</p>
+  <div class="callout"><b>The synthesis in one sentence.</b> The submarine programme of Working Paper No. 3 is not a defence procurement that happens to have industrial offsets; its offsets — steel, satellites, secure AI, sensors — are the physical supply chain of the energy-and-compute rail of Working Paper No. 2, financed through the bilateral vehicle of Working Paper No. 1, and the whole circuit closes on a single footprint in northern Alberta. The rails were always one loop.</div>
+  <div class="rails">
+    <div class="railbox"><div class="rn">Rail 1 · WP-01</div><div class="rt">Financial</div><div class="rd">Canada–Korea co-issued 30-year sovereign bond on the standing BoC–BoK swap. The capital that funds the loop.</div></div>
+    <div class="railbox"><div class="rn">Rail 2 · WP-02</div><div class="rt">Energy &amp; Compute</div><div class="rd">Canadian clean and conventional energy siting allied AI workloads. The demand the loop serves.</div></div>
+    <div class="railbox"><div class="rn">Rail 3 · WP-03</div><div class="rt">Defence-Industrial</div><div class="rd">CPSP + Hanwha–Algoma offsets. The instrument that forces capital and political will at once.</div></div>
+  </div>
+  <p class="small">This paper assumes Working Papers Nos. 1–4 and does not re-argue them. It synthesises. Readers new to the series are directed to WP-04, <i>The Addition Paradox</i>, for the energy diagnosis on which Part I depends.</p>
+</section>
+
+<section class="part">
+  <div class="partmark">Part I</div>
+  <h2 class="title">The Diagnosis, Carried Forward</h2>
+  <p class="lead">Working Paper No. 4 established the diagnosis: the energy transition as advertised did not happen. It was sincere; its publicists were simply employed by a civilisation incapable of subtraction, and so the project's life work, designed to subtract, was metabolised into addition. This paper carries that finding forward as a premise.</p>
+  <p>The numbers, briefly restated. In 2024 the world deployed <span class="kpi">858 terawatt-hours</span> of new clean electricity — the largest single-year clean build in human history — and in the same year burned more coal and gas than ever and emitted <span class="kpi">14.6 billion tonnes</span> of carbon from its power plants, also a record. Demand grew faster than the clean buildout could cover. The clean buildout met most of the new demand; it did not shrink the old. That is not failure. That is addition.</p>
+  <div class="figure">
+    <div class="fcap">Figure 1</div>
+    <div class="ftitle">The Addition, and the Turn</div>
+    <p class="figbig">~1,172 TWh</p>
+    <p class="figcap2">Total new electricity demand, 2024</p>
+    <div class="bar"><div class="c" style="width:73%;">858 TWh clean</div><div class="f" style="width:27%;">balance: fossil</div></div>
+    <div class="barlab"><span>clean buildout met the bulk of growth</span><span>fossil met the remainder</span></div>
+    <p class="small" style="margin-top:16px;">In 2024 the clean buildout supplied the majority of new demand and fossil generation still rose to a record. In 2025 the line crossed: clean generation exceeded all demand growth and fossil power generation fell for the first time outside a recession. The paradox was a peak, not a permanent state — which makes 2024 the inflection year, not the verdict.</p>
+    <div class="fsrc">SOURCE — IEA ELECTRICITY 2025 · EMBER GLOBAL ELECTRICITY REVIEW 2025 &amp; 2026 · NPSI ANALYSIS</div>
+  </div>
+  <div class="pull">The renewable industry did exactly what it was hired to do. It was simply hired to do a job — subtraction — that no buildout can perform alone.</div>
+  <p>The implication for the next forty years is structural, not cyclical. Coal generated roughly <span class="kpi">10,600 TWh</span> in 2024 and remains the single largest source of generation today, even as its share slipped below a third for the first time in over a century in 2025. Combined upstream oil and gas investment ran near <span class="kpi">570 billion dollars</span> in 2025. The molecule economy is not packing its bags; it is renovating. The commodity the loudest voices spent fifteen years asking the world to boycott is the commodity the world will keep consuming for four more decades — a market-share question wearing a climate costume, which is precisely why it is a Canada question.</p>
+</section>
+
+<section class="part">
+  <div class="partmark">Part II</div>
+  <h2 class="title">The Chokepoint Migration</h2>
+  <p class="lead">The honest reframing of the past decade is not that the world replaced fossil energy. It is that the world replaced one form of energy concentration with another — and the new concentration is, by any sober reading of geopolitical risk, more dangerous than the one it succeeded.</p>
+  <p>The chokepoints of the molecule economy were known: Saudi crude, Russian gas, Hormuz, Suez, Panama, the Bosporus — defended by seventy years of alliance structure and a global naval order. The chokepoints of the mineral economy are also known. The defence is not yet built. Polysilicon is refined at roughly <span class="kpi">95 percent</span> of global supply inside the borders of the People's Republic of China. Lithium battery cells run near <span class="kpi">80 percent</span>. NdFeB magnets near <span class="kpi">94 percent</span>. Rare-earth refining above <span class="kpi">90 percent</span>, even when the ore is mined elsewhere.</p>
+  <p>This is not comparative advantage. It is two decades of explicit industrial policy, and the clean-energy supply chain is now more concentrated than the oil-and-gas chains of the 1970s. The nation that controls those chains has shown it will use them — imposing, expanding, then selectively suspending rare-earth export controls in 2025 — while operating the largest navy in the world by hull count, more than <span class="kpi">370 battle-force ships</span>, on a trajectory toward 435 by 2030.</p>
+  <div class="pull">Every megawatt of solar, wind, or battery storage deployed in a democracy increases that democracy's dependence on a nation whose strategic objectives are explicitly revisionist. The transition did not buy independence. It bought a different dependence.</div>
+  <p>This is not an argument against clean energy. It is an argument against pretending that clean energy as currently sourced is independent energy. Honest decarbonisation requires a supply chain that does not run through the strategic permission of a single adversary — which requires partners who hold the inputs and share the values. The next section names the partner.</p>
+</section>
+
+<section class="part">
+  <div class="partmark">Part III</div>
+  <h2 class="title">The Hand and the Mirror</h2>
+  <p class="lead">Canada is the only G7 nation that simultaneously holds all four assets the next forty years of global energy will reward. And for each, there is a buyer across the Pacific whose published strategy reads like a purchase order addressed to Ottawa — and one buyer who mirrors the entire stack at once.</p>
+  <h3>The cleanest barrel.</h3>
+  <p>Canada holds roughly <span class="kpi">170 billion barrels</span> of proven oil reserves — third globally — produced at a 2024 oil-sands basin average near <span class="kpi">57 kg CO₂e/bbl</span>, with best-in-class operators approaching the global weighted average for conventional crude. The country asked to be boycotted is the cleanest major producer of the commodity the world will keep buying for four more decades.</p>
+  <h3>The clean-electron surplus.</h3>
+  <p>Canada generates between <span class="kpi">340 and 380 TWh</span> of hydroelectricity a year — over half of national supply and the highest per-capita zero-carbon output in the industrial democracies. The surplus exports as electrons, as molecules (green hydrogen, ammonia), or as embedded clean energy inside processed metals.</p>
+  <h3>The uranium asymmetry.</h3>
+  <p>Saskatchewan's Athabasca Basin holds ore with no global peer — Cigar Lake averages roughly <span class="kpi">17 percent</span> U₃O₈ against a global average of 0.1–0.2 percent, about <span class="kpi">one hundred times</span> the concentration. As SMRs reach commercial deployment, the country that produces the fuel holds a 1970s-Saudi-Arabia position — inside a stable democracy.</p>
+  <h3>The two-ocean geography.</h3>
+  <p>Prince Rupert is the closest North American deepwater port to Asia; Kitimat to Yokohama is roughly <span class="kpi">4,500 nautical miles</span>. The Trans Mountain Expansion entered service in 2024 (590,000 bpd); LNG Canada shipped its first cargo in 2025, Phase Two under evaluation. No other Western producer holds Pacific and Atlantic deepwater export at once.</p>
+  <div class="pull">Korea wants Canadian gas, Canadian uranium, Canadian critical minerals, and Canadian shipbuilding inputs. That is not a forecast. It is the published content of Korea's own energy and industrial strategy.</div>
+  <h3>The mirror: why Korea is the anchor.</h3>
+  <p>Korea imports the overwhelming majority of its primary energy, is expanding its nuclear fleet, builds a majority of the world's LNG carriers, is a primary SMR-deployment market, and through Samsung and SK Hynix commands roughly four-fifths of the global high-bandwidth-memory market — SK Hynix alone supplying the lion's share of the HBM inside Nvidia's accelerators. Korea makes the silicon the AI economy runs on and lacks the energy to run it. Canada has the energy and lacks the silicon. That is a closed loop waiting to be wired.</p>
+  <table>
+    <tr><th>Canadian asset</th><th>Korean need it serves</th><th>Status · May 2026</th></tr>
+    <tr><td>LNG &amp; natural gas</td><td>Majority import-dependent; gas for power &amp; industry</td><td>LNG Canada exporting since 2025; Korean yards build the carriers</td></tr>
+    <tr><td>Uranium (Athabasca)</td><td>Expanding fleet; cutting ~32% Russian enriched-fuel reliance</td><td>Active diversification; Canada the obvious non-adversarial supplier</td></tr>
+    <tr><td>SMR fuel &amp; terrain</td><td>Commercial SMR market; needs deployment geographies</td><td>KAERI–Alberta MOU (2023); KHNP–ARC–NB Power deepened 2025</td></tr>
+    <tr><td>Critical minerals</td><td>Battery &amp; magnet chains outside Chinese control</td><td>Stated ROK preference for diversified sourcing</td></tr>
+    <tr><td>Sovereign AI compute</td><td>Korean HBM needs energy-dense, secure host geographies</td><td>The unbuilt piece — the opportunity this paper names</td></tr>
+    <tr><td>Submarine programme</td><td>Hanwha Ocean exporting KSS-III &amp; industrial base</td><td>CPSP short-list; industrial MOUs signed early 2026 (WP-03)</td></tr>
+  </table>
+  <p>Each is a multi-decade flow, denominated in hundreds of billions across the next forty years, currently structured one transaction at a time. The move is to stop structuring them separately. The place that makes that legible is a single town in northern Alberta.</p>
+</section>
+
+<section class="part">
+  <div class="partmark">Part IV</div>
+  <h2 class="title">Where the Loop Closes</h2>
+  <p class="lead">Here is the ground: Fort McMurray, Alberta. The place the climate movement made shorthand for everything it opposed is the place where the circuit physically closes — molecules, electrons, fuel, and silicon on one footprint.</p>
+  <h3>The jurisdiction that says yes.</h3>
+  <p>Data centres are hitting a wall elsewhere in Alberta. The Synapse proposal near Olds had its initial application rejected by the Alberta Utilities Commission in early 2026; O'Leary's separate Wonder Valley near Grande Prairie has stalled amid a First Nation legal challenge. Fort McMurray does not have that problem — an established industrial jurisdiction with 24/7 security standard, a credentialed workforce, and shovel-ready land in the thousands of acres. The social licence others are fighting over is here the existing operating condition.</p>
+  <h3>Cooling, water, fibre.</h3>
+  <p>Average July near 17°C allows free-air cooling most of the year; the Athabasca–Clearwater convergence supplies water in a low-allocation basin; the legacy Alberta SuperNet already runs high-capacity fibre north from Edmonton. The backbone is in the ground.</p>
+  <h3>The energy move that resolves two crises at once.</h3>
+  <p>Alberta's grid sits under an interconnection queue of roughly <span class="kpi">21 gigawatts</span> — nearly twice peak demand. Meanwhile producers flared roughly <span class="kpi">915 million cubic metres</span> of gas in 2024, well above the Directive 060 limit of 670 million, with flares running near 91 percent efficiency so a meaningful fraction of potent methane slips unburned. Put a behind-the-meter, gas-to-power data centre at the wellhead and both problems dissolve: stranded gas becomes baseload for sovereign compute, and the methane is combusted in an engine instead of an open flare. KALiNA Power signed a framework agreement with Crusoe in early 2025 for up to <span class="kpi">1.7 gigawatts</span> of co-sited AI data centres powered by 170-MW combined-cycle gas plants capturing ~95% of their CO₂.</p>
+  <div class="callout"><b>The sovereignty layer.</b> Data held by U.S.-headquartered cloud providers sits under the reach of the U.S. CLOUD Act regardless of where the servers physically are. Residency alone does not buy sovereignty. Canada's C$2-billion Sovereign AI Compute Strategy funds domestically owned and located compute. Fort McMurray offers the place; Korean HBM the silicon; flare gas and Korean SMRs the power. This is the physical instantiation of Working Paper No. 2's energy-and-compute rail.</div>
+  <h3>The Korean reactor that replaces the steam plant.</h3>
+  <p>KAERI signed an MOU with the Government of Alberta in 2023 to explore deploying its SMART reactor — well-suited to the steam-assisted gravity-drainage process that currently burns gas, and to supplying carbon-free baseload to adjacent compute. KHNP has deepened its ARC-100 partnership with ARC Clean Technology and NB Power, extended again in Seoul in 2025. Canada supplies the fuel; Korea the reactor and capital; Alberta the terrain.</p>
+  <h3>The unity dividend.</h3>
+  <p>Routing federal compute, defence, and AI procurement into northern Alberta makes Ottawa and Edmonton structurally dependent on each other's success. Canada's Industrial and Technological Benefits policy — with its highest multiplier on Indigenous workforce development — turns sovereign spending into a Western on-ramp, and bringing regional First Nations into ownership of the compute layer discharges reconciliation and digital-sovereignty obligations with the same dollar.</p>
+</section>
+
+<section class="part">
+  <div class="partmark">Part V</div>
+  <h2 class="title">The Instrument and the Verdict</h2>
+  <p class="lead">Every grand strategy needs an instrument blunt enough to move capital and political will at once. For the Canada–Korea loop, that instrument is the subject of Working Paper No. 3 — re-seen here as the financing mechanism for everything in Parts III and IV.</p>
+  <p>The Canadian Patrol Submarine Project will acquire up to twelve under-ice-capable boats; the field has narrowed to Korea's Hanwha Ocean (KSS-III) and Germany's ThyssenKrupp Marine Systems. Under procurement rules the winner must place industrial activity in Canada equal to the full contract value, and Hanwha has not waited: a binding memorandum with Algoma Steel worth up to roughly <span class="kpi">C$345 million</span>, plus MOUs with Telesat and MDA Space (sovereign satellite), Cohere (secure AI), and PV Labs (EO/IR sensors). A KPMG analysis estimates the package would generate on the order of <span class="kpi">200,000 job-years</span> from 2026 to 2040.</p>
+  <div class="callout"><b>Read that list again.</b> Steel. Satellites. Secure AI. Sensors. Those are not submarine parts — they are the exact inputs of the sovereign-compute, two-ocean-export, clean-energy loop of Parts III and IV. The submarine is the financing instrument; the loop is what gets financed. Choosing the Korean bid funds the industrial base the energy thesis requires, through a partner simultaneously buying the energy. The capital flows in a circle, and the circle stays inside the alliance.</div>
+  <p>The architecture already exists. Canada and Korea signed a Security and Defence Cooperation Partnership in late 2025 — Canada's first in the Indo-Pacific — and held their second "2+2" ministerial in Ottawa in early 2026. The diplomatic frame, the financing instrument, the energy complementarity, and the physical site now exist simultaneously, for the first time.</p>
+  <p class="lead" style="margin-top:30px;">The energy transition as advertised is alive, well, and boarding a private jet to the next summit. What is dead is the comfortable story it told. Canada holds the cleanest barrel of a commodity the world will keep buying, the largest per-capita supply of clean electrons in the democracies, the highest-grade uranium on earth, and the only two-ocean export geography in the G7 — and the single partner whose strategy mirrors that entire stack has just been short-listed to build Canada's submarines.</p>
+  <p>A country with this hand, and a partner this complementary, does not need to apologise. It needs to wire the loop. The only thing not yet on the table is the decision to treat it all as one trade — which is the decision this series exists to make legible.</p>
+  <p class="signoff">The casket will remain closed. The loop is open for business.</p>
+  <p class="small" style="font-family:'JetBrains Mono',monospace;">— JESSE JAMES · NORTH PACIFIC STRATEGY INITIATIVE · 31 MAY 2026</p>
+</section>
+
+<section class="part index">
+  <div class="eyebrow">Series Index</div>
+  <h2 class="title">The three-rail architecture.</h2>
+  <hr class="bronze-rule">
+  <ul>
+    <li>WP-01 — The Bilateral Foundation: a 30-year Canada–Korea sovereign bond <span class="mono">(financial rail)</span></li>
+    <li>WP-02 — A Canada–United States Energy and Compute Compact <span class="mono">(energy &amp; compute rail)</span></li>
+    <li>WP-03 — A Canada–Korea Pacific Defence-Industrial Corridor <span class="mono">(defence-industrial rail)</span></li>
+    <li>WP-04 — The Addition Paradox: An Energy Thesis for Canada</li>
+    <li>WP-06 — The Closed Loop: The Three Rails as One Circuit <span class="mono">(this paper · capstone)</span></li>
+  </ul>
+</section>
+
+</main>
+
+<footer><div class="inner">
+  <span class="wm">North Pacific Strategy Initiative</span>
+  <div class="desc">Working Papers on Pacific Sovereignty &amp; Bilateral Architecture</div>
+  DOCUMENT NPSI-WP-006 · v1.0 · ISSUED 31 MAY 2026 · VICTORIA, BC<br>
+  EDITOR Jesse James · <a href="mailto:jesse@fitforgov.com">jesse@fitforgov.com</a> · <a href="https://npsi.ca">npsi.ca</a><br>
+  CITATION James, J. (2026). The Closed Loop: The Three Rails as One Circuit. NPSI Working Paper No. 6.<br>
+  Working-paper text under <a href="https://creativecommons.org/licenses/by/4.0/">CC-BY-4.0</a>. The imprint and wordmark are not licensed.<br><br>
+  VOL. I · EST. MMXXVI
+</div></footer>
+
+<!-- Cookieless analytics: Vercel Web Analytics (no cookies, no banner). Auto-activates when enabled in the Vercel dashboard; harmless otherwise. -->
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>
