@@ -46,6 +46,15 @@ feed.xml                RSS feed of the reads
 source-material/        Original uploads (zips, PDFs, art). NOT deployed (see .vercelignore).
 ```
 
+## Brand system (Team Canada Sentinel)
+
+The site is built to the official brand kit in `/brand/` — a restrained national-broadsheet
+look: Paper ground, a single Crimson (#7B0505) accent, the shard maple-leaf mark, Newsreader
+(serif) for reading, Archivo (caps, tracked) for labels, JetBrains Mono for data. Hairline rules,
+no cards, no radius, no content shadows. Design tokens live in `/brand/colors/tokens.css`;
+the full guidelines render at `/brand/brand-guidelines.html`. A silent **light/dark toggle**
+sits in the nav (respects `prefers-color-scheme`, remembers your choice, no flash-of-wrong-theme).
+
 ## Deploy to Vercel
 
 1. Push this repo to GitHub (already done if you're reading this on a PR).
