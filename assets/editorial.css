@@ -3,21 +3,21 @@
    Palette and type per iPurpose master standard
    ============================================================ */
 :root{
-  --midnight:#0a1628;
-  --graphite:#2a2d35;
-  --gold:#c8a84e;
-  --ash:#6b7280;
-  --signal:#f7f5f0;
-  --slate:#374151;
-  --green:#3f8f6e;
-  --red:#b0503f;
+  --midnight:#F6F3EC;
+  --graphite:#efe9da;
+  --gold:#7B0505;
+  --ash:#6f6a60;
+  --signal:#16140f;
+  --slate:#D8D2C4;
+  --green:#355c4e;
+  --red:#7B0505;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 body{
   background:var(--midnight);
   color:var(--signal);
-  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-family:"Newsreader",Georgia,"Times New Roman",serif;
   line-height:1.7;
   -webkit-font-smoothing:antialiased;
   -moz-osx-font-smoothing:grayscale;
@@ -47,7 +47,7 @@ h1{
   font-size:40px;font-weight:800;line-height:1.12;letter-spacing:-.02em;
   color:var(--signal);margin-bottom:18px;
 }
-.standfirst{font-size:18px;color:#c8ccd4;max-width:600px}
+.standfirst{font-size:18px;color:#4A4640;max-width:600px}
 .byline{
   margin-top:26px;font-size:13px;color:var(--ash);
   display:flex;gap:10px;align-items:center;flex-wrap:wrap;
@@ -62,10 +62,10 @@ h2{
 }
 .h2line{height:1px;background:var(--slate);margin-bottom:22px}
 h3{font-size:23px;font-weight:700;line-height:1.25;margin-bottom:14px;letter-spacing:-.01em}
-p{font-size:17px;margin-bottom:18px;color:#dde0e6}
+p{font-size:17px;margin-bottom:18px;color:#2a2722}
 p strong{color:var(--signal);font-weight:600}
 .lead{font-size:19px}
-.closing{text-align:center;font-size:17px;color:#c8ccd4;max-width:540px;margin:0 auto 50px}
+.closing{text-align:center;font-size:17px;color:#4A4640;max-width:540px;margin:0 auto 50px}
 
 /* ---------- claim box ---------- */
 .claim{
@@ -88,7 +88,7 @@ p strong{color:var(--signal);font-weight:600}
 }
 .card-head{
   padding:18px 24px;
-  background:#1a2433;
+  background:#efe9da;
   border-bottom:1px solid var(--slate);
   font-size:13px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);
 }
@@ -98,7 +98,7 @@ p strong{color:var(--signal);font-weight:600}
   gap:14px;
   align-items:center;
   padding:15px 24px;
-  border-bottom:1px solid #232932;
+  border-bottom:1px solid #e2dccd;
 }
 .row:last-child{border-bottom:none}
 .row .country{display:flex;align-items:center;gap:13px}
@@ -113,7 +113,7 @@ p strong{color:var(--signal);font-weight:600}
 .v-no{background:rgba(63,143,110,.16);color:#6fc79f;border:1px solid rgba(63,143,110,.4)}
 .v-close{background:rgba(200,168,78,.14);color:var(--gold);border:1px solid rgba(200,168,78,.4)}
 .v-yes{background:rgba(176,80,63,.16);color:#e08773;border:1px solid rgba(176,80,63,.45)}
-.row.highlight{background:#1d2735}
+.row.highlight{background:#efe7d8}
 
 /* ---------- stat band ---------- */
 .statband{
@@ -131,14 +131,14 @@ p strong{color:var(--signal);font-weight:600}
 
 /* ---------- answer block ---------- */
 .answer{
-  background:linear-gradient(160deg,#11203a 0%,#0a1628 100%);
+  background:linear-gradient(160deg,#efe9da 0%,#F6F3EC 100%);
   border:1px solid var(--slate);
   border-radius:12px;
   padding:34px 30px;margin-bottom:30px;
 }
 .answer h3{color:var(--gold);font-size:21px;margin-bottom:18px}
 .answer ol{list-style:none;counter-reset:a}
-.answer li{counter-increment:a;position:relative;padding-left:46px;margin-bottom:20px;font-size:16px;color:#dde0e6}
+.answer li{counter-increment:a;position:relative;padding-left:46px;margin-bottom:20px;font-size:16px;color:#2a2722}
 .answer li:last-child{margin-bottom:0}
 .answer li::before{
   content:counter(a);position:absolute;left:0;top:-2px;
@@ -191,7 +191,7 @@ p strong{color:var(--signal);font-weight:600}
 .compare .col .big{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:28px;font-weight:700;color:var(--gold);margin:8px 0 4px}
 .compare .col .biglabel{font-size:13px;color:var(--ash);margin-bottom:16px}
 .compare .col ul{list-style:none;margin-top:6px}
-.compare .col li{font-size:14px;color:#dde0e6;padding-left:18px;position:relative;margin-bottom:10px;line-height:1.5}
+.compare .col li{font-size:14px;color:#2a2722;padding-left:18px;position:relative;margin-bottom:10px;line-height:1.5}
 .compare .col li::before{content:"";position:absolute;left:0;top:9px;width:6px;height:6px;background:var(--gold);border-radius:50%}
 
 /* ============================================================

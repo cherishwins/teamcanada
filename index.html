@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<script>(function(){try{var t=localStorage.getItem("tcs-theme")||(matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light");document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+<script>(function(){try{var t=localStorage.getItem("tcs-theme")||"light";document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
 <meta name="theme-color" content="#16140f">
 <meta name="color-scheme" content="dark light">
 
@@ -174,12 +174,15 @@
 
 <!-- ===================== SENTINEL BAND ===================== -->
 <section class="sentinel" aria-label="The Sentinel">
-  <img src="/assets/sentinel.jpg" alt="The Sentinel — a guardian grizzly in maple-red armour standing over the land, with a polar bear, black bear, grizzly and elk gathered behind, and the Canadian flag at its feet." loading="eager" fetchpriority="high">
-  <div class="veil"></div>
-  <div class="copy">
-    <div class="tag">The Sentinel</div>
-    <h2>Each province alone is a vassal.<br>Together, we are a peer.</h2>
-    <p>One country, many faces — the grizzly, the polar bear, the black bear, the elk. The line only holds when it holds together.</p>
+  <div class="plate">
+    <figure>
+      <img src="/assets/sentinel.jpg" width="1080" height="1080" alt="The Sentinel — a guardian grizzly in maple-red armour standing watch over the land, with a polar bear, a black bear, a grizzly and an elk gathered behind, the Canadian flag at its feet." loading="lazy">
+    </figure>
+    <div class="copy">
+      <div class="tag">The Sentinel</div>
+      <h2>Each province alone is a vassal. Together, we are a peer.</h2>
+      <p>One country, many faces — the grizzly, the polar bear, the black bear, the elk. None of them stands alone. The line holds because they hold it together.</p>
+    </div>
   </div>
 </section>
 
@@ -266,70 +269,39 @@
 
     <div class="library">
       <a class="read featured" href="/read/changed-my-mind.html">
-        <div class="inner">
-          <div class="thumb"><img src="/assets/carney.jpg" alt="" loading="lazy"></div>
-          <div class="body">
-            <div class="tagline">Featured · An honest account</div>
-            <h3>"I Campaigned Against This Man."</h3>
-            <p>A Conservative campaigner did the homework and changed his mind — written for the people who felt the way he did. Not a conversion. An argument for looking instead of yelling.</p>
-            <span class="more">Read the account →</span>
-          </div>
+        <img class="portrait" src="/assets/carney.png" width="640" height="852" alt="Mark Carney" loading="lazy">
+        <div class="body">
+        <div class="tagline">An honest account</div>
+        <h3>"I Campaigned Against This Man."</h3>
+        <p>A Conservative campaigner did the homework and changed his mind — written for the people who felt the way he did. Not a conversion. An argument for looking instead of yelling.</p>
+        <span class="more">Read the account →</span>
         </div>
       </a>
-
       <a class="read" href="/read/honest-answer.html">
-        <div class="thumb"><img src="/assets/og-honest-answer.png" alt="" loading="lazy"></div>
-        <div class="body">
-          <div class="tagline">The record, set straight</div>
-          <h3>One Question. Seven Leaders. An Honest Answer.</h3>
-          <p>The viral "who's in recession" quiz, answered with every official G7 GDP figure. The trick is in the question.</p>
-          <span class="more">Read it →</span>
-        </div>
+        <div class="tagline">The record, set straight</div>
+        <h3>One Question. Seven Leaders. An Honest Answer.</h3>
+        <p>The viral "who's in recession" quiz, answered with every official G7 GDP figure. The trick is in the question.</p>
+        <span class="more">Read it →</span>
       </a>
-
       <a class="read" href="/read/two-leaders.html">
-        <div class="thumb"><img src="/assets/og-two-leaders.png" alt="" loading="lazy"></div>
-        <div class="body">
-          <div class="tagline">A governance reading</div>
-          <h3>The Wave Hit Every G7 Democracy. Two Leaders Beat It.</h3>
-          <p>Anti-incumbent anger flattened the West. Japan and Canada are the exceptions — and the reason is a method anyone can copy.</p>
-          <span class="more">Read it →</span>
-        </div>
+        <div class="tagline">A governance reading</div>
+        <h3>The Wave Hit Every G7 Democracy. Two Leaders Beat It.</h3>
+        <p>Anti-incumbent anger flattened the West. Japan and Canada are the exceptions — and the reason is a method anyone can copy.</p>
+        <span class="more">Read it →</span>
       </a>
-
       <a class="read" href="/read/the-closed-loop.html">
-        <div class="thumb"><img src="/assets/maple-512.png" alt="" loading="lazy" style="object-fit:contain;background:#0a1525;padding:28px"></div>
-        <div class="body">
-          <div class="tagline">NPSI · Strategy</div>
-          <h3>The Closed Loop</h3>
-          <p>The full strategic case: how Canada's energy, minerals, and two-ocean geography become one forty-year trade. The hand, in detail.</p>
-          <span class="more">Read the paper →</span>
-        </div>
+        <div class="tagline">NPSI · Strategy</div>
+        <h3>The Closed Loop</h3>
+        <p>The full strategic case: how Canada's energy, minerals, and two-ocean geography become one forty-year trade. The hand, in detail.</p>
+        <span class="more">Read the paper →</span>
       </a>
-
       <a class="read" href="/read/the-vertical-squeeze.html">
-        <div class="thumb"><img src="/assets/maple-512.png" alt="" loading="lazy" style="object-fit:contain;background:#0a1525;padding:28px"></div>
-        <div class="body">
-          <div class="tagline">Fit for Gov · Policy</div>
-          <h3>The Vertical Squeeze</h3>
-          <p>Why the order of government closest to you has the least power to pay for what you need — and what a fix actually looks like.</p>
-          <span class="more">Read the dossier →</span>
-        </div>
+        <div class="tagline">Fit for Gov · Policy</div>
+        <h3>The Vertical Squeeze</h3>
+        <p>Why the order of government closest to you has the least power to pay for what you need — and what a fix actually looks like.</p>
+        <span class="more">Read the dossier →</span>
       </a>
     </div>
-  </div>
-</section>
-
-<!-- ===================== PARABLE ===================== -->
-<section class="section parable" id="parable">
-  <div class="wrap">
-    <div class="eyebrow">The parable</div>
-    <h2 class="h2">Bear's Stand: united against the eagle.</h2>
-    <p class="intro">Same idea, told the way a kid would get it. The budgets are tight across every province. Every bear for itself isn't going to work — and someone out there is counting on us to stay divided.</p>
-    <figure>
-      <img src="/assets/bears-stand.jpg" alt="A four-panel comic: Canadian bears argue over tight budgets, an eagle plots to divide and conquer, the bears refuse, then link together and stand united over a glowing red maple leaf." loading="lazy">
-      <figcaption>"The fortress of our unity is built by every bear standing together. This is our future."</figcaption>
-    </figure>
   </div>
 </section>
 
@@ -366,35 +338,30 @@
 <!-- ===================== THE COALITION ===================== -->
 <section class="section" id="coalition">
   <div class="wrap">
-    <div class="eyebrow">The coalition</div>
-    <h2 class="h2">Canadian builders standing behind one country.</h2>
-    <p class="intro">Unity isn't a logo — it's a line of people willing to put their name on it. These are the founding members. Your business can stand in the line too.</p>
+    <div class="eyebrow">The network</div>
+    <h2 class="h2">Built by a small network. Open to anyone.</h2>
+    <p class="intro">Team Canada is built by a handful of Canadian imprints that care about the same thing — and it's open to any business that wants to stand in beside them.</p>
 
     <div class="coalition">
       <div class="member founder">
-        <img src="/brand/logos/mark-256.png" alt="Team Canada · Prime Strength" loading="lazy" width="48" height="48">
+        <span class="m-logo"><img src="/brand/logos/mark-leaf.png" alt="Team Canada Sentinel" width="60" height="60"></span>
         <div class="m-name">Prime Strength</div>
         <div class="m-desc">Team Canada — Sovereignty · Unité</div>
       </div>
-      <div class="member">
-        <div class="m-mark">i<span>P</span></div>
-        <div class="m-name">iPurpose</div>
-        <div class="m-desc">Intelligence with intent</div>
-      </div>
-      <div class="member">
-        <div class="m-mark">N<span>P</span></div>
+      <a class="member" href="https://npsi.ca" target="_blank" rel="noopener">
+        <span class="m-logo"><img src="/brand/partners/npsi.png" alt="North Pacific Strategy Initiative" width="84" height="84"></span>
         <div class="m-name">NPSI</div>
         <div class="m-desc">North Pacific Strategy Initiative</div>
-      </div>
-      <div class="member">
-        <div class="m-mark">F<span>G</span></div>
+      </a>
+      <a class="member" href="https://fitforgov.com" target="_blank" rel="noopener">
+        <span class="m-wordmark">Fit&nbsp;For&nbsp;Gov</span>
         <div class="m-name">Fit For Gov</div>
         <div class="m-desc">Civic technology for Canada</div>
-      </div>
+      </a>
       <div class="member">
-        <div class="m-mark">T<span>U</span></div>
-        <div class="m-name">The Uniting</div>
-        <div class="m-desc">Stories for one country</div>
+        <span class="m-wordmark"><span class="i">i</span>Purpose</span>
+        <div class="m-name">iPurpose</div>
+        <div class="m-desc">Intelligence with intent</div>
       </div>
       <a class="member add" href="/join">
         <div class="plus" aria-hidden="true">+</div>
