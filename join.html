@@ -3,9 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<script>(function(){try{var t=localStorage.getItem("tcs-theme")||"light";document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
 <meta name="theme-color" content="#16140f">
-<meta name="color-scheme" content="dark light">
+<meta name="color-scheme" content="light">
 
 <title>Join the Coalition — Team Canada</title>
 <meta name="description" content="Add your Canadian business to the Team Canada coalition. Put your name behind one country — Strong. Proud. Free. No account, no fee, free to leave.">
@@ -45,7 +44,6 @@
     <div class="nav-links">
       <a class="hideable" href="/#coalition">The coalition</a>
       <a class="hideable" href="/#reads">The reads</a>
-      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle dark mode">Dark</button>
       <a class="cta" href="/#pledge">Take the pledge</a>
     </div>
   </div>
@@ -233,7 +231,6 @@
 </script>
 
 <!-- Cookieless analytics: Vercel Web Analytics (no cookies, no banner). Auto-activates when enabled in the Vercel dashboard; harmless otherwise. -->
-<script>(function(){var t=document.getElementById("theme-toggle");function L(){var d=document.documentElement.getAttribute("data-theme")==="dark";if(t)t.textContent=d?"Light":"Dark";}L();if(t)t.addEventListener("click",function(){var d=document.documentElement.getAttribute("data-theme")==="dark";var n=d?"light":"dark";document.documentElement.setAttribute("data-theme",n);try{localStorage.setItem("tcs-theme",n);}catch(e){}L();});})();</script>
 <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>
