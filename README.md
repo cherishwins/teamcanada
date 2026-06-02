@@ -59,8 +59,13 @@ long-cache immutable assets, and sensible security headers.
   summary plus links, so AI assistants can find and reference the site accurately.
 - **`robots.txt`** explicitly *allows* the major AI crawlers (GPTBot, ClaudeBot, PerplexityBot,
   Google-Extended, CCBot, Applebot, …) — we *want* to be quoted.
-- **`sitemap.xml`** + **`feed.xml`** (RSS) for indexing and syndication.
+- **`sitemap.xml`** (with image entries) + **`feed.xml`** (RSS) for indexing and syndication.
 - **Canonical + hreflang (`en-ca`)** tags throughout.
+- **FAQPage** on the home page + per-read **Article** and **BreadcrumbList** for rich results.
+- **IndexNow** key file at the repo root for instant Bing/Yandex indexing.
+- `.well-known/security.txt` and `humans.txt` for trust/identity signals.
+
+> **Full step-by-step playbook (Search Console, Bing, IndexNow, social cache, Cloudflare, off-site distribution): see [`DISCOVERABILITY.md`](DISCOVERABILITY.md).**
 
 ## Analytics (cookieless — no banner needed)
 
@@ -82,7 +87,7 @@ and bot protection at no cost — DNS-only setup, no code changes.
 
 `/join` lets any Canadian business add their logo to the wall. It's deliberately backend-free:
 the form previews their logo client-side and opens a **pre-filled email** to
-`join@primestrength.ca` (set this address to one you own, or change it in `join.html`).
+`jesse@primestrength.ca` (set this address to one you own, or change it in `join.html`).
 You review submissions and add approved members to the `.coalition` grid in `index.html`
 and `join.html`. No accounts, no uploads server, no tracking.
 

@@ -1,0 +1,14 @@
+/* TEAM CANADA — primestrength.ca */
+
+# TEAM
+  Builder & author: Jesse James
+  Location: View Royal, British Columbia, Canada
+  Contact: jesse@primestrength.ca
+
+# THANKS
+  Every Canadian who chose to look instead of yell.
+
+# SITE
+  Standards: HTML5, CSS3, vanilla JS, PWA
+  Components: static — no framework, no tracking cookies
+  Mantra: Strong. Proud. Free. Sovereignty · Unité · Est. 2026

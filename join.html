@@ -18,12 +18,12 @@
 <meta property="og:title" content="Join the Coalition — Team Canada">
 <meta property="og:description" content="Add your Canadian business to the coalition standing behind one country. Strong. Proud. Free.">
 <meta property="og:url" content="https://primestrength.ca/join">
-<meta property="og:image" content="https://primestrength.ca/assets/og-seal.jpg">
+<meta property="og:image" content="https://primestrength.ca/assets/og-join.jpg">
 <meta property="og:locale" content="en_CA">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Join the Coalition — Team Canada">
 <meta name="twitter:description" content="Add your Canadian business to the coalition standing behind one country.">
-<meta name="twitter:image" content="https://primestrength.ca/assets/og-seal.jpg">
+<meta name="twitter:image" content="https://primestrength.ca/assets/og-join.jpg">
 
 <link rel="icon" type="image/svg+xml" href="/assets/maple.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
@@ -114,7 +114,7 @@
         </label>
       </div>
       <button class="btn btn-primary" type="submit" id="submit">Submit & stand in →</button>
-      <div class="join-note" id="join-note">Opens a ready-to-send email to <b>join@primestrength.ca</b>. Prefer to do it by hand? <a href="#" id="copy-details" style="color:var(--gold)">Copy the details instead</a>.</div>
+      <div class="join-note" id="join-note">Opens a ready-to-send email to <b>jesse@primestrength.ca</b>. Prefer to do it by hand? <a href="#" id="copy-details" style="color:var(--gold)">Copy the details instead</a>.</div>
     </form>
   </div>
 </section>
@@ -193,12 +193,12 @@
       if(!email.value.trim()){ email.focus(); return; }
       var subject="Coalition: "+biz.value.trim();
       var body=details()+(logoName?"":"")+"\n\nIMPORTANT: please attach your logo image to this email before sending.";
-      window.location.href="mailto:join@primestrength.ca?subject="+e(subject)+"&body="+e(body);
+      window.location.href="mailto:jesse@primestrength.ca?subject="+e(subject)+"&body="+e(body);
       flash(document.getElementById('submit'),"Opening your email… ✓","Submit & stand in →");
     });
 
     var cd=document.getElementById('copy-details');
-    if(cd) cd.addEventListener('click', function(ev){ ev.preventDefault(); copy("To: join@primestrength.ca\n\n"+details(), function(){ flash(cd,"Copied ✓","Copy the details instead"); }); });
+    if(cd) cd.addEventListener('click', function(ev){ ev.preventDefault(); copy("To: jesse@primestrength.ca\n\n"+details(), function(){ flash(cd,"Copied ✓","Copy the details instead"); }); });
 
     // Share
     set('kit-x',"https://twitter.com/intent/tweet?text="+e(text)+"&url="+e(url));
