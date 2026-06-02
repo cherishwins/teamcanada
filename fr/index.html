@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<script>(function(){try{var t=localStorage.getItem("tcs-theme")||(matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light");document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+<script>(function(){try{var t=localStorage.getItem("tcs-theme")||"light";document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
 <meta name="theme-color" content="#16140f">
 <meta name="color-scheme" content="dark light">
 
@@ -81,12 +81,15 @@
 
 <!-- ===================== SENTINELLE ===================== -->
 <section class="sentinel" aria-label="La Sentinelle">
-  <img src="/assets/sentinel.jpg" alt="La Sentinelle — un ours gardien, en armure rouge, debout devant le territoire; un ours polaire, un ours noir, un grizzli et un wapiti derrière lui, le drapeau canadien à ses pieds." loading="eager" fetchpriority="high">
-  <div class="veil"></div>
-  <div class="copy">
-    <div class="tag">La Sentinelle</div>
-    <h2>Seule, une province ne pèse pas lourd.<br>Ensemble, on parle d'égal à égal.</h2>
-    <p>Un pays, plusieurs visages — le grizzli, l'ours polaire, l'ours noir, le wapiti. La ligne ne tient que si elle tient ensemble.</p>
+  <div class="plate">
+    <figure>
+      <img src="/assets/sentinel.jpg" width="1080" height="1080" alt="La Sentinelle — un ours gardien, en armure rouge, debout devant le territoire; un ours polaire, un ours noir, un grizzli et un wapiti derrière lui, le drapeau canadien à ses pieds." loading="lazy">
+    </figure>
+    <div class="copy">
+      <div class="tag">La Sentinelle</div>
+      <h2>Seule, une province ne pèse pas lourd. Ensemble, on parle d'égal à égal.</h2>
+      <p>Un pays, plusieurs visages — le grizzli, l'ours polaire, l'ours noir, le wapiti. Aucun ne tient debout tout seul. La ligne tient parce qu'ils la tiennent ensemble.</p>
+    </div>
   </div>
 </section>
 
@@ -161,23 +164,25 @@
 
     <div class="library">
       <a class="read featured" href="/read/changed-my-mind">
-        <div class="inner">
-          <div class="thumb"><img src="/assets/carney.jpg" alt="" loading="lazy"></div>
-          <div class="body">
-            <div class="tagline">À la une · Un témoignage honnête</div>
-            <h3>« J'ai fait campagne contre cet homme. »</h3>
-            <p>Un militant conservateur a fait ses devoirs et a changé d'idée — écrit pour ceux qui pensaient comme lui. Pas une conversion. Un plaidoyer pour regarder au lieu de crier.</p>
-            <span class="more">Lire le témoignage →</span>
-          </div>
+        <img class="portrait" src="/assets/carney.png" width="640" height="852" alt="Mark Carney" loading="lazy">
+        <div class="body">
+          <div class="tagline">Un témoignage honnête</div>
+          <h3>« J'ai fait campagne contre cet homme. »</h3>
+          <p>Un militant conservateur a fait ses devoirs et a changé d'idée — écrit pour ceux qui pensaient comme lui. Pas une conversion. Un plaidoyer pour regarder au lieu de crier.</p>
+          <span class="more">Lire le témoignage →</span>
         </div>
       </a>
       <a class="read" href="/read/honest-answer">
-        <div class="thumb"><img src="/assets/og-honest-answer.png" alt="" loading="lazy"></div>
-        <div class="body"><div class="tagline">Le dossier, à froid</div><h3>Une question. Sept chefs. Une réponse honnête.</h3><p>Le test viral « qui est en récession », répondu avec chaque chiffre officiel du PIB du G7. Le piège est dans la question.</p><span class="more">Lire →</span></div>
+        <div class="tagline">Le dossier, à froid</div>
+        <h3>Une question. Sept chefs. Une réponse honnête.</h3>
+        <p>Le test viral « qui est en récession », répondu avec chaque chiffre officiel du PIB du G7. Le piège est dans la question.</p>
+        <span class="more">Lire →</span>
       </a>
       <a class="read" href="/read/two-leaders">
-        <div class="thumb"><img src="/assets/og-two-leaders.png" alt="" loading="lazy"></div>
-        <div class="body"><div class="tagline">Une lecture de gouvernance</div><h3>La vague a frappé toutes les démocraties du G7. Deux chefs ont tenu.</h3><p>La colère anti-sortants a aplati l'Occident. Le Japon et le Canada font exception — et la raison est une méthode que tout le monde peut copier.</p><span class="more">Lire →</span></div>
+        <div class="tagline">Une lecture de gouvernance</div>
+        <h3>La vague a frappé toutes les démocraties du G7. Deux chefs ont tenu.</h3>
+        <p>La colère anti-sortants a aplati l'Occident. Le Japon et le Canada font exception — et la raison est une méthode que tout le monde peut copier.</p>
+        <span class="more">Lire →</span>
       </a>
     </div>
   </div>
@@ -190,12 +195,36 @@
     <h2 class="h2">Des bâtisseurs d'ici, derrière un seul pays.</h2>
     <p class="intro">Tirer dans le même sens, ce n'est pas un logo — c'est une rangée de gens prêts à y accoler leur nom. Voici les membres fondateurs. Votre entreprise peut prendre place dans la rangée, elle aussi.</p>
     <div class="coalition">
-      <div class="member founder"><img src="/brand/logos/mark-256.png" alt="Team Canada · Prime Strength" loading="lazy" width="48" height="48"><div class="m-name">Prime Strength</div><div class="m-desc">Team Canada — Souveraineté · Unité</div></div>
-      <div class="member"><div class="m-mark">i<span>P</span></div><div class="m-name">iPurpose</div><div class="m-desc">L'intelligence avec intention</div></div>
-      <div class="member"><div class="m-mark">N<span>P</span></div><div class="m-name">NPSI</div><div class="m-desc">North Pacific Strategy Initiative</div></div>
-      <div class="member"><div class="m-mark">F<span>G</span></div><div class="m-name">Fit For Gov</div><div class="m-desc">Technologie civique pour le Canada</div></div>
-      <div class="member"><div class="m-mark">T<span>U</span></div><div class="m-name">The Uniting</div><div class="m-desc">Des récits pour un seul pays</div></div>
-      <a class="member add" href="/join"><div class="plus" aria-hidden="true">+</div><div class="m-name">Ajouter votre entreprise</div><div class="m-desc">Rejoindre la coalition →</div></a>
+      <div class="member founder">
+        <span class="m-logo"><img src="/brand/logos/mark-leaf.png" alt="Team Canada Sentinel" width="60" height="60"></span>
+        <div class="m-name">Prime Strength</div>
+        <div class="m-desc">Team Canada — Souveraineté · Unité</div>
+      </div>
+      <a class="member" href="https://npsi.ca" target="_blank" rel="noopener">
+        <span class="m-logo"><img src="/brand/partners/npsi.png" alt="North Pacific Strategy Initiative" width="84" height="84"></span>
+        <div class="m-name">NPSI</div>
+        <div class="m-desc">North Pacific Strategy Initiative</div>
+      </a>
+      <a class="member" href="https://fitforgov.com" target="_blank" rel="noopener">
+        <span class="m-wordmark">Fit&nbsp;For&nbsp;Gov</span>
+        <div class="m-name">Fit For Gov</div>
+        <div class="m-desc">Technologie civique pour le Canada</div>
+      </a>
+      <div class="member">
+        <span class="m-wordmark"><span class="i">i</span>Purpose</span>
+        <div class="m-name">iPurpose</div>
+        <div class="m-desc">L'intelligence avec intention</div>
+      </div>
+      <div class="member">
+        <span class="m-wordmark">The Uniting</span>
+        <div class="m-name">The Uniting</div>
+        <div class="m-desc">Des récits pour un seul pays</div>
+      </div>
+      <a class="member add" href="/join">
+        <div class="plus" aria-hidden="true">+</div>
+        <div class="m-name">Ajouter votre entreprise</div>
+        <div class="m-desc">Rejoindre la coalition →</div>
+      </a>
     </div>
   </div>
 </section>
@@ -205,7 +234,7 @@
   <div class="wrap">
     <div class="eyebrow">Faire circuler</div>
     <h2 class="h2">Ça ne marche que si ça circule.</h2>
-    <p class="intro">Toute la question est là: la portée. Partagez en un geste, ou copiez un message déjà prêt. Chaque partage, c'est une personne de plus qui voit la vérité complète au lieu d'une moitié.</p>
+    <p class="intro">Toute la question est là : la portée. Partagez en un geste, ou copiez un message déjà prêt. Chaque partage, c'est une personne de plus qui voit la vérité complète au lieu d'une moitié.</p>
     <div class="spread-grid">
       <div class="spread-actions">
         <button class="btn btn-primary" id="native-share" type="button">Partager <span aria-hidden="true">↗</span></button>

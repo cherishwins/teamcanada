@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<script>(function(){try{var t=localStorage.getItem("tcs-theme")||(matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light");document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+<script>(function(){try{var t=localStorage.getItem("tcs-theme")||"light";document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
 <meta name="theme-color" content="#16140f">
 <meta name="color-scheme" content="dark light">
 
@@ -68,14 +68,35 @@
     <h2 class="h2">Already in the line.</h2>
     <div class="coalition">
       <div class="member founder">
-        <img src="/brand/logos/mark-256.png" alt="Team Canada · Prime Strength" loading="lazy" width="48" height="48">
+        <span class="m-logo"><img src="/brand/logos/mark-leaf.png" alt="Team Canada Sentinel" width="60" height="60"></span>
         <div class="m-name">Prime Strength</div>
         <div class="m-desc">Team Canada — Sovereignty · Unité</div>
       </div>
-      <div class="member"><div class="m-mark">i<span>P</span></div><div class="m-name">iPurpose</div><div class="m-desc">Intelligence with intent</div></div>
-      <div class="member"><div class="m-mark">N<span>P</span></div><div class="m-name">NPSI</div><div class="m-desc">North Pacific Strategy Initiative</div></div>
-      <div class="member"><div class="m-mark">F<span>G</span></div><div class="m-name">Fit For Gov</div><div class="m-desc">Civic technology for Canada</div></div>
-      <div class="member"><div class="m-mark">T<span>U</span></div><div class="m-name">The Uniting</div><div class="m-desc">Stories for one country</div></div>
+      <a class="member" href="https://npsi.ca" target="_blank" rel="noopener">
+        <span class="m-logo"><img src="/brand/partners/npsi.png" alt="North Pacific Strategy Initiative" width="84" height="84"></span>
+        <div class="m-name">NPSI</div>
+        <div class="m-desc">North Pacific Strategy Initiative</div>
+      </a>
+      <a class="member" href="https://fitforgov.com" target="_blank" rel="noopener">
+        <span class="m-wordmark">Fit&nbsp;For&nbsp;Gov</span>
+        <div class="m-name">Fit For Gov</div>
+        <div class="m-desc">Civic technology for Canada</div>
+      </a>
+      <div class="member">
+        <span class="m-wordmark"><span class="i">i</span>Purpose</span>
+        <div class="m-name">iPurpose</div>
+        <div class="m-desc">Intelligence with intent</div>
+      </div>
+      <div class="member">
+        <span class="m-wordmark">The Uniting</span>
+        <div class="m-name">The Uniting</div>
+        <div class="m-desc">Stories for one country</div>
+      </div>
+      <a class="member add" href="/join">
+        <div class="plus" aria-hidden="true">+</div>
+        <div class="m-name">Add your business</div>
+        <div class="m-desc">Join the coalition →</div>
+      </a>
     </div>
   </div>
 </section>
