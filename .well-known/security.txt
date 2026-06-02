@@ -1,0 +1,4 @@
+Contact: mailto:jesse@primestrength.ca
+Preferred-Languages: en
+Canonical: https://primestrength.ca/.well-known/security.txt
+Expires: 2027-06-01T00:00:00.000Z
