@@ -81,7 +81,7 @@ long-cache immutable assets, and sensible security headers.
 - **IndexNow** key file at the repo root for instant Bing/Yandex indexing.
 - `.well-known/security.txt` and `humans.txt` for trust/identity signals.
 
-> **Full step-by-step playbook (Search Console, Bing, IndexNow, social cache, Cloudflare, off-site distribution): see [`DISCOVERABILITY.md`](DISCOVERABILITY.md).**
+> **Full step-by-step playbook (Search Console, Bing, IndexNow, social cache, off-site distribution): see [`DISCOVERABILITY.md`](DISCOVERABILITY.md).**
 
 ## Analytics (cookieless — no banner needed)
 
@@ -89,15 +89,8 @@ The pages already include Vercel Web Analytics (`/_vercel/insights/script.js`). 
 automatically when you toggle **Analytics** on in the Vercel dashboard, and is cookieless, so
 **no cookie-consent banner is required**. It does nothing until enabled.
 
-Prefer **Cloudflare Web Analytics** (also free + cookieless)? Add your beacon before `</body>`:
-
-```html
-<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
-        data-cf-beacon='{"token": "YOUR_CLOUDFLARE_TOKEN"}'></script>
-```
-
-If you put Cloudflare in front of Vercel (free plan), you also get global CDN caching, Brotli,
-and bot protection at no cost — DNS-only setup, no code changes.
+Hosting/CDN is **Vercel** (global edge cache + Brotli, automatic — no extra setup). The domain's
+DNS is managed at **GoDaddy**, pointed at Vercel. There is no Cloudflare in the stack.
 
 ## The coalition (how "join" works)
 

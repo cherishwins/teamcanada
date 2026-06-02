@@ -21,7 +21,7 @@ Do the four ⭐ steps the day you go live; the rest compounds over the first mon
 ## ⭐ 1. Google Search Console
 
 1. Go to <https://search.google.com/search-console> → **Add property** → **Domain** → `primestrength.ca`.
-2. It gives you a **TXT record**. In **Cloudflare → DNS**, add it (Type `TXT`, Name `@`, the value Google gives). Verify.
+2. It gives you a **TXT record**. In **GoDaddy → your domain → DNS (Manage DNS) → Add Record**, add it (Type `TXT`, Name `@`, the value Google gives). Verify.
    - Domain property covers `www`, root, http/https — do this one, not the URL-prefix one.
 3. **Sitemaps → Add new sitemap →** enter `sitemap.xml` → Submit.
 4. **URL Inspection →** paste `https://primestrength.ca/` → **Request indexing**. Repeat for `/join` and each `/read/...`.
@@ -29,7 +29,7 @@ Do the four ⭐ steps the day you go live; the rest compounds over the first mon
 
 ## ⭐ 2. Bing Webmaster Tools (gets you Bing + ChatGPT search)
 
-1. <https://www.bing.com/webmasters> → **Import from Google Search Console** (one click once GSC is set up), or add `primestrength.ca` and verify via Cloudflare TXT.
+1. <https://www.bing.com/webmasters> → **Import from Google Search Console** (one click once GSC is set up), or add `primestrength.ca` and verify via a GoDaddy DNS TXT record.
 2. Submit `https://primestrength.ca/sitemap.xml`.
 3. Bing powers ChatGPT/Copilot web results — this matters more than it used to.
 
@@ -78,12 +78,13 @@ Paste the live URLs into each validator once — they cache aggressively:
 
 ---
 
-## Cloudflare free wins (you're already on it)
+## Hosting, DNS & email (GoDaddy + Vercel)
 
-- **Caching:** Cloudflare in front of Vercel = global edge cache + Brotli for free. Default settings are fine; optionally set a **Cache Rule** to cache `/assets/*` aggressively.
-- **Cloudflare Web Analytics:** <https://dash.cloudflare.com> → **Analytics → Web Analytics** → add `primestrength.ca`. It's cookieless (no banner). Paste the beacon snippet (in `README.md`) before `</body>` if you want it in addition to Vercel's.
-- **Email routing:** Cloudflare **Email Routing** gives you `jesse@primestrength.ca` forwarding for free — and set **SPF/DKIM/DMARC** so your confirmations don't hit spam.
-- **Always Use HTTPS** + **HSTS:** toggle on under SSL/TLS → Edge Certificates.
+- **CDN/caching:** handled by **Vercel** automatically — global edge cache + Brotli, HTTPS, and HSTS, no setup. No Cloudflare in the stack.
+- **DNS:** managed at **GoDaddy** (Domains → primestrength.ca → DNS / Manage DNS), pointed at Vercel per Vercel's **Settings → Domains** instructions.
+- **Analytics:** **Umami** (already on every page) + optional **Vercel Web Analytics** — both cookieless, no banner.
+- **Email for `jesse@primestrength.ca`:** use **GoDaddy email/forwarding** (or any provider), and set **SPF/DKIM/DMARC** so confirmations don't hit spam.
+- **No edge cache to purge:** Vercel serves the latest deploy automatically. If a page looks stale it's the browser/service worker — hard-reload or open incognito.
 
 ---
 
