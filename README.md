@@ -24,6 +24,13 @@ assets/
   sentinel.jpg          The Sentinel hero image
   maple.svg             Crisp scalable favicon
   ...                   OG share cards, portraits, comic, icons
+fr/index.html           French homepage — RE-AUTHORED (not translated) per the
+                        primestrength-bilingual voice. Ships as a DRAFT: noindex +
+                        a visible BROUILLON banner until a native Québécois reviewer
+                        signs off. After review: remove the banner, flip to index,
+                        and add reciprocal hreflang (en-ca <-> fr-ca) on / and /fr/.
+privacy.html            Privacy notice (cookieless, PIPEDA + Québec Law 25 aware)
+terms.html              Terms of use (non-partisan, free-to-quote-with-attribution)
 read/
   changed-my-mind.html  "I Campaigned Against This Man." (the Carney essay)
   honest-answer.html    "One Question. Seven Leaders. An Honest Answer." (the G7 recession retort)

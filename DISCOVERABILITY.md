@@ -92,7 +92,7 @@ Paste the live URLs into each validator once — they cache aggressively:
 The site is the home base; reach comes from pushing *out* and linking *back*.
 
 - **LinkedIn (Fit For Gov page):** post each read as a short carousel, link back to `primestrength.ca/read/...`, pin the pledge. Backlinks + referral traffic + B2B credibility.
-- **Rally banners:** the three downloadable banners on `/#spread` are made for native posting on X / Facebook / Instagram / Reddit. Native image + link in first comment.
+- **Share card:** the downloadable Sentinel card on `/#spread` ("Each province alone is a vassal. Together, we are a peer.") is made for native posting on X / Facebook / Instagram / Reddit. Native image + link in first comment.
 - **Reddit:** r/canada, r/onguardforthee, r/canadapolitics — lead with the *data*, not the pitch; link the specific read that answers the thread.
 - **Wikipedia-grade sourcing:** because every claim cites StatCan/IMF/OECD, the reads are quotable in comment debates — that's the viral mechanic.
 - **Consistent NAP/handles:** use the same name "Team Canada / Prime Strength" and link `primestrength.ca` from every profile (`rel="me"` builds entity trust).
