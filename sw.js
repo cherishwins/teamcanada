@@ -1,13 +1,12 @@
 /* Team Canada — service worker
    Network-first for pages (always fresh), cache-first for immutable assets.
    Keeps the app instant on repeat visits and usable offline. */
-const VERSION = 'tcs-v2';
+const VERSION = 'tcs-v4';
 const CORE = [
   '/',
   '/assets/teamcanada.css',
   '/brand/logos/mark-256.png',
   '/brand/icons/icon-192.png',
-  '/assets/sentinel.jpg',
   '/offline.html'
 ];
 
