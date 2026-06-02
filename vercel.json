@@ -40,6 +40,8 @@
   ],
   "redirects": [
     { "source": "/two-leaders.html", "destination": "/read/two-leaders", "permanent": true },
-    { "source": "/recession", "destination": "/read/honest-answer", "permanent": false }
+    { "source": "/recession", "destination": "/read/honest-answer", "permanent": false },
+
+    { "source": "/go/poilievre", "destination": "https://www.linkedin.com/posts/jessecares_pierre-poilievre-and-everyones-mother-wants-activity-7467130700870348800-mtOI", "permanent": false }
   ]
 }
