@@ -3,9 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<script>(function(){try{var t=localStorage.getItem("tcs-theme")||"light";document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
 <meta name="theme-color" content="#16140f">
-<meta name="color-scheme" content="dark light">
+<meta name="color-scheme" content="light">
 
 <title>Team Canada — Fort. Fier. Libre.</title>
 <meta name="description" content="On a tout, ici. Arrêtons de nous chicaner assez longtemps pour s'en servir. L'argumentaire honnête, sans esprit de parti, pour tirer dans le même sens — appuyé sur des chiffres.">
@@ -51,7 +50,6 @@
       <a class="hideable" href="#constat">Le constat</a>
       <a class="hideable" href="#lecture">À lire</a>
       <a class="hideable" href="#coalition">La coalition</a>
-      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Mode sombre">Sombre</button>
       <a class="lang" href="/" hreflang="en-ca" lang="en">EN</a>
       <a class="cta" href="#engagement">L'engagement</a>
     </div>
@@ -318,7 +316,6 @@
   })();
 </script>
 <!-- Cookieless analytics (Vercel) -->
-<script>(function(){var t=document.getElementById("theme-toggle");function L(){var d=document.documentElement.getAttribute("data-theme")==="dark";if(t)t.textContent=d?"Clair":"Sombre";}L();if(t)t.addEventListener("click",function(){var d=document.documentElement.getAttribute("data-theme")==="dark";var n=d?"light":"dark";document.documentElement.setAttribute("data-theme",n);try{localStorage.setItem("tcs-theme",n);}catch(e){}L();});})();</script>
 <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>
