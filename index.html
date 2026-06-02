@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#0e1c2e">
+<script>(function(){try{var t=localStorage.getItem("tcs-theme")||(matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light");document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+<meta name="theme-color" content="#16140f">
 <meta name="color-scheme" content="dark light">
 
 <title>Team Canada — Strong. Proud. Free.</title>
@@ -28,11 +29,11 @@
 <meta property="og:title" content="Team Canada — Strong. Proud. Free.">
 <meta property="og:description" content="We've got everything in this country. Let's stop fighting each other long enough to use it. The honest, non-partisan case for pulling together.">
 <meta property="og:url" content="https://primestrength.ca/">
-<meta property="og:image" content="https://primestrength.ca/assets/og-home.jpg">
-<meta property="og:image:secure_url" content="https://primestrength.ca/assets/og-home.jpg">
+<meta property="og:image" content="https://primestrength.ca/brand/social/og-1200x630.jpg">
+<meta property="og:image:secure_url" content="https://primestrength.ca/brand/social/og-1200x630.jpg">
 <meta property="og:image:type" content="image/jpeg">
 <meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="1200">
+<meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Team Canada · The Sentinel — a guardian bear in maple-red armour over the land. Each province alone is a vassal. Together, we are a peer.">
 <meta property="og:locale" content="en_CA">
 
@@ -40,13 +41,12 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Team Canada — Strong. Proud. Free.">
 <meta name="twitter:description" content="We've got everything in this country. Let's stop fighting each other long enough to use it.">
-<meta name="twitter:image" content="https://primestrength.ca/assets/og-home.jpg">
+<meta name="twitter:image" content="https://primestrength.ca/brand/social/og-1200x630.jpg">
 
 <!-- Icons / PWA -->
-<link rel="icon" type="image/svg+xml" href="/assets/maple.svg">
-<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png">
-<link rel="apple-touch-icon" sizes="180x180" href="/assets/seal-192.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/brand/icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/brand/icons/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/brand/icons/icon-180.png">
 <meta name="apple-mobile-web-app-title" content="Team Canada">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -55,7 +55,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,800;0,9..144,900;1,9..144,400&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&family=Newsreader:ital,opsz@0,6..72;1,6..72&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Archivo:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/teamcanada.css">
 
 <!-- ===== Structured data: who we are, what this is, what's inside ===== -->
@@ -69,8 +69,8 @@
       "name": "Team Canada",
       "alternateName": "Prime Strength",
       "url": "https://primestrength.ca/",
-      "logo": "https://primestrength.ca/assets/seal-512.png",
-      "image": "https://primestrength.ca/assets/og-seal.jpg",
+      "logo": "https://primestrength.ca/brand/logos/mark-512.png",
+      "image": "https://primestrength.ca/brand/social/og-1200x630.jpg",
       "slogan": "Strong. Proud. Free.",
       "foundingDate": "2026",
       "description": "An honest, non-partisan case for Canadian unity, backed by hard numbers and sourced in full.",
@@ -92,7 +92,7 @@
       "name": "Team Canada — Strong. Proud. Free.",
       "isPartOf": { "@id": "https://primestrength.ca/#website" },
       "about": { "@id": "https://primestrength.ca/#org" },
-      "primaryImageOfPage": "https://primestrength.ca/assets/og-home.jpg",
+      "primaryImageOfPage": "https://primestrength.ca/brand/social/og-1200x630.jpg",
       "inLanguage": "en-CA",
       "description": "We've got everything in this country. Let's stop fighting each other long enough to use it. The honest, non-partisan case for pulling together.",
       "mainEntity": {
@@ -135,7 +135,7 @@
 <nav class="nav">
   <div class="nav-in">
     <a class="brand" href="/">
-      <img src="/assets/seal-96.png" alt="" width="36" height="36">
+      <img src="/brand/logos/mark-256.png" alt="" width="36" height="36">
       <span class="wm">TEAM <b>CANADA</b></span>
     </a>
     <div class="nav-links">
@@ -143,6 +143,7 @@
       <a class="hideable" href="#reads">The reads</a>
       <a class="hideable" href="#coalition">Coalition</a>
       <a class="hideable" href="#spread">Share</a>
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle dark mode">Dark</button>
       <a class="lang" href="/fr/" hreflang="fr-ca" lang="fr">FR</a>
       <a class="cta" href="#pledge">Take the pledge</a>
     </div>
@@ -151,7 +152,7 @@
 
 <!-- ===================== HERO ===================== -->
 <header class="hero">
-  <img class="hero-emblem seal" src="/assets/seal-512.png" alt="">
+  <img class="hero-emblem seal" src="/brand/logos/mark-512.png" alt="">
   <div class="hero-in">
     <div class="rule-gold"></div>
     <div class="kicker">Sovereignty · Unité · Est. 2026</div>
@@ -370,7 +371,7 @@
 
     <div class="coalition">
       <div class="member founder">
-        <img src="/assets/seal-96.png" alt="Team Canada · Prime Strength" loading="lazy" width="48" height="48">
+        <img src="/brand/logos/mark-256.png" alt="Team Canada · Prime Strength" loading="lazy" width="48" height="48">
         <div class="m-name">Prime Strength</div>
         <div class="m-desc">Team Canada — Sovereignty · Unité</div>
       </div>
@@ -430,9 +431,9 @@
 
     <div class="eyebrow" style="margin-top:48px">Share card</div>
     <p class="intro" style="margin-bottom:0">Save it and post it — the Sentinel and the line that says it best. Right-click or long-press to download.</p>
-    <div class="banners" style="grid-template-columns:minmax(0,460px);justify-content:center">
-      <a class="banner" href="/assets/og-home.jpg" download="team-canada-sentinel.jpg" target="_blank" rel="noopener">
-        <img width="1200" height="1200" src="/assets/og-home.jpg" alt="The Sentinel — Each province alone is a vassal. Together, we are a peer. Team Canada · primestrength.ca" loading="lazy">
+    <div class="banners">
+      <a class="banner" href="/brand/social/og-1200x630.jpg" download="team-canada-sentinel.jpg" target="_blank" rel="noopener">
+        <img width="1200" height="630" src="/brand/social/og-1200x630.jpg" alt="Team Canada Sentinel — Together, we are a peer. Each province alone is a vassal — Each province alone is a vassal. Together, we are a peer. Team Canada · primestrength.ca" loading="lazy">
         <div class="cap"><b>Each province alone is a vassal. Together, we are a peer.</b><span class="dl">Save ↓</span></div>
       </a>
     </div>
@@ -443,7 +444,7 @@
 <section class="section pledge" id="pledge">
   <div class="wrap">
     <div class="card">
-      <img class="leaf seal-leaf" src="/assets/seal-192.png" alt="">
+      <img class="leaf seal-leaf" src="/brand/logos/mark-512.png" alt="">
       <div class="eyebrow" style="color:var(--gold)">The pledge</div>
       <h2>Argue hard. Stay one country.</h2>
       <p class="creed">You can think the captain made a bad call and still not put a hole in the boat to prove it. <em>That's the whole pledge.</em></p>
@@ -474,7 +475,7 @@
 <footer class="foot">
   <div class="foot-in">
     <div>
-      <a class="brand" href="/"><img src="/assets/seal-96.png" alt="" width="40" height="40"><span class="wm">TEAM <b>CANADA</b></span></a>
+      <a class="brand" href="/"><img src="/brand/logos/mark-256.png" alt="" width="40" height="40"><span class="wm">TEAM <b>CANADA</b></span></a>
       <div class="tag">An honest, non-partisan case for pulling together. Written in plain language, sourced in full, free to share.</div>
       <div class="tag" style="margin-top:14px">Sovereignty · Unité · Strong · Proud · Free · Est. 2026</div>
       <div class="tag" style="margin-top:6px"><a class="site" href="https://primestrength.ca">primestrength.ca</a> · <a class="site" href="/privacy">Privacy</a> · <a class="site" href="/terms">Terms</a></div>
@@ -541,6 +542,7 @@
 </script>
 
 <!-- Cookieless analytics: Vercel Web Analytics (no cookies, no banner). Auto-activates when enabled in the Vercel dashboard; harmless otherwise. -->
+<script>(function(){var t=document.getElementById("theme-toggle");function L(){var d=document.documentElement.getAttribute("data-theme")==="dark";if(t)t.textContent=d?"Light":"Dark";}L();if(t)t.addEventListener("click",function(){var d=document.documentElement.getAttribute("data-theme")==="dark";var n=d?"light":"dark";document.documentElement.setAttribute("data-theme",n);try{localStorage.setItem("tcs-theme",n);}catch(e){}L();});})();</script>
 <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>

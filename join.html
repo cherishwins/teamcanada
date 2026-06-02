@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#0e1c2e">
+<script>(function(){try{var t=localStorage.getItem("tcs-theme")||(matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light");document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+<meta name="theme-color" content="#16140f">
 <meta name="color-scheme" content="dark light">
 
 <title>Join the Coalition — Team Canada</title>
@@ -18,38 +19,39 @@
 <meta property="og:title" content="Join the Coalition — Team Canada">
 <meta property="og:description" content="Add your Canadian business to the coalition standing behind one country. Strong. Proud. Free.">
 <meta property="og:url" content="https://primestrength.ca/join">
-<meta property="og:image" content="https://primestrength.ca/assets/og-home.jpg">
+<meta property="og:image" content="https://primestrength.ca/brand/social/og-1200x630.jpg">
 <meta property="og:locale" content="en_CA">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Join the Coalition — Team Canada">
 <meta name="twitter:description" content="Add your Canadian business to the coalition standing behind one country.">
-<meta name="twitter:image" content="https://primestrength.ca/assets/og-home.jpg">
+<meta name="twitter:image" content="https://primestrength.ca/brand/social/og-1200x630.jpg">
 
-<link rel="icon" type="image/svg+xml" href="/assets/maple.svg">
-<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
-<link rel="apple-touch-icon" sizes="180x180" href="/assets/seal-192.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/brand/icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/brand/icons/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/brand/icons/icon-180.png">
 <link rel="manifest" href="/site.webmanifest">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,800;0,9..144,900;1,9..144,400&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&family=Newsreader:ital,opsz@0,6..72;1,6..72&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Archivo:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/teamcanada.css">
 </head>
 <body>
 
 <nav class="nav">
   <div class="nav-in">
-    <a class="brand" href="/"><img src="/assets/seal-96.png" alt="" width="36" height="36"><span class="wm">TEAM <b>CANADA</b></span></a>
+    <a class="brand" href="/"><img src="/brand/logos/mark-256.png" alt="" width="36" height="36"><span class="wm">TEAM <b>CANADA</b></span></a>
     <div class="nav-links">
       <a class="hideable" href="/#coalition">The coalition</a>
       <a class="hideable" href="/#reads">The reads</a>
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle dark mode">Dark</button>
       <a class="cta" href="/#pledge">Take the pledge</a>
     </div>
   </div>
 </nav>
 
 <header class="hero" style="border-bottom:1px solid var(--slate)">
-  <img class="hero-emblem seal" src="/assets/seal-512.png" alt="">
+  <img class="hero-emblem seal" src="/brand/logos/mark-512.png" alt="">
   <div class="hero-in" style="padding-top:58px;padding-bottom:54px">
     <div class="rule-gold"></div>
     <div class="kicker">The coalition · Sovereignty · Unité</div>
@@ -65,7 +67,7 @@
     <h2 class="h2">Already in the line.</h2>
     <div class="coalition">
       <div class="member founder">
-        <img src="/assets/seal-96.png" alt="Team Canada · Prime Strength" loading="lazy" width="48" height="48">
+        <img src="/brand/logos/mark-256.png" alt="Team Canada · Prime Strength" loading="lazy" width="48" height="48">
         <div class="m-name">Prime Strength</div>
         <div class="m-desc">Team Canada — Sovereignty · Unité</div>
       </div>
@@ -137,7 +139,7 @@
 <footer class="foot">
   <div class="foot-in">
     <div>
-      <a class="brand" href="/"><img src="/assets/seal-96.png" alt="" width="40" height="40"><span class="wm">TEAM <b>CANADA</b></span></a>
+      <a class="brand" href="/"><img src="/brand/logos/mark-256.png" alt="" width="40" height="40"><span class="wm">TEAM <b>CANADA</b></span></a>
       <div class="tag">An honest, non-partisan case for pulling together. Free to share, free to join.</div>
       <div class="tag" style="margin-top:14px">Sovereignty · Unité · Strong · Proud · Free · Est. 2026</div>
       <div class="tag" style="margin-top:6px"><a class="site" href="https://primestrength.ca">primestrength.ca</a> · <a class="site" href="/privacy">Privacy</a> · <a class="site" href="/terms">Terms</a></div>
@@ -214,6 +216,7 @@
 </script>
 
 <!-- Cookieless analytics: Vercel Web Analytics (no cookies, no banner). Auto-activates when enabled in the Vercel dashboard; harmless otherwise. -->
+<script>(function(){var t=document.getElementById("theme-toggle");function L(){var d=document.documentElement.getAttribute("data-theme")==="dark";if(t)t.textContent=d?"Light":"Dark";}L();if(t)t.addEventListener("click",function(){var d=document.documentElement.getAttribute("data-theme")==="dark";var n=d?"light":"dark";document.documentElement.setAttribute("data-theme",n);try{localStorage.setItem("tcs-theme",n);}catch(e){}L();});})();</script>
 <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>

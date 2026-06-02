@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#0e1c2e">
+<script>(function(){try{var t=localStorage.getItem("tcs-theme")||(matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light");document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+<meta name="theme-color" content="#16140f">
 <meta name="color-scheme" content="dark light">
 
 <title>Team Canada — Fort. Fier. Libre.</title>
@@ -18,20 +19,20 @@
 <meta property="og:title" content="Team Canada — Fort. Fier. Libre.">
 <meta property="og:description" content="On a tout, ici. Arrêtons de nous chicaner assez longtemps pour s'en servir.">
 <meta property="og:url" content="https://primestrength.ca/fr/">
-<meta property="og:image" content="https://primestrength.ca/assets/og-home.jpg">
+<meta property="og:image" content="https://primestrength.ca/brand/social/og-1200x630.jpg">
 <meta property="og:locale" content="fr_CA">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Team Canada — Fort. Fier. Libre.">
-<meta name="twitter:image" content="https://primestrength.ca/assets/og-home.jpg">
+<meta name="twitter:image" content="https://primestrength.ca/brand/social/og-1200x630.jpg">
 
-<link rel="icon" type="image/svg+xml" href="/assets/maple.svg">
-<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
-<link rel="apple-touch-icon" sizes="180x180" href="/assets/seal-192.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/brand/icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/brand/icons/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/brand/icons/icon-180.png">
 <link rel="manifest" href="/site.webmanifest">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,800;0,9..144,900;1,9..144,400&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&family=Newsreader:ital,opsz@0,6..72;1,6..72&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Archivo:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/teamcanada.css">
 </head>
 <body>
@@ -42,13 +43,14 @@
 <nav class="nav">
   <div class="nav-in">
     <a class="brand" href="/fr/">
-      <img src="/assets/seal-96.png" alt="" width="36" height="36">
+      <img src="/brand/logos/mark-256.png" alt="" width="36" height="36">
       <span class="wm">TEAM <b>CANADA</b></span>
     </a>
     <div class="nav-links">
       <a class="hideable" href="#constat">Le constat</a>
       <a class="hideable" href="#lecture">À lire</a>
       <a class="hideable" href="#coalition">La coalition</a>
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Mode sombre">Sombre</button>
       <a class="lang" href="/" hreflang="en-ca" lang="en">EN</a>
       <a class="cta" href="#engagement">L'engagement</a>
     </div>
@@ -57,7 +59,7 @@
 
 <!-- ===================== HERO ===================== -->
 <header class="hero">
-  <img class="hero-emblem seal" src="/assets/seal-512.png" alt="">
+  <img class="hero-emblem seal" src="/brand/logos/mark-512.png" alt="">
   <div class="hero-in">
     <div class="rule-gold"></div>
     <div class="kicker">Un projet commun · Depuis 2026</div>
@@ -187,7 +189,7 @@
     <h2 class="h2">Des bâtisseurs d'ici, derrière un seul pays.</h2>
     <p class="intro">Tirer dans le même sens, ce n'est pas un logo — c'est une rangée de gens prêts à y accoler leur nom. Voici les membres fondateurs. Votre entreprise peut prendre place dans la rangée, elle aussi.</p>
     <div class="coalition">
-      <div class="member founder"><img src="/assets/seal-96.png" alt="Team Canada · Prime Strength" loading="lazy" width="48" height="48"><div class="m-name">Prime Strength</div><div class="m-desc">Team Canada — Souveraineté · Unité</div></div>
+      <div class="member founder"><img src="/brand/logos/mark-256.png" alt="Team Canada · Prime Strength" loading="lazy" width="48" height="48"><div class="m-name">Prime Strength</div><div class="m-desc">Team Canada — Souveraineté · Unité</div></div>
       <div class="member"><div class="m-mark">i<span>P</span></div><div class="m-name">iPurpose</div><div class="m-desc">L'intelligence avec intention</div></div>
       <div class="member"><div class="m-mark">N<span>P</span></div><div class="m-name">NPSI</div><div class="m-desc">North Pacific Strategy Initiative</div></div>
       <div class="member"><div class="m-mark">F<span>G</span></div><div class="m-name">Fit For Gov</div><div class="m-desc">Technologie civique pour le Canada</div></div>
@@ -224,7 +226,7 @@
 <section class="section pledge" id="engagement">
   <div class="wrap">
     <div class="card">
-      <img class="leaf seal-leaf" src="/assets/seal-192.png" alt="">
+      <img class="leaf seal-leaf" src="/brand/logos/mark-512.png" alt="">
       <div class="eyebrow" style="color:var(--gold)">L'engagement</div>
       <h2>Débattre fort. Rester un seul pays.</h2>
       <p class="creed">On peut juger que le capitaine a pris une mauvaise décision sans pour autant percer un trou dans la coque pour le prouver. <em>C'est tout l'engagement.</em></p>
@@ -254,7 +256,7 @@
 <footer class="foot">
   <div class="foot-in">
     <div>
-      <a class="brand" href="/fr/"><img src="/assets/seal-96.png" alt="" width="40" height="40"><span class="wm">TEAM <b>CANADA</b></span></a>
+      <a class="brand" href="/fr/"><img src="/brand/logos/mark-256.png" alt="" width="40" height="40"><span class="wm">TEAM <b>CANADA</b></span></a>
       <div class="tag">Un argumentaire honnête, sans esprit de parti, pour tirer dans le même sens. En langage clair, sources à l'appui, libre de partage.</div>
       <div class="tag" style="margin-top:14px">Souveraineté · Unité · Fort · Fier · Libre · Depuis 2026</div>
       <div class="tag" style="margin-top:6px"><a class="site" href="https://primestrength.ca/fr/">primestrength.ca</a> · <a class="site" href="/">English</a> · <a class="site" href="/privacy">Confidentialité</a> · <a class="site" href="/terms">Conditions</a></div>
@@ -296,6 +298,7 @@
   })();
 </script>
 <!-- Cookieless analytics (Vercel) -->
+<script>(function(){var t=document.getElementById("theme-toggle");function L(){var d=document.documentElement.getAttribute("data-theme")==="dark";if(t)t.textContent=d?"Clair":"Sombre";}L();if(t)t.addEventListener("click",function(){var d=document.documentElement.getAttribute("data-theme")==="dark";var n=d?"light":"dark";document.documentElement.setAttribute("data-theme",n);try{localStorage.setItem("tcs-theme",n);}catch(e){}L();});})();</script>
 <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>

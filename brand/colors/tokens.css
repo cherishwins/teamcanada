@@ -1,0 +1,21 @@
+/* Team Canada Sentinel — Design Tokens */
+:root{
+  /* Reds (sampled from artwork) */
+  --tcs-crimson:#7B0505;   /* primary red */
+  --tcs-oxblood:#560A0A;   /* shadow red */
+  --tcs-blood:#440203;     /* deepest red */
+  /* Neutrals */
+  --tcs-ink:#16140f;       /* default dark ground + body text */
+  --tcs-paper:#F6F3EC;     /* light ground */
+  --tcs-soft:#4A4640;      /* secondary text */
+  --tcs-rule:#D8D2C4;      /* hairlines */
+  /* Metal */
+  --tcs-gunmetal:#333E40;
+  --tcs-steel:#C7D7D4;
+  /* Accent */
+  --tcs-gold:#B0822D;
+  /* Type */
+  --tcs-display:'Newsreader',Georgia,serif;
+  --tcs-force:'Archivo',sans-serif;
+  --tcs-mono:'JetBrains Mono',monospace;
+}
