@@ -82,7 +82,7 @@ and bot protection at no cost — DNS-only setup, no code changes.
 
 `/join` lets any Canadian business add their logo to the wall. It's deliberately backend-free:
 the form previews their logo client-side and opens a **pre-filled email** to
-`join@primestrength.ca` (set this address to one you own, or change it in `join.html`).
+`jesse@primestrength.ca` (set this address to one you own, or change it in `join.html`).
 You review submissions and add approved members to the `.coalition` grid in `index.html`
 and `join.html`. No accounts, no uploads server, no tracking.
 
