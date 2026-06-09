@@ -44,6 +44,7 @@
 
     { "source": "/go/poilievre", "destination": "https://www.linkedin.com/posts/jessecares_pierre-poilievre-and-everyones-mother-wants-activity-7467130700870348800-mtOI", "permanent": false },
     { "source": "/go/swf", "destination": "https://www.linkedin.com/posts/jessecares_canadas-sovereign-wealth-fund-ugcPost-7468997068183740416-5w1B", "permanent": false },
-    { "source": "/go/enough", "destination": "https://www.linkedin.com/posts/jessecares_enough-is-enough-activity-7453025502757408768-y6QT", "permanent": false }
+    { "source": "/go/enough", "destination": "https://www.linkedin.com/posts/jessecares_enough-is-enough-activity-7453025502757408768-y6QT", "permanent": false },
+    { "source": "/go/eyes", "destination": "https://www.linkedin.com/posts/jessecares_%F0%93%81%B9-%F0%93%81%B9-activity-7423256275251118080-RR0S", "permanent": false }
   ]
 }
