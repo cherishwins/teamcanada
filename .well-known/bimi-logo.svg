@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.2" baseProfile="tiny-ps" viewBox="0 0 100 100">
+  <title>Team Canada — Prime Strength</title>
+  <rect width="100" height="100" fill="#F6F3EC"/>
+  <path fill="#7B0505" transform="translate(15 14) scale(0.7)" d="M50 97 L53 76 L72 80 L65 64 L86 57 L74 51 L84 37 L69 41 L71 29 L59 36 L57 13 L50 6 L43 13 L41 36 L29 29 L31 41 L16 37 L26 51 L14 57 L35 64 L28 80 L47 76 Z"/>
+</svg>
