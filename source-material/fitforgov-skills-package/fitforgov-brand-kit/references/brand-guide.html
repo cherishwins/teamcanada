@@ -1,0 +1,1621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fit For Gov — Brand Kit · Dossier №00</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper:  #F5F3EE;
+    --ink:    #141414;
+    --mid:    #4A4A4A;
+    --rule:   #CFC9BC;
+    --accent: #5A1418;
+    --signal: #B0622D;
+    --paper-dark: #EBE8DF;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; border-radius: 0 !important; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Inter Tight', -apple-system, sans-serif;
+    font-size: 17px;
+    line-height: 1.55;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .serif { font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; }
+  .mono { font-family: 'JetBrains Mono', 'Courier New', monospace; }
+  .eyebrow {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--mid);
+  }
+  .eyebrow--ink { color: var(--ink); }
+  .eyebrow--accent { color: var(--accent); }
+
+  /* PAGE CHROME */
+  .page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 64px;
+    position: relative;
+  }
+  @media (max-width: 768px) {
+    .page { padding: 0 24px; }
+  }
+
+  /* Scroll progress bar */
+  .scroll-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 1px;
+    background: var(--accent);
+    z-index: 100;
+    width: 0;
+    transition: width 0.05s linear;
+  }
+
+  /* Top bar */
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 32px 0 0;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 24px;
+    margin-bottom: 80px;
+  }
+  .wordmark { font-family: 'Instrument Serif', serif; font-size: 21px; letter-spacing: -0.01em; }
+  .topbar-link { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.16em; color: var(--accent); text-decoration: none; border-bottom: 1px solid transparent; }
+  .topbar-link:hover { border-bottom-color: var(--accent); }
+
+  /* MASTHEAD */
+  .masthead {
+    padding: 80px 0 140px;
+    position: relative;
+  }
+  .masthead .dossier-tag {
+    margin-bottom: 80px;
+  }
+  .masthead h1 {
+    font-family: 'Instrument Serif', serif;
+    font-size: 120px;
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+    max-width: 1000px;
+    margin-bottom: 48px;
+  }
+  .masthead .subhead {
+    font-size: 22px;
+    line-height: 1.4;
+    color: var(--mid);
+    max-width: 620px;
+    margin-bottom: 64px;
+  }
+  .masthead .read-below {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: var(--accent);
+    letter-spacing: 0.02em;
+  }
+  @media (max-width: 768px) {
+    .masthead h1 { font-size: 56px; }
+    .masthead .subhead { font-size: 18px; }
+  }
+
+  /* SECTIONS */
+  section.dossier {
+    padding: 120px 0;
+    position: relative;
+    border-top: 1px solid var(--rule);
+  }
+  section.dossier .section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 64px;
+  }
+  section.dossier .roman {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--mid);
+  }
+  section.dossier .page-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+  }
+  section.dossier h2 {
+    font-family: 'Instrument Serif', serif;
+    font-size: 56px;
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    margin-bottom: 32px;
+    max-width: 800px;
+  }
+  section.dossier .lede {
+    font-size: 22px;
+    line-height: 1.45;
+    color: var(--mid);
+    max-width: 680px;
+    margin-bottom: 64px;
+  }
+  section.dossier .prose {
+    max-width: 680px;
+    margin-bottom: 32px;
+  }
+  section.dossier .prose p { margin-bottom: 24px; }
+
+  /* LEFT RAIL */
+  .rail {
+    position: absolute;
+    left: 32px;
+    top: 120px;
+    bottom: 120px;
+    width: 1px;
+    background: linear-gradient(to bottom, transparent 0%, var(--rule) 15%, var(--rule) 85%, transparent 100%);
+  }
+  @media (max-width: 768px) { .rail { display: none; } }
+
+  /* WORDMARK VARIANTS GRID */
+  .wordmark-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    margin: 64px 0;
+  }
+  @media (max-width: 900px) {
+    .wordmark-grid { grid-template-columns: 1fr; }
+  }
+  .wordmark-card {
+    background: var(--paper);
+    padding: 64px 48px;
+    min-height: 320px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+  }
+  .wordmark-card .variant-label {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--mid);
+  }
+  .wordmark-card .variant-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    position: absolute;
+    top: 24px;
+    right: 24px;
+  }
+  .wordmark-card .specimen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    padding: 32px 0;
+  }
+  .wordmark-card .notes {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 13px;
+    color: var(--mid);
+    line-height: 1.5;
+    border-top: 1px solid var(--rule);
+    padding-top: 16px;
+  }
+
+  /* Variant 1: single-line wordmark */
+  .variant-1 {
+    font-family: 'Instrument Serif', serif;
+    font-size: 56px;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    line-height: 1;
+  }
+
+  /* Variant 2: stacked asymmetric */
+  .variant-2 {
+    font-family: 'Instrument Serif', serif;
+    color: var(--ink);
+    line-height: 0.92;
+    text-align: left;
+  }
+  .variant-2 .fit-for {
+    font-size: 38px;
+    letter-spacing: -0.01em;
+    font-style: italic;
+    color: var(--mid);
+  }
+  .variant-2 .gov {
+    font-size: 80px;
+    letter-spacing: -0.03em;
+    display: block;
+    margin-top: -8px;
+  }
+
+  /* Variant 3: monogram + lockup */
+  .variant-3 {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+  .variant-3 .monogram {
+    width: 96px;
+    height: 96px;
+    border: 1.5px solid var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Instrument Serif', serif;
+    font-size: 54px;
+    color: var(--ink);
+    line-height: 1;
+    position: relative;
+  }
+  .variant-3 .monogram::after {
+    content: '';
+    position: absolute;
+    top: 4px; left: 4px; right: 4px; bottom: 4px;
+    border: 1px solid var(--ink);
+  }
+  .variant-3 .lockup {
+    display: flex;
+    flex-direction: column;
+  }
+  .variant-3 .lockup .name {
+    font-family: 'Instrument Serif', serif;
+    font-size: 32px;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+  .variant-3 .lockup .desc {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--mid);
+    margin-top: 8px;
+  }
+
+  /* COLOUR PALETTE */
+  .palette {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    margin: 48px 0;
+  }
+  @media (max-width: 768px) { .palette { grid-template-columns: 1fr; } }
+  .swatch {
+    padding: 48px 32px;
+    min-height: 180px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+  }
+  .swatch.paper { background: var(--paper); color: var(--ink); }
+  .swatch.ink { background: var(--ink); color: var(--paper); }
+  .swatch.mid { background: var(--mid); color: var(--paper); }
+  .swatch.rule { background: var(--rule); color: var(--ink); }
+  .swatch.accent { background: var(--accent); color: var(--paper); }
+  .swatch.signal { background: var(--signal); color: var(--paper); }
+
+  .swatch .swatch-name {
+    font-family: 'Instrument Serif', serif;
+    font-size: 28px;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+  .swatch .swatch-hex {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.02em;
+  }
+  .swatch .swatch-role {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    opacity: 0.75;
+  }
+  .swatch .swatch-usage {
+    font-size: 14px;
+    line-height: 1.5;
+    max-width: 340px;
+  }
+  .swatch .swatch-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 40px;
+  }
+  .swatch .swatch-token {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    opacity: 0.7;
+  }
+
+  /* TYPOGRAPHY SPECIMENS */
+  .type-specimen {
+    padding: 48px 0;
+    border-top: 1px solid var(--rule);
+  }
+  .type-specimen:last-child { border-bottom: 1px solid var(--rule); }
+  .type-specimen .meta {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 48px;
+    align-items: start;
+  }
+  @media (max-width: 768px) { .type-specimen .meta { grid-template-columns: 1fr; gap: 16px; } }
+  .type-specimen .meta-left .face-name {
+    font-family: 'Instrument Serif', serif;
+    font-size: 28px;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+  }
+  .type-specimen .meta-left .role {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+  .type-specimen .meta-left .spec-line {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--mid);
+    margin-bottom: 4px;
+  }
+  .type-specimen .specimen-body {
+    font-size: 64px;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+  .type-specimen .specimen-body.body-face { font-size: 20px; line-height: 1.6; }
+  .type-specimen .specimen-body.mono-face { font-size: 16px; line-height: 1.6; }
+  .type-specimen .scale {
+    margin-top: 24px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    align-items: baseline;
+    color: var(--mid);
+  }
+  .type-specimen .scale span { font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+  .type-specimen .scale strong { color: var(--ink); font-weight: 400; }
+
+  /* LEDGER TABLE */
+  .ledger {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    margin: 32px 0;
+  }
+  .ledger-row {
+    display: grid;
+    grid-template-columns: 180px 1fr 1fr;
+    gap: 24px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .ledger-row:first-child {
+    border-top: 1px solid var(--rule);
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .ledger-row .label { color: var(--mid); }
+  @media (max-width: 768px) {
+    .ledger-row { grid-template-columns: 1fr; gap: 4px; font-size: 12px; }
+  }
+
+  /* FOOTNOTES */
+  .footnotes {
+    border-top: 1px solid var(--rule);
+    padding-top: 24px;
+    margin-top: 64px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--mid);
+    line-height: 1.6;
+  }
+  .footnotes ol { list-style: none; counter-reset: fn; }
+  .footnotes li {
+    counter-increment: fn;
+    padding-left: 32px;
+    position: relative;
+    margin-bottom: 8px;
+  }
+  .footnotes li::before {
+    content: counter(fn);
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  sup { font-size: 0.65em; color: var(--accent); vertical-align: super; font-weight: 600; padding: 0 1px; }
+
+  /* VOICE TWO-COLUMN */
+  .voice-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    margin: 48px 0;
+  }
+  @media (max-width: 768px) { .voice-grid { grid-template-columns: 1fr; } }
+  .voice-col {
+    background: var(--paper);
+    padding: 48px 32px;
+  }
+  .voice-col h3 {
+    font-family: 'Instrument Serif', serif;
+    font-size: 32px;
+    letter-spacing: -0.02em;
+    margin-bottom: 24px;
+  }
+  .voice-col.do h3 { color: var(--ink); }
+  .voice-col.do h3::before { content: 'USE '; font-family: 'Inter Tight', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.16em; color: var(--accent); display: block; margin-bottom: 8px; }
+  .voice-col.dont h3::before { content: 'AVOID '; font-family: 'Inter Tight', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.16em; color: var(--accent); display: block; margin-bottom: 8px; }
+  .voice-col ul { list-style: none; font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 2; }
+  .voice-col.do li::before { content: '+ '; color: var(--ink); }
+  .voice-col.dont li::before { content: '− '; color: var(--accent); }
+  .voice-col.dont li { color: var(--mid); text-decoration: line-through; text-decoration-color: var(--rule); }
+
+  /* PULL QUOTE */
+  .pull-quote {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: 44px;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin: 64px 0;
+    padding: 0 48px;
+    position: relative;
+    max-width: 900px;
+  }
+  .pull-quote::before {
+    content: '"';
+    position: absolute;
+    left: 0;
+    top: -8px;
+    color: var(--accent);
+    font-size: 64px;
+  }
+  .pull-quote::after {
+    content: '"';
+    color: var(--accent);
+  }
+
+  /* FORBIDDEN GRID */
+  .forbidden {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 16px;
+    margin: 48px 0;
+  }
+  .forbidden-item {
+    border: 1px solid var(--rule);
+    padding: 24px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--mid);
+    text-align: center;
+    text-decoration: line-through;
+    text-decoration-color: var(--accent);
+    text-decoration-thickness: 1.5px;
+    background: var(--paper);
+  }
+
+  /* APPLICATION EXAMPLES */
+  .app-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    margin: 48px 0;
+  }
+  @media (max-width: 768px) { .app-grid { grid-template-columns: 1fr; } }
+  .app-frame {
+    border: 1px solid var(--rule);
+    background: var(--paper);
+    padding: 32px;
+    aspect-ratio: 3/2;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+  }
+  .app-frame .app-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  /* Favicon mock */
+  .favicon-row {
+    display: flex;
+    gap: 24px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+  }
+  .favicon-mock {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .favicon-mock .swatch-sq {
+    background: var(--accent);
+    color: var(--paper);
+    font-family: 'Instrument Serif', serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+  .favicon-mock .size-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--mid);
+  }
+
+  /* OG image mock */
+  .og-mock {
+    border: 1px solid var(--rule);
+    aspect-ratio: 1200/630;
+    background: var(--paper);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 48px;
+    position: relative;
+    margin: 32px 0;
+  }
+  .og-mock::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--accent);
+  }
+  .og-mock .og-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: 72px;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    color: var(--ink);
+  }
+  .og-mock .og-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  .og-mock .og-wordmark {
+    font-family: 'Instrument Serif', serif;
+    font-size: 24px;
+    color: var(--accent);
+  }
+  .og-mock .og-domain {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--mid);
+  }
+  @media (max-width: 768px) {
+    .og-mock .og-title { font-size: 36px; }
+    .og-mock { padding: 24px; }
+  }
+
+  /* Letterhead mock */
+  .letterhead {
+    border: 1px solid var(--rule);
+    padding: 48px;
+    aspect-ratio: 8.5/11;
+    max-height: 600px;
+    background: var(--paper);
+    display: flex;
+    flex-direction: column;
+    margin: 32px 0;
+  }
+  .letterhead .head-bar {
+    border-bottom: 1px solid var(--accent);
+    padding-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .letterhead .head-name {
+    font-family: 'Instrument Serif', serif;
+    font-size: 28px;
+  }
+  .letterhead .head-contact {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--mid);
+    text-align: right;
+    line-height: 1.6;
+  }
+  .letterhead .letter-body {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--ink);
+    margin-top: 32px;
+    flex: 1;
+  }
+  .letterhead .letter-body p { margin-bottom: 12px; }
+  .letterhead .foot {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--mid);
+    border-top: 1px solid var(--rule);
+    padding-top: 12px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* NAMING */
+  .naming-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 32px;
+    margin: 32px 0;
+  }
+  @media (max-width: 768px) { .naming-grid { grid-template-columns: 1fr; } }
+  .naming-card {
+    border: 1px solid var(--rule);
+    padding: 32px;
+  }
+  .naming-card .word {
+    font-family: 'Instrument Serif', serif;
+    font-size: 48px;
+    letter-spacing: -0.02em;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 16px;
+  }
+  .naming-card .meaning {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 14px;
+    color: var(--mid);
+    line-height: 1.5;
+  }
+  .naming-card .explication {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--rule);
+  }
+
+  /* CONTRAST TABLE */
+  .contrast-table {
+    margin: 32px 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    border: 1px solid var(--rule);
+  }
+  .contrast-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 140px 100px;
+    gap: 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .contrast-row:last-child { border-bottom: 0; }
+  .contrast-row > div { padding: 14px 20px; border-right: 1px solid var(--rule); }
+  .contrast-row > div:last-child { border-right: 0; }
+  .contrast-row.header { background: var(--ink); color: var(--paper); font-size: 10px; text-transform: uppercase; letter-spacing: 0.16em; }
+  .contrast-row .pass { color: var(--accent); font-weight: 600; }
+  @media (max-width: 768px) {
+    .contrast-row { grid-template-columns: 1fr 1fr 80px 60px; font-size: 11px; }
+    .contrast-row > div { padding: 10px 12px; }
+  }
+
+  /* COLOPHON */
+  .colophon {
+    padding: 80px 0 120px;
+    text-align: center;
+    border-top: 1px solid var(--rule);
+    margin-top: 80px;
+  }
+  .colophon .quiet {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: 44px;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin-bottom: 32px;
+  }
+  .colophon .signoff {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--accent);
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--accent);
+    padding: 32px 0 48px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--mid);
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 32px;
+  }
+  @media (max-width: 768px) { footer { grid-template-columns: 1fr; gap: 16px; } }
+  footer a { color: var(--mid); text-decoration: none; border-bottom: 1px solid var(--rule); }
+  footer a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* HIGHLIGHTED ASIDE */
+  .aside {
+    border-top: 1px solid var(--accent);
+    border-bottom: 1px solid var(--accent);
+    padding: 24px 0;
+    margin: 48px 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    line-height: 1.6;
+    max-width: 680px;
+  }
+
+  /* ORNAMENT TOKENS */
+  .ornament-demo {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px;
+    margin: 48px 0;
+  }
+  @media (max-width: 768px) { .ornament-demo { grid-template-columns: 1fr; } }
+  .ornament-card {
+    border: 1px solid var(--rule);
+    padding: 32px;
+    background: var(--paper);
+    min-height: 200px;
+    position: relative;
+  }
+  .ornament-card .card-title {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--accent);
+    margin-bottom: 24px;
+  }
+  .ornament-card .card-desc {
+    font-size: 13px;
+    color: var(--mid);
+    margin-top: 24px;
+    font-family: 'JetBrains Mono', monospace;
+    line-height: 1.6;
+  }
+
+  /* RAIL DEMO */
+  .rail-demo {
+    position: relative;
+    padding-left: 32px;
+  }
+  .rail-demo::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, transparent 0%, var(--rule) 15%, var(--rule) 85%, transparent 100%);
+  }
+
+</style>
+</head>
+<body>
+
+<div class="scroll-bar" id="scroll-bar"></div>
+
+<div class="page">
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="wordmark">Fit For Gov</div>
+    <div style="display: flex; gap: 32px; align-items: center;">
+      <span class="mono" style="font-size: 11px; color: var(--mid);">BRAND KIT · v1.1 · APR 2026 · SEAL LOCKED</span>
+      <a href="#" class="topbar-link">fitforgov.com →</a>
+    </div>
+  </div>
+
+  <!-- MASTHEAD -->
+  <header class="masthead">
+    <div class="dossier-tag eyebrow">
+      DOSSIER №00 — BRAND IDENTITY SPECIFICATION · FIT FOR GOV · v1.1 · APRIL 2026
+    </div>
+    <h1 class="serif">The visual language<br>of a practice that takes<br>itself seriously.</h1>
+    <p class="subhead">
+      This document is the canonical source of truth for the Fit For Gov identity system.
+      Every typographic choice, colour token, and structural ornament is specified here.
+      If a design decision is not in this document, it does not belong on a Fit For Gov surface.
+    </p>
+    <div class="read-below">§ Begin specification ↓</div>
+  </header>
+
+  <!-- § I IDENTITY -->
+  <section class="dossier" id="i">
+    <div class="rail"></div>
+    <div class="section-head">
+      <div class="roman">§ I — Identity</div>
+      <div class="page-num">01 / 09</div>
+    </div>
+    <h2 class="serif">The name carries three readings. Lean into all of them.</h2>
+    <p class="lede">
+      "Fit For Gov" is not a technology name. It's a fitness claim. The brand's job is to make that claim credible in three simultaneous registers — each of which answers an objection a Canadian CAO has already formed by the time they reach the site.
+    </p>
+
+    <div class="naming-grid">
+      <div class="naming-card">
+        <div class="word serif">Ready</div>
+        <div class="meaning">fit / adj. 1. in suitable condition</div>
+        <div class="explication">Compliant. Accessible. Audited. Procurement-ready under the provincial direct-award threshold. The paperwork is already done.</div>
+      </div>
+      <div class="naming-card">
+        <div class="word serif">Tailored</div>
+        <div class="meaning">fit / n. 2. the way a thing sits</div>
+        <div class="explication">Bespoke. Right-sized to the municipality. Not a template. Not a WordPress theme with a county crest dropped on top.</div>
+      </div>
+      <div class="naming-card">
+        <div class="word serif">Healthy</div>
+        <div class="meaning">fit / adj. 3. in good physical condition</div>
+        <div class="explication">Fast, secure, maintainable. The opposite of a bloated plug-in-ridden WordPress install with a 3.2-second load time and a 60-plugin attack surface.</div>
+      </div>
+    </div>
+
+    <div class="prose">
+      <p>The wordmark is set in the display serif — not in a sans-serif tech logo style. This is deliberate. A sans-serif mark would put Fit For Gov in the same visual family as every Ottawa consultancy that ever called itself a "digital transformation partner." The serif places us in a different lineage entirely: Harvard Business Review, The Economist, federal white papers, the kind of document a clerk archives rather than deletes.</p>
+      <p>The practice is founder-led, launched 2026, and operates from British Columbia. Every surface should make that legible — not by announcing it, but by sounding like a principal wrote it. First person where possible. Phone number in the masthead, not the footer.</p>
+    </div>
+
+    <div class="pull-quote serif">
+      If the site looks like a SaaS landing page, it has failed.
+    </div>
+
+    <div class="footnotes">
+      <ol>
+        <li>Authoritative register established in Shell 1 of the Dossier framework: CAOs aged 45–65 read carefully and make decisions slowly. They are not the audience for motion graphics.</li>
+        <li>Anti-WordPress positioning is load-bearing. The April 6, 2026 Essential Plugin supply-chain compromise is the immediate market opening. See Dossier №01.</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- § II THE SEAL -->
+  <section class="dossier" id="ii">
+    <div class="rail"></div>
+    <div class="section-head">
+      <div class="roman">§ II — The Official Seal</div>
+      <div class="page-num">02 / 09</div>
+    </div>
+    <h2 class="serif">A bronzed heraldic mark, placed small and formal. A sovereign imprimatur, not a hero element.</h2>
+    <p class="lede">
+      The Fit For Gov seal is a circular bronzed medallion featuring the Peace Tower and Centre Block silhouette, with "FIT FOR GOV" arched across the upper band and "A CIVIC-TECHNOLOGY PRACTICE" arched across the lower. Two rivets at 9 and 3 o'clock. The finish is brushed bronze — metallic, weighted, governmental.
+    </p>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; margin: 48px 0;">
+      <div style="background: var(--ink); padding: 64px; display: flex; align-items: center; justify-content: center; min-height: 400px;">
+        <img src="../assets/logo-seal-512.png" alt="Fit For Gov seal on ink" style="max-width: 100%; height: auto; max-height: 340px;">
+      </div>
+      <div>
+        <div class="eyebrow eyebrow--accent" style="margin-bottom: 16px;">THE MARK · ON INK</div>
+        <p style="font-size: 17px; color: var(--ink); margin-bottom: 16px; max-width: 480px;">
+          The seal's native environment is dark. The brushed-bronze finish reads with maximum clarity on <code class="mono" style="font-size: 14px; color: var(--accent);">--ink</code> (#141414) — every architectural detail of the Centre Block resolves, the arched typography stays crisp at any size.
+        </p>
+        <p class="mono" style="font-size: 13px; color: var(--mid); line-height: 1.6;">Use for: social banners, dark-mode splash, RFP cover pages at large scale, formal proposal binders.</p>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; margin: 48px 0;">
+      <div>
+        <div class="eyebrow eyebrow--accent" style="margin-bottom: 16px;">THE MARK · ON PAPER</div>
+        <p style="font-size: 17px; color: var(--ink); margin-bottom: 16px; max-width: 480px;">
+          On paper (<code class="mono" style="font-size: 14px; color: var(--accent);">#F5F3EE</code>) the bronzed seal reads as a stamped imprint — like wax on parchment. This is the default treatment for letterhead, invoices, and the homepage footer. The warm palette and the metallic finish harmonize.
+        </p>
+        <p class="mono" style="font-size: 13px; color: var(--mid); line-height: 1.6;">Use for: letterhead, footer watermark, briefing /briefing cover pages, invoice header.</p>
+      </div>
+      <div style="background: var(--paper); border: 1px solid var(--rule); padding: 64px; display: flex; align-items: center; justify-content: center; min-height: 400px;">
+        <img src="../assets/logo-seal-512.png" alt="Fit For Gov seal on paper" style="max-width: 100%; height: auto; max-height: 340px;">
+      </div>
+    </div>
+
+    <div class="eyebrow eyebrow--accent" style="margin-top: 64px; margin-bottom: 24px;">SCALE REFERENCE — STANDARD SIZES</div>
+    <div style="display: flex; gap: 48px; align-items: flex-end; flex-wrap: wrap; margin: 32px 0; padding: 48px; border: 1px solid var(--rule); background: var(--paper);">
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
+        <img src="../assets/logo-seal-256.png" alt="240px" style="width: 240px; height: 240px;">
+        <div class="mono" style="font-size: 11px; color: var(--mid);">240px — RFP cover</div>
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
+        <img src="../assets/logo-seal-256.png" alt="120px" style="width: 120px; height: 120px;">
+        <div class="mono" style="font-size: 11px; color: var(--mid);">120px — OG image</div>
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
+        <img src="../assets/logo-seal-256.png" alt="80px" style="width: 80px; height: 80px;">
+        <div class="mono" style="font-size: 11px; color: var(--mid);">80px — letterhead</div>
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
+        <img src="../assets/logo-seal-128.png" alt="64px" style="width: 64px; height: 64px;">
+        <div class="mono" style="font-size: 11px; color: var(--mid);">64px — footer</div>
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
+        <img src="../assets/logo-seal-64.png" alt="32px" style="width: 32px; height: 32px;">
+        <div class="mono" style="font-size: 11px; color: var(--mid);">32px — favicon</div>
+      </div>
+    </div>
+
+    <div class="voice-grid" style="margin-top: 64px;">
+      <div class="voice-col do">
+        <h3 class="serif">Permitted Usage</h3>
+        <ul>
+          <li>60–120px on digital surfaces</li>
+          <li>≥200px on formal documents</li>
+          <li>On paper or on ink</li>
+          <li>Native bronze finish preserved</li>
+          <li>Square-cropped favicons</li>
+          <li>As footer watermark</li>
+          <li>As RFP cover imprint</li>
+          <li>Flanked by ornament hairlines</li>
+          <li>As social avatar at 400×400</li>
+        </ul>
+      </div>
+      <div class="voice-col dont">
+        <h3 class="serif">Prohibited Usage</h3>
+        <ul>
+          <li>hero element on homepage</li>
+          <li>recolored to oxblood or flat</li>
+          <li>outlined or stroked version</li>
+          <li>below 32px (loses detail)</li>
+          <li>on gradients or photos</li>
+          <li>stretched or skewed</li>
+          <li>rotated off-square</li>
+          <li>drop-shadowed</li>
+          <li>with added glow</li>
+          <li>paired at same scale as wordmark</li>
+          <li>on rainbow palettes</li>
+          <li>as watermark pattern repeat</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="aside">
+      <strong>RULE:</strong> The masthead on fitforgov.com uses the <em>typographic</em> wordmark "Fit For Gov" in Instrument Serif 21px, not the seal. The seal appears in the footer at 48–64px and on formal documents at 80–240px. When the typographic wordmark and the seal would compete at similar scale, the seal replaces the wordmark.
+    </div>
+  </section>
+
+  <!-- § III COLOUR -->
+  <section class="dossier" id="iii">
+    <div class="rail"></div>
+    <div class="section-head">
+      <div class="roman">§ III — Colour System</div>
+      <div class="page-num">03 / 09</div>
+    </div>
+    <h2 class="serif">Six tokens. One accent. No exceptions.</h2>
+    <p class="lede">
+      The palette is intentionally austere. Paper, ink, two mid-weight neutrals, and two warm reds. Oxblood carries the brand identity; copper is reserved for emphasis and pull-quotes only. Any colour outside this system is a violation.
+    </p>
+
+    <div class="palette">
+
+      <div class="swatch paper">
+        <div class="swatch-header">
+          <div>
+            <div class="swatch-role">Paper</div>
+            <div class="swatch-token">--paper</div>
+          </div>
+          <div class="swatch-hex">#F5F3EE</div>
+        </div>
+        <div>
+          <div class="swatch-name serif">Paper</div>
+          <div class="swatch-usage">Page background. Warm off-white with newsprint undertone. Never pure white (#FFFFFF is forbidden).</div>
+        </div>
+      </div>
+
+      <div class="swatch ink">
+        <div class="swatch-header">
+          <div>
+            <div class="swatch-role">Ink</div>
+            <div class="swatch-token">--ink</div>
+          </div>
+          <div class="swatch-hex">#141414</div>
+        </div>
+        <div>
+          <div class="swatch-name serif">Ink</div>
+          <div class="swatch-usage">Primary text. Headlines, body copy, wordmark. Never pure black (#000000 is forbidden).</div>
+        </div>
+      </div>
+
+      <div class="swatch mid">
+        <div class="swatch-header">
+          <div>
+            <div class="swatch-role">Mid Ink</div>
+            <div class="swatch-token">--mid</div>
+          </div>
+          <div class="swatch-hex">#4A4A4A</div>
+        </div>
+        <div>
+          <div class="swatch-name serif">Mid Ink</div>
+          <div class="swatch-usage">Secondary text. Subheads, captions, deck copy, muted editorial voice.</div>
+        </div>
+      </div>
+
+      <div class="swatch rule">
+        <div class="swatch-header">
+          <div>
+            <div class="swatch-role">Rule</div>
+            <div class="swatch-token">--rule</div>
+          </div>
+          <div class="swatch-hex">#CFC9BC</div>
+        </div>
+        <div>
+          <div class="swatch-name serif">Rule</div>
+          <div class="swatch-usage">Hairlines and dividers only. 1px weight. Never used as fill.</div>
+        </div>
+      </div>
+
+      <div class="swatch accent">
+        <div class="swatch-header">
+          <div>
+            <div class="swatch-role">Accent · The Single Brand Colour</div>
+            <div class="swatch-token">--accent</div>
+          </div>
+          <div class="swatch-hex">#5A1418</div>
+        </div>
+        <div>
+          <div class="swatch-name serif">Oxblood</div>
+          <div class="swatch-usage">CTAs, live-phone indicators, page-number markers, footer rule, scroll progress bar, footnote markers. The only brand colour a user sees applied.</div>
+        </div>
+      </div>
+
+      <div class="swatch signal">
+        <div class="swatch-header">
+          <div>
+            <div class="swatch-role">Signal · Emphasis Only</div>
+            <div class="swatch-token">--signal</div>
+          </div>
+          <div class="swatch-hex">#B0622D</div>
+        </div>
+        <div>
+          <div class="swatch-name serif">Copper</div>
+          <div class="swatch-usage">Pull-quote marks, data hot-points, chart peaks, the "savings" figure in pricing comparisons. Never for type or UI.</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="eyebrow eyebrow--accent" style="margin-top: 64px; margin-bottom: 24px;">WCAG 2.1 AAA Contrast Audit</div>
+    <div class="contrast-table">
+      <div class="contrast-row header">
+        <div>Foreground</div>
+        <div>Background</div>
+        <div>Ratio</div>
+        <div>Rating</div>
+      </div>
+      <div class="contrast-row">
+        <div>Ink #141414</div>
+        <div>Paper #F5F3EE</div>
+        <div>15.8 : 1</div>
+        <div class="pass">AAA</div>
+      </div>
+      <div class="contrast-row">
+        <div>Mid #4A4A4A</div>
+        <div>Paper #F5F3EE</div>
+        <div>8.3 : 1</div>
+        <div class="pass">AAA</div>
+      </div>
+      <div class="contrast-row">
+        <div>Accent #5A1418</div>
+        <div>Paper #F5F3EE</div>
+        <div>9.2 : 1</div>
+        <div class="pass">AAA</div>
+      </div>
+      <div class="contrast-row">
+        <div>Paper #F5F3EE</div>
+        <div>Accent #5A1418</div>
+        <div>9.2 : 1</div>
+        <div class="pass">AAA</div>
+      </div>
+      <div class="contrast-row">
+        <div>Paper #F5F3EE</div>
+        <div>Ink #141414</div>
+        <div>15.8 : 1</div>
+        <div class="pass">AAA</div>
+      </div>
+      <div class="contrast-row">
+        <div>Signal #B0622D</div>
+        <div>Paper #F5F3EE</div>
+        <div>4.1 : 1</div>
+        <div>AA Large</div>
+      </div>
+    </div>
+    <p class="mono" style="font-size: 12px; color: var(--mid); max-width: 680px;">
+      Signal (copper) passes AA for large text (18pt+) only. Never use copper for body copy. It is an emphasis colour, not a reading colour.
+    </p>
+
+    <div class="footnotes">
+      <ol>
+        <li>Contrast ratios calculated per WCAG 2.1 formula (Web Content Accessibility Guidelines, W3C). Canadian federal procurement requires AA minimum under the Accessible Canada Act; AAA is the internal standard.</li>
+        <li>Oxblood was chosen over the more common municipal burgundy (#6B2C39) because it reads as Canadian-heritage red without the WordPress-government-template association.</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- § IV TYPOGRAPHY -->
+  <section class="dossier" id="iv">
+    <div class="rail"></div>
+    <div class="section-head">
+      <div class="roman">§ IV — Typography</div>
+      <div class="page-num">04 / 09</div>
+    </div>
+    <h2 class="serif">Three faces. A display serif, a working sans, a data monospace.</h2>
+    <p class="lede">
+      All three are free via Google Fonts and load self-hosted in production via next/font/google. No paid licenses required. The scale is editorial — display sizes are large, body sizes are generous, line-heights are set for prolonged reading rather than scanning.
+    </p>
+
+    <div class="type-specimen">
+      <div class="meta">
+        <div class="meta-left">
+          <div class="role">Display · Headings</div>
+          <div class="face-name serif">Instrument Serif</div>
+          <div class="spec-line">Weight: 400</div>
+          <div class="spec-line">Tracking: −0.02em</div>
+          <div class="spec-line">Line-height: 1.05</div>
+          <div class="spec-line">Usage: h1 @ 72–120px</div>
+          <div class="spec-line">Usage: h2 @ 44–56px</div>
+        </div>
+        <div>
+          <div class="specimen-body serif">The ground your website stands on just moved.</div>
+          <div class="scale">
+            <span><strong class="serif" style="font-size: 120px;">Aa</strong></span>
+            <span><strong class="serif" style="font-size: 56px;">Aa</strong></span>
+            <span><strong class="serif" style="font-size: 33px;">Aa</strong></span>
+            <span>120 · 72 · 56 · 44 · 33 · 28 · 21 px</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="type-specimen">
+      <div class="meta">
+        <div class="meta-left">
+          <div class="role">Body · Prose</div>
+          <div class="face-name serif">Inter Tight</div>
+          <div class="spec-line">Weight: 400 / 600</div>
+          <div class="spec-line">Tracking: 0</div>
+          <div class="spec-line">Line-height: 1.55</div>
+          <div class="spec-line">Usage: body @ 17px</div>
+          <div class="spec-line">Usage: subhead @ 22px</div>
+          <div class="spec-line">Usage: caps label @ 11px / +0.16em</div>
+        </div>
+        <div>
+          <div class="specimen-body body-face">Most provinces permit direct-award contracts below ten thousand dollars without a formal RFP evaluation cycle. A municipality can commission this work without a procurement committee. The paperwork that usually takes six weeks takes one signature.</div>
+          <div class="scale">
+            <span><strong style="font-size: 22px;">Aa</strong></span>
+            <span><strong style="font-size: 17px;">Aa</strong></span>
+            <span><strong style="font-size: 14px;">Aa</strong></span>
+            <span>22 · 17 · 14 · 13 · 11 px</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="type-specimen">
+      <div class="meta">
+        <div class="meta-left">
+          <div class="role">Data · Monospace</div>
+          <div class="face-name serif">JetBrains Mono</div>
+          <div class="spec-line">Weight: 400 / 500</div>
+          <div class="spec-line">Tracking: 0.02em</div>
+          <div class="spec-line">Line-height: 1.5</div>
+          <div class="spec-line">Usage: numbers @ 14–72px</div>
+          <div class="spec-line">Usage: footnotes @ 13px</div>
+          <div class="spec-line">Usage: page markers @ 11px</div>
+        </div>
+        <div>
+          <div class="specimen-body mono-face">11,334 vulns &nbsp;&middot;&nbsp; $5.08M avg &nbsp;&middot;&nbsp; 43% of web<br>WCAG 2.1 AAA &nbsp;&middot;&nbsp; 0.8s load &nbsp;&middot;&nbsp; 0 plugins<br>+1 250 415 5678 &nbsp;&middot;&nbsp; fitforgov.com</div>
+          <div class="scale">
+            <span><strong class="mono" style="font-size: 72px; font-weight: 500;">42</strong></span>
+            <span><strong class="mono" style="font-size: 17px;">42</strong></span>
+            <span><strong class="mono" style="font-size: 13px;">42</strong></span>
+            <span class="mono">72 · 27 · 17 · 14 · 13 · 11 px</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- § V ORNAMENTS -->
+  <section class="dossier" id="v">
+    <div class="rail"></div>
+    <div class="section-head">
+      <div class="roman">§ V — Structural Ornamentation</div>
+      <div class="page-num">05 / 09</div>
+    </div>
+    <h2 class="serif">The marginalia is the identity. Borrow from the law library, not the design system library.</h2>
+    <p class="lede">
+      These ornaments are what separate the Dossier aesthetic from a generic serif-on-cream landing page. Every major section of every Fit For Gov surface carries the full set.
+    </p>
+
+    <div class="ornament-demo">
+
+      <div class="ornament-card">
+        <div class="card-title">Roman Numerals · Section Markers</div>
+        <div class="rail-demo" style="padding-left: 32px;">
+          <div class="eyebrow">§ I — Identity</div>
+          <div class="eyebrow" style="margin-top: 12px;">§ II — Wordmark</div>
+          <div class="eyebrow" style="margin-top: 12px;">§ III — Colour System</div>
+        </div>
+        <div class="card-desc">Top-left of every major section. Inter Tight 11px, weight 600, tracking 0.16em, colour --mid.</div>
+      </div>
+
+      <div class="ornament-card">
+        <div class="card-title">Page Numbers · Dossier Pagination</div>
+        <div style="display: flex; flex-direction: column; gap: 8px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent);">
+          <div>01 / 09</div>
+          <div>02 / 09</div>
+          <div>03 / 09</div>
+        </div>
+        <div class="card-desc">Top-right of every major section. JetBrains Mono 11px, colour --accent.</div>
+      </div>
+
+      <div class="ornament-card">
+        <div class="card-title">Left Rail · Hairline Margin</div>
+        <div class="rail-demo" style="height: 120px; position: relative; padding: 0 0 0 32px;">
+          <div style="color: var(--mid); font-size: 12px; padding-top: 16px;">A vertical hairline<br>gradient-faded top<br>and bottom, like the<br>margin of a legal<br>document.</div>
+        </div>
+        <div class="card-desc">1px, --rule, gradient-faded. Present on every section. Collapses below 768px.</div>
+      </div>
+
+      <div class="ornament-card">
+        <div class="card-title">Footnotes · Academic Register</div>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--mid); line-height: 1.6;">
+          Body copy reference<sup>1</sup> and another<sup>2</sup>.<br><br>
+          <div style="border-top: 1px solid var(--rule); padding-top: 12px;">
+            <span style="color: var(--accent); font-weight: 600;">1</span> &nbsp; First footnote. Citation, source.<br>
+            <span style="color: var(--accent); font-weight: 600;">2</span> &nbsp; Second footnote. Additional detail.
+          </div>
+        </div>
+        <div class="card-desc">Superscript in body, hairline rule, numbered list at section end. JetBrains Mono 13px.</div>
+      </div>
+
+    </div>
+
+    <div class="eyebrow eyebrow--accent" style="margin-top: 48px; margin-bottom: 16px;">FORBIDDEN GEOMETRIC TREATMENTS</div>
+    <p class="mono" style="font-size: 13px; color: var(--mid); max-width: 680px; margin-bottom: 24px;">
+      The Dossier aesthetic depends on absence. Every one of the following is a system violation:
+    </p>
+
+    <div class="forbidden">
+      <div class="forbidden-item">border-radius</div>
+      <div class="forbidden-item">drop shadows</div>
+      <div class="forbidden-item">gradients</div>
+      <div class="forbidden-item">glassmorphism</div>
+      <div class="forbidden-item">neumorphism</div>
+      <div class="forbidden-item">glow effects</div>
+      <div class="forbidden-item">hero videos</div>
+      <div class="forbidden-item">floating mockups</div>
+      <div class="forbidden-item">stock illustrations</div>
+      <div class="forbidden-item">AI hero imagery</div>
+      <div class="forbidden-item">emoji</div>
+      <div class="forbidden-item">rainbow palettes</div>
+      <div class="forbidden-item">bouncy animations</div>
+      <div class="forbidden-item">parallax</div>
+      <div class="forbidden-item">cookie banners</div>
+      <div class="forbidden-item">live chat widgets</div>
+    </div>
+  </section>
+
+  <!-- § VI VOICE -->
+  <section class="dossier" id="vi">
+    <div class="rail"></div>
+    <div class="section-head">
+      <div class="roman">§ VI — Voice & Editorial Standards</div>
+      <div class="page-num">06 / 09</div>
+    </div>
+    <h2 class="serif">If a sentence could appear in The Economist, keep it. If it could appear on a SaaS landing page, delete it.</h2>
+    <p class="lede">
+      The voice is declarative, calm, factual, numbered, and footnoted. Never exclamatory. Never promotional. The reader is a 55-year-old municipal administrator who has been pitched by thirty vendors this year — our tone signals that we know that.
+    </p>
+
+    <div class="voice-grid">
+      <div class="voice-col do">
+        <h3 class="serif">Register That Works</h3>
+        <ul>
+          <li>declarative sentences</li>
+          <li>specific numbers</li>
+          <li>first-person singular</li>
+          <li>footnoted claims</li>
+          <li>direct procurement language</li>
+          <li>concrete comparisons</li>
+          <li>short paragraphs</li>
+          <li>names of actual cities</li>
+          <li>phone numbers</li>
+          <li>dollar figures</li>
+          <li>day-count deliverables</li>
+        </ul>
+      </div>
+      <div class="voice-col dont">
+        <h3 class="serif">Register That Fails</h3>
+        <ul>
+          <li>revolutionary</li>
+          <li>cutting-edge</li>
+          <li>best-in-class</li>
+          <li>solutions</li>
+          <li>partners</li>
+          <li>stakeholders</li>
+          <li>leverage</li>
+          <li>empower</li>
+          <li>unlock</li>
+          <li>transform</li>
+          <li>journey</li>
+          <li>robust</li>
+          <li>seamless</li>
+          <li>synergy</li>
+          <li>ecosystem</li>
+          <li>world-class</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="pull-quote serif">
+      The paperwork that usually takes six weeks takes one signature.
+    </div>
+
+    <div class="prose">
+      <p>Every sentence should pass the replacement test. Can you substitute "partners" for "vendors" and lose nothing? Then it's on the banned list. Can you substitute "transformation" for "rebuild"? Same result. The brand voice is what's left when you delete every word that tries too hard.</p>
+      <p>Exception: the <em>ledger voice</em>. Comparison tables, specification lists, and numeric panels use JetBrains Mono and speak in fragments. "Attack surface: WordPress 60+ plugins / Fit For Gov 0." This register does not take articles or verbs. It is read, not parsed.</p>
+    </div>
+
+  </section>
+
+  <!-- § VII APPLICATION -->
+  <section class="dossier" id="vii">
+    <div class="rail"></div>
+    <div class="section-head">
+      <div class="roman">§ VII — Application Specimens</div>
+      <div class="page-num">07 / 09</div>
+    </div>
+    <h2 class="serif">What the system looks like in the wild.</h2>
+    <p class="lede">
+      Reference implementations of the brand applied to production surfaces. Use these as visual acceptance criteria when briefing v0, Canva, or a designer.
+    </p>
+
+    <div class="eyebrow eyebrow--accent" style="margin-top: 48px; margin-bottom: 16px;">FAVICON · MULTI-SIZE SCALING</div>
+    <div class="favicon-row">
+      <div class="favicon-mock">
+        <div class="swatch-sq" style="width: 16px; height: 16px; font-size: 10px;">F</div>
+        <div class="size-label">16×16</div>
+      </div>
+      <div class="favicon-mock">
+        <div class="swatch-sq" style="width: 32px; height: 32px; font-size: 20px;">F</div>
+        <div class="size-label">32×32</div>
+      </div>
+      <div class="favicon-mock">
+        <div class="swatch-sq" style="width: 48px; height: 48px; font-size: 28px;">F</div>
+        <div class="size-label">48×48</div>
+      </div>
+      <div class="favicon-mock">
+        <div class="swatch-sq" style="width: 64px; height: 64px; font-size: 40px;">F</div>
+        <div class="size-label">64×64</div>
+      </div>
+      <div class="favicon-mock">
+        <div class="swatch-sq" style="width: 96px; height: 96px; font-size: 60px;">F</div>
+        <div class="size-label">96×96</div>
+      </div>
+      <div class="favicon-mock">
+        <div class="swatch-sq" style="width: 128px; height: 128px; font-size: 80px;">F</div>
+        <div class="size-label">128×128</div>
+      </div>
+      <div class="favicon-mock">
+        <div class="swatch-sq" style="width: 192px; height: 192px; font-size: 120px;">F</div>
+        <div class="size-label">192×192</div>
+      </div>
+    </div>
+    <p class="mono" style="font-size: 12px; color: var(--mid); margin-top: 16px;">
+      Favicon is a single "F" in Instrument Serif, oxblood (#5A1418) on paper (#F5F3EE). Square. No border-radius even at favicon scale — iOS will mask if needed.
+    </p>
+
+    <div class="eyebrow eyebrow--accent" style="margin-top: 48px; margin-bottom: 16px;">OG IMAGE · 1200×630</div>
+    <div class="og-mock">
+      <div class="eyebrow">DOSSIER №01 · APRIL 2026</div>
+      <div class="og-title serif">The ground your website<br>stands on just moved.</div>
+      <div class="og-meta">
+        <div class="og-wordmark serif">Fit For Gov</div>
+        <div class="og-domain">fitforgov.com</div>
+      </div>
+    </div>
+    <p class="mono" style="font-size: 12px; color: var(--mid);">
+      Share preview for LinkedIn, X, Slack, email. Paper background, 3px oxblood top rule, Instrument Serif headline, wordmark bottom-left, domain bottom-right. No product screenshot, no stock photo, no gradient overlay.
+    </p>
+
+    <div class="eyebrow eyebrow--accent" style="margin-top: 48px; margin-bottom: 16px;">LETTERHEAD · 8.5×11 IN</div>
+    <div class="letterhead">
+      <div class="head-bar">
+        <div class="head-name serif">Fit For Gov</div>
+        <div class="head-contact">
+          +1 250 415 5678<br>
+          jesse@fitforgov.com<br>
+          fitforgov.com
+        </div>
+      </div>
+      <div class="letter-body">
+        <p><strong>April 19, 2026</strong></p>
+        <p>Office of the Chief Administrative Officer<br>Town of Annapolis Royal<br>285 St. George Street<br>Annapolis Royal, Nova Scotia</p>
+        <p style="margin-top: 16px;">Re: RFP-03-26-2026 · Municipal Website Redevelopment</p>
+        <p style="margin-top: 16px;">Dear Mr. Coleman,</p>
+        <p>Thank you for forwarding the RFP specification on April 11. The scope as described aligns precisely with the work Fit For Gov was launched to deliver. I have enclosed a preliminary response covering architecture, content migration, accessibility compliance, and phased delivery — all held beneath the Nova Scotia direct-award threshold by design.</p>
+        <p>I will be in Halifax on April 28 and 29 and can bring the working prototype to the Town offices on either date if useful.</p>
+      </div>
+      <div class="foot">
+        <span>Fit For Gov · A civic-technology practice · Registered in British Columbia, Canada</span>
+        <span>01 / 04</span>
+      </div>
+    </div>
+
+    <div class="eyebrow eyebrow--accent" style="margin-top: 48px; margin-bottom: 16px;">SOCIAL AVATAR · 400×400</div>
+    <div style="display: flex; gap: 24px; align-items: flex-end; flex-wrap: wrap;">
+      <div class="favicon-mock">
+        <div class="swatch-sq" style="width: 160px; height: 160px; font-size: 96px;">F</div>
+        <div class="size-label">LinkedIn / X</div>
+      </div>
+      <div class="favicon-mock">
+        <div class="swatch-sq" style="width: 160px; height: 160px; font-size: 32px; font-family: 'Instrument Serif', serif; padding: 0 16px; text-align: center; line-height: 1;">Fit For Gov</div>
+        <div class="size-label">Wordmark version</div>
+      </div>
+    </div>
+    <p class="mono" style="font-size: 12px; color: var(--mid); margin-top: 16px;">
+      LinkedIn and X profile: monogram version recommended for small circular crops. The wordmark version is preserved for open-graph cards and banners.
+    </p>
+
+  </section>
+
+  <!-- § VIII GOVERNANCE -->
+  <section class="dossier" id="viii">
+    <div class="rail"></div>
+    <div class="section-head">
+      <div class="roman">§ VIII — Governance</div>
+      <div class="page-num">08 / 09</div>
+    </div>
+    <h2 class="serif">What ships, what doesn't, and who decides.</h2>
+    <p class="lede">
+      Brand governance is simple because the practice is founder-led. Every surface is approved by the principal before it ships. The rules below exist so that most decisions never need escalating.
+    </p>
+
+    <div class="prose">
+      <p><strong>Approval authority.</strong> Every public-facing Fit For Gov surface — website page, RFP response, LinkedIn post, email signature, pitch deck — is approved by Jesse James before publication. There is no committee, no brand council, no style board. One signature.</p>
+      <p><strong>Templates over edits.</strong> Surfaces are built from the components in this document. If a design decision isn't in the system, the default answer is to remove the element rather than invent a new token. The system gets more authoritative the more restrictive it stays.</p>
+      <p><strong>Exceptions.</strong> New tokens are added only when an entire category of output demands one (e.g., a chart-colour scale for the long-form /briefing page). Exceptions are documented here; one-off exceptions are not permitted.</p>
+      <p><strong>Cadence.</strong> The brand kit is reviewed quarterly. The first review is scheduled for July 1, 2026. If no surface in the preceding quarter has required a new token, the review is a no-op.</p>
+    </div>
+
+    <div class="aside">
+      <strong>CRITICAL RULE:</strong> The phone number is the interface. Every Fit For Gov surface ends with +1 250 415 5678. No surface — not a landing page, not a social post, not an OG image — is published without it. The practice does not use contact forms as a primary CTA.
+    </div>
+
+    <div class="ledger">
+      <div class="ledger-row">
+        <div>Specification</div>
+        <div class="label">Status</div>
+        <div>Owner</div>
+      </div>
+      <div class="ledger-row">
+        <div>Official Seal</div>
+        <div class="label">APPROVED · v1.0</div>
+        <div>Jesse James</div>
+      </div>
+      <div class="ledger-row">
+        <div>Colour Tokens</div>
+        <div class="label">APPROVED · v1.0</div>
+        <div>Jesse James</div>
+      </div>
+      <div class="ledger-row">
+        <div>Typography Stack</div>
+        <div class="label">APPROVED · v1.0</div>
+        <div>Jesse James</div>
+      </div>
+      <div class="ledger-row">
+        <div>Homepage /</div>
+        <div class="label">IN BUILD · v0.dev</div>
+        <div>Jesse James</div>
+      </div>
+      <div class="ledger-row">
+        <div>Dossier /briefing</div>
+        <div class="label">PENDING · Content</div>
+        <div>Jesse James</div>
+      </div>
+      <div class="ledger-row">
+        <div>Case Studies /work</div>
+        <div class="label">PENDING · Content</div>
+        <div>Jesse James</div>
+      </div>
+      <div class="ledger-row">
+        <div>Contact /contact</div>
+        <div class="label">PENDING · Build</div>
+        <div>Jesse James</div>
+      </div>
+      <div class="ledger-row">
+        <div>Annapolis Royal Pitch</div>
+        <div class="label">PRIORITY · April 2026</div>
+        <div>Jesse James</div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- COLOPHON -->
+  <div class="colophon">
+    <div class="eyebrow" style="margin-bottom: 32px;">COLOPHON</div>
+    <div class="quiet serif">Set in Instrument Serif, Inter Tight,<br>and JetBrains Mono on warm paper.</div>
+    <div class="signoff">DOSSIER №00 · BRAND KIT v1.1 · APRIL 19, 2026 · FIT FOR GOV · SEAL LOCKED</div>
+  </div>
+
+  <footer>
+    <div>
+      <div class="serif" style="font-size: 18px; color: var(--ink); margin-bottom: 8px;">Fit For Gov</div>
+      <div>A civic-technology practice</div>
+      <div>Founded 2026</div>
+    </div>
+    <div>
+      <div style="margin-bottom: 6px;"><a href="#i">§ I Identity</a></div>
+      <div style="margin-bottom: 6px;"><a href="#ii">§ II Wordmark</a></div>
+      <div style="margin-bottom: 6px;"><a href="#iii">§ III Colour</a></div>
+      <div style="margin-bottom: 6px;"><a href="#iv">§ IV Typography</a></div>
+      <div style="margin-bottom: 6px;"><a href="#v">§ V Ornaments</a></div>
+      <div style="margin-bottom: 6px;"><a href="#vi">§ VI Voice</a></div>
+      <div style="margin-bottom: 6px;"><a href="#vii">§ VII Application</a></div>
+      <div><a href="#viii">§ VIII Governance</a></div>
+    </div>
+    <div>
+      <div>Registered in British Columbia, Canada</div>
+      <div style="margin-top: 4px;">Data resident in Canadian cloud regions</div>
+      <div style="margin-top: 16px; color: var(--accent);">+1 250 415 5678</div>
+      <div>jesse@fitforgov.com</div>
+      <div>linkedin.com/in/jessecares</div>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  // Scroll progress indicator
+  const bar = document.getElementById('scroll-bar');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement;
+    const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    bar.style.width = pct + '%';
+  });
+</script>
+
+</body>
+</html>
