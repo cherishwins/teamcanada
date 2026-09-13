@@ -154,3 +154,77 @@ export async function getFigures(): Promise<Figures> {
     allLive: Object.values(figures).every((f) => f.live),
   };
 }
+
+/* ==========================================================================
+   Rivers — Environment and Climate Change Canada, hydrometric-realtime.
+   https://api.weather.gc.ca — OGC API Features, public, key-free.
+
+   The site's central claim is about water. Everywhere else it is quoted as a
+   published statistic; here it is a gauge reading taken minutes ago. Same
+   claim, but measured rather than cited — which is the whole posture of the
+   page. Discharge is in cubic metres per second.
+   ========================================================================== */
+
+const WEATHER = 'https://api.weather.gc.ca/collections/hydrometric-realtime/items';
+
+export interface River {
+  /** Water Survey of Canada station number. */
+  station: string;
+  /** Short name for display, not the station's own shouting-caps name. */
+  name: string;
+  province: string;
+  /** Cubic metres per second. */
+  discharge: number;
+  /** Observation timestamp (ISO, UTC). */
+  at: string;
+  live: boolean;
+}
+
+/**
+ * Four rivers, one per drainage basin, chosen so the row reads as the country
+ * rather than as one region: Pacific, Arctic, and two in the St. Lawrence /
+ * Great Lakes system.
+ */
+const RIVERS: Array<Omit<River, 'discharge' | 'at' | 'live'> & { fallback: number; fallbackAt: string }> = [
+  { station: '08MF005', name: 'Fraser, at Hope',            province: 'BC', fallback: 1590,  fallbackAt: '2026-09-13T19:10:00Z' },
+  { station: '10LC014', name: 'Mackenzie, at Arctic Red',   province: 'NT', fallback: 11400, fallbackAt: '2026-09-13T18:35:00Z' },
+  { station: '02OA016', name: 'St. Lawrence, at LaSalle',   province: 'QC', fallback: 8950,  fallbackAt: '2026-09-13T19:15:00Z' },
+  { station: '02KF005', name: 'Ottawa, at Britannia',       province: 'ON', fallback: 697,   fallbackAt: '2026-09-13T18:35:00Z' },
+];
+
+async function river(spec: (typeof RIVERS)[number]): Promise<River> {
+  const base = { station: spec.station, name: spec.name, province: spec.province };
+  try {
+    const url =
+      `${WEATHER}?STATION_NUMBER=${spec.station}&limit=1&sortby=-DATETIME&f=json`;
+    const data = (await getJSON(url)) as {
+      features?: Array<{ properties?: { DISCHARGE?: number | null; DATETIME?: string } }>;
+    };
+    const props = data.features?.[0]?.properties;
+    // A gauge can report level without discharge; that is not a usable reading.
+    if (!props || typeof props.DISCHARGE !== 'number' || !Number.isFinite(props.DISCHARGE)) {
+      throw new Error('no discharge in latest observation');
+    }
+    return { ...base, discharge: props.DISCHARGE, at: props.DATETIME ?? '', live: true };
+  } catch {
+    return { ...base, discharge: spec.fallback, at: spec.fallbackAt, live: false };
+  }
+}
+
+export interface Rivers {
+  rivers: River[];
+  /** Sum of the four, m³/s. */
+  total: number;
+  fetchedAt: string;
+  allLive: boolean;
+}
+
+export async function getRivers(): Promise<Rivers> {
+  const rivers = await Promise.all(RIVERS.map(river));
+  return {
+    rivers,
+    total: rivers.reduce((sum, r) => sum + r.discharge, 0),
+    fetchedAt: new Date().toISOString(),
+    allLive: rivers.every((r) => r.live),
+  };
+}
