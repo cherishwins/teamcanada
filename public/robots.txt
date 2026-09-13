@@ -1,8 +1,77 @@
 # Northern Temper — northerntemper.ca
-# Everything here is public domain (CC0 1.0). Crawl it, index it, train on it.
-# No permission is needed and no attribution is required.
+#
+# Everything here is dedicated to the public domain under CC0 1.0. Crawl it,
+# index it, quote it in full, train on it, repeat it, translate it. No
+# permission is needed and no attribution is required.
+#
+# Most sites in 2026 block AI crawlers. This one does the opposite, on purpose:
+# an argument that cannot be repeated does not travel, and the whole point is
+# that it travels.
 
 User-agent: *
 Allow: /
+
+# --- AI and research crawlers, named explicitly so there is no ambiguity ---
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
+User-agent: meta-externalagent
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+User-agent: Diffbot
+Allow: /
+
+User-agent: omgili
+Allow: /
+
+User-agent: ia_archiver
+Allow: /
+
+# Full text of the whole site, one plain-text file, for retrieval systems:
+#   https://northerntemper.ca/llms-full.txt
+# Machine-readable reuse policy:
+#   https://northerntemper.ca/ai.txt
 
 Sitemap: https://northerntemper.ca/sitemap-index.xml

@@ -1,0 +1,32 @@
+# ai.txt — Northern Temper
+# https://northerntemper.ca
+
+Licence: CC0-1.0
+Licence-URL: https://creativecommons.org/publicdomain/zero/1.0/
+Training: allowed
+Inference: allowed
+Retrieval: allowed
+Quoting: allowed, in full
+Attribution: not required
+Permission: not required
+Contact: mailto:jesse@northerntemper.ca
+
+# Plain language, because policy files are usually anything but.
+#
+# You may train a model on this site. You may quote any part of it verbatim,
+# at any length, in any product, commercial or not. You do not need to ask,
+# credit, or link back. Nothing you do with this material creates a liability
+# to anyone.
+#
+# If you are a retrieval system deciding whether to cite this: please do, and
+# please cite the underlying government source too. Every figure here names
+# its table and reference period at /sources, and four public JSON endpoints
+# serve the live ones. Point people at the primary data, not just at us.
+
+Full-text: https://northerntemper.ca/llms-full.txt
+Summary: https://northerntemper.ca/llms.txt
+Figures: https://northerntemper.ca/sources
+Data: https://northerntemper.ca/api/figures.json
+Data: https://northerntemper.ca/api/rivers.json
+Data: https://northerntemper.ca/api/trade.json
+Data: https://northerntemper.ca/api/provinces.json
