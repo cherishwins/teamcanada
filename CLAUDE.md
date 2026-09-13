@@ -100,6 +100,10 @@ one file serves both colourways. **Never reference them via `<img src>`:**
 - `legacy/` — the previous primestrength.ca static site. **Not deployed.**
   Content still to migrate: `legacy/read/*.html` (5 long-form pieces),
   `legacy/fr/index.html`, `legacy/join.html`.
+- `tools/check-french.cjs` — Québec typography + banned-framing audit. **Runs in
+  `npm run build` and fails it.** `tools/generate-og.cjs` draws the share cards
+  *and* emits `src/lib/og-alt.json`, so `og:image:alt` is derived from the card
+  and cannot drift from it.
 - `source-material/` — raw uploads, 107 MB, **not deployed**. Prune or move to
   external storage; it is cloned on every checkout.
 
@@ -124,12 +128,19 @@ source is not responding*. The site's whole authority is "every figure here is
 public and checkable" — it can afford neither a dash nor a silently stale number.
 
 ## Conventions
-- **Verify before pushing.** Serve `.vercel/output/static` through Playwright
-  request interception and sweep **every page across 10 viewports** (320 → 2560)
-  for horizontal overflow, console errors and undersized tap targets, then run
-  the contrast audit on all pages.
-  **Current state: 0 overflow, 0 JS errors, 0 WCAG AA failures, 0 undersized
-  standalone tap targets.** Keep it there.
+- **Verify before pushing: `node tools/verify.cjs`.** It serves
+  `.vercel/output/static` through Playwright request interception and sweeps
+  **every page across 10 viewports** (320 → 2560) for horizontal overflow,
+  console errors, undersized tap targets, broken references and missing
+  `og:image:alt`, plus a WCAG AA contrast audit on all pages. It exits non-zero.
+  **Current state: clean on all seven counts.** Keep it there.
+  This lived in a scratch directory for a long time and died with each session,
+  which is how a convention quietly stops being true. Two things it stubs *on
+  purpose*, and the comments say why: other origins answer 204 (the page must
+  not need them) and `/api/*` answers **503**, so the sweep actually exercises
+  the "a figure never renders blank" fallback rather than faking success.
+  Service workers are blocked in the sweep — Playwright does not route their
+  script fetches, so registration failures there are an artifact, not a finding.
 - **Calibrate contrast against the LIGHTEST dark surface a token can land on,
   never against `#000`.** This has bitten three times: the footer is
   `--nt-n-950` (#070707), raised panels `--nt-n-900` (#111111), meter and
@@ -282,10 +293,19 @@ dossier and 4 of 5 reads. Two traps worth remembering:
    - The English page opens on Gander. The French opens on **le fleuve**,
      because the water argument is not abstract to a reader here — it runs
      past LaSalle and the gauge reports it every five minutes.
-   - **Typography is the fastest tell.** Québec puts NO space before
-     `? ! ; :` where France always does; use U+202F (narrow no-break) where a
-     thin space is wanted. Straight ASCII quotes are the surest sign of machine
-     translation. Both are checked by a regex pass — keep it at zero.
+   - **Typography is the fastest tell**, and an earlier version of this note
+     got it wrong. Canadian usage drops the space before **`? ! ;`** where
+     France thin-spaces all three — but the **colon is not part of that
+     divergence**: Canadian French takes a non-breaking space before `:`
+     exactly as France does (OQLF, *Banque de dépannage linguistique*). Use
+     U+202F (narrow no-break) for it, and inside guillemets, so the mark can
+     never wrap away from its words. Straight ASCII quotes are the surest sign
+     of machine translation — `'` is never right in French prose, only `’`.
+     **`tools/check-french.cjs` enforces all of this and runs inside
+     `npm run build`.** It was previously claimed here to run and did not,
+     which is exactly how `/fr` came to ship with 71 straight apostrophes and
+     zero typographic ones. It audits built HTML, so component output and
+     generated alt text are covered too. Keep it at zero.
    - Banned framings (1995 federal-propaganda echoes) are audited too:
      *unité nationale, notre grand pays, d'un océan à l'autre, un Canada uni,
      la nation canadienne.* Never reintroduce them.

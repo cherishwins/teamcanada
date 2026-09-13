@@ -31,6 +31,17 @@ const CARDS=[
   line:'Anti-incumbent anger flattened the West. Two are the exceptions.', stat:'2/7', statk:'G7 exceptions'},
  {slug:'honest-answer', label:'The record, set straight', title:'One question.\nSeven leaders.',
   line:'The viral recession quiz, answered with every official figure.', stat:'7', statk:'statistics offices'},
+ {slug:'sources',   label:'The receipts', title:'Every figure.\nEvery source.',
+  line:'Table number, reference period, and the endpoint serving it. Open them yourself.',
+  stat:'0', statk:'keys or logins needed'},
+ // The French page is not a translation, so it does not get the English card.
+ // Typographic apostrophes throughout — a straight quote is the fastest tell.
+ {slug:'fr',        label:'Une affirmation du caractère canadien', title:'La trempe\ndu Nord',
+  line:'Ce que nous détenons, et ce dont nous ne nous sommes jamais servis contre un voisin.',
+  stat:'11×', statk:'l\u2019eau douce, par personne',
+  alt:'Carte de partage Northern Temper, sur fond noir, avec la marque aux deux ours\u202f: '
+    + '\u00ab\u202fLa trempe du Nord\u202f\u00bb. Ce que nous détenons, et ce dont nous ne nous '
+    + 'sommes jamais servis contre un voisin. 11\u00d7 l\u2019eau douce, par personne.'},
 ];
 
 const bear = fs.readFileSync(path.join(ROOT,'marks/nt-bear-dual.svg'),'utf8');
@@ -77,6 +88,33 @@ h1{font-family:'Oswald';font-weight:700;font-size:${c.title.length>26?76:92}px;l
   </div>
 </div>`;
 
+
+/**
+ * og:image:alt, derived from the card rather than written twice.
+ *
+ * Every card carries a headline, a sentence of argument and a figure. A
+ * screen reader that is handed only "two polar bears" gets the branding and
+ * none of the point, so the alt text says what the card actually says. It is
+ * generated here because hand-maintained alt text drifts from the image the
+ * moment a card is re-worded, and nothing would catch it.
+ */
+function altFor(c){
+  if (c.alt) return c.alt;                       // a card may override, e.g. to stay in French
+  const title = c.title.replace(/\n/g, ' ');
+  const stop = /[.!?\u2026]$/.test(title) ? '' : '.';   // no doubled full stop after the quote
+  return `Northern Temper share card, black with the two-bear mark \u2014 ${c.label}: `
+       + `\u201c${title}\u201d${stop} ${c.line} ${c.stat}, ${c.statk}.`;
+}
+
+function writeAltManifest(){
+  const manifest = { '/og.png':
+    'Northern Temper share card, black with the two-bear mark, beneath the words Northern Temper.' };
+  for (const c of CARDS) manifest['/og/' + c.slug + '.png'] = altFor(c);
+  const dest = path.join(__dirname, '..', 'src', 'lib', 'og-alt.json');
+  fs.writeFileSync(dest, JSON.stringify(manifest, null, 2) + '\n');
+  console.log('  src/lib/og-alt.json'.padEnd(34) + Object.keys(manifest).length + ' entries');
+}
+
 (async()=>{
   const b=await chromium.launch();
   const ctx=await b.newContext({viewport:{width:1200,height:630},deviceScaleFactor:1});
@@ -90,4 +128,5 @@ h1{font-family:'Oswald';font-weight:700;font-size:${c.title.length>26?76:92}px;l
     console.log(`  og/${c.slug}.png`.padEnd(34)+kb+'KB');
   }
   await b.close();
+  writeAltManifest();
 })();
