@@ -1,115 +1,62 @@
-# Team Canada — `primestrength.ca`
+# Northern Temper
 
-> We've got everything in this country. Let's stop fighting each other long enough to use it.
-> **Strong. Proud. Free.**
+A statement of Canadian character. **northerntemper.ca**
 
-A fast, beautiful, fully static web app making the honest, non-partisan case for Canadian
-unity — backed by hard numbers and sourced in full. No build step, no framework, no database.
-Pure HTML/CSS/JS. Deploys to Vercel in one click.
+> What we are. What we hold. And what we have never once used against a
+> neighbour, though we have always been able to.
 
----
+Everything here — text, figures, marks, code — is dedicated to the public
+domain under [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/).
+Copy it, translate it, print it, quote it in full, train a model on it. No
+permission needed, no attribution required.
 
-## What's here
+## Run it
 
-```
-index.html              The unity landing page (the centerpiece)
-join.html               Coalition sign-up — businesses add their logo (frictionless, no account)
-404.html                Branded not-found page
-offline.html            Shown by the service worker when offline
-sw.js                   Silent service worker — instant repeat visits + offline. No install nags.
-assets/
-  teamcanada.css        The unified design system (midnight + maple + gold)
-  editorial.css         Shared styles for the long-form reads
-  seal-*.png            The Team Canada / Prime Strength seal (brand mark + icons)
-  sentinel.jpg          The Sentinel hero image
-  maple.svg             Crisp scalable favicon
-  ...                   OG share cards, portraits, comic, icons
-fr/index.html           French homepage — RE-AUTHORED (not translated) per the
-                        primestrength-bilingual voice. Ships as a DRAFT: noindex +
-                        a visible BROUILLON banner until a native Québécois reviewer
-                        signs off. After review: remove the banner, flip to index,
-                        and add reciprocal hreflang (en-ca <-> fr-ca) on / and /fr/.
-privacy.html            Privacy notice (cookieless, PIPEDA + Québec Law 25 aware)
-terms.html              Terms of use (non-partisan, free-to-quote-with-attribution)
-read/
-  changed-my-mind.html  "I Campaigned Against This Man." (the Carney essay)
-  honest-answer.html    "One Question. Seven Leaders. An Honest Answer." (the G7 recession retort)
-  two-leaders.html      "The Wave Hit Every G7 Democracy. Two Leaders Beat It."
-  the-closed-loop.html  NPSI Working Paper No. 6 — the strategic case
-  the-vertical-squeeze.html  Fit For Gov dossier — the tax-stack accounting
-site.webmanifest        PWA manifest
-vercel.json             Clean URLs, caching, security headers, redirects
-sitemap.xml             All public URLs
-robots.txt              Welcomes search + AI crawlers explicitly
-llms.txt                LLM-friendly summary so this work can be found and cited
-feed.xml                RSS feed of the reads
-source-material/        Original uploads (zips, PDFs, art). NOT deployed (see .vercelignore).
+```bash
+npm install
+npm run dev      # localhost:4321
+npm run build    # -> .vercel/output
 ```
 
-## Brand system (Team Canada Sentinel)
+## How it is built
 
-The site is built to the official brand kit in `/brand/` — a restrained national-broadsheet
-look: Paper ground, a single Crimson (#7B0505) accent, the shard maple-leaf mark, Newsreader
-(serif) for reading, Archivo (caps, tracked) for labels, JetBrains Mono for data. Hairline rules,
-no cards, no radius, no content shadows. Design tokens live in `/brand/colors/tokens.css`;
-the full guidelines render at `/brand/brand-guidelines.html`. A silent **light/dark toggle**
-sits in the nav (respects `prefers-color-scheme`, remembers your choice, no flash-of-wrong-theme).
+Astro 5 on Vercel, static by default. Every chapter is pre-rendered HTML; only
+`src/pages/api/` runs on demand. The entire client-side payload is **~1 kB
+gzipped** — a scroll-reveal fallback and a number count-up, nothing else.
 
-## Deploy to Vercel
+| | |
+|---|---|
+| Design system | [Northern Temper Design System](https://claude.ai/design) — tokens in `src/styles/tokens/`, copied verbatim |
+| Fonts | Oswald 600/700, Inter 400/500/600 — self-hosted, Latin-subset WOFF2, **72 kB** for all five |
+| Marks | Inline SVG components, traced from source PNGs — **33 kB**, down from 1,485 kB |
+| Live figures | Statistics Canada WDS + Bank of Canada Valet, both key-free |
+| Accessibility | **0 WCAG AA contrast failures**, verified against the built DOM |
 
-1. Push this repo to GitHub (already done if you're reading this on a PR).
-2. In Vercel: **Add New → Project → Import** this repo.
-3. Framework preset: **Other**. Build command: *none*. Output directory: *leave blank* (root).
-4. Add your domain **`primestrength.ca`** under **Settings → Domains**.
-5. Deploy. That's it — it's all static.
+## Live figures
 
-`vercel.json` already sets clean URLs (`/read/honest-answer` instead of `.html`),
-long-cache immutable assets, and sensible security headers.
+`src/lib/sources.ts` reads real numbers from two public Canadian APIs, and
+`/api/figures.json` serves them edge-cached for an hour.
 
-## Discoverability (built in)
+The rule: **a figure never renders blank.** Every series carries a hand-checked
+fallback with the date it was true. If a source fails, the page shows the
+fallback *and says a source is not responding*. The site's whole claim is that
+every figure is public and checkable — it can afford neither a dash nor a
+silently stale number.
 
-- **Structured data (JSON-LD):** Organization + WebSite + CollectionPage on the home page,
-  and an `Article` block on every read — so Google and LLMs understand and can cite the content.
-- **Open Graph + Twitter cards** on every page, with real share images.
-- **`llms.txt`** following the [llms.txt convention](https://llmstxt.org/) — a plain-language
-  summary plus links, so AI assistants can find and reference the site accurately.
-- **`robots.txt`** explicitly *allows* the major AI crawlers (GPTBot, ClaudeBot, PerplexityBot,
-  Google-Extended, CCBot, Applebot, …) — we *want* to be quoted.
-- **`sitemap.xml`** (with image entries) + **`feed.xml`** (RSS) for indexing and syndication.
-- **Canonical + hreflang (`en-ca`)** tags throughout.
-- **FAQPage** on the home page + per-read **Article** and **BreadcrumbList** for rich results.
-- **IndexNow** key file at the repo root for instant Bing/Yandex indexing.
-- `.well-known/security.txt` and `humans.txt` for trust/identity signals.
+## Repository layout
 
-> **Full step-by-step playbook (Search Console, Bing, IndexNow, social cache, off-site distribution): see [`DISCOVERABILITY.md`](DISCOVERABILITY.md).**
+```
+src/
+  config.mjs          the only place the public origin is written
+  styles/tokens/      design-system tokens (verbatim) + a11y layer
+  components/         Stat, Meter, marks/
+  layouts/Base.astro  head, meta, OG, JSON-LD, skip link
+  lib/sources.ts      StatCan + Bank of Canada
+  pages/
+    index.astro       Act I · Temper
+    api/figures.json.ts
+legacy/               the previous primestrength.ca build — not deployed
+```
 
-## Analytics (cookieless — no banner needed)
-
-The pages already include Vercel Web Analytics (`/_vercel/insights/script.js`). It activates
-automatically when you toggle **Analytics** on in the Vercel dashboard, and is cookieless, so
-**no cookie-consent banner is required**. It does nothing until enabled.
-
-Hosting/CDN is **Vercel** (global edge cache + Brotli, automatic — no extra setup). The domain's
-DNS is managed at **GoDaddy**, pointed at Vercel. There is no Cloudflare in the stack.
-
-## The coalition (how "join" works)
-
-`/join` lets any Canadian business add their logo to the wall. It's deliberately backend-free:
-the form previews their logo client-side and opens a **pre-filled email** to
-`jesse@primestrength.ca` (set this address to one you own, or change it in `join.html`).
-You review submissions and add approved members to the `.coalition` grid in `index.html`
-and `join.html`. No accounts, no uploads server, no tracking.
-
-> Want true self-serve uploads later? Drop in a free form backend (Formspree, Tally, Google
-> Forms) or a Vercel serverless function — the markup is ready for it.
-
-## Swapping in higher-res brand art
-
-The hero uses `assets/sentinel.jpg` and the brand seal uses `assets/seal-*.png`. To upgrade to
-the higher-resolution branded versions, just replace those files (keep the same names) and the
-whole site updates. Images are auto-served with long cache headers.
-
-## Credits
-
-Written and built by **Jesse James** · View Royal, British Columbia.
-Content free to quote and cite with attribution to Team Canada / `primestrength.ca`.
+See [`CLAUDE.md`](./CLAUDE.md) for the full handoff, the brand rules, and the
+roadmap through Acts II–V.

@@ -1,0 +1,77 @@
+/* Northern Temper colour system.
+   Four brand colours only: red, black, white, frost. Everything else is a
+   neutral step off black, used for supporting text and hairlines. No grey
+   as a brand colour, no pewter, no slate, no cream. */
+:root{
+  /* ---- brand ---- */
+  --nt-red:#C8102E;          /* Canada Red. The tempering strike. Accent, rules, one chapter field. Never a wash. */
+  --nt-black:#000000;        /* Cover, toughness pages, closing. Full bleed, no softening. */
+  --nt-white:#FFFFFF;        /* Ledger and data pages. Pure, never warmed to cream. */
+  --nt-frost:#7A9BB0;        /* Charts only. Never a field colour, never behind type. */
+
+  /* ---- neutral ramp (dark field supports) ---- */
+  --nt-n-950:#070707;        /* footer field */
+  --nt-n-900:#111111;        /* raised dark surface */
+  --nt-n-880:#1C1C1C;        /* chart / meter track */
+  --nt-n-850:#1A1A1A;        /* hairline on black */
+  --nt-n-700:#3A3A3A;        /* comparison bar, inert data */
+  --nt-n-600:#5A5A5A;        /* colophon type */
+  --nt-n-560:#5C5C5C;        /* scroll cue */
+  --nt-n-500:#6A6A6A;        /* caption on black */
+  --nt-n-460:#767676;        /* stamp type */
+  --nt-n-420:#8A8A8A;        /* footer body */
+  --nt-n-380:#9A9A9A;        /* stat body on black */
+  --nt-n-340:#AEAEAE;        /* lede on black */
+  --nt-n-260:#CFCFCF;        /* closing body */
+  --nt-n-220:#D8D8D8;        /* hero subhead */
+  --nt-n-ink-muted:#4A4A4A;  /* body support on white field */
+
+  /* ---- semantic: dark field (default) ---- */
+  --surface-page:var(--nt-black);
+  --surface-raised:var(--nt-n-900);
+  --surface-footer:var(--nt-n-950);
+  --surface-track:var(--nt-n-880);
+  --text-body:var(--nt-white);
+  --text-lede:var(--nt-n-340);
+  --text-muted:var(--nt-n-420);
+  --text-caption:var(--nt-n-500);
+  --text-accent:var(--nt-red);
+  --border-hairline:var(--nt-n-850);
+  --rule-accent:var(--nt-red);
+  --selection-bg:var(--nt-red);
+  --selection-fg:var(--nt-white);
+
+  /* ---- data ---- */
+  --data-primary:var(--nt-frost);   /* the Canadian figure */
+  --data-inert:var(--nt-n-700);     /* the comparison figure */
+  --data-strike:var(--nt-red);      /* the single emphasised measure */
+}
+
+/* Light field — the ledger and data pages. */
+.nt-light{
+  --surface-page:var(--nt-white);
+  --surface-raised:var(--nt-white);
+  --surface-track:#E8E8E8;
+  --text-body:var(--nt-black);
+  --text-lede:var(--nt-black);
+  --text-muted:var(--nt-n-ink-muted);
+  --text-caption:var(--nt-n-ink-muted);
+  --border-hairline:#DCDCDC;
+  background:var(--surface-page);
+  color:var(--text-body);
+}
+
+/* Red field — one per document, maximum. */
+.nt-redfield{
+  --surface-page:var(--nt-red);
+  --surface-raised:var(--nt-red);
+  --text-body:var(--nt-white);
+  --text-lede:var(--nt-white);
+  --text-muted:rgba(255,255,255,.85);
+  --text-caption:rgba(255,255,255,.85);
+  --text-accent:var(--nt-white);
+  --rule-accent:var(--nt-white);
+  --border-hairline:rgba(255,255,255,.28);
+  background:var(--surface-page);
+  color:var(--text-body);
+}

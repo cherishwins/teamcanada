@@ -1,0 +1,57 @@
+/* Northern Temper typography.
+   Two families. Oswald for everything that is a design object (headlines,
+   section labels, numbers). Inter for everything that is read as prose. */
+:root{
+  --font-display:'Oswald',Impact,'Haettenschweiler','Arial Narrow',sans-serif;
+  --font-body:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+
+  --fw-display:700;          /* headlines, numbers */
+  --fw-label:600;            /* Oswald labels, captions, keys */
+  --fw-body:400;
+  --fw-body-medium:500;      /* ledes */
+  --fw-body-strong:600;      /* emphasis inside running text */
+
+  /* display scale — always uppercase, tight leading */
+  --lh-display:0.92;         /* site */
+  --lh-display-print:0.94;   /* print brand-sheet spec */
+  --ls-display:-0.005em;
+  --ls-number:-0.02em;
+
+  --type-display-xl:clamp(46px,9.4vw,132px);   /* cover / hero H1 */
+  --type-display-lg:clamp(42px,7.6vw,116px);   /* chapter opener */
+  --type-display-md:clamp(30px,4.4vw,66px);    /* section headline */
+  --type-display-sm:clamp(22px,3.1vw,44px);    /* pull statement */
+  --type-creed:clamp(22px,3.5vw,52px);         /* creed lines */
+
+  --type-number-xl:clamp(56px,7.2vw,108px);    /* ledger figure */
+  --type-number-md:clamp(26px,3.4vw,50px);     /* bar value */
+  --type-number-sm:clamp(15px,1.8vw,24px);     /* in-track value */
+
+  /* label scale — Oswald 600, uppercase, wide tracking */
+  --type-label:clamp(11px,1vw,13px);
+  --type-label-sm:11px;
+  --type-stamp:clamp(9.5px,.9vw,12px);
+  --ls-label:0.3em;      /* section labels, stamps */
+  --ls-caption:0.26em;   /* captions, footer heads, colophon */
+  --ls-key:0.2em;        /* stat keys */
+  --lh-label:2;
+
+  /* body */
+  --type-body:clamp(16px,1.05vw,18px);
+  --type-body-print:11.6pt;
+  --type-body-sm:13.5px;
+  --type-lede:clamp(19px,1.9vw,29px);
+  --type-hero-sub:clamp(15px,1.45vw,21px);
+  --lh-body:1.65;
+  --lh-body-print:1.64;
+  --lh-lede:1.42;
+  --lh-hero-sub:1.45;
+
+  /* measure */
+  --measure-body:66ch;     /* site */
+  --measure-print:70ch;    /* print cap */
+  --measure-lede:20ch;
+  --measure-hero-sub:30ch;
+  --measure-stat:34ch;
+  --measure-creed:20ch;
+}

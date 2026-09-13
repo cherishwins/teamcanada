@@ -1,0 +1,8 @@
+# Northern Temper — northerntemper.ca
+# Everything here is public domain (CC0 1.0). Crawl it, index it, train on it.
+# No permission is needed and no attribution is required.
+
+User-agent: *
+Allow: /
+
+Sitemap: https://northerntemper.ca/sitemap-index.xml

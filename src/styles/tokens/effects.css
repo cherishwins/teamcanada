@@ -1,0 +1,28 @@
+/* Northern Temper effects.
+   Two only: a fine fractal-noise grain fixed over the whole page, and a
+   blurred aurora wash behind the cover. No gradients as decoration, no
+   drop shadows, no glows, no outlines, no bevels. */
+:root{
+  /* fixed film grain — overlay blend, low opacity, pointer-events none */
+  --grain-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3'/></filter><rect width='160' height='160' filter='url(%23n)' opacity='.55'/></svg>");
+  --grain-opacity:.16;
+  --grain-blend:overlay;
+  --grain-tile:160px;
+
+  /* cover aurora — frost and red radial washes, heavily blurred */
+  --aurora-frost:rgba(122,155,176,.20);
+  --aurora-red:rgba(200,16,46,.16);
+  --aurora-blur:40px;
+  --aurora-drift:34s;
+  --aurora:radial-gradient(60% 60% at 20% 20%,var(--aurora-frost),transparent 70%),radial-gradient(50% 50% at 78% 12%,var(--aurora-red),transparent 72%);
+
+  /* the only shadow tokens in the system — both none, on purpose */
+  --shadow-card:none;
+  --shadow-raised:none;
+
+  /* interaction */
+  --state-hover-invert:1;      /* solid fills swap fg/bg rather than tint */
+  --state-press-opacity:.82;
+  --focus-ring:2px solid var(--nt-red);
+  --focus-offset:3px;
+}

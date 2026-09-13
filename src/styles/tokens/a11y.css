@@ -1,0 +1,54 @@
+/* ==========================================================================
+   Northern Temper — accessibility layer
+   Loads AFTER tokens/colors.css and adjusts four text roles only.
+
+   WHY THIS FILE EXISTS
+   Four of the ten dark-field text roles in the design system do not reach the
+   WCAG AA 4.5:1 minimum for normal-size text on black. Measured:
+
+     3.57:1  --nt-red    section labels @13px   FAIL
+     3.14:1  --nt-n-560  scroll cue @11px       FAIL
+     3.88:1  --nt-n-500  caption @12px          FAIL
+     3.04:1  --nt-n-600  colophon               FAIL
+     4.62:1  --nt-n-460  stamp @12px            pass  <- the nearest passing step
+     6.08:1  --nt-n-420  footer body            pass
+       ...   everything lighter                 pass
+
+   Three of the four are fixed by using a step the system ALREADY defines:
+   --nt-n-460 (#767676, 4.62:1). No new grey is invented. Only the red label
+   needs a value the system does not have, and it is the same hue lifted 19%
+   toward white — still unmistakably Canada Red at label size.
+
+   WHAT IS NOT CHANGED
+   --nt-red itself is untouched. It remains the strike colour for rules, the
+   red field, and the big numerals, where it is either a background or large
+   enough to pass at 3:1. This file only governs SMALL TEXT on a dark ground.
+
+   If these lifts are folded back into tokens/colors.css upstream, delete this
+   file — that is the better outcome.
+   ========================================================================== */
+:root{
+  /* Same hue, lifted to clear AA at label sizes. */
+  --nt-red-lift:#D23D56;     /* 4.54:1 on black */
+
+  /* Small text on the dark field. */
+  --text-accent:var(--nt-red-lift);
+  --text-caption:var(--nt-n-460);   /* 3.88 -> 4.62 */
+  --text-cue:var(--nt-n-460);       /* 3.14 -> 4.62 */
+  --text-colophon:var(--nt-n-460);  /* 3.04 -> 4.62 */
+}
+
+/* On white, #C8102E is 5.88:1 — it already passes, so the light field keeps
+   the true brand red rather than the lift. */
+.nt-light{
+  --text-accent:var(--nt-red);
+  --text-cue:var(--nt-n-ink-muted);
+  --text-colophon:var(--nt-n-ink-muted);
+}
+
+/* On the red field, white is 5.88:1 at every size. */
+.nt-redfield{
+  --text-accent:var(--nt-white);
+  --text-cue:rgba(255,255,255,.85);
+  --text-colophon:rgba(255,255,255,.85);
+}

@@ -1,6 +1,7 @@
-# scratch / tooling
-verify-shots/
-.imgtool/
 node_modules/
-*.log
+dist/
+.vercel/
+.astro/
+.env
+.env.production
 .DS_Store

@@ -1,0 +1,16 @@
+/* Northern Temper borders + radii.
+   Every corner is square. Radius exists as a token only so consumers have
+   something to reference when they ask for one — the answer is zero. */
+:root{
+  --radius:0;
+  --radius-pill:0;            /* deliberately square; no pills in this system */
+
+  --rule-weight:4px;          /* the red rule under a section label */
+  --rule-width:72px;
+  --rule-width-close:120px;
+
+  --border-hair:1px;          /* hairline divider on black */
+  --border-key:2px;           /* rule above a stat key */
+  --border-band:4px;          /* full-width band under the cover headline */
+  --progress-height:3px;
+}

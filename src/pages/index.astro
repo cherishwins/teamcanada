@@ -1,0 +1,436 @@
+---
+import Base from '../layouts/Base.astro';
+import BearDual from '../components/marks/BearDual.astro';
+import Stat from '../components/Stat.astro';
+import Meter from '../components/Meter.astro';
+import { getFigures } from '../lib/sources';
+
+// Fetched at build; the figures strip refreshes itself from /api/figures.json
+// on load, so a deploy is never required for the numbers to be current.
+const figures = await getFigures();
+const fmt = new Intl.NumberFormat('en-CA');
+
+const description =
+  'What we are. What we hold. And what we have never once used against a neighbour, ' +
+  'though we have always been able to. Eleven times the fresh water per person. Never once a threat.';
+---
+<Base title="Northern Temper" description={description} path="/">
+  <div class="progress" aria-hidden="true"></div>
+
+  <header class="hero">
+    <div class="aurora" aria-hidden="true"></div>
+    <div class="hero-inner">
+      <div class="hero-figure">
+        <BearDual class="hero-bear" alt="Two polar bears standing back to back, shoulders locked, heads facing outward." />
+      </div>
+      <h1 class="nt-display xl">Northern<br />Temper</h1>
+      <div class="band" aria-hidden="true"></div>
+      <p class="sub">
+        What we are. What we hold. And what we have never once used against a
+        neighbour, though we have always been able to.
+      </p>
+      <div class="nt-stamp">
+        A statement of Canadian character<br />
+        Issued in the winter of a trade war
+      </div>
+    </div>
+    <div class="cue" aria-hidden="true"><i></i>Scroll</div>
+  </header>
+
+  <main id="main">
+    <!-- ================= ONE · THE RECORD ================= -->
+    <section class="nt-light">
+      <div class="nt-wrap">
+        <div class="nt-label">One · The record</div>
+        <hr class="nt-rule" />
+        <h2 class="nt-display lg rv">We do not<br />go first.</h2>
+        <div class="nt-prose rv">
+          <p><strong>We have never gone first. Not once.</strong> Check the record, and check it against anyone else's.</p>
+          <p>When the towers came down and the Americans closed their own sky, more than thirty-three thousand people were left in the air over the Atlantic with nowhere to land. Canada opened seventeen airports and took all of them.</p>
+          <p>A town of ten thousand in Newfoundland took thirty-eight wide-body jets and six and a half thousand strangers, and fed them and housed them in their own homes for five days.</p>
+          <p>Nobody sent an invoice. The thought did not occur to anyone.</p>
+          <p>One hundred and fifty-eight Canadians were buried out of Kandahar in a war that began on somebody else's morning.</p>
+          <p>We send crews south when the west burns. We have shared the largest body of fresh surface water on the planet with the people on the other shore for two hundred years without once suggesting the tap had a valve.</p>
+          <p><strong>That is not weakness. That is the whole point of the thing.</strong></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TWO · WHAT WAS GIVEN ================= -->
+    <section>
+      <div class="nt-wrap">
+        <div class="nt-label">Two · What was given</div>
+        <hr class="nt-rule" />
+        <h2 class="nt-display md rv" style="max-width:15ch;">A ledger nobody in this country has ever asked to have settled.</h2>
+        <div class="trio">
+          <Stat value="33,000" countTo={33000} separated label="People landed"
+                note="Taken in across seventeen Canadian airports on a single afternoon, on 224 flights, and sent home when the sky reopened." />
+          <Stat value="6,595" countTo={6595} separated label="Housed in Gander"
+                note="In a town of ten thousand with five hundred hotel rooms. The shortfall was made up with spare rooms, church halls and school gymnasiums." />
+          <Stat value="158" countTo={158} label="Buried from Kandahar"
+                note="Canadian soldiers killed in Afghanistan. The road from Trenton was renamed the Highway of Heroes because people kept showing up on the overpasses." />
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= THREE · WHAT WE HOLD ================= -->
+    <section class="nt-light">
+      <div class="nt-wrap">
+        <div class="nt-label">Three · What we hold</div>
+        <hr class="nt-rule" />
+        <h2 class="nt-display lg rv">Eleven<br />to one.</h2>
+        <p class="nt-lede rv" style="margin-top:1.4rem;">
+          Renewable fresh water produced per person, per year, in cubic metres.
+          This is not an argument. It is a measurement.
+        </p>
+
+        <div class="compare rv">
+          <div class="side">
+            <div class="cn" data-count="109837" data-sep="true">109,837</div>
+            <div class="ck">Canada</div>
+          </div>
+          <div class="side muted">
+            <div class="cn" data-count="9980" data-sep="true">9,980</div>
+            <div class="ck">United States</div>
+          </div>
+        </div>
+        <p class="pull rv">Eleven times the water,<br />per person, every year.</p>
+        <p class="nt-caption">Source · Statistics Canada</p>
+
+        <div class="trio" style="margin-top:clamp(48px,7vh,90px);">
+          <Stat value="563" countTo={563} label="Lakes over 100 km²"
+                note="More large lakes than any other country on earth. Not the most per capita. The most, outright." />
+          <Stat value="3rd" label="Renewable supply"
+                note="Third-largest renewable freshwater supply in the world, averaging 3,478 cubic kilometres of annual flow." />
+          <Stat value="25%" countTo={25} label="Of world wetlands"
+                note="A quarter of every wetland on the planet sits inside one country's borders, and that country is this one." />
+        </div>
+
+        <Meter label="The Great Lakes · share of the world's fresh surface water" pct={18} display="18%" tone="primary" />
+        <Meter label="The border · portion made of water" pct={40} display="40%" tone="strike" />
+
+        <h3 class="nt-display sm rv border-line">
+          Forty per cent of the longest border in the world is not a line on the
+          ground. It is water, and both of us drink it.
+        </h3>
+      </div>
+    </section>
+
+    <!-- ================= FOUR · THE TEMPER ================= -->
+    <section class="nt-redfield">
+      <div class="nt-wrap">
+        <div class="nt-label">Four · The temper</div>
+        <hr class="nt-rule" />
+        <h2 class="nt-display md rv" style="max-width:16ch;">Strength is what you decline to use.</h2>
+        <div class="nt-prose rv">
+          <p>Steel is tempered by heat and then by cold. What comes out is not softer. It is harder to break, and it holds an edge.</p>
+          <p>That is the word we chose and it is the word we mean. Temper is the metal. Temper is also the thing we do not lose.</p>
+          <p>We have sat on eleven times the water, a quarter of the world's wetlands, and the largest shared lakes on the planet, for the entire history of the relationship.</p>
+          <p>We have never once threatened the tap. It has never seriously been proposed. It will not be, because a country that would do that is a different country than this one, and we are not interested in becoming it to win an argument.</p>
+          <p>Anger is loud and anger burns out. What we have instead is colder and lasts longer. It is the thing that gets a concession road plowed at four in the morning and a stranger's car pushed out of a snowbank by people who never introduce themselves.</p>
+          <p><strong>We are patient because winter taught us. The season always turns.</strong></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= THE COUNTRY, TODAY ================= -->
+    <section>
+      <div class="nt-wrap">
+        <div class="nt-label">The country, today</div>
+        <hr class="nt-rule" />
+        <h2 class="nt-display md rv" style="max-width:18ch;">Not a claim. A reading, taken this morning.</h2>
+        <p class="rv" style="color:var(--text-muted);margin-top:1.2rem;">
+          Pulled live from Statistics Canada and the Bank of Canada. Nothing here
+          is typed in by hand, and nothing here waits for someone to update a page.
+        </p>
+        <div class="live rv" id="live" data-live={String(figures.allLive)}>
+          <div class="lrow"><span class="lk">Population</span><span class="lv" data-k="population">{fmt.format(figures.population.value)}</span><span class="la">{figures.population.asOf}</span></div>
+          <div class="lrow"><span class="lk">Real GDP · monthly, chained 2017 $</span><span class="lv" data-k="gdp">${fmt.format(Math.round(figures.gdp.value / 1000))}B</span><span class="la">{figures.gdp.asOf}</span></div>
+          <div class="lrow"><span class="lk">Inflation · CPI, year over year</span><span class="lv" data-k="cpi">{figures.cpi.changePct?.toFixed(1) ?? '—'}%</span><span class="la">{figures.cpi.asOf}</span></div>
+          <div class="lrow"><span class="lk">Policy interest rate</span><span class="lv" data-k="policyRate">{figures.policyRate.value.toFixed(2)}%</span><span class="la">{figures.policyRate.asOf}</span></div>
+          <div class="lrow"><span class="lk">One US dollar, in Canadian dollars</span><span class="lv" data-k="usdcad">{figures.usdcad.value.toFixed(4)}</span><span class="la">{figures.usdcad.asOf}</span></div>
+        </div>
+        <p class="nt-caption" id="live-note">Statistics Canada · Bank of Canada</p>
+      </div>
+    </section>
+
+    <!-- ================= FIVE · THE CREED ================= -->
+    <section class="nt-light">
+      <div class="nt-wrap">
+        <div class="nt-label">Five · What we hold to be true</div>
+        <hr class="nt-rule" />
+        <ul class="creed">
+          <li class="rv">A border is a handshake, not a wall.</li>
+          <li class="rv">A deal is a deal on the day it is hard to keep.</li>
+          <li class="rv">You do not squeeze a friend because you can. The day you do, you have told everyone watching exactly what your word is worth.</li>
+          <li class="rv">Help gets given before it is asked for, and it does not come with an invoice.</li>
+          <li class="rv">We would rather be underestimated than feared.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ================= CLOSE ================= -->
+    <section class="close">
+      <div class="nt-wrap">
+        <div class="close-mark rv"><BearDual alt="" /></div>
+        <p class="nt-display md rv" style="margin-top:clamp(30px,5vh,60px);max-width:20ch;">
+          We are not asking to be liked. We are not asking to be rescued. We are
+          not asking anyone south of us to apologise.
+        </p>
+        <p class="rv" style="margin-top:2rem;font-size:clamp(18px,1.7vw,24px);color:var(--nt-n-220);">
+          We are simply going to keep being the people who would still send the planes.
+        </p>
+        <p class="rv" style="margin-top:1.2rem;color:var(--text-muted);">
+          And we will let our neighbours decide, in their own time and their own
+          conscience, whether they are still the people who would send them back.
+        </p>
+      </div>
+    </section>
+
+    <!-- ================= SOURCES ================= -->
+    <section class="sources">
+      <div class="nt-wrap">
+        <div class="nt-label">Take it</div>
+        <hr class="nt-rule" />
+        <div class="scols">
+          <div>
+            <h3 class="sh">The water</h3>
+            <p>Statistics Canada: Canada 109,837 m³ of renewable fresh water per person annually; United States 9,980 m³. Third-largest renewable supply in the world, averaging 3,478 km³ of annual flow. 563 lakes larger than 100 km², more than any other country. The Great Lakes hold roughly 18% of the global stock of fresh surface water. About 25% of the world's wetlands. Approximately 40% of the Canada–United States boundary is water.</p>
+          </div>
+          <div>
+            <h3 class="sh">The record</h3>
+            <p>Transport Canada reported more than 33,000 passengers on 224 flights diverted to 17 Canadian airports on 11 September 2001. Gander received 38 aircraft carrying 6,122 passengers and 473 crew, in a town of roughly 10,000 with about 500 hotel rooms. Halifax received 47 aircraft, the most of any single airport. 158 Canadian Armed Forces members died during the mission in Afghanistan, 2001–2014.</p>
+          </div>
+          <div>
+            <h3 class="sh">Take it</h3>
+            <p>Every figure here is public and checkable. Nothing here is an accusation. It was written by a Canadian who would like his country to remember what it is before it decides what to do next.</p>
+            <p>This whole site is dedicated to the public domain under <a href="https://creativecommons.org/publicdomain/zero/1.0/" rel="license">CC0 1.0</a> — the text, the figures, the bears, the code. Copy it, translate it, print it, sell it, quote it in full, train a model on it. No permission needed, no attribution required, and no use of it will ever create a liability to anyone.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="wrap frow">
+        <span class="nt-label">Northern Temper</span>
+        <span class="nt-label" style="color:var(--text-cue);">Public domain · CC0</span>
+      </div>
+    </footer>
+  </main>
+</Base>
+
+<style>
+  .progress {
+    position: fixed; inset: 0 0 auto 0; height: var(--progress-height); background: var(--nt-red);
+    transform-origin: 0 50%; transform: scaleX(0); z-index: 20;
+  }
+  @supports ((animation-timeline: scroll()) and (animation-range: entry)) {
+    @keyframes nt-grow-x { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+    .progress { animation: nt-grow-x linear; animation-timeline: scroll(root block); }
+  }
+
+  /* ---------- hero ---------- */
+  .hero {
+    min-height: 100svh; display: flex; flex-direction: column; justify-content: center;
+    padding: var(--hero-y-top) var(--gutter) var(--hero-y-bottom);
+    overflow: clip; position: relative;
+  }
+  .aurora {
+    position: absolute; inset: -20% -10% auto -10%; height: 70%; z-index: 0; pointer-events: none;
+    background: var(--aurora);
+    filter: blur(var(--aurora-blur));
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    @keyframes nt-drift {
+      0%, 100% { transform: translate3d(0,0,0) scale(1); }
+      50%      { transform: translate3d(-3%,2%,0) scale(1.08); }
+    }
+    .aurora { animation: nt-drift var(--aurora-drift) ease-in-out infinite; }
+  }
+  .hero-inner { width: 100%; max-width: var(--wrap-hero); margin-inline: auto; position: relative; z-index: 1; }
+  .hero-figure { height: clamp(74px, 17.5vh, 200px); }
+  .hero-figure :global(.hero-bear) { height: 100%; width: auto; }
+  .hero h1 { font-size: var(--type-display-xl); margin-top: clamp(16px, 2.6vh, 34px); }
+  .band {
+    height: var(--border-band); background: var(--nt-red); width: 100%;
+    margin: clamp(14px,2vh,24px) 0 clamp(16px,2.4vh,28px); transform-origin: 0 50%;
+  }
+  .sub { font-size: var(--type-hero-sub); line-height: var(--lh-hero-sub); max-width: var(--measure-hero-sub); color: var(--nt-n-220); }
+  .stamp {
+    font-family: var(--font-display); font-weight: 600; font-size: clamp(9.5px,.9vw,12px);
+    letter-spacing: .3em; text-transform: uppercase; color: var(--text-cue);
+    line-height: 2; margin-top: clamp(18px,2.8vh,36px);
+  }
+  .cue {
+    position: absolute; left: 50%; transform: translateX(-50%);
+    max-width: var(--wrap-hero); bottom: clamp(22px,4vh,40px); z-index: 1;
+    font-family: var(--font-display); font-weight: 600; font-size: 11px;
+    letter-spacing: .28em; text-transform: uppercase; color: var(--text-cue);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .cue i { display: block; width: 1px; height: 34px; background: linear-gradient(var(--text-cue), transparent); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    @keyframes nt-wipe { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+    @keyframes nt-rise { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: none; } }
+    @keyframes nt-fade { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes nt-band { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+    .hero-figure { animation: nt-wipe var(--dur-wipe) var(--ease) both; }
+    .hero h1    { animation: nt-rise var(--dur-rise) var(--ease) var(--delay-headline) both; }
+    .band       { animation: nt-band var(--dur-band) var(--ease) var(--delay-band) both; }
+    .sub        { animation: nt-rise var(--dur-rise) var(--ease) var(--delay-sub) both; }
+    .nt-stamp   { animation: nt-rise var(--dur-rise) var(--ease) var(--delay-stamp) both; }
+    .cue        { animation: nt-fade var(--dur-rise) ease var(--delay-cue) both; }
+  }
+
+  /* ---------- prose ---------- */
+  .prose { columns: 2; column-gap: clamp(28px,4vw,70px); max-width: 1100px; margin-top: 2.6rem; }
+  .prose p { max-width: none; break-inside: avoid; }
+  @media (max-width: 760px) { .prose { columns: 1; } }
+
+  .trio {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: var(--gap-grid); margin-top: var(--stack-head-body);
+  }
+
+  /* ---------- the eleven-to-one comparison ---------- */
+  .compare {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr));
+    gap: clamp(24px,4vw,70px); margin-top: clamp(40px,6vh,80px); align-items: end;
+  }
+  .cn {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(52px,9vw,150px); line-height: .82;
+    color: var(--data-strike); font-variant-numeric: tabular-nums; letter-spacing: -.025em;
+  }
+  .side.muted .cn { color: var(--text-cue); font-size: clamp(34px,5vw,86px); }
+  .ck {
+    font-family: var(--font-display); font-weight: 600; font-size: 13px;
+    letter-spacing: .22em; text-transform: uppercase;
+    margin-top: .8rem; padding-top: .8rem; border-top: 1px solid var(--border-hairline);
+  }
+  .pull {
+    font-family: var(--font-display); font-weight: 700; text-transform: uppercase;
+    font-size: clamp(24px,3.4vw,50px); line-height: 1.02;
+    margin-top: clamp(30px,4.5vh,60px); max-width: none;
+  }
+  .cap {
+    font-family: var(--font-display); font-weight: 600; font-size: 12px;
+    letter-spacing: .26em; text-transform: uppercase; color: var(--text-cue); margin-top: 1.2rem;
+  }
+  .border-line {
+    font-size: clamp(22px,3.1vw,44px); line-height: 1.16; max-width: 22ch;
+    margin-top: clamp(38px,5.5vh,76px);
+  }
+
+  /* ---------- live figures ---------- */
+  .live { margin-top: clamp(30px,4.5vh,60px); border-top: 1px solid var(--border-hairline); }
+  .lrow {
+    display: grid; grid-template-columns: 1fr auto auto; gap: 16px; align-items: baseline;
+    padding: 18px 0; border-bottom: 1px solid var(--border-hairline);
+  }
+  .lk { color: var(--text-muted); font-size: .95rem; }
+  .lv {
+    font-family: var(--font-display); font-weight: 700; font-size: clamp(22px,2.4vw,34px);
+    font-variant-numeric: tabular-nums; color: var(--text-accent);
+  }
+  .la {
+    font-family: var(--font-display); font-weight: 600; font-size: 11px;
+    letter-spacing: .2em; text-transform: uppercase; color: var(--text-cue);
+    min-width: 9ch; text-align: right;
+  }
+  @media (max-width: 620px) {
+    .lrow { grid-template-columns: 1fr auto; }
+    .la { grid-column: 2; text-align: right; }
+  }
+
+  /* ---------- creed ---------- */
+  .creed { list-style: none; margin-top: 2.4rem; max-width: var(--measure-creed); }
+  .creed li {
+    font-family: var(--font-display); font-weight: 700; text-transform: uppercase;
+    font-size: var(--type-creed); line-height: 1.1;
+    padding: clamp(20px,2.6vh,32px) 0; border-bottom: 1px solid var(--border-hairline); max-width: 26ch;
+  }
+  .creed li:first-child { border-top: 1px solid var(--border-hairline); }
+
+  /* ---------- close + sources ---------- */
+  .close { padding-block: clamp(100px,16vh,220px); }
+  .close-mark { max-width: 560px; color: var(--data-strike); }
+  .sources { border-top: 1px solid var(--border-hairline); padding-block: clamp(60px,9vh,110px); }
+  .scols {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(250px,1fr));
+    gap: clamp(26px,3.4vw,56px); margin-top: 1rem;
+  }
+  .sh {
+    font-family: var(--font-display); font-weight: 600; font-size: 13px;
+    letter-spacing: .22em; text-transform: uppercase; color: var(--text-accent); margin-bottom: .9rem;
+  }
+  .scols p { font-size: .92rem; color: var(--text-muted); max-width: none; }
+  .scols a { color: var(--nt-n-220); text-underline-offset: 3px; }
+  footer { padding: 28px var(--gutter) 46px; border-top: 1px solid var(--border-hairline); }
+  .frow { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+</style>
+
+<script>
+  // Count-up on first reveal. Skipped entirely under reduced motion, and the
+  // markup already carries the final value so nothing depends on this running.
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const nums = document.querySelectorAll<HTMLElement>('[data-count]');
+  if (nums.length && !reduced) {
+    const fmt = new Intl.NumberFormat('en-CA');
+    const io = new IntersectionObserver((entries, obs) => {
+      for (const e of entries) {
+        if (!e.isIntersecting) continue;
+        const el = e.target as HTMLElement;
+        obs.unobserve(el);
+        const target = Number(el.dataset.count);
+        if (!Number.isFinite(target)) continue;
+        const sep = el.dataset.sep === 'true';
+        const suffix = el.textContent?.match(/[^\d,.\s]+$/)?.[0] ?? '';
+        const t0 = performance.now();
+        const tick = (now: number) => {
+          const p = Math.min(1, (now - t0) / 1300);
+          const v = Math.round(target * (1 - Math.pow(1 - p, 3)));
+          el.textContent = (sep ? fmt.format(v) : String(v)) + suffix;
+          if (p < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      }
+    }, { threshold: 0.4 });
+    nums.forEach((n) => io.observe(n));
+  }
+
+  // Refresh the live strip from the edge endpoint. The server-rendered values
+  // are already correct as of build; this only closes the gap since deploy.
+  (async () => {
+    const strip = document.getElementById('live');
+    const note = document.getElementById('live-note');
+    if (!strip) return;
+    try {
+      const res = await fetch('/api/figures.json');
+      if (!res.ok) return;
+      const f = await res.json();
+      const fmt = new Intl.NumberFormat('en-CA');
+      const render: Record<string, (v: any) => string> = {
+        population: (x) => fmt.format(x.value),
+        gdp: (x) => '$' + fmt.format(Math.round(x.value / 1000)) + 'B',
+        cpi: (x) => (x.changePct != null ? x.changePct.toFixed(1) : '—') + '%',
+        policyRate: (x) => x.value.toFixed(2) + '%',
+        usdcad: (x) => x.value.toFixed(4),
+      };
+      for (const [key, fn] of Object.entries(render)) {
+        const cell = strip.querySelector(`[data-k="${key}"]`);
+        const stamp = cell?.nextElementSibling;
+        if (cell && f[key]) cell.textContent = fn(f[key]);
+        if (stamp && f[key]?.asOf) stamp.textContent = f[key].asOf;
+      }
+      // Say so when a source is unreachable rather than passing off a stale
+      // number as a live one.
+      if (note && f.allLive === false) {
+        note.textContent = 'Statistics Canada · Bank of Canada — last published figures; a source is not responding';
+      }
+    } catch {
+      /* server-rendered values stand */
+    }
+  })();
+</script>

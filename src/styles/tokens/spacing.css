@@ -1,0 +1,28 @@
+/* Northern Temper spacing + layout.
+   The page is built from a single fluid gutter and a fluid chapter rhythm.
+   No 4/8px grid — the source is clamp-based and the clamps are the token. */
+:root{
+  --gutter:clamp(20px,5vw,80px);              /* page side margin */
+  --section-y:clamp(80px,12vh,170px);         /* chapter padding block */
+  --hero-y-top:clamp(44px,7vh,84px);
+  --hero-y-bottom:clamp(64px,9vh,100px);
+  --wrap-max:1240px;                          /* content wrap */
+  --wrap-hero:940px;
+  --wrap-prose:1100px;
+
+  --space-1:.7rem;
+  --space-2:1.1rem;
+  --space-3:1.6rem;
+  --space-4:2.4rem;
+  --space-5:2.6rem;
+  --gap-grid:clamp(26px,3.6vw,60px);          /* ledger trio */
+  --gap-columns:clamp(28px,4vw,70px);         /* two-column prose */
+  --gap-bars:clamp(30px,6vw,110px);
+  --gap-footer:clamp(24px,3vw,52px);
+  --gap-planes:clamp(8px,1.1vw,18px);
+
+  --stack-label-rule:1.6rem;                  /* label → rule */
+  --stack-rule-head:2.4rem;                   /* rule → headline */
+  --stack-head-body:clamp(34px,5vh,70px);
+  --stack-creed:clamp(24px,3.4vh,46px);
+}
