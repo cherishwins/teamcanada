@@ -89,6 +89,11 @@ one file serves both colourways. **Never reference them via `<img src>`:**
 - `src/components/Nav.astro`, `SiteFooter.astro`, `BlocChart.astro`.
 - `src/layouts/Read.astro` — the long-form layout (single 68ch column).
 - `src/lib/support.ts` — the processor-free support rail (see below).
+- `src/lib/schema.ts` — Article markup for the reads, **Dataset markup for the
+  four public endpoints**. The site redistributes government figures under CC0;
+  Dataset markup is how that becomes findable as data rather than as four
+  anonymous JSON URLs, which is the discovery channel that actually fits a site
+  whose only asset is checkability.
 - `src/pages/api/{figures,rivers,trade}.json.ts` — on-demand live data.
 - `legacy/` — the previous primestrength.ca static site. **Not deployed.**
   Content still to migrate: `legacy/read/*.html` (5 long-form pieces),
@@ -153,6 +158,19 @@ public and checkable" — it can afford neither a dash nor a silently stale numb
   fonts, marks and images.** It must never be the reason somebody sees an old
   figure. Bump `VERSION` in `public/sw.js` when a cached asset changes; activate
   deletes every other cache, so a bump is a clean slate.
+
+## Performance — measured, not assumed
+A phone-width cold load, per page: **7–11 requests, 81–120 kB gzipped, ~2 kB of
+JavaScript**. Roughly **67 kB of that is fonts** — five Latin-subset WOFF2 faces
+at about 13 kB each, all genuinely used. That is where the weight is, and it is
+already near the floor without dropping a weight from the design system.
+
+`build.inlineStylesheets` stays on **`'auto'`**, and this was measured rather
+than assumed. `'always'` removes the 2–3 render-blocking stylesheet links, but
+those are 1–2 kB gzipped each and fetched in parallel over HTTP/2 from one
+origin — about **one** round trip, not three — while inlining re-sends ~3 kB of
+shared CSS on every page instead of caching it once. For anyone reading more
+than a single page, `'auto'` wins. Do not switch without re-measuring.
 
 ## The site — 16 pages, all shipped
 ```

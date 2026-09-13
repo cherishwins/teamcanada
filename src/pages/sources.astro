@@ -4,6 +4,7 @@ import Nav from '../components/Nav.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import Share from '../components/Share.astro';
 import { getFigures, getRivers, getTrade, getProvinces } from '../lib/sources';
+import { datasetSchema, DATASETS } from '../lib/schema';
 
 /**
  * The receipts page.
@@ -81,11 +82,16 @@ const FIXED: Row[] = [
 
 const liveCount = LIVE.filter((r) => r.live).length;
 
+// Each public endpoint is declared as a Dataset. The site redistributes
+// government figures under CC0; markup is how that becomes findable as data
+// rather than as four anonymous JSON URLs.
+const schema = DATASETS.map(datasetSchema);
+
 const description =
   'Every figure on this site, where it comes from, and what period it describes. ' +
   'The live ones link to the endpoint serving them.';
 ---
-<Base title="The Receipts" description={description} path="/sources" ogImage="/og/read.png">
+<Base title="The Receipts" description={description} path="/sources" ogImage="/og/read.png" schema={schema}>
   <Nav />
   <main id="main">
     <section class="open">

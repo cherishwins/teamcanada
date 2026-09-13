@@ -13,10 +13,11 @@ interface Props {
   path: string;
   dateline?: string;
   ogImage?: string;
+  schema?: unknown[];
 }
-const { title, description, imprint, standfirst, path, dateline, ogImage } = Astro.props;
+const { title, description, imprint, standfirst, path, dateline, ogImage, schema } = Astro.props;
 ---
-<Base title={title} description={description} path={path} ogImage={ogImage}>
+<Base title={title} description={description} path={path} ogImage={ogImage} schema={schema}>
   <Nav />
   <main id="main" class="read">
     <header class="rhead nt-light">

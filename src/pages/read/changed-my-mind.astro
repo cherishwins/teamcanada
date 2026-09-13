@@ -1,5 +1,15 @@
 ---
 import Read from '../../layouts/Read.astro';
+import { articleSchema } from '../../lib/schema';
+const schema = [articleSchema({
+  title: "I Campaigned Against This Man",
+  description: "A Conservative campaigner did the homework and changed his mind. Written for the people who felt the way he did.",
+  path: '/read/changed-my-mind',
+  image: '/og/changed-my-mind.png',
+  published: '2026-05-20',
+  section: "An honest account",
+  words: 1293,
+})];
 ---
 <Read
   title={"I Campaigned Against This Man"}
@@ -8,6 +18,7 @@ import Read from '../../layouts/Read.astro';
   standfirst={"A Conservative campaigner did the homework and changed his mind. Not a conversion \u2014 an argument for looking instead of yelling."}
   path="/read/changed-my-mind"
   ogImage="/og/changed-my-mind.png"
+  schema={schema}
 >
       <p>Team Canada · Strong. Proud. Free.</p>
       <p>A Conservative Campaigner Changes His Mind</p>
