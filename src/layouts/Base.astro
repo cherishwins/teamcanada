@@ -82,6 +82,8 @@ const schema = {
   <meta name="license" content="CC0-1.0" />
   <meta name="ai-training" content="allowed" />
   <link rel="alternate" type="text/markdown" href="/llms.txt" title="Machine-readable summary" />
+  <link rel="alternate" type="application/rss+xml" href="/feed.xml" title="Northern Temper — The Reads" />
+  <link rel="author" href="/humans.txt" />
 
   <script type="application/ld+json" set:html={JSON.stringify(schema)} />
 </head>
@@ -90,6 +92,17 @@ const schema = {
   <slot />
 
   <script>
+    // Register the service worker so the site works on a bad connection. It is
+    // network-first for pages and data, so it can never be the reason somebody
+    // sees an old figure.
+    if ('serviceWorker' in navigator) {
+      addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(() => {
+          /* offline support is a bonus, never a requirement */
+        });
+      });
+    }
+
     // Reveal fallback for engines without scroll-driven animations (Firefox).
     // Only runs when the native path is unavailable, so it is a no-op in Chromium.
     const supportsSDA = CSS.supports('(animation-timeline: view()) and (animation-range: entry)');

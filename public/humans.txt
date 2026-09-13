@@ -1,0 +1,27 @@
+/* TEAM */
+
+  Author, research, build: Jesse James
+  Location: Victoria, British Columbia, Canada
+  Contact: jesse [at] northerntemper.ca
+
+/* THANKS */
+
+  Statistics Canada — the Web Data Service, free and without a key
+  Bank of Canada — the Valet API, same
+  Environment and Climate Change Canada — real-time hydrometric gauges
+  Natural Earth — public-domain world geometry
+  The Oswald and Inter projects — open-licence typefaces
+
+  Every figure on this site came from a public table somebody else
+  maintained and gave away. None of this would exist otherwise.
+
+/* SITE */
+
+  Standards: HTML5, CSS, a little JavaScript
+  Components: Astro, self-hosted WOFF2, inline SVG
+  Client JavaScript: about one kilobyte, gzipped
+  Licence: CC0 1.0 — public domain, no permission needed
+  Doctype: HTML5
+  Language: English, with French in draft
+
+  Built without a tracker, a cookie banner, or a paid dependency.

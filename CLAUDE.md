@@ -141,6 +141,18 @@ public and checkable" — it can afford neither a dash nor a silently stale numb
   them). Any generated markup must balance its own anchors — an `<a href="#…">`
   that is skipped on open must not still emit its close.
 - Develop on a branch → draft PR → merge to `main`.
+- **The sweep filters exactly one console error**, by exact message: service-worker
+  registration cannot succeed under Playwright route interception ("An unknown
+  error occurred when fetching the script"). It is filtered by that exact string
+  so any other error still surfaces. `sw.js` is validated separately with
+  `node --check`. Never broaden that filter.
+- **`/fr` must stay out of the sitemap while it is `noindex`** — submitting a URL
+  while telling crawlers not to index it is a contradictory signal. The filter
+  lives in `astro.config.mjs`; remove it the day the draft banner comes off.
+- **The service worker is network-first for pages and data, cache-first only for
+  fonts, marks and images.** It must never be the reason somebody sees an old
+  figure. Bump `VERSION` in `public/sw.js` when a cached asset changes; activate
+  deletes every other cache, so a bump is a clean slate.
 
 ## The site — 16 pages, all shipped
 ```
@@ -151,9 +163,13 @@ IV  · THE BLOC  /bloc     Middle powers.                        live trade data
 V   · THE BUILD /build    Refine · Compute · Corridor + C-5.     from teamcanadawins
 
 /calculator  The bill, per province      live StatCan GDP + population
+/sources     The receipts                every figure, source, period, endpoint
 /fr          La trempe du Nord           BROUILLON, noindex, Act I only
+/offline     Service-worker fallback     noindex
 /read + 5 long-form pieces   9,162 words migrated from the old site
 /join  /support  /privacy  /terms  /404
+/feed.xml    RSS for the five reads
+robots.txt · llms.txt · humans.txt · site.webmanifest · sw.js · security.txt
 
 Every act and the calculator carry a share band: native share sheet where the
 browser has one, plain intent links otherwise, and a ready-to-post block whose
@@ -195,6 +211,11 @@ dossier and 4 of 5 reads. Two traps worth remembering:
    cost, and a tracking surface on an otherwise privacy-clean site.
 4. **Coalition** — `/join` is a `mailto:`, which costs nothing and needs no
    backend. Only replace it if volume actually demands it.
+   **`/sources` is the site's central claim made inspectable** — every figure,
+   its source table, its reference period, and for live ones the endpoint
+   serving it. Where a figure has a known weakness the row says so, including
+   the water vintage. Add a row whenever a new figure appears anywhere on the
+   site; a number that is not on that page is a number nobody can check.
 5. **`/support` — built, needs `SUPPORT_WALLET`.** A **colophon, not a plea**:
    what it costs, in the site's own ledger register. No modal, no thermometer.
    The rail is **deliberately processor-free** — USDC on Base, wallet to wallet,

@@ -1,0 +1,47 @@
+---
+import Base from '../layouts/Base.astro';
+import BearHead from '../components/marks/BearHead.astro';
+---
+<Base title="No signal" description="You are offline. The last pages you visited are still here." path="/offline" noindex>
+  <main id="main">
+    <section class="off">
+      <div class="nt-wrap">
+        <BearHead alt="" class="mk" />
+        <div class="nt-label" style="margin-top:var(--space-4);">No signal</div>
+        <hr class="nt-rule" />
+        <h1 class="nt-display md">The connection went,<br />not the argument.</h1>
+        <p class="lede">
+          Pages you have already opened are still readable. The live figures are
+          not — those are read on request, and there is nothing to read them
+          from right now.
+        </p>
+        <p class="note">
+          Nothing here was lost. Everything on this site is public domain, so if
+          you saved a copy, that copy is as good as this one.
+        </p>
+        <ul class="links">
+          <li><a href="/">The opening</a></li>
+          <li><a href="/read">The reads</a></li>
+        </ul>
+      </div>
+    </section>
+  </main>
+</Base>
+
+<style>
+  .off { padding-block: clamp(70px, 14vh, 180px); min-height: 80svh; }
+  .mk { width: clamp(80px, 14vw, 150px); color: var(--nt-red); }
+  .lede { margin-top: var(--space-4); max-width: 44ch; color: var(--nt-n-220); font-size: var(--type-hero-sub); line-height: var(--lh-hero-sub); }
+  .note { margin-top: var(--space-3); max-width: 48ch; color: var(--text-muted); font-size: var(--type-body-sm); }
+  .links { list-style: none; margin: clamp(26px, 4vh, 46px) 0 0; padding: 0; }
+  .links li { border-top: var(--border-hair) solid var(--border-hairline); }
+  .links li:last-child { border-bottom: var(--border-hair) solid var(--border-hairline); }
+  .links a {
+    display: block; padding: 15px 0; min-height: 44px; text-decoration: none;
+    font-family: var(--font-display); font-weight: var(--fw-label);
+    font-size: var(--type-label); letter-spacing: var(--ls-key);
+    text-transform: uppercase; color: var(--nt-n-420);
+    transition: color .2s var(--ease), padding-inline-start .2s var(--ease);
+  }
+  .links a:hover { color: var(--nt-white); padding-inline-start: 10px; }
+</style>
