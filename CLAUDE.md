@@ -123,9 +123,13 @@ public and checkable" — it can afford neither a dash nor a silently stale numb
   the contrast audit on all pages.
   **Current state: 0 overflow, 0 JS errors, 0 WCAG AA failures, 0 undersized
   standalone tap targets.** Keep it there.
-- Contrast must be calibrated against the surface a token is **actually painted
-  on**. The footer is `--nt-n-950` (#070707), not `#000`, which drags every
-  ratio down ~0.18 — enough to fail a value tuned for pure black.
+- **Calibrate contrast against the LIGHTEST dark surface a token can land on,
+  never against `#000`.** This has bitten three times: the footer is
+  `--nt-n-950` (#070707), raised panels `--nt-n-900` (#111111), meter and
+  chart tracks `--nt-n-880` (#1C1C1C). A value tuned for pure black fails on
+  all three. `--nt-red-lift` and `--nt-n-440` are now set so they clear 4.5:1
+  on **all four** grounds, which means a token can move between surfaces
+  without a fresh audit. Keep that property when changing them.
 - Firefox and WebKit cannot be installed in the web sandbox (missing system
   libs), so cross-engine checking is done by auditing features statically.
   Guard `animation-timeline` with `@supports`, prefix `backdrop-filter` with
@@ -147,8 +151,13 @@ IV  · THE BLOC  /bloc     Middle powers.                        live trade data
 V   · THE BUILD /build    Refine · Compute · Corridor + C-5.     from teamcanadawins
 
 /calculator  The bill, per province      live StatCan GDP + population
+/fr          La trempe du Nord           BROUILLON, noindex, Act I only
 /read + 5 long-form pieces   9,162 words migrated from the old site
 /join  /support  /privacy  /terms  /404
+
+Every act and the calculator carry a share band: native share sheet where the
+browser has one, plain intent links otherwise, and a ready-to-post block whose
+quote is specific to THAT page. No third-party widget, no tracking pixel.
 ```
 **Act IV is the argument that did not exist before.** Not "we don't need the
 Americans" but "we are already widening, and here is the monthly StatCan series
@@ -198,12 +207,39 @@ dossier and 4 of 5 reads. Two traps worth remembering:
    no USDC at all. QR is rendered to SVG server-side so the page ships no QR
    library. If this ever runs during a writ period, check Elections Canada
    third-party advertising thresholds.
-6. **French** — re-authored, never translated; ships as BROUILLON behind
-   `noindex` until a native Québécois reviewer signs off (see
-   `source-material/primestrength-bilingual.skill`).
-7. **Fact-check:** the 109,837 / 9,980 m³ water figures work back to mid-2000s
-   population denominators. The 11:1 ratio holds; the absolutes are ~20 years
-   old. Footnote the vintage or refresh both sides from the same year.
+6. **French** — `/fr` is **live as a BROUILLON draft behind `noindex`**, Act I
+   only, re-authored rather than translated. It needs a native Québécois reader
+   to sign off; then remove `<Brouillon />`, drop `noindex`, and add the
+   reciprocal hreflang pair (the spot is marked in `Base.astro`). Until then
+   hreflang is deliberately NOT emitted — pairing an indexed page with an
+   unindexed one is a bad signal.
+   Rules live in `source-material/primestrength-bilingual.skill`; read
+   `references/quebec-french.md` before touching any French.
+   - **« La trempe »** carries the same double meaning as "temper" —
+     the metallurgical sense and a person's calibre. That is why the French
+     title is *La trempe du Nord* and not a translation of the English one.
+   - The English page opens on Gander. The French opens on **le fleuve**,
+     because the water argument is not abstract to a reader here — it runs
+     past LaSalle and the gauge reports it every five minutes.
+   - **Typography is the fastest tell.** Québec puts NO space before
+     `? ! ; :` where France always does; use U+202F (narrow no-break) where a
+     thin space is wanted. Straight ASCII quotes are the surest sign of machine
+     translation. Both are checked by a regex pass — keep it at zero.
+   - Banned framings (1995 federal-propaganda echoes) are audited too:
+     *unité nationale, notre grand pays, d'un océan à l'autre, un Canada uni,
+     la nation canadienne.* Never reintroduce them.
+7. ~~Fact-check the water figures~~ — **done, and disclosed on the page.**
+   The published per-capita figure divides out to **31.7 million people** —
+   Canada in 1998. The volume never changed; the divisor did. `/` and `/fr`
+   both carry an expandable note giving the implied population, the
+   current-population figure (**~83,975 m³**, computed live from StatCan's own
+   yield and StatCan's own population), and the point that the volume-based
+   claims carry no denominator and are unaffected.
+   **Flagging this ourselves is the posture, not a concession.** Do not quietly
+   delete the note to make the headline look stronger.
+   Still open: the US side is reproduced as published and has the same kind of
+   vintage. Replace both from one recent year when a verifiable US figure is in
+   hand — do not invent a new ratio in the meantime.
 8. **Legal:** "Team Canada" is a Canadian Olympic Committee mark. The rebrand
    sidesteps it — do not reintroduce the name as a public brand.
 

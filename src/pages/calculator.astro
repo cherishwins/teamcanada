@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import Nav from '../components/Nav.astro';
 import SiteFooter from '../components/SiteFooter.astro';
+import Share from '../components/Share.astro';
 import { getProvinces } from '../lib/sources';
 
 const { provinces, canadaPopulation } = await getProvinces();
@@ -167,6 +168,8 @@ const description =
         </p>
       </div>
     </section>
+
+    <Share quote={"Pick a province and see the bill. Trade friction, federal debt share, the cost of building a state from zero — arithmetic on published figures, every line showing its working."} />
   </main>
   <SiteFooter />
 </Base>

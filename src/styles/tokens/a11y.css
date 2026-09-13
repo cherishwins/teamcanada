@@ -19,14 +19,22 @@
    same hue lifted 21% toward white — still unmistakably Canada Red at label
    size.
 
-   IMPORTANT: these are calibrated against --nt-n-950 (#070707), the FOOTER
-   surface, not against pure black. #070707 is very slightly lighter, which
-   drags every ratio down by about 0.18 — enough to push a value tuned for
-   #000 back under the line. Calibrate against the darkest surface a token is
-   ACTUALLY painted on, not the darkest one in the palette.
+   IMPORTANT — calibrate against the LIGHTEST surface a token is painted on,
+   not against pure black. This has bitten three times now: the footer sits on
+   --nt-n-950, raised panels on --nt-n-900, and meter tracks on --nt-n-880.
+   Each is slightly lighter than #000 and drags every ratio down, which is
+   enough to push a value tuned for black back under the line.
 
-       --nt-red-lift  #D4425A   4.73:1 on #000   4.53:1 on #070707
-       --text-caption #787878   4.76:1 on #000   4.56:1 on #070707
+   Measured across every dark surface the site actually uses:
+
+                    #000000   #070707   #111111   #1C1C1C
+     #D4425A          4.73      4.53      4.25 ✗    3.84 ✗   (the old lift)
+     #D95A6F          5.64      5.41      5.07      4.58     (used now)
+     #787878          4.76      4.56      4.28 ✗    3.86 ✗   (the old grey)
+     #848484          5.61      5.39      5.05      4.56     (used now)
+
+   The values below clear 4.5:1 on ALL FOUR grounds, so a token can move
+   between surfaces without a fresh audit each time.
 
    WHAT IS NOT CHANGED
    --nt-red itself is untouched. It remains the strike colour for rules, the
@@ -38,14 +46,14 @@
    ========================================================================== */
 :root{
   /* Same hue, lifted to clear AA at label sizes. */
-  --nt-red-lift:#D4425A;     /* 4.73:1 on #000, 4.53:1 on #070707 */
+  --nt-red-lift:#D95A6F;     /* clears 4.5:1 on #000, #070707, #111111 and #1C1C1C */
 
   /* Small text on the dark field. */
   --text-accent:var(--nt-red-lift);
-  --nt-n-440:#787878;               /* one step past --nt-n-460, clears both grounds */
-  --text-caption:var(--nt-n-440);   /* 3.88 -> 4.56 */
-  --text-cue:var(--nt-n-440);       /* 3.14 -> 4.56 */
-  --text-colophon:var(--nt-n-440);  /* 3.04 -> 4.56 */
+  --nt-n-440:#848484;               /* clears 4.5:1 on every dark surface in use */
+  --text-caption:var(--nt-n-440);   /* 3.88 -> 5.61 on black, 4.56 worst case */
+  --text-cue:var(--nt-n-440);       /* 3.14 -> 5.61 on black, 4.56 worst case */
+  --text-colophon:var(--nt-n-440);  /* 3.04 -> 5.61 on black, 4.56 worst case */
 }
 
 /* On white, #C8102E is 5.88:1 — it already passes, so the light field keeps

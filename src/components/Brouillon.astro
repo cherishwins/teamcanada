@@ -1,0 +1,35 @@
+---
+/**
+ * The review gate, made visible.
+ *
+ * All French on this site ships as a DRAFT until a native Québécois reader
+ * signs off. Token French is worse than none on a site making this argument:
+ * a Québec reader detects machine translation instantly, and at that moment
+ * the message refutes itself. The banner stays until someone qualified
+ * removes it — and the page carries `noindex` for as long as it is here.
+ */
+---
+<aside class="brouillon" role="note">
+  <p class="tag">Brouillon</p>
+  <p>
+    Cette page attend la révision d'une personne dont le français est la langue
+    maternelle, ici, au Québec. Rien n'a été traduit à la machine, mais rien
+    n'a encore été relu non plus. Vous voyez un texte en chantier.
+    <a href="mailto:jesse@northerntemper.ca?subject=R%C3%A9vision%20du%20fran%C3%A7ais">Écrivez-nous</a>
+    si une phrase sonne faux.
+  </p>
+</aside>
+
+<style>
+  .brouillon {
+    background: var(--nt-red); color: var(--nt-white);
+    padding: clamp(14px, 2vw, 20px) var(--gutter);
+  }
+  .brouillon p { max-width: 74ch; margin: 0 auto; font-size: var(--type-body-sm); line-height: 1.5; }
+  .tag {
+    font-family: var(--font-display); font-weight: var(--fw-display);
+    letter-spacing: var(--ls-label); text-transform: uppercase;
+    font-size: var(--type-label-sm); margin-bottom: .35rem !important;
+  }
+  .brouillon a { color: var(--nt-white); text-underline-offset: 3px; }
+</style>

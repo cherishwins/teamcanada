@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import BearDual from '../components/marks/BearDual.astro';
 import Nav from '../components/Nav.astro';
 import SiteFooter from '../components/SiteFooter.astro';
+import Share from '../components/Share.astro';
 import Stat from '../components/Stat.astro';
 import Meter from '../components/Meter.astro';
 import { getFigures, getRivers } from '../lib/sources';
@@ -11,6 +12,20 @@ import { getFigures, getRivers } from '../lib/sources';
 // on load, so a deploy is never required for the numbers to be current.
 const [figures, water] = await Promise.all([getFigures(), getRivers()]);
 const fmt = new Intl.NumberFormat('en-CA');
+
+/**
+ * The published per-capita water figure is Statistics Canada's, but it was
+ * computed on the population of its publication year — it works back to about
+ * 31.7 million people, which is Canada around 1998. The VOLUME has not changed;
+ * only the divisor has. Rather than quietly printing a number whose denominator
+ * is a quarter-century old, the page shows both and says which is which. A site
+ * whose whole claim is that its figures are checkable has to be the one that
+ * flags this.
+ */
+const WATER_YIELD_KM3 = 3478;   // StatCan, average annual water yield
+const PUBLISHED_PER_CAPITA = 109837;
+const currentPerCapita = Math.round((WATER_YIELD_KM3 * 1e9) / figures.population.value);
+const impliedPop = Math.round((WATER_YIELD_KM3 * 1e9) / PUBLISHED_PER_CAPITA);
 
 const description =
   'What we are. What we hold. And what we have never once used against a neighbour, ' +
@@ -99,6 +114,36 @@ const description =
         </div>
         <p class="pull rv">Eleven times the water,<br />per person, every year.</p>
         <p class="nt-caption">Source · Statistics Canada</p>
+
+        <details class="vintage rv">
+          <summary>About that number</summary>
+          <div class="vbody">
+            <p>
+              The per-person figures above are Statistics Canada's, and they are
+              printed as published — but they were worked out on the populations
+              of the year they were published. The Canadian one divides out to
+              about {fmt.format(impliedPop)} people, which is roughly where this
+              country stood in 1998.
+            </p>
+            <p>
+              <strong>The water has not changed. The divisor has.</strong> On the
+              same {fmt.format(WATER_YIELD_KM3)} cubic kilometres of annual yield
+              and today's population of {fmt.format(figures.population.value)},
+              Canada produces about <strong>{fmt.format(currentPerCapita)} m³ per
+              person per year</strong> — roughly a quarter less than the
+              published figure, because there are a quarter more of us.
+            </p>
+            <p>
+              None of that touches the claims underneath it, which carry no
+              denominator at all: third-largest renewable supply on earth, 563
+              lakes over 100 km², a quarter of the world's wetlands, and forty
+              per cent of the longest border. Those are volumes, and they hold.
+            </p>
+            <p class="nt-caption">
+              We would rather point at this ourselves than have it pointed out.
+            </p>
+          </div>
+        </details>
 
         <!-- The same claim, measured rather than cited. -->
         <div class="rivers rv" id="rivers">
@@ -232,6 +277,9 @@ const description =
       </div>
     </section>
 
+
+    <Share quote={"Canada holds eleven times the fresh water per person that the United States does, and has never once suggested the tap had a valve. Strength is what you decline to use."} />
+
   </main>
   <SiteFooter />
 </Base>
@@ -335,6 +383,22 @@ const description =
     font-family: var(--font-display); font-weight: 600; font-size: 12px;
     letter-spacing: .26em; text-transform: uppercase; color: var(--text-cue); margin-top: 1.2rem;
   }
+  .vintage {
+    margin-top: clamp(22px, 3.2vh, 40px); max-width: 62ch;
+    border-top: var(--border-hair) solid var(--border-hairline);
+  }
+  .vintage summary {
+    cursor: pointer; padding: 14px 0; min-height: 44px;
+    display: flex; align-items: center; gap: 10px;
+    font-family: var(--font-display); font-weight: var(--fw-label);
+    font-size: var(--type-label); letter-spacing: var(--ls-key);
+    text-transform: uppercase; color: var(--text-accent);
+  }
+  .vintage summary::marker, .vintage summary::-webkit-details-marker { color: var(--nt-red); }
+  .vbody { padding-bottom: var(--space-3); }
+  .vbody p { font-size: var(--type-body-sm); color: var(--text-muted); margin-bottom: var(--space-2); }
+  .vbody p:last-child { margin-bottom: 0; }
+
   .border-line {
     font-size: clamp(22px,3.1vw,44px); line-height: 1.16; max-width: 22ch;
     margin-top: clamp(38px,5.5vh,76px);
