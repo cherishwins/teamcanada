@@ -133,14 +133,15 @@ public and checkable" — it can afford neither a dash nor a silently stale numb
   **every page across 10 viewports** (320 → 2560) for horizontal overflow,
   console errors, undersized tap targets, broken references and missing
   `og:image:alt`, plus a WCAG AA contrast audit on all pages. It exits non-zero.
-  **Current state: clean on all seven counts.** Keep it there.
+  **Current state: clean on all eight counts.** Keep it there.
   This lived in a scratch directory for a long time and died with each session,
   which is how a convention quietly stops being true. Two things it stubs *on
   purpose*, and the comments say why: other origins answer 204 (the page must
   not need them) and `/api/*` answers **503**, so the sweep actually exercises
   the "a figure never renders blank" fallback rather than faking success.
   Service workers are blocked in the sweep — Playwright does not route their
-  script fetches, so registration failures there are an artifact, not a finding.
+  script fetches, so registration failures there are an artifact, not a finding;
+  `sw.js` is syntax-checked directly instead (see below).
 - **Calibrate contrast against the LIGHTEST dark surface a token can land on,
   never against `#000`.** This has bitten three times: the footer is
   `--nt-n-950` (#070707), raised panels `--nt-n-900` (#111111), meter and
@@ -159,11 +160,18 @@ public and checkable" — it can afford neither a dash nor a silently stale numb
   them). Any generated markup must balance its own anchors — an `<a href="#…">`
   that is skipped on open must not still emit its close.
 - Develop on a branch → draft PR → merge to `main`.
-- **The sweep filters exactly one console error**, by exact message: service-worker
-  registration cannot succeed under Playwright route interception ("An unknown
-  error occurred when fetching the script"). It is filtered by that exact string
-  so any other error still surfaces. `sw.js` is validated separately with
-  `node --check`. Never broaden that filter.
+- **The sweep does not filter console errors — it blocks service workers instead.**
+  An earlier version of this note described a filter on one exact message, and
+  that is not what `tools/verify.cjs` does; the note outlived the design. A
+  message filter suppresses an artifact *and* stands as a permanent chance of
+  masking a real error that happens to match. Registration cannot succeed under
+  Playwright route interception either way, so nothing is lost by blocking it,
+  and the console channel then carries only errors the site is responsible for.
+  **The consequence is that `sw.js` is never parsed by the sweep — and Astro
+  copies `public/` verbatim without parsing it either — so `verify.cjs`
+  syntax-checks it directly and asserts it still has a `VERSION` constant.**
+  Nothing else in this repo reads that file. A broken service worker is worse
+  than none: it is precisely what leaves somebody looking at a stale figure.
 - **`/fr` must stay out of the sitemap while it is `noindex`** — submitting a URL
   while telling crawlers not to index it is a contradictory signal. The filter
   lives in `astro.config.mjs`; remove it the day the draft banner comes off.

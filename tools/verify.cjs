@@ -106,8 +106,36 @@ const TAP_PROBE = () => {
   return out;
 };
 
+/**
+ * The service worker needs its own check, and this is not belt-and-braces.
+ *
+ * Astro copies public/ verbatim without parsing it, and the sweep below blocks
+ * service workers outright (see the comment on newContext), so nothing else in
+ * this repo ever reads sw.js. A syntax error in it would ship silently — and a
+ * broken service worker is worse than no service worker, because it is exactly
+ * the thing that can leave somebody looking at a stale figure on a site whose
+ * whole claim is that the figures are current.
+ */
+function checkServiceWorker() {
+  const sw = path.join(ROOT, 'sw.js');
+  if (!fs.existsSync(sw)) return ['sw.js missing from the build'];
+  const bad = [];
+  try {
+    new (require('vm').Script)(fs.readFileSync(sw, 'utf8'), { filename: sw });
+  } catch (e) {
+    bad.push(`sw.js does not parse: ${e.message}`);
+  }
+  // activate deletes every cache whose name is not VERSION, so a missing or
+  // unbumped VERSION is how a stale asset survives a deploy.
+  if (!/const\s+VERSION\s*=\s*['"`][^'"`]+['"`]/.test(fs.readFileSync(sw, 'utf8')))
+    bad.push('sw.js has no VERSION constant to key its cache on');
+  return bad;
+}
+
 (async () => {
   if (!fs.existsSync(ROOT)) { console.error(`verify: no build at ${ROOT}`); process.exit(1); }
+  const swProblems = checkServiceWorker();
+  for (const m of swProblems) console.log(`  SW        ${m}`);
   const browser = await chromium.launch();
   let overflow = 0, jsErrors = 0, taps = 0, contrast = 0, missing = 0, altMissing = 0, broken = 0;
   const report = [];
@@ -171,7 +199,8 @@ const TAP_PROBE = () => {
   console.log(`  pages not served         ${missing}`);
   console.log(`  pages missing og alt     ${altMissing}`);
   console.log(`  broken references        ${broken}`);
-  const bad = overflow + jsErrors + taps + contrast + missing + altMissing + broken;
+  console.log(`  service-worker problems  ${swProblems.length}`);
+  const bad = overflow + jsErrors + taps + contrast + missing + altMissing + broken + swProblems.length;
   console.log(bad ? `\nverify: ${bad} issue(s)` : '\nverify: clean');
   process.exit(bad ? 1 : 0);
 })();
