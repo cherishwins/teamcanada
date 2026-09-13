@@ -9,8 +9,11 @@ interface Props {
   path?: string;
   ogImage?: string;
   lang?: 'en-CA' | 'fr-CA';
+  /** Keep a page out of the index — used by the French draft until it is reviewed. */
+  noindex?: boolean;
 }
-const { title, description, path = Astro.url.pathname, ogImage = '/og.png', lang = 'en-CA' } = Astro.props;
+const { title, description, path = Astro.url.pathname, ogImage = '/og.png',
+        lang = 'en-CA', noindex = false } = Astro.props;
 
 const canonical = abs(path);
 const og = abs(ogImage);
@@ -35,6 +38,9 @@ const schema = {
   <title>{fullTitle}</title>
   <meta name="description" content={description} />
   <link rel="canonical" href={canonical} />
+  {/* Reciprocal hreflang is deliberately NOT emitted while /fr is a noindex
+      draft — pairing an indexed page with an unindexed one is a bad signal.
+      Add it here the day the BROUILLON banner comes off. */}
   <meta name="theme-color" content="#000000" />
 
   <!-- The five faces are the only render-blocking resource on the page. -->
@@ -62,7 +68,12 @@ const schema = {
   <link rel="mask-icon" href="/favicon.svg" color="#C8102E" />
   <link rel="manifest" href="/site.webmanifest" />
 
-  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large" />
+  <meta
+    name="robots"
+    content={noindex
+      ? 'noindex, nofollow'
+      : 'index, follow, max-snippet:-1, max-image-preview:large'}
+  />
   <meta name="author" content={SITE.author} />
 
   <!-- Public domain, and machine-readable about it. The argument travels

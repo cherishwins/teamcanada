@@ -1,0 +1,235 @@
+---
+import Base from '../../layouts/Base.astro';
+import Brouillon from '../../components/Brouillon.astro';
+import BearDual from '../../components/marks/BearDual.astro';
+import Stat from '../../components/Stat.astro';
+import { getRivers, getFigures } from '../../lib/sources';
+
+/**
+ * French, re-authored — not translated.
+ *
+ * The register follows the house rules: Lagacé by default (first person, dry,
+ * concrete, short), Hébert where a mechanism has to be explained, Laferrière
+ * for the two moments of warmth. Vouvoiement throughout. Guillemets with
+ * non-breaking spaces, and no space before ? ! ; : — Québec usage, which is
+ * the fastest tell that a page was not written in France or by a machine.
+ *
+ * The English page leads with Gander. This one leads with le fleuve, because
+ * for a reader here the water argument is not an abstraction — it runs past
+ * Montréal at nine thousand cubic metres a second and the gauge says so.
+ */
+const [water, figures] = await Promise.all([getRivers(), getFigures()]);
+const fmt = new Intl.NumberFormat('fr-CA');
+const laSalle = water.rivers.find((r) => r.station === '02OA016');
+
+const description =
+  'Ce que nous sommes. Ce que nous détenons. Et ce dont nous ne nous sommes ' +
+  'jamais servis contre un voisin, alors que nous aurions toujours pu.';
+---
+<Base
+  title="La trempe du Nord"
+  description={description}
+  path="/fr"
+  ogImage="/og/home.png"
+  lang="fr-CA"
+  noindex
+>
+  <Brouillon />
+
+  <header class="hero">
+    <div class="aurora" aria-hidden="true"></div>
+    <div class="hero-inner">
+      <div class="hero-figure">
+        <BearDual class="hero-bear" alt="Deux ours polaires dos à dos, épaules soudées, la tête tournée vers l'extérieur." />
+      </div>
+      <h1 class="nt-display xl">La trempe<br />du Nord</h1>
+      <div class="band" aria-hidden="true"></div>
+      <p class="sub">
+        Ce que nous sommes. Ce que nous détenons. Et ce dont nous ne nous sommes
+        jamais servis contre un voisin, alors que nous aurions toujours pu.
+      </p>
+      <div class="nt-stamp">
+        Un état de caractère<br />
+        Publié pendant une guerre commerciale
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- ===== I · le fleuve ===== -->
+    <section class="nt-light">
+      <div class="nt-wrap">
+        <div class="nt-label">Un · Le fleuve</div>
+        <hr class="nt-rule" />
+        <h2 class="nt-display lg">Onze fois<br />plus d'eau.</h2>
+
+        <div class="nt-prose">
+          <p><strong>Présentement, à LaSalle, le fleuve passe à {fmt.format(Math.round(laSalle?.discharge ?? 8960))} mètres cubes par seconde.</strong> Une station de jaugeage le mesure aux cinq minutes. Ce n'est pas une image. C'est une lecture.</p>
+          <p>Le Canada produit 109 837 mètres cubes d'eau douce renouvelable par personne, par année. Les États-Unis en produisent 9 980. Le rapport est d'environ onze contre un.</p>
+          <p>Nous partageons les plus grands lacs de la planète avec les gens de l'autre rive depuis deux cents ans. Pas une fois nous n'avons laissé entendre qu'il y avait un robinet.</p>
+          <p>Personne ne l'a proposé sérieusement. Personne ne le proposera, parce qu'un pays qui ferait cela serait un autre pays que celui-ci, et nous n'avons pas envie de le devenir pour gagner une discussion.</p>
+          <p><strong>Ce n'est pas de la faiblesse. C'est exactement l'affaire.</strong></p>
+        </div>
+
+        <div class="trio">
+          <Stat value="109 837" label="Mètres cubes, par personne" note="Eau douce renouvelable produite chaque année au Canada. Source : Statistique Canada." />
+          <Stat value="9 980" label="Le même chiffre, au sud" note="Onze fois moins, par personne, chaque année." />
+          <Stat value="40 %" countTo={40} label="De la frontière" note="La plus longue frontière du monde n'est pas un trait sur le sol. C'est de l'eau, et nous la buvons tous les deux." />
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== II · le registre ===== -->
+    <section>
+      <div class="nt-wrap">
+        <div class="nt-label">Deux · Le registre</div>
+        <hr class="nt-rule" />
+        <h2 class="nt-display md" style="max-width:17ch;">Un compte que personne ici n'a jamais demandé à régler.</h2>
+
+        <div class="nt-prose">
+          <p>Le 11 septembre 2001, les Américains ont fermé leur propre ciel. Plus de 33 000 personnes se sont retrouvées au-dessus de l'Atlantique sans nulle part où se poser. Le Canada a ouvert dix-sept aéroports et les a tous pris.</p>
+          <p>À Gander, une ville de dix mille habitants à Terre-Neuve, trente-huit gros-porteurs se sont posés. Six mille cinq cents inconnus. Cinq cents chambres d'hôtel en tout. Le reste a dormi dans des sous-sols d'église, des gymnases d'école et des chambres d'amis.</p>
+          <p>Personne n'a envoyé de facture. L'idée n'a effleuré personne.</p>
+          <p>Cent cinquante-huit Canadiens ont été rapatriés de Kandahar dans une guerre qui a commencé un matin qui n'était pas le nôtre.</p>
+        </div>
+
+        <div class="trio">
+          <Stat value="33 000" countTo={33000} separated label="Personnes accueillies" note="Sur 224 vols détournés vers dix-sept aéroports canadiens, en une seule après-midi." />
+          <Stat value="6 595" countTo={6595} separated label="Hébergés à Gander" note="Dans une ville de dix mille habitants qui comptait environ cinq cents chambres d'hôtel." />
+          <Stat value="158" countTo={158} label="Rapatriés de Kandahar" note="Militaires canadiens morts en Afghanistan. L'autoroute depuis Trenton porte leur nom parce que les gens continuaient de se présenter sur les viaducs." />
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== III · la trempe ===== -->
+    <section class="nt-redfield">
+      <div class="nt-wrap">
+        <div class="nt-label">Trois · La trempe</div>
+        <hr class="nt-rule" />
+        <h2 class="nt-display md" style="max-width:16ch;">La force, c'est ce qu'on choisit de ne pas employer.</h2>
+
+        <div class="nt-prose">
+          <p>On trempe l'acier par la chaleur, puis par le froid. Ce qui en sort n'est pas plus mou. C'est plus difficile à casser, et ça garde son tranchant.</p>
+          <p>C'est le mot que nous avons choisi et c'est le mot que nous pensons. La trempe, c'est le métal. La trempe, c'est aussi ce qu'on ne perd pas.</p>
+          <p>La colère est bruyante et la colère s'épuise. Ce que nous avons à la place est plus froid et dure plus longtemps. C'est ce qui fait déneiger un rang à quatre heures du matin. C'est ce qui fait pousser le char d'un inconnu hors du banc de neige par des gens qui ne se nomment jamais.</p>
+          <p><strong>Nous sommes patients parce que l'hiver nous l'a montré. La saison finit toujours par tourner.</strong></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== IV · ce que nous tenons pour vrai ===== -->
+    <section class="nt-light">
+      <div class="nt-wrap">
+        <div class="nt-label">Quatre · Ce que nous tenons pour vrai</div>
+        <hr class="nt-rule" />
+        <ul class="creed">
+          <li class="rv">Une frontière est une poignée de main, pas un mur.</li>
+          <li class="rv">Une entente est une entente le jour où elle devient difficile à tenir.</li>
+          <li class="rv">On ne serre pas la vis à un ami parce qu'on en a les moyens.</li>
+          <li class="rv">L'aide se donne avant qu'on la demande, et elle n'arrive pas avec une facture.</li>
+          <li class="rv">Nous préférons être sous-estimés que craints.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===== clôture ===== -->
+    <section class="close">
+      <div class="nt-wrap">
+        <div class="close-mark rv"><BearDual alt="" /></div>
+        <p class="nt-display md rv" style="margin-top:clamp(30px,5vh,60px);max-width:21ch;">
+          Nous ne demandons pas qu'on nous aime. Nous ne demandons pas qu'on nous sauve. Nous ne demandons à personne au sud de s'excuser.
+        </p>
+        <p class="rv warm">
+          Nous allons simplement continuer d'être le monde qui enverrait encore les avions.
+        </p>
+        <p class="rv" style="margin-top:var(--space-2);color:var(--text-muted);">
+          Et nous laisserons nos voisins décider, à leur rythme et en leur âme et conscience, s'ils sont encore le monde qui les renverrait.
+        </p>
+      </div>
+    </section>
+
+    <section class="sources">
+      <div class="nt-wrap">
+        <div class="nt-label">Prenez-le</div>
+        <hr class="nt-rule" />
+        <div class="scols">
+          <div>
+            <h3 class="sh">L'eau</h3>
+            <p>Statistique Canada : 109 837 m³ d'eau douce renouvelable par personne par année au Canada ; 9 980 m³ aux États-Unis. Troisième réserve renouvelable au monde, avec un débit annuel moyen de 3 478 km³. 563 lacs de plus de 100 km². Les Grands Lacs contiennent environ 18 % du stock mondial d'eau douce de surface. Environ 25 % des milieux humides de la planète. Environ 40 % de la frontière canado-américaine est constituée d'eau. Le débit du fleuve est mesuré en continu par Environnement et Changement climatique Canada.</p>
+          </div>
+          <div>
+            <h3 class="sh">Le registre</h3>
+            <p>Transports Canada a recensé plus de 33 000 passagers sur 224 vols détournés vers 17 aéroports canadiens le 11 septembre 2001. Gander a reçu 38 appareils transportant 6 122 passagers et 473 membres d'équipage, dans une ville d'environ 10 000 habitants. Halifax en a reçu 47, le plus grand nombre pour un seul aéroport. 158 militaires canadiens sont morts pendant la mission en Afghanistan, de 2001 à 2014.</p>
+          </div>
+          <div>
+            <h3 class="sh">La suite</h3>
+            <p>Ce texte n'est pas une traduction. Il a été écrit en français, à partir des mêmes chiffres. Le reste du site est pour l'instant en anglais seulement ; les pages suivront.</p>
+            <p>Tout ce que publie ce site est versé au domaine public sous <a href="https://creativecommons.org/publicdomain/zero/1.0/" rel="license">CC0 1.0</a> — le texte, les chiffres, les ours, le code. Copiez-le, traduisez-le, imprimez-le, citez-le au complet, entraînez un modèle dessus. Aucune permission requise, aucune attribution demandée.</p>
+          </div>
+        </div>
+        <p class="nt-caption back"><a href="/">Read this in English →</a></p>
+      </div>
+    </section>
+  </main>
+</Base>
+
+<style>
+  .hero {
+    min-height: 88svh; display: flex; flex-direction: column; justify-content: center;
+    padding: var(--hero-y-top) var(--gutter) var(--hero-y-bottom);
+    overflow: clip; position: relative;
+  }
+  .aurora {
+    position: absolute; inset: -20% -10% auto -10%; height: 70%; z-index: 0; pointer-events: none;
+    background: var(--aurora); filter: blur(var(--aurora-blur));
+  }
+  .hero-inner { width: 100%; max-width: var(--wrap-hero); margin-inline: auto; position: relative; z-index: 1; }
+  .hero-figure { height: clamp(74px, 17.5vh, 200px); }
+  .hero-figure :global(.hero-bear) { height: 100%; width: auto; }
+  .hero h1 { margin-top: clamp(16px, 2.6vh, 34px); }
+  .band {
+    height: var(--border-band); background: var(--nt-red); width: 100%;
+    margin: clamp(14px,2vh,24px) 0 clamp(16px,2.4vh,28px);
+  }
+  .sub {
+    font-size: var(--type-hero-sub); line-height: var(--lh-hero-sub);
+    max-width: 32ch; color: var(--nt-n-220);
+  }
+  .nt-stamp { margin-top: clamp(18px, 2.8vh, 36px); }
+
+  .trio {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--gap-grid); margin-top: var(--stack-head-body);
+  }
+  .creed { list-style: none; margin-top: var(--space-4); padding: 0; }
+  .creed li {
+    font-family: var(--font-display); font-weight: var(--fw-display);
+    text-transform: uppercase; font-size: clamp(18px, 2.4vw, 34px); line-height: 1.12;
+    padding: clamp(18px, 2.4vh, 30px) 0; max-width: 28ch;
+    border-bottom: var(--border-hair) solid var(--border-hairline);
+  }
+  .creed li:first-child { border-top: var(--border-hair) solid var(--border-hairline); }
+
+  .close { padding-block: clamp(90px, 15vh, 200px); }
+  .close-mark { max-width: 540px; color: var(--nt-red); }
+  .warm { margin-top: var(--space-4); font-size: clamp(18px,1.7vw,24px); color: var(--nt-n-220); }
+
+  .sources { border-top: var(--border-hair) solid var(--border-hairline); padding-block: clamp(60px,9vh,110px); }
+  .scols {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(250px,1fr));
+    gap: clamp(26px,3.4vw,56px); margin-top: var(--space-2);
+  }
+  .sh {
+    font-family: var(--font-display); font-weight: var(--fw-label);
+    font-size: var(--type-label); letter-spacing: var(--ls-key);
+    text-transform: uppercase; color: var(--text-accent); margin-bottom: .9rem;
+  }
+  .scols p { font-size: var(--type-body-sm); color: var(--text-muted); max-width: none; }
+  .scols p + p { margin-top: var(--space-2); }
+  .scols a { color: var(--nt-n-220); text-underline-offset: 3px; }
+  .back { margin-top: clamp(30px, 4.5vh, 56px); }
+  .back a {
+    display: inline-flex; align-items: center; min-height: 44px;
+    color: var(--text-accent); text-underline-offset: 5px;
+  }
+</style>

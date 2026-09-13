@@ -147,6 +147,7 @@ IV  · THE BLOC  /bloc     Middle powers.                        live trade data
 V   · THE BUILD /build    Refine · Compute · Corridor + C-5.     from teamcanadawins
 
 /calculator  The bill, per province      live StatCan GDP + population
+/fr          La trempe du Nord           BROUILLON, noindex, Act I only
 /read + 5 long-form pieces   9,162 words migrated from the old site
 /join  /support  /privacy  /terms  /404
 ```
@@ -198,9 +199,27 @@ dossier and 4 of 5 reads. Two traps worth remembering:
    no USDC at all. QR is rendered to SVG server-side so the page ships no QR
    library. If this ever runs during a writ period, check Elections Canada
    third-party advertising thresholds.
-6. **French** — re-authored, never translated; ships as BROUILLON behind
-   `noindex` until a native Québécois reviewer signs off (see
-   `source-material/primestrength-bilingual.skill`).
+6. **French** — `/fr` is **live as a BROUILLON draft behind `noindex`**, Act I
+   only, re-authored rather than translated. It needs a native Québécois reader
+   to sign off; then remove `<Brouillon />`, drop `noindex`, and add the
+   reciprocal hreflang pair (the spot is marked in `Base.astro`). Until then
+   hreflang is deliberately NOT emitted — pairing an indexed page with an
+   unindexed one is a bad signal.
+   Rules live in `source-material/primestrength-bilingual.skill`; read
+   `references/quebec-french.md` before touching any French.
+   - **« La trempe »** carries the same double meaning as "temper" —
+     the metallurgical sense and a person's calibre. That is why the French
+     title is *La trempe du Nord* and not a translation of the English one.
+   - The English page opens on Gander. The French opens on **le fleuve**,
+     because the water argument is not abstract to a reader here — it runs
+     past LaSalle and the gauge reports it every five minutes.
+   - **Typography is the fastest tell.** Québec puts NO space before
+     `? ! ; :` where France always does; use U+202F (narrow no-break) where a
+     thin space is wanted. Straight ASCII quotes are the surest sign of machine
+     translation. Both are checked by a regex pass — keep it at zero.
+   - Banned framings (1995 federal-propaganda echoes) are audited too:
+     *unité nationale, notre grand pays, d'un océan à l'autre, un Canada uni,
+     la nation canadienne.* Never reintroduce them.
 7. **Fact-check:** the 109,837 / 9,980 m³ water figures work back to mid-2000s
    population denominators. The 11:1 ratio holds; the absolutes are ~20 years
    old. Footnote the vintage or refresh both sides from the same year.

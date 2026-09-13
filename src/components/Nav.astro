@@ -35,6 +35,7 @@ const here = (h: string) => (h === '/' ? pathname === '/' : pathname.startsWith(
       <li><a href="/calculator" aria-current={here('/calculator') ? 'page' : undefined}>The bill</a></li>
       <li><a href="/read" aria-current={here('/read') ? 'page' : undefined}>The reads</a></li>
       <li><a href="/join" aria-current={here('/join') ? 'page' : undefined}>Coalition</a></li>
+      <li><a class="lang" href="/fr" hreflang="fr-CA" lang="fr-CA" aria-current={here('/fr') ? 'page' : undefined}>FR</a></li>
     </ul>
   </div>
 </nav>
@@ -93,6 +94,8 @@ const here = (h: string) => (h === '/' ? pathname === '/' : pathname.startsWith(
   .menu a:hover { color: var(--nt-white); }
   .menu a[aria-current] { color: var(--nt-white); }
   .num { color: var(--text-accent); font-size: 10px; letter-spacing: .12em; }
+  .menu a.lang { color: var(--text-accent); letter-spacing: .22em; }
+  .menu a.lang:hover { color: var(--nt-white); }
   .menu a[aria-current] .num { color: var(--nt-red-lift); }
 
   @media (max-width: 920px) {
