@@ -1,0 +1,10 @@
+/* Northern Temper webfonts. Oswald 600/700 display, Inter 400/500/600 body.
+   DIVERGENCE FROM THE DESIGN SYSTEM, deliberate: the system ships TTF
+   (1.2 MB for the five faces). These are the same five faces, Latin-subset
+   and WOFF2-compressed to 72 KB total — byte-identical rendering, 17x less
+   to download. Worth pushing back upstream into tokens/fonts.css. */
+@font-face{font-family:'Oswald';src:url('/fonts/Oswald-600.woff2') format('woff2');font-weight:600;font-style:normal;font-display:swap}
+@font-face{font-family:'Oswald';src:url('/fonts/Oswald-700.woff2') format('woff2');font-weight:700;font-style:normal;font-display:swap}
+@font-face{font-family:'Inter';src:url('/fonts/Inter-400.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'Inter';src:url('/fonts/Inter-500.woff2') format('woff2');font-weight:500;font-style:normal;font-display:swap}
+@font-face{font-family:'Inter';src:url('/fonts/Inter-600.woff2') format('woff2');font-weight:600;font-style:normal;font-display:swap}

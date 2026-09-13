@@ -1,0 +1,30 @@
+NORTHERN TEMPER
+Creative Commons Zero v1.0 Universal (CC0 1.0) — Public Domain Dedication
+
+The person who associated a work with this deed has dedicated the work to the
+public domain by waiving all of his or her rights to the work worldwide under
+copyright law, including all related and neighboring rights, to the extent
+allowed by law.
+
+You can copy, modify, distribute and perform the work, even for commercial
+purposes, all without asking permission.
+
+This covers everything on this site: the text, the figures, the page design,
+the source code, the polar bear marks, the maple leaf marks, the brand
+guidelines, and the PDF.
+
+Attribution is welcome and is not required.
+
+You may:
+  - reproduce it in whole or in part
+  - translate it
+  - print it, sell it, put it on a shirt
+  - train a machine learning model on it
+  - quote it without limit, in any medium, without asking
+  - remix it into something that disagrees with it
+
+There is no circumstance in which using or referencing this material creates a
+liability to its author. That is the entire point of dedicating it this way.
+
+Full legal text: https://creativecommons.org/publicdomain/zero/1.0/legalcode
+SPDX-License-Identifier: CC0-1.0

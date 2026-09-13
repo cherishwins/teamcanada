@@ -1,0 +1,35 @@
+---
+/** Ledger figure — design system: components/data/StatFigure. */
+interface Props {
+  value: string;
+  label: string;
+  note?: string;
+  countTo?: number;
+  separated?: boolean;
+}
+const { value, label, note, countTo, separated = false } = Astro.props;
+---
+<div class="stat rv">
+  <div class="n" data-count={countTo} data-sep={separated ? 'true' : undefined}>{value}</div>
+  <div class="k">{label}</div>
+  {note && <p class="note">{note}</p>}
+</div>
+
+<style>
+  .n {
+    font-family: var(--font-display); font-weight: var(--fw-display);
+    font-size: var(--type-number-xl); line-height: .84;
+    color: var(--data-strike); font-variant-numeric: tabular-nums;
+    letter-spacing: var(--ls-number);
+  }
+  .k {
+    font-family: var(--font-display); font-weight: var(--fw-label);
+    font-size: var(--type-label); letter-spacing: var(--ls-key); text-transform: uppercase;
+    margin-top: var(--space-1); padding-top: var(--space-1);
+    border-top: var(--border-key) solid var(--border-hairline);
+  }
+  .note {
+    font-size: var(--type-body-sm); color: var(--text-muted);
+    margin-top: .6rem; max-width: var(--measure-stat);
+  }
+</style>

@@ -1,0 +1,18 @@
+{
+  "name": "Northern Temper",
+  "short_name": "Northern Temper",
+  "description": "A statement of Canadian character. What we hold, and what we have never once used against a neighbour.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "lang": "en-CA",
+  "dir": "ltr",
+  "categories": ["news", "politics", "education"],
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

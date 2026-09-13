@@ -1,0 +1,99 @@
+---
+import { SITE, abs } from '../config.mjs';
+import '../styles/base.css';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Site-relative path, e.g. "/dossier". Used for canonical, OG and hreflang. */
+  path?: string;
+  ogImage?: string;
+  lang?: 'en-CA' | 'fr-CA';
+}
+const { title, description, path = Astro.url.pathname, ogImage = '/og.png', lang = 'en-CA' } = Astro.props;
+
+const canonical = abs(path);
+const og = abs(ogImage);
+const fullTitle = path === '/' ? `${SITE.name} — ${SITE.tagline}` : `${title} — ${SITE.name}`;
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: SITE.name,
+  url: SITE.origin,
+  inLanguage: lang,
+  description,
+  license: 'https://creativecommons.org/publicdomain/zero/1.0/',
+  author: { '@type': 'Person', name: SITE.author },
+};
+---
+<!doctype html>
+<html lang={lang}>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>{fullTitle}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonical} />
+  <meta name="theme-color" content="#000000" />
+
+  <!-- The five faces are the only render-blocking resource on the page. -->
+  <link rel="preload" href="/fonts/Oswald-700.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/Inter-400.woff2" as="font" type="font/woff2" crossorigin />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content={SITE.name} />
+  <meta property="og:locale" content={lang.replace('-', '_')} />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:title" content={fullTitle} />
+  <meta property="og:description" content={description} />
+  <meta property="og:image" content={og} />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Two polar bears standing back to back beneath the words Northern Temper." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={fullTitle} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content={og} />
+
+  <link rel="icon" href="/favicon.ico" sizes="any" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="mask-icon" href="/favicon.svg" color="#C8102E" />
+  <link rel="manifest" href="/site.webmanifest" />
+
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large" />
+  <meta name="author" content={SITE.author} />
+
+  <!-- Public domain, and machine-readable about it. The argument travels
+       further if everyone — people, publishers and models — can take it. -->
+  <link rel="license" href="https://creativecommons.org/publicdomain/zero/1.0/" />
+  <meta name="license" content="CC0-1.0" />
+  <meta name="ai-training" content="allowed" />
+  <link rel="alternate" type="text/markdown" href="/llms.txt" title="Machine-readable summary" />
+
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <slot />
+
+  <script>
+    // Reveal fallback for engines without scroll-driven animations (Firefox).
+    // Only runs when the native path is unavailable, so it is a no-op in Chromium.
+    const supportsSDA = CSS.supports('(animation-timeline: view()) and (animation-range: entry)');
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!supportsSDA && !reduced) {
+      document.documentElement.classList.add('no-sda');
+      const io = new IntersectionObserver((entries, obs) => {
+        for (const e of entries) {
+          if (!e.isIntersecting) continue;
+          e.target.classList.add('in');
+          obs.unobserve(e.target);
+        }
+      }, { rootMargin: '0px 0px -12% 0px', threshold: 0.15 });
+      document.querySelectorAll('.rv').forEach((el) => io.observe(el));
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,139 @@
+/* Northern Temper — base layer. Tokens come from the published design system
+   (src/styles/tokens/*), which is the source of truth for every value here. */
+@import './tokens/fonts.css';
+@import './tokens/colors.css';
+@import './tokens/typography.css';
+@import './tokens/spacing.css';
+@import './tokens/borders.css';
+@import './tokens/motion.css';
+@import './tokens/effects.css';
+@import './tokens/a11y.css';   /* must load last — it overrides four text roles */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  color-scheme: dark;
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+body {
+  background: var(--surface-page);
+  color: var(--text-body);
+  font-family: var(--font-body);
+  font-size: var(--type-body);
+  line-height: var(--lh-body);
+  overflow-x: hidden;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+img, svg { display: block; max-width: 100%; }
+a { color: inherit; }
+::selection { background: var(--selection-bg); color: var(--selection-fg); }
+
+/* The fixed grain. One of only two effects in the system. */
+body::after {
+  content: ""; position: fixed; inset: 0; z-index: 9; pointer-events: none;
+  opacity: var(--grain-opacity);
+  background-image: var(--grain-image);
+  background-size: var(--grain-tile) var(--grain-tile);
+  mix-blend-mode: var(--grain-blend);
+}
+@media print { body::after { display: none; } }
+
+:focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset); }
+
+.skip {
+  position: absolute; left: -9999px; top: 0; z-index: 100;
+  background: var(--nt-white); color: var(--nt-black);
+  padding: 14px 20px;
+  font-family: var(--font-display); font-weight: var(--fw-label);
+  letter-spacing: var(--ls-key); text-transform: uppercase; font-size: var(--type-label);
+}
+.skip:focus { left: 0; }
+
+/* ---------- display type ---------- */
+.nt-display {
+  font-family: var(--font-display); font-weight: var(--fw-display);
+  text-transform: uppercase; line-height: var(--lh-display); letter-spacing: var(--ls-display);
+}
+.nt-display.xl { font-size: var(--type-display-xl); }
+.nt-display.lg { font-size: var(--type-display-lg); }
+.nt-display.md { font-size: var(--type-display-md); }
+.nt-display.sm { font-size: var(--type-display-sm); }
+
+/* Section label — Oswald 600, 0.3em, accent. Uses --text-accent, which the
+   a11y layer lifts on dark fields so 13px labels clear AA. */
+.nt-label {
+  font-family: var(--font-display); font-weight: var(--fw-label);
+  font-size: var(--type-label); letter-spacing: var(--ls-label);
+  text-transform: uppercase; color: var(--text-accent);
+}
+
+.nt-stamp {
+  font-family: var(--font-display); font-weight: var(--fw-label);
+  font-size: var(--type-stamp); letter-spacing: var(--ls-label);
+  text-transform: uppercase; line-height: var(--lh-label); color: var(--nt-n-460);
+}
+
+.nt-caption {
+  font-family: var(--font-display); font-weight: var(--fw-label);
+  font-size: var(--type-stamp); letter-spacing: var(--ls-caption);
+  text-transform: uppercase; color: var(--text-caption);
+}
+
+.nt-rule {
+  height: var(--rule-weight); width: var(--rule-width);
+  background: var(--rule-accent); border: 0;
+  margin: var(--stack-label-rule) 0 var(--stack-rule-head);
+}
+
+.nt-lede {
+  font-size: var(--type-lede); line-height: var(--lh-lede);
+  font-weight: var(--fw-body-medium); max-width: var(--measure-lede);
+}
+
+p { max-width: var(--measure-body); margin-bottom: var(--space-2); }
+p:last-child { margin-bottom: 0; }
+
+section { padding: var(--section-y) var(--gutter); position: relative; }
+.nt-wrap { max-width: var(--wrap-max); margin-inline: auto; }
+
+.nt-prose {
+  columns: 2; column-gap: var(--gap-columns);
+  max-width: var(--wrap-prose); margin-top: var(--space-5);
+}
+.nt-prose p { max-width: none; break-inside: avoid; }
+@media (max-width: 760px) { .nt-prose { columns: 1; } }
+
+/* ---------- scroll reveal ----------
+   Native scroll-driven animation where supported, IntersectionObserver
+   everywhere else, and fully visible under reduced motion or print.
+   Content must never depend on an animation to be readable. */
+.rv { opacity: 1; }
+@media (prefers-reduced-motion: no-preference) {
+  @supports ((animation-timeline: view()) and (animation-range: entry)) {
+    @keyframes nt-enter {
+      from { opacity: 0; transform: translateY(var(--rise-distance)); }
+      to   { opacity: 1; transform: none; }
+    }
+    .rv {
+      animation: nt-enter var(--dur-rise) var(--ease) backwards;
+      animation-timeline: view(); animation-range: entry 8% cover 34%;
+    }
+  }
+}
+.no-sda .rv {
+  opacity: 0; transform: translateY(var(--rise-distance));
+  transition: opacity var(--dur-reveal) var(--ease), transform var(--dur-reveal) var(--ease);
+}
+.no-sda .rv.in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .no-sda .rv { opacity: 1; transform: none; transition: none; }
+}
+@media print {
+  .rv { opacity: 1 !important; transform: none !important; animation: none !important; }
+  body { background: #fff; color: #000; }
+}

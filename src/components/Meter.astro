@@ -1,0 +1,45 @@
+---
+/** Proportion bar — design system: components/data/Meter. */
+interface Props {
+  label: string;
+  /** 0-100. */
+  pct: number;
+  display: string;
+  /** `primary` is the Canadian figure (frost); `strike` is the emphasised one (red). */
+  tone?: 'primary' | 'strike';
+}
+const { label, pct, display, tone = 'strike' } = Astro.props;
+const clamped = Math.max(0, Math.min(100, pct));
+---
+<div class="meter rv">
+  <div class="nt-label">{label}</div>
+  <div
+    class="track"
+    role="meter"
+    aria-valuenow={clamped}
+    aria-valuemin="0"
+    aria-valuemax="100"
+    aria-label={`${label}: ${display}`}
+  >
+    <div class={`fill ${tone}`} style={`width:${clamped}%`}><span>{display}</span></div>
+  </div>
+</div>
+
+<style>
+  .meter { margin-top: var(--space-4); }
+  .track {
+    height: 34px; background: var(--surface-track);
+    position: relative; margin-top: .8rem;
+  }
+  .fill { height: 100%; display: flex; align-items: center; padding-left: 12px; }
+  .fill.primary { background: var(--data-primary); }
+  .fill.strike  { background: var(--data-strike); }
+  .fill span {
+    font-family: var(--font-display); font-weight: var(--fw-display);
+    font-size: var(--type-number-sm); letter-spacing: .04em;
+    font-variant-numeric: tabular-nums;
+  }
+  /* Black on frost is 7.14:1; white on Canada Red is 5.88:1. Both clear AA. */
+  .fill.primary span { color: var(--nt-black); }
+  .fill.strike  span { color: var(--nt-white); }
+</style>

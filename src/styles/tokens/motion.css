@@ -1,0 +1,24 @@
+/* Northern Temper motion.
+   One easing curve. Things wipe, rise, and grow from an edge. Nothing
+   bounces, nothing springs, nothing scales up from the centre. */
+:root{
+  --ease:cubic-bezier(.16,1,.3,1);
+  --ease-linear:linear;
+
+  --dur-wipe:1.5s;            /* mark reveal, clip-path inset */
+  --dur-rise:0.95s;           /* headline / paragraph rise */
+  --dur-band:1.1s;            /* red band scaleX */
+  --dur-bar:1s;               /* chart column scaleY */
+  --dur-meter:1.1s;           /* meter fill scaleX */
+  --dur-count:1300ms;         /* number count-up */
+  --dur-reveal:0.85s;         /* generic scroll reveal */
+
+  --delay-headline:0.5s;
+  --delay-band:0.95s;
+  --delay-sub:1.1s;
+  --delay-stamp:1.3s;
+  --delay-cue:1.7s;
+
+  --rise-distance:34px;
+  --count-ease-power:4;       /* 1 - (1-p)^4 */
+}
