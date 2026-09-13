@@ -4,6 +4,7 @@ import Nav from '../components/Nav.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import Stat from '../components/Stat.astro';
 import BlocChart from '../components/BlocChart.astro';
+import BlocMap from '../components/BlocMap.astro';
 import { getTrade } from '../lib/sources';
 
 const trade = await getTrade();
@@ -58,6 +59,8 @@ const description =
           trade series, read this morning. {growing} of the {nonUs.length} non-American
           partners below are growing faster than the American line.
         </p>
+
+        <BlocMap />
 
         <BlocChart partners={trade.partners} asOf={trade.asOf} />
 

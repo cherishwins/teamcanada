@@ -1,0 +1,68 @@
+---
+import fs from 'node:fs';
+import path from 'node:path';
+
+/**
+ * Static world map for Act IV. Generated once from Natural Earth data
+ * (public domain, via world-atlas) and inlined — no tile server, no API key,
+ * no third-party request, and nothing that can begin charging later. The
+ * generator lives in the repo history; world-atlas and topojson-client are
+ * devDependencies and never reach the browser.
+ */
+const svg = fs.readFileSync(
+  path.join(process.cwd(), 'src/components/map/world.svg'),
+  'utf8',
+);
+---
+<figure class="wrap">
+  <div class="frame" set:html={svg} />
+  <figcaption class="legend">
+    <span class="key"><i class="sw home"></i>Canada</span>
+    <span class="key"><i class="sw partner"></i>Partners already growing</span>
+    <span class="key"><i class="sw incumbent"></i>The largest customer</span>
+  </figcaption>
+</figure>
+
+<style>
+  .wrap { margin: clamp(34px, 5vh, 66px) 0 0; }
+  .frame :global(svg) { width: 100%; height: auto; display: block; }
+
+  /* Everything not in the argument recedes to the hairline colour. */
+  .frame :global(.rest path) { fill: var(--nt-n-880); }
+
+  .frame :global(path.partner)   { fill: var(--data-primary); }
+  .frame :global(path.incumbent) { fill: var(--data-inert); }
+  .frame :global(path.home)      { fill: var(--data-strike); }
+
+  .frame :global(path) { stroke: var(--nt-black); stroke-width: .4; vector-effect: non-scaling-stroke; }
+  /* City-states too small to draw at this resolution get a marker instead. */
+  .frame :global(circle.marker) { fill: var(--data-primary); stroke: var(--nt-black); stroke-width: .6; }
+
+  .legend {
+    display: flex; flex-wrap: wrap; gap: clamp(14px, 2.4vw, 32px);
+    margin-top: var(--space-3); padding-top: var(--space-2);
+    border-top: var(--border-hair) solid var(--border-hairline);
+  }
+  .key {
+    display: inline-flex; align-items: center; gap: 9px;
+    font-family: var(--font-display); font-weight: var(--fw-label);
+    font-size: var(--type-label-sm); letter-spacing: var(--ls-key);
+    text-transform: uppercase; color: var(--text-muted);
+  }
+  .sw { width: 16px; height: 10px; flex: none; }
+  .sw.home { background: var(--data-strike); }
+  .sw.partner { background: var(--data-primary); }
+  .sw.incumbent { background: var(--data-inert); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    @keyframes nt-map-in { from { opacity: 0; } to { opacity: 1; } }
+    .frame :global(path.partner), .frame :global(path.home) {
+      animation: nt-map-in var(--dur-bar) var(--ease) backwards;
+    }
+    @supports ((animation-timeline: view()) and (animation-range: entry)) {
+      .frame :global(path.partner), .frame :global(path.home) {
+        animation-timeline: view(); animation-range: entry 5% cover 30%;
+      }
+    }
+  }
+</style>
