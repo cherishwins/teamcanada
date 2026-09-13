@@ -10,8 +10,8 @@
     "check": "astro check"
   },
   "dependencies": {
-    "astro": "^5.14.1",
-    "@astrojs/vercel": "^8.2.9",
+    "astro": "^7.3.2",
+    "@astrojs/vercel": "^11.0.10",
     "@astrojs/sitemap": "^3.6.0"
   }
 }
