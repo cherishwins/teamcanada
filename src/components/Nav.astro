@@ -1,0 +1,133 @@
+---
+import BearHead from './marks/BearHead.astro';
+const { pathname } = Astro.url;
+const acts = [
+  { href: '/',        label: 'Temper',  num: 'I' },
+  { href: '/hand',    label: 'The Hand', num: 'II' },
+  { href: '/math',    label: 'The Math', num: 'III' },
+  { href: '/bloc',    label: 'The Bloc', num: 'IV' },
+  { href: '/build',   label: 'The Build', num: 'V' },
+];
+const here = (h: string) => (h === '/' ? pathname === '/' : pathname.startsWith(h));
+---
+<nav class="nav" aria-label="Primary">
+  <a class="brand" href="/" aria-label="Northern Temper — home">
+    <BearHead alt="" class="bm" />
+    <span class="wm">Northern<br />Temper</span>
+  </a>
+
+  <button class="toggle" type="button" aria-expanded="false" aria-controls="navmenu">
+    <span class="bars" aria-hidden="true"></span>
+    <span class="sr">Menu</span>
+  </button>
+
+  <div class="menu" id="navmenu">
+    <ul class="acts">
+      {acts.map((a) => (
+        <li>
+          <a href={a.href} aria-current={here(a.href) ? 'page' : undefined}>
+            <span class="num">{a.num}</span>{a.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+    <ul class="aux">
+      <li><a href="/calculator" aria-current={here('/calculator') ? 'page' : undefined}>The bill</a></li>
+      <li><a href="/read" aria-current={here('/read') ? 'page' : undefined}>The reads</a></li>
+      <li><a href="/join" aria-current={here('/join') ? 'page' : undefined}>Coalition</a></li>
+    </ul>
+  </div>
+</nav>
+
+<style>
+  .nav {
+    position: sticky; top: 0; z-index: 40;
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+    padding: 12px var(--gutter);
+    /* Plain rgba first so a browser without color-mix() (Safari < 16.2,
+       Firefox < 113) still gets an opaque-enough bar. Without a fallback the
+       sticky nav renders transparent over the content underneath — unreadable,
+       not merely unstyled. */
+    background: rgba(0, 0, 0, .92);
+    background: color-mix(in srgb, var(--nt-black) 92%, transparent);
+    border-bottom: var(--border-hair) solid var(--border-hairline);
+  }
+  @supports (backdrop-filter: blur(10px)) {
+    .nav { backdrop-filter: saturate(140%) blur(12px); -webkit-backdrop-filter: saturate(140%) blur(12px); }
+  }
+  .brand {
+    display: flex; align-items: center; gap: 10px; text-decoration: none;
+    flex: none; color: var(--nt-white);
+    min-height: 44px;            /* WCAG 2.5.8 target size, not just the glyph box */
+    padding-block: 4px;
+  }
+  .brand :global(.bm) { width: 34px; height: auto; flex: none; color: var(--nt-white); }
+  .wm {
+    font-family: var(--font-display); font-weight: var(--fw-display);
+    text-transform: uppercase; font-size: 13px; line-height: .95; letter-spacing: .02em;
+  }
+
+  /* The toggle only exists below the breakpoint; above it the menu is always open. */
+  .toggle {
+    margin-left: auto; display: none; background: none; border: 0; cursor: pointer;
+    width: 44px; height: 44px; align-items: center; justify-content: center; color: var(--nt-white);
+  }
+  .bars, .bars::before, .bars::after {
+    display: block; width: 22px; height: 2px; background: currentColor; content: '';
+    transition: transform .25s var(--ease), opacity .25s var(--ease);
+  }
+  .bars::before { transform: translateY(-7px); }
+  .bars::after  { transform: translateY(5px); }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+
+  .menu { margin-left: auto; display: flex; align-items: center; gap: clamp(14px, 2.2vw, 30px); flex-wrap: wrap; }
+  ul { list-style: none; display: flex; gap: clamp(12px, 1.8vw, 26px); flex-wrap: wrap; margin: 0; padding: 0; }
+  .aux { padding-left: clamp(12px, 1.8vw, 26px); border-left: var(--border-hair) solid var(--border-hairline); }
+  .menu a {
+    font-family: var(--font-display); font-weight: var(--fw-label);
+    font-size: var(--type-label-sm); letter-spacing: .2em; text-transform: uppercase;
+    color: var(--nt-n-420); text-decoration: none;
+    display: inline-flex; align-items: baseline; gap: 7px;
+    padding: 10px 0; transition: color .2s var(--ease);
+  }
+  .menu a:hover { color: var(--nt-white); }
+  .menu a[aria-current] { color: var(--nt-white); }
+  .num { color: var(--text-accent); font-size: 10px; letter-spacing: .12em; }
+  .menu a[aria-current] .num { color: var(--nt-red-lift); }
+
+  @media (max-width: 920px) {
+    .toggle { display: flex; }
+    .menu {
+      flex-basis: 100%; margin-left: 0; flex-direction: column; align-items: flex-start;
+      gap: 0; overflow: hidden; max-height: 0; transition: max-height .3s var(--ease);
+    }
+    .nav[data-open='true'] .menu { max-height: 70svh; overflow-y: auto; }
+    ul { flex-direction: column; gap: 0; width: 100%; }
+    .aux { padding-left: 0; border-left: 0; border-top: var(--border-hair) solid var(--border-hairline); width: 100%; }
+    .menu a { padding: 13px 0; font-size: 13px; width: 100%; }
+    .nav[data-open='true'] .bars { transform: rotate(45deg); }
+    .nav[data-open='true'] .bars::before { opacity: 0; }
+    .nav[data-open='true'] .bars::after { transform: rotate(-90deg) translateX(-5px); }
+  }
+  @media (prefers-reduced-motion: reduce) { .menu { transition: none; } }
+</style>
+
+<script>
+  // Progressive enhancement: without JS the menu is simply always visible,
+  // because max-height only collapses it once the button exists to reopen it.
+  const nav = document.querySelector<HTMLElement>('.nav');
+  const btn = nav?.querySelector<HTMLButtonElement>('.toggle');
+  btn?.addEventListener('click', () => {
+    const open = nav!.dataset.open === 'true';
+    nav!.dataset.open = String(!open);
+    btn.setAttribute('aria-expanded', String(!open));
+  });
+  // Close on escape, and on resize back to the wide layout.
+  addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && nav?.dataset.open === 'true') {
+      nav.dataset.open = 'false';
+      btn?.setAttribute('aria-expanded', 'false');
+      btn?.focus();
+    }
+  });
+</script>

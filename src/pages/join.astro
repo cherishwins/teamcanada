@@ -1,0 +1,150 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import { SITE } from '../config.mjs';
+
+const members = [
+  { name: 'Prime Strength', note: 'Northern Temper · Sovereignty · Unité', url: null },
+  { name: 'NPSI', note: 'North Pacific Strategy Initiative', url: 'https://npsi.ca' },
+  { name: 'Fit For Gov', note: 'Civic technology for Canada', url: 'https://fitforgov.com' },
+  { name: 'iPurpose', note: 'Intelligence with intent', url: null },
+];
+---
+<Base title="The Coalition" description="Put your name behind one country. No account, no fee, free to leave whenever you like." path="/join" ogImage="/og/join.png">
+  <Nav />
+  <main id="main">
+    <section class="open">
+      <div class="nt-wrap">
+        <div class="nt-label">The coalition</div>
+        <hr class="nt-rule" />
+        <h1 class="nt-display lg">Put your name<br />behind one country.</h1>
+        <p class="nt-lede" style="margin-top:var(--space-4);">
+          No account. No fee. Free to leave whenever you like.
+        </p>
+      </div>
+    </section>
+
+    <section class="nt-light">
+      <div class="nt-wrap">
+        <div class="nt-label">Standing here already</div>
+        <hr class="nt-rule" />
+        <ul class="members">
+          {members.map((m) => (
+            <li>
+              {m.url
+                ? <a href={m.url} rel="noopener"><span class="mn">{m.name}</span><span class="mnote">{m.note}</span></a>
+                : <span><span class="mn">{m.name}</span><span class="mnote">{m.note}</span></span>}
+            </li>
+          ))}
+        </ul>
+
+        <div class="nt-prose">
+          <p>This is built by a handful of Canadian imprints that care about the same thing, and it is open to any business that wants to stand in beside them.</p>
+          <p><strong>There is nothing to sign.</strong> Send your name and a logo and it goes on the page. Ask and it comes off the same day. That is the whole arrangement.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="nt-wrap">
+        <div class="nt-label">Add your business</div>
+        <hr class="nt-rule" />
+        <h2 class="nt-display md" style="max-width:16ch;">Three fields. That is all we need.</h2>
+
+        <form class="jf" id="jf" novalidate>
+          <div class="f">
+            <label for="biz">Business name</label>
+            <input id="biz" name="biz" type="text" autocomplete="organization" required />
+          </div>
+          <div class="f">
+            <label for="site">Website</label>
+            <input id="site" name="site" type="url" inputmode="url" placeholder="https://" autocomplete="url" />
+          </div>
+          <div class="f">
+            <label for="email">Your email</label>
+            <input id="email" name="email" type="email" inputmode="email" autocomplete="email" required />
+          </div>
+          <div class="f full">
+            <label for="msg">Anything else <span class="opt">optional</span></label>
+            <textarea id="msg" name="msg" rows="3"></textarea>
+          </div>
+          <button type="submit" class="btn">Add my business</button>
+          <p class="hint" id="hint">
+            This opens your email client with the message ready to send — nothing
+            is transmitted from this page, and no data is stored here.
+          </p>
+        </form>
+      </div>
+    </section>
+  </main>
+  <SiteFooter />
+</Base>
+
+<style>
+  .open { padding-block: clamp(70px, 13vh, 180px); }
+  .open h1 { max-width: 13ch; }
+  .members { list-style: none; margin: clamp(30px, 4.5vh, 58px) 0 0; padding: 0;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 0; }
+  .members li { border-top: var(--border-key) solid var(--border-hairline); }
+  .members a, .members span { display: block; text-decoration: none; color: inherit; padding: var(--space-3) 0 var(--space-4); }
+  .members a:hover .mn { color: var(--nt-red); }
+  .mn { display: block; font-family: var(--font-display); font-weight: var(--fw-display);
+    text-transform: uppercase; font-size: clamp(18px, 2.2vw, 27px); line-height: 1.05; transition: color .2s var(--ease); }
+  .mnote { display: block; color: var(--text-muted); font-size: var(--type-body-sm); margin-top: .4rem; }
+
+  .jf { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: clamp(18px, 2.4vw, 30px); margin-top: clamp(32px, 5vh, 62px); max-width: 780px; }
+  .f { display: flex; flex-direction: column; }
+  .f.full { grid-column: 1 / -1; }
+  label {
+    font-family: var(--font-display); font-weight: var(--fw-label);
+    font-size: var(--type-label-sm); letter-spacing: var(--ls-key);
+    text-transform: uppercase; color: var(--text-muted); margin-bottom: .5rem;
+  }
+  .opt { color: var(--text-caption); }
+  input, textarea {
+    font: inherit; font-size: 16px;            /* 16px stops iOS zooming on focus */
+    background: var(--nt-n-900); color: var(--nt-white);
+    border: var(--border-hair) solid var(--border-hairline); border-radius: var(--radius);
+    padding: 13px 14px; min-height: 48px;      /* comfortable touch target */
+    transition: border-color .2s var(--ease);
+  }
+  textarea { min-height: 96px; resize: vertical; }
+  input:focus, textarea:focus { border-color: var(--nt-red); outline: none; }
+  input:focus-visible, textarea:focus-visible { outline: var(--focus-ring); outline-offset: 1px; }
+  .btn {
+    grid-column: 1 / -1; justify-self: start;
+    font-family: var(--font-display); font-weight: var(--fw-display);
+    text-transform: uppercase; letter-spacing: .12em; font-size: var(--type-label);
+    background: var(--nt-red); color: var(--nt-white);
+    border: 0; border-radius: var(--radius); padding: 16px 28px; min-height: 48px;
+    cursor: pointer; transition: background .2s var(--ease);
+  }
+  .btn:hover { background: var(--nt-white); color: var(--nt-black); }
+  .hint { grid-column: 1 / -1; color: var(--text-caption); font-size: var(--type-body-sm); max-width: 52ch; }
+</style>
+
+<script define:vars={{ to: SITE.email }}>
+  const form = document.getElementById('jf');
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const d = new FormData(form);
+    const biz = String(d.get('biz') || '').trim();
+    const email = String(d.get('email') || '').trim();
+    const hint = document.getElementById('hint');
+    if (!biz || !email) {
+      if (hint) hint.textContent = 'A business name and an email address, and it is done.';
+      (biz ? form.querySelector('#email') : form.querySelector('#biz'))?.focus();
+      return;
+    }
+    const body = [
+      `Business: ${biz}`,
+      `Website: ${String(d.get('site') || '').trim() || '—'}`,
+      `Email: ${email}`,
+      '',
+      String(d.get('msg') || '').trim(),
+    ].join('\n');
+    location.href = `mailto:${to}?subject=${encodeURIComponent('Coalition — ' + biz)}&body=${encodeURIComponent(body)}`;
+  });
+</script>

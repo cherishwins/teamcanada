@@ -1,0 +1,102 @@
+---
+import Base from './Base.astro';
+import Nav from '../components/Nav.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Caps label above the headline, e.g. "NPSI · Working Paper No. 6". */
+  imprint: string;
+  /** Standfirst under the headline. */
+  standfirst: string;
+  path: string;
+  dateline?: string;
+  ogImage?: string;
+}
+const { title, description, imprint, standfirst, path, dateline, ogImage } = Astro.props;
+---
+<Base title={title} description={description} path={path} ogImage={ogImage}>
+  <Nav />
+  <main id="main" class="read">
+    <header class="rhead nt-light">
+      <div class="nt-wrap">
+        <div class="nt-label">{imprint}</div>
+        <hr class="nt-rule" />
+        <h1 class="nt-display lg">{title}</h1>
+        <p class="nt-lede stand">{standfirst}</p>
+        {dateline && <p class="nt-caption dl">{dateline}</p>}
+      </div>
+    </header>
+
+    <article class="body nt-light">
+      <div class="nt-wrap col">
+        <slot />
+      </div>
+    </article>
+  </main>
+  <SiteFooter />
+</Base>
+
+<style>
+  .rhead { padding: clamp(44px, 8vh, 110px) var(--gutter) clamp(30px, 5vh, 60px); }
+  .stand { margin-top: var(--space-4); max-width: 34ch; }
+  .dl { margin-top: var(--space-3); }
+  .body { padding: 0 var(--gutter) clamp(70px, 11vh, 150px); }
+
+  /* One measured column. Long-form is read, not scanned — no two-column
+     prose here, which would force the eye back up the page on every para. */
+  .col { max-width: 68ch; margin-inline: auto; }
+
+  .col :global(h2) {
+    font-family: var(--font-display); font-weight: var(--fw-display);
+    text-transform: uppercase; line-height: 1.04;
+    font-size: clamp(26px, 3.6vw, 46px);
+    margin: clamp(44px, 6vh, 82px) 0 var(--space-3);
+    padding-top: var(--space-4);
+    border-top: var(--border-key) solid var(--nt-red);
+  }
+  .col :global(h3) {
+    font-family: var(--font-display); font-weight: var(--fw-label);
+    text-transform: uppercase; letter-spacing: .06em;
+    font-size: clamp(17px, 1.9vw, 23px);
+    margin: clamp(30px, 4vh, 52px) 0 var(--space-2);
+  }
+  .col :global(p) { margin-bottom: var(--space-2); max-width: none; }
+  .col :global(p.lead) {
+    font-size: var(--type-lede); line-height: var(--lh-lede);
+    font-weight: var(--fw-body-medium); margin-bottom: var(--space-4);
+  }
+  .col :global(a) { color: var(--nt-red); text-underline-offset: 3px; }
+  /* A link that is the whole paragraph is a control, not running text. */
+  .col :global(p > a:only-child) { display: inline-flex; align-items: center; min-height: 44px; }
+  .col :global(strong) { font-weight: var(--fw-body-strong); }
+
+  .col :global(blockquote) {
+    margin: clamp(30px, 4.5vh, 56px) 0; padding-left: clamp(18px, 2.4vw, 30px);
+    border-left: var(--rule-weight) solid var(--nt-red);
+    font-family: var(--font-display); font-weight: var(--fw-display);
+    text-transform: uppercase; line-height: 1.1;
+    font-size: clamp(20px, 2.8vw, 34px);
+  }
+  .col :global(ul), .col :global(ol) { margin: var(--space-3) 0 var(--space-3) 1.1rem; }
+  .col :global(li) { margin-bottom: .7rem; }
+  .col :global(figcaption), .col :global(.fig) {
+    font-family: var(--font-display); font-weight: var(--fw-label);
+    font-size: var(--type-stamp); letter-spacing: var(--ls-caption);
+    text-transform: uppercase; color: var(--text-caption);
+    margin: var(--space-2) 0 var(--space-4);
+  }
+
+  /* Tables scroll inside their own box rather than widening the page. */
+  .col :global(.tw) { overflow-x: auto; margin: clamp(28px, 4vh, 52px) 0; -webkit-overflow-scrolling: touch; }
+  .col :global(table) { width: 100%; border-collapse: collapse; font-size: var(--type-body-sm); min-width: 34rem; }
+  .col :global(th) {
+    background: var(--nt-black); color: var(--nt-white); text-align: left;
+    font-family: var(--font-display); font-weight: var(--fw-label);
+    font-size: var(--type-label-sm); letter-spacing: var(--ls-key); text-transform: uppercase;
+    padding: 11px 13px;
+  }
+  .col :global(td) { border-bottom: var(--border-hair) solid var(--border-hairline); padding: 11px 13px; vertical-align: top; }
+  .col :global(tbody tr:first-child td) { font-weight: var(--fw-body-strong); }
+</style>

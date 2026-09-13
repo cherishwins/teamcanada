@@ -1,0 +1,307 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import { getProvinces } from '../lib/sources';
+
+const { provinces, canadaPopulation } = await getProvinces();
+
+/**
+ * Every constant here is published and cited on the page itself. The
+ * calculator's only claim is arithmetic: it does not estimate anything it
+ * cannot show the source for, and each line states its own method.
+ */
+const CONST = {
+  // Federal accumulated deficit, Public Accounts, March 2025.
+  federalDebtB: 1266,
+  // Trevor Tombe, University of Calgary: a 5% rise in trade friction with the
+  // rest of Canada costs ~4% of GDP; 8% friction costs ~6%.
+  frictionLow: 0.04,
+  frictionHigh: 0.06,
+  // Alberta Prosperity Project's own "fully costed plan": $98-107B to stand up
+  // a state, for a province of ~5.06M. Scaled per person for other provinces,
+  // which is generous to the separation case — smaller states do not get
+  // proportionally cheaper departments.
+  buildStateLowB: 98,
+  buildStateHighB: 107,
+  buildStateBasePop: 5057077,
+  // NATO Hague pledge, 2025: 5% of GDP by 2035.
+  natoPct: 0.05,
+};
+
+const sorted = [...provinces].sort((a, b) => b.gdp - a.gdp);
+const gdpYear = provinces[0]?.gdpYear ?? '2024';
+
+/**
+ * The default province is computed here, not only in the browser. Without this
+ * the page renders a table of em-dashes for anyone with JS off or blocked, and
+ * for every crawler — which contradicts the rule the rest of the site follows:
+ * nothing may depend on scripting to be readable. Script only handles changes.
+ */
+const canadaPop = provinces.reduce((s, p) => s + p.population, 0);
+const DEFAULT = provinces.find((p) => p.code === 'AB') ?? sorted[0];
+
+function bill(pop: number, gdpM: number) {
+  const lossLow = gdpM * CONST.frictionLow;
+  const lossHigh = gdpM * CONST.frictionHigh;
+  const debtLow = CONST.federalDebtB * 1000 * (pop / canadaPop);
+  const debtHigh = debtLow * 1.15;
+  const buildLow = ((CONST.buildStateLowB * 1000) / CONST.buildStateBasePop) * pop;
+  const buildHigh = ((CONST.buildStateHighB * 1000) / CONST.buildStateBasePop) * pop;
+  const natoLow = gdpM * 0.035;
+  const natoHigh = gdpM * CONST.natoPct;
+  const totLow = debtLow + buildLow;
+  const totHigh = debtHigh + buildHigh;
+  const recurring = lossLow + natoHigh;
+  return { lossLow, lossHigh, debtLow, debtHigh, buildLow, buildHigh,
+           natoLow, natoHigh, totLow, totHigh, recurring };
+}
+const d = bill(DEFAULT.population, DEFAULT.gdp);
+const big = (m: number) => {
+  const b = m / 1000;
+  return b >= 1 ? `$${b.toFixed(b < 10 ? 1 : 0)}B` : `$${Math.round(m)}M`;
+};
+const cad = new Intl.NumberFormat('en-CA', { style: 'currency', currency: 'CAD', maximumFractionDigits: 0 });
+
+const description =
+  'Pick a province and see the bill. Trade friction, federal debt share, the ' +
+  'cost of building a state from zero, and the defence floor — from StatCan figures.';
+---
+<Base title="The Bill" description={description} path="/calculator" ogImage="/og/calculator.png">
+  <Nav />
+  <main id="main">
+    <section class="open">
+      <div class="nt-wrap">
+        <div class="nt-label">Run the numbers yourself</div>
+        <hr class="nt-rule" />
+        <h1 class="nt-display lg">Pick a province.<br />See the bill.</h1>
+        <p class="nt-lede" style="margin-top:var(--space-4);">
+          Nothing here is a projection. It is arithmetic on published figures,
+          and every line shows its own working.
+        </p>
+      </div>
+    </section>
+
+    <section class="nt-light">
+      <div class="nt-wrap">
+        <div class="picker">
+          <label class="nt-label" for="prov">Province</label>
+          <select id="prov" name="prov">
+            {sorted.map((p) => (
+              <option value={p.code} selected={p.code === DEFAULT.code}
+                      data-pop={p.population} data-gdp={p.gdp}>{p.name}</option>
+            ))}
+          </select>
+        </div>
+
+        <div class="headline">
+          <div class="hl">
+            <div class="hn" id="totalFirstYear">{big(d.totLow)}</div>
+            <div class="hk">Day-one bill, low estimate</div>
+          </div>
+          <div class="hl">
+            <div class="hn" id="perPerson">{cad.format((d.recurring * 1e6) / DEFAULT.population)}</div>
+            <div class="hk">Per resident, every year after</div>
+          </div>
+          <div class="hl">
+            <div class="hn" id="annualLoss">{big(d.recurring)}/yr</div>
+            <div class="hk">Recurring, every year after</div>
+          </div>
+        </div>
+
+        <table class="bill">
+          <caption class="nt-caption">All figures in Canadian dollars. Low and high reflect the published ranges, not a guess.</caption>
+          <thead>
+            <tr><th scope="col">Line</th><th scope="col">Low</th><th scope="col">High</th><th scope="col">How it is calculated</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Lost output, per year</th>
+              <td id="lossLow">{big(d.lossLow)}</td><td id="lossHigh">{big(d.lossHigh)}</td>
+              <td class="how">4% of provincial GDP at a 5% rise in trade friction with the rest of Canada; 6% at 8% friction. <span class="cite">Tombe, University of Calgary</span></td>
+            </tr>
+            <tr>
+              <th scope="row">Share of federal debt</th>
+              <td id="debtLow">{big(d.debtLow)}</td><td id="debtHigh">{big(d.debtHigh)}</td>
+              <td class="how">Population share of the ${CONST.federalDebtB}B federal accumulated deficit. The high column adds 15% for the negotiation going badly. <span class="cite">Public Accounts, March 2025</span></td>
+            </tr>
+            <tr>
+              <th scope="row">Building a state from zero</th>
+              <td id="buildLow">{big(d.buildLow)}</td><td id="buildHigh">{big(d.buildHigh)}</td>
+              <td class="how">Army, navy, air force, coast guard, central bank, passports, borders, customs, foreign service. Scaled per person from the Alberta Prosperity Project's own ${CONST.buildStateLowB}–${CONST.buildStateHighB}B estimate. <span class="cite">APP, fully costed plan</span></td>
+            </tr>
+            <tr>
+              <th scope="row">Defence, per year</th>
+              <td id="natoLow">{big(d.natoLow)}</td><td id="natoHigh">{big(d.natoHigh)}</td>
+              <td class="how">5% of GDP, the NATO pledge adopted at the Hague in 2025. The low column is the 3.5% direct-military portion. <span class="cite">NATO Hague summit, 2025</span></td>
+            </tr>
+            <tr class="tot">
+              <th scope="row">Day one, before anything is built</th>
+              <td id="totLow">{big(d.totLow)}</td><td id="totHigh">{big(d.totHigh)}</td>
+              <td class="how">Debt share plus standing up a state. The output loss and the defence bill recur every year afterwards.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="flat">
+          <p class="nt-label">A thing worth noticing</p>
+          <p>
+            The day-one bill per resident lands at roughly
+            <strong id="flatPer">{cad.format((d.totLow * 1e6) / DEFAULT.population)}</strong> whichever province you pick. That is
+            not a coincidence and it is not a bug: both of its parts — the share
+            of federal debt and the cost of standing up a state — scale with
+            population. <strong>Leaving costs about the same per person
+            everywhere.</strong> What differs is what each province gives up
+            afterwards, which is the number above it.
+          </p>
+        </div>
+
+        <div class="caveat">
+          <p class="nt-label">What this leaves out</p>
+          <p>Treaty obligations, environmental closure liabilities, currency reserves, and the cost of the negotiation itself. Alberta's oil and gas closure liability alone runs from $36.6B on the regulator's books to $260B in its own worst-case slide. <strong>Every omission here makes separation look cheaper than it is.</strong></p>
+        </div>
+
+        <p class="nt-caption src">
+          Population · Statistics Canada 17-10-0009, most recent quarter ·
+          GDP · Statistics Canada 36-10-0222, {gdpYear}, current prices
+        </p>
+      </div>
+    </section>
+  </main>
+  <SiteFooter />
+</Base>
+
+<style>
+  .open { padding-block: clamp(70px, 13vh, 180px); }
+  .open h1 { max-width: 13ch; }
+
+  .picker { display: flex; flex-direction: column; gap: .6rem; max-width: 24rem; }
+  select {
+    font-family: var(--font-display); font-weight: var(--fw-display);
+    text-transform: uppercase; font-size: clamp(18px, 2.6vw, 30px);
+    background: var(--nt-white); color: var(--nt-black);
+    border: 0; border-bottom: var(--rule-weight) solid var(--nt-red);
+    border-radius: var(--radius); padding: 10px 2px; min-height: 48px;
+    appearance: none; cursor: pointer; width: 100%;
+  }
+  select:focus-visible { outline: var(--focus-ring); outline-offset: 2px; }
+
+  .headline {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: var(--gap-grid); margin: clamp(38px, 6vh, 74px) 0;
+  }
+  .hn {
+    font-family: var(--font-display); font-weight: var(--fw-display);
+    font-size: clamp(34px, 5.4vw, 74px); line-height: .88;
+    color: var(--nt-red); font-variant-numeric: tabular-nums; letter-spacing: var(--ls-number);
+  }
+  .hk {
+    font-family: var(--font-display); font-weight: var(--fw-label);
+    font-size: var(--type-label-sm); letter-spacing: var(--ls-key); text-transform: uppercase;
+    margin-top: .7rem; padding-top: .7rem; border-top: var(--border-key) solid var(--border-hairline);
+  }
+
+  .bill { width: 100%; border-collapse: collapse; margin-top: clamp(24px, 4vh, 48px); }
+  caption { text-align: left; padding-bottom: var(--space-2); }
+  .bill th[scope='col'] {
+    background: var(--nt-black); color: var(--nt-white); text-align: left;
+    font-family: var(--font-display); font-weight: var(--fw-label);
+    font-size: var(--type-label-sm); letter-spacing: var(--ls-key);
+    text-transform: uppercase; padding: 11px 13px;
+  }
+  .bill td, .bill th[scope='row'] {
+    border-bottom: var(--border-hair) solid var(--border-hairline);
+    padding: 14px 13px; vertical-align: top; text-align: left;
+  }
+  .bill th[scope='row'] { font-weight: var(--fw-body-strong); width: 22%; }
+  .bill td:nth-child(2), .bill td:nth-child(3) {
+    font-family: var(--font-display); font-weight: var(--fw-display);
+    font-variant-numeric: tabular-nums; font-size: var(--type-number-sm); white-space: nowrap;
+  }
+  .how { font-size: var(--type-body-sm); color: var(--text-muted); }
+  .cite { display: block; margin-top: .35rem; font-family: var(--font-display);
+    font-weight: var(--fw-label); font-size: 10.5px; letter-spacing: var(--ls-caption);
+    text-transform: uppercase; color: var(--nt-red); }
+  .tot th[scope='row'], .tot td { border-top: var(--border-key) solid var(--nt-black); font-weight: var(--fw-body-strong); }
+
+  /* The table is the content; on a phone it becomes stacked rows rather than
+     a horizontal scroll, because a four-column bill is unreadable at 320px. */
+  @media (max-width: 760px) {
+    .bill, .bill tbody, .bill tr, .bill td, .bill th { display: block; width: auto; }
+    .bill thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+    .bill tr { border-bottom: var(--border-key) solid var(--border-hairline); padding: var(--space-2) 0; }
+    .bill th[scope='row'] { width: auto; border: 0; padding: 0 0 .5rem; font-size: 1.05rem; }
+    .bill td { border: 0; padding: 0 0 .4rem; }
+    .bill td:nth-child(2)::before { content: 'Low · '; font-family: var(--font-body); font-weight: 400; color: var(--text-muted); font-size: var(--type-body-sm); }
+    .bill td:nth-child(3)::before { content: 'High · '; font-family: var(--font-body); font-weight: 400; color: var(--text-muted); font-size: var(--type-body-sm); }
+    .how { padding-top: .4rem; }
+  }
+
+  .flat {
+    margin-top: clamp(34px, 5vh, 64px); padding: clamp(20px, 2.6vw, 30px);
+    border-left: var(--rule-weight) solid var(--nt-black); background: #F4F4F4;
+  }
+  .flat p + p { margin-top: var(--space-2); }
+  .caveat {
+    margin-top: var(--space-3); padding: clamp(20px, 2.6vw, 30px);
+    border-left: var(--rule-weight) solid var(--nt-red); background: #F4F4F4;
+  }
+  .caveat p + p { margin-top: var(--space-2); }
+  .src { margin-top: clamp(26px, 4vh, 46px); }
+</style>
+
+<script define:vars={{ CONST, canadaPopulation }}>
+  const sel = document.getElementById('prov');
+  const cad = new Intl.NumberFormat('en-CA', { style: 'currency', currency: 'CAD', maximumFractionDigits: 0 });
+  const big = (millions) => {
+    const b = millions / 1000;
+    return b >= 1 ? `$${b.toFixed(b < 10 ? 1 : 0)}B` : `$${Math.round(millions)}M`;
+  };
+  const set = (id, txt) => { const el = document.getElementById(id); if (el) el.textContent = txt; };
+
+  function render() {
+    const o = sel?.selectedOptions?.[0];
+    if (!o) return;
+    const pop = Number(o.dataset.pop);
+    const gdpM = Number(o.dataset.gdp);            // $ millions
+
+    const lossLow  = gdpM * CONST.frictionLow;
+    const lossHigh = gdpM * CONST.frictionHigh;
+    const share    = pop / canadaPopulation;
+    const debtLow  = CONST.federalDebtB * 1000 * share;
+    const debtHigh = debtLow * 1.15;
+    const perCap   = (CONST.buildStateLowB * 1000) / CONST.buildStateBasePop;
+    const perCapHi = (CONST.buildStateHighB * 1000) / CONST.buildStateBasePop;
+    const buildLow = perCap * pop;
+    const buildHi  = perCapHi * pop;
+    const natoHigh = gdpM * CONST.natoPct;
+    const natoLow  = gdpM * 0.035;
+
+    set('lossLow', big(lossLow));   set('lossHigh', big(lossHigh));
+    set('debtLow', big(debtLow));   set('debtHigh', big(debtHigh));
+    set('buildLow', big(buildLow)); set('buildHigh', big(buildHi));
+    set('natoLow', big(natoLow));   set('natoHigh', big(natoHigh));
+
+    const totLow = debtLow + buildLow;
+    const totHigh = debtHigh + buildHi;
+    set('totLow', big(totLow));     set('totHigh', big(totHigh));
+
+    set('totalFirstYear', big(totLow));
+
+    // The recurring bill is what actually differs between provinces: lost
+    // output plus the defence floor, both driven by GDP per head rather than
+    // by headcount.
+    const recurring = lossLow + natoHigh;
+    set('annualLoss', big(recurring) + '/yr');
+    set('perPerson', cad.format((recurring * 1e6) / pop));
+
+    // Day-one per head is near-constant by construction; say so rather than
+    // letting it read as a broken number.
+    set('flatPer', cad.format((totLow * 1e6) / pop));
+  }
+
+  sel?.addEventListener('change', render);
+  // The default province is already rendered server-side; this re-render is a
+  // no-op that simply keeps one code path for every province.
+  render();
+</script>

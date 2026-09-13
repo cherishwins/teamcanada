@@ -228,3 +228,218 @@ export async function getRivers(): Promise<Rivers> {
     allLive: rivers.every((r) => r.live),
   };
 }
+
+/* ==========================================================================
+   Trade by partner — Statistics Canada, table 12-10-0011.
+   "International merchandise trade for all countries and by Principal
+   Trading Partners, monthly." Customs basis, seasonally adjusted, exports.
+
+   This is the evidence under Act IV. The argument is not that Canada should
+   find other partners; it is that the diversification is already measurable,
+   monthly, in an official series. Claimed vs. measured, again.
+
+   GOTCHA, and it matters: getDataFromVectorsAndLatestNPeriods returns rows in
+   an ORDER OF ITS OWN, not the order they were requested. Zipping the response
+   against the request array silently mislabels every country. Always index the
+   response by its own vectorId, which is what buildTrade does below.
+   ========================================================================== */
+
+export interface Partner {
+  name: string;
+  /** Most recent month's merchandise exports, $ millions. */
+  exports: number;
+  /** Change against the same month a year earlier, percent. */
+  changePct: number | null;
+  /** Share of the partners tracked here, percent. */
+  sharePct: number;
+  live: boolean;
+}
+
+/**
+ * Vector IDs resolved from the cube's own coordinates
+ * (Canada / Export / Customs / Seasonally adjusted / <partner>).
+ * Fallbacks are the July 2026 published values, $M.
+ */
+const PARTNERS: Array<{ name: string; vector: number; fallback: number; fallbackChange: number }> = [
+  { name: 'United States',  vector: 87008898, fallback: 48896, fallbackChange: 7.7 },
+  { name: 'United Kingdom', vector: 87008900, fallback: 6604,  fallbackChange: 112.2 },
+  { name: 'European Union', vector: 87008899, fallback: 4264,  fallbackChange: 28.3 },
+  { name: 'China',          vector: 87008907, fallback: 4049,  fallbackChange: 44.0 },
+  { name: 'Japan',          vector: 87008909, fallback: 1250,  fallbackChange: -10.4 },
+  { name: 'Mexico',         vector: 87008908, fallback: 1024,  fallbackChange: 38.5 },
+  { name: 'South Korea',    vector: 87008910, fallback: 863,   fallbackChange: 57.3 },
+  { name: 'India',          vector: 87008915, fallback: 456,   fallbackChange: 34.7 },
+  { name: 'Australia',      vector: 87008921, fallback: 386,   fallbackChange: 75.8 },
+];
+
+export interface Trade {
+  partners: Partner[];
+  /** Reference month of the latest figures (YYYY-MM-DD). */
+  asOf: string;
+  /** United States share of the tracked partners, percent. */
+  usSharePct: number;
+  /** Everyone except the United States, $M per month. */
+  restOfWorld: number;
+  fetchedAt: string;
+  allLive: boolean;
+}
+
+export async function getTrade(): Promise<Trade> {
+  // Start from the published fallbacks so a total failure still renders a
+  // complete, correctly-labelled table.
+  const values = new Map<number, { exports: number; changePct: number | null; live: boolean }>(
+    PARTNERS.map((p) => [p.vector, { exports: p.fallback, changePct: p.fallbackChange, live: false }]),
+  );
+  let asOf = '2026-07-01';
+
+  try {
+    const body = PARTNERS.map((p) => ({ vectorId: p.vector, latestN: 13 }));
+    const data = (await getJSON(`${WDS}/getDataFromVectorsAndLatestNPeriods`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    })) as Array<{
+      status?: string;
+      object?: { vectorId?: number; vectorDataPoint?: Array<{ refPer: string; value: number }> };
+    }>;
+
+    for (const row of data ?? []) {
+      // Index by the row's own vectorId — never by position. See the note above.
+      const vec = row.object?.vectorId;
+      if (row.status !== 'SUCCESS' || vec == null || !values.has(vec)) continue;
+      const pts = row.object?.vectorDataPoint;
+      if (!pts?.length) continue;
+
+      const last = pts[pts.length - 1];
+      const first = pts[0];
+      if (!Number.isFinite(last.value)) continue;
+
+      values.set(vec, {
+        exports: last.value,
+        changePct:
+          pts.length > 1 && Number.isFinite(first.value) && first.value !== 0
+            ? (last.value / first.value - 1) * 100
+            : null,
+        live: true,
+      });
+      asOf = last.refPer;
+    }
+  } catch {
+    /* fallbacks stand, and `live` stays false on every row */
+  }
+
+  const total = PARTNERS.reduce((sum, p) => sum + (values.get(p.vector)?.exports ?? 0), 0);
+  const partners: Partner[] = PARTNERS.map((p) => {
+    const v = values.get(p.vector)!;
+    return {
+      name: p.name,
+      exports: v.exports,
+      changePct: v.changePct,
+      sharePct: total ? (v.exports / total) * 100 : 0,
+      live: v.live,
+    };
+  }).sort((a, b) => b.exports - a.exports);
+
+  const us = partners.find((p) => p.name === 'United States');
+  return {
+    partners,
+    asOf,
+    usSharePct: us?.sharePct ?? 0,
+    restOfWorld: total - (us?.exports ?? 0),
+    fetchedAt: new Date().toISOString(),
+    allLive: partners.every((p) => p.live),
+  };
+}
+
+/* ==========================================================================
+   Provinces — StatCan population (17-10-0009) and GDP (36-10-0222).
+
+   Feeds the separation calculator. The point of pulling these live rather than
+   hard-coding them is that the calculator's inputs are then checkable against
+   the same tables anyone else can open, which is the only reason its outputs
+   are worth anything.
+   ========================================================================== */
+
+export interface Province {
+  code: string;
+  name: string;
+  /** Most recent quarterly estimate. */
+  population: number;
+  /** GDP at market prices, current dollars, $ millions, annual. */
+  gdp: number;
+  gdpYear: string;
+  live: boolean;
+}
+
+const PROV: Array<{ code: string; name: string; popVec: number; gdpVec: number; pop: number; gdp: number }> = [
+  { code: 'ON', name: 'Ontario',                   popVec: 12, gdpVec: 62788002, pop: 16103890, gdp: 1197020 },
+  { code: 'QC', name: 'Quebec',                    popVec: 11, gdpVec: 62787885, pop: 9016222,  gdp: 616771 },
+  { code: 'BC', name: 'British Columbia',          popVec: 3,  gdpVec: 62788470, pop: 5646420,  gdp: 429089 },
+  { code: 'AB', name: 'Alberta',                   popVec: 15, gdpVec: 62788353, pop: 5057077,  gdp: 473937 },
+  { code: 'MB', name: 'Manitoba',                  popVec: 13, gdpVec: 62788119, pop: 1503865,  gdp: 96125 },
+  { code: 'SK', name: 'Saskatchewan',              popVec: 14, gdpVec: 62788236, pop: 1266092,  gdp: 112839 },
+  { code: 'NS', name: 'Nova Scotia',               popVec: 9,  gdpVec: 62787651, pop: 1090852,  gdp: 65338 },
+  { code: 'NB', name: 'New Brunswick',             popVec: 10, gdpVec: 62787768, pop: 866497,   gdp: 48302 },
+  { code: 'NL', name: 'Newfoundland and Labrador', popVec: 2,  gdpVec: 62787417, pop: 547910,   gdp: 42219 },
+  { code: 'PE', name: 'Prince Edward Island',      popVec: 8,  gdpVec: 62787534, pop: 181715,   gdp: 10889 },
+];
+
+export interface Provinces {
+  provinces: Province[];
+  /** National population, for the federal debt-share calculation. */
+  canadaPopulation: number;
+  fetchedAt: string;
+  allLive: boolean;
+}
+
+export async function getProvinces(): Promise<Provinces> {
+  const pop = new Map<number, number>();
+  const gdp = new Map<number, { v: number; per: string }>();
+
+  try {
+    const body = [
+      ...PROV.map((p) => ({ vectorId: p.popVec, latestN: 1 })),
+      ...PROV.map((p) => ({ vectorId: p.gdpVec, latestN: 1 })),
+    ];
+    const data = (await getJSON(`${WDS}/getDataFromVectorsAndLatestNPeriods`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    })) as Array<{
+      status?: string;
+      object?: { vectorId?: number; vectorDataPoint?: Array<{ refPer: string; value: number }> };
+    }>;
+    // Indexed by the row's own vectorId. The WDS does not preserve request order.
+    for (const row of data ?? []) {
+      const vec = row.object?.vectorId;
+      const pts = row.object?.vectorDataPoint;
+      if (row.status !== 'SUCCESS' || vec == null || !pts?.length) continue;
+      const last = pts[pts.length - 1];
+      if (!Number.isFinite(last.value)) continue;
+      if (PROV.some((p) => p.popVec === vec)) pop.set(vec, last.value);
+      else gdp.set(vec, { v: last.value, per: last.refPer });
+    }
+  } catch {
+    /* fallbacks below */
+  }
+
+  const provinces: Province[] = PROV.map((p) => {
+    const pv = pop.get(p.popVec);
+    const gv = gdp.get(p.gdpVec);
+    return {
+      code: p.code,
+      name: p.name,
+      population: pv ?? p.pop,
+      gdp: gv?.v ?? p.gdp,
+      gdpYear: (gv?.per ?? '2024-01-01').slice(0, 4),
+      live: pv != null && gv != null,
+    };
+  });
+
+  return {
+    provinces,
+    canadaPopulation: provinces.reduce((s, p) => s + p.population, 0),
+    fetchedAt: new Date().toISOString(),
+    allLive: provinces.every((p) => p.live),
+  };
+}

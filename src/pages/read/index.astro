@@ -1,0 +1,82 @@
+---
+import Base from '../../layouts/Base.astro';
+import Nav from '../../components/Nav.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+
+const reads = [
+  { slug: 'the-closed-loop', imprint: 'NPSI · Working Paper No. 6', title: 'The Closed Loop',
+    blurb: 'How Canadian energy, minerals and two-ocean geography become one forty-year trade with Korea. The anchor case for the middle-power argument.', words: 2717 },
+  { slug: 'the-vertical-squeeze', imprint: 'Fit For Gov · Dossier', title: 'The Vertical Squeeze',
+    blurb: 'The order of government closest to you has the most responsibility and the least revenue. The imbalance, costed.', words: 3612 },
+  { slug: 'changed-my-mind', imprint: 'An honest account', title: 'I Campaigned Against This Man',
+    blurb: 'A Conservative campaigner did the homework and changed his mind. Not a conversion — an argument for looking instead of yelling.', words: 1293 },
+  { slug: 'two-leaders', imprint: 'A governance reading', title: 'The Wave Hit Every G7 Democracy. Two Leaders Beat It.',
+    blurb: 'Anti-incumbent anger flattened the West. Two leaders are the exceptions, and the reason is a method, not a party.', words: 785 },
+  { slug: 'honest-answer', imprint: 'The record, set straight', title: 'One Question. Seven Leaders. An Honest Answer.',
+    blurb: 'The viral "who is in recession" quiz, answered with every official G7 GDP figure. The trick is in the question.', words: 755 },
+];
+---
+<Base title="The Reads" description="The long-form homework behind Northern Temper — sourced in full, free to copy." path="/read" ogImage="/og/read.png">
+  <Nav />
+  <main id="main">
+    <section class="nt-light">
+      <div class="nt-wrap">
+        <div class="nt-label">The reads</div>
+        <hr class="nt-rule" />
+        <h1 class="nt-display lg">Don't take our word for it.<br />Read the homework.</h1>
+        <p class="nt-lede" style="margin-top:var(--space-4);max-width:32ch;">
+          Every claim on this site is laid out in full, with sources, in these pieces.
+        </p>
+
+        <ul class="list">
+          {reads.map((r) => (
+            <li class="rv">
+              <a href={`/read/${r.slug}`}>
+                <div class="meta">
+                  <span class="imp">{r.imprint}</span>
+                  <span class="wc">{r.words.toLocaleString('en-CA')} words</span>
+                </div>
+                <h2 class="nt-display">{r.title}</h2>
+                <p class="blurb">{r.blurb}</p>
+                <span class="go">Read it →</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  </main>
+  <SiteFooter />
+</Base>
+
+<style>
+  .list { list-style: none; margin: clamp(40px, 6vh, 80px) 0 0; padding: 0; }
+  .list li { border-top: var(--border-hair) solid var(--border-hairline); }
+  .list li:last-child { border-bottom: var(--border-hair) solid var(--border-hairline); }
+  .list a {
+    display: block; text-decoration: none; color: inherit;
+    padding: clamp(24px, 3.4vh, 44px) 0;
+    transition: padding-inline-start .25s var(--ease);
+  }
+  .list a:hover { padding-inline-start: 14px; }
+  @media (prefers-reduced-motion: reduce) { .list a, .list a:hover { transition: none; padding-inline-start: 0; } }
+  .meta { display: flex; justify-content: space-between; gap: 14px; flex-wrap: wrap; margin-bottom: var(--space-2); }
+  .imp {
+    font-family: var(--font-display); font-weight: var(--fw-label);
+    font-size: var(--type-label-sm); letter-spacing: var(--ls-label);
+    text-transform: uppercase; color: var(--nt-red);
+  }
+  .wc {
+    font-family: var(--font-display); font-weight: var(--fw-label);
+    font-size: var(--type-label-sm); letter-spacing: var(--ls-key);
+    text-transform: uppercase; color: var(--text-caption);
+  }
+  .list h2 { font-size: clamp(24px, 3.4vw, 46px); line-height: 1.04; max-width: 22ch; }
+  .blurb { color: var(--text-muted); margin-top: var(--space-2); max-width: 56ch; }
+  .go {
+    display: inline-block; margin-top: var(--space-2);
+    font-family: var(--font-display); font-weight: var(--fw-label);
+    font-size: var(--type-label-sm); letter-spacing: var(--ls-key);
+    text-transform: uppercase; color: var(--nt-red);
+  }
+</style>

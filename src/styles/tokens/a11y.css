@@ -14,10 +14,19 @@
      6.08:1  --nt-n-420  footer body            pass
        ...   everything lighter                 pass
 
-   Three of the four are fixed by using a step the system ALREADY defines:
-   --nt-n-460 (#767676, 4.62:1). No new grey is invented. Only the red label
-   needs a value the system does not have, and it is the same hue lifted 19%
-   toward white — still unmistakably Canada Red at label size.
+   Three of the four are fixed by nudging to the next step past --nt-n-460.
+   Only the red label needs a value the system does not have, and it is the
+   same hue lifted 21% toward white — still unmistakably Canada Red at label
+   size.
+
+   IMPORTANT: these are calibrated against --nt-n-950 (#070707), the FOOTER
+   surface, not against pure black. #070707 is very slightly lighter, which
+   drags every ratio down by about 0.18 — enough to push a value tuned for
+   #000 back under the line. Calibrate against the darkest surface a token is
+   ACTUALLY painted on, not the darkest one in the palette.
+
+       --nt-red-lift  #D4425A   4.73:1 on #000   4.53:1 on #070707
+       --text-caption #787878   4.76:1 on #000   4.56:1 on #070707
 
    WHAT IS NOT CHANGED
    --nt-red itself is untouched. It remains the strike colour for rules, the
@@ -29,13 +38,14 @@
    ========================================================================== */
 :root{
   /* Same hue, lifted to clear AA at label sizes. */
-  --nt-red-lift:#D23D56;     /* 4.54:1 on black */
+  --nt-red-lift:#D4425A;     /* 4.73:1 on #000, 4.53:1 on #070707 */
 
   /* Small text on the dark field. */
   --text-accent:var(--nt-red-lift);
-  --text-caption:var(--nt-n-460);   /* 3.88 -> 4.62 */
-  --text-cue:var(--nt-n-460);       /* 3.14 -> 4.62 */
-  --text-colophon:var(--nt-n-460);  /* 3.04 -> 4.62 */
+  --nt-n-440:#787878;               /* one step past --nt-n-460, clears both grounds */
+  --text-caption:var(--nt-n-440);   /* 3.88 -> 4.56 */
+  --text-cue:var(--nt-n-440);       /* 3.14 -> 4.56 */
+  --text-colophon:var(--nt-n-440);  /* 3.04 -> 4.56 */
 }
 
 /* On white, #C8102E is 5.88:1 — it already passes, so the light field keeps
