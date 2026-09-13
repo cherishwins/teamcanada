@@ -23,11 +23,19 @@ An earlier identity ("Unyielding Dominion", roaring grizzly) was retired for
 failing exactly this test. Do not walk back toward it.
 
 ## Stack / infra
-- **Framework:** Astro 5, `output: 'static'` + `@astrojs/vercel`. Acts are
+- **Framework:** Astro 7, `output: 'static'` + `@astrojs/vercel` 11. Acts are
   pre-rendered HTML; only `src/pages/api/*` runs on demand.
-- **Host:** Vercel. **Domain:** northerntemper.ca (registered Sept 2026).
-- `primestrength.ca` lapsed 2026-07-31 and went to redemption — recover it if
-  still possible and 301 it here; never build on it again.
+- **Host:** Vercel. **Domain:** northerntemper.ca — registered and routed.
+- `primestrength.ca` is **retired. Not being renewed. Do not raise it again.**
+
+## ZERO BUDGET — this is a hard constraint
+This is a passion project, not a funded one. **Nothing may cost money unless it
+has already earned it.** Every dependency here is free and must stay free:
+Vercel hobby tier, keyless government APIs (StatCan, Bank of Canada, ECCC),
+open-licence typefaces, self-hosted assets, no Mapbox, no analytics vendor, no
+paid tier of anything. Before adding any service, the question is not "is it
+better" but "is it free, and does it stay free at scale." If the site ever
+earns, that changes — until then it does not.
 - **Client JS budget: ~2 kB gzipped for the whole site.** Reveal fallback and
   count-up only. If a feature needs a framework, question the feature first.
 
@@ -125,6 +133,9 @@ public and checkable" — it can afford neither a dash nor a silently stale numb
   first — without it a Safari < 16.2 sticky nav renders fully transparent.
 - Content must never depend on an animation to be readable — `prefers-reduced-motion`
   and `@media print` both force `.rv` fully visible.
+- **Astro 7's compiler rejects unbalanced tags outright** (Astro 5 tolerated
+  them). Any generated markup must balance its own anchors — an `<a href="#…">`
+  that is skipped on open must not still emit its close.
 - Develop on a branch → draft PR → merge to `main`.
 
 ## The site — 16 pages, all shipped
@@ -157,13 +168,15 @@ dossier and 4 of 5 reads. Two traps worth remembering:
   quotation mark inside the text ends the attribute early.
 
 ## Open / pending
-1. **Acts II–V** — migrate the content above into `src/content/`.
+1. **`SUPPORT_WALLET`** — the one thing blocking the support rail. Set it in
+   Vercel and `/support` arms itself.
 2. **Separation-cost calculator** — province → GDP hit, debt share, build-a-state
-   cost, defence bill. Runs on the Tombe/APP figures in the dossier.
-3. **Middle-power bloc map** — static TopoJSON + inline SVG. No Mapbox: keys,
-   cost and a tracking surface on an otherwise privacy-clean site.
-4. **Coalition backend** — `legacy/join.html` is a `mailto:`. Needs a real store
-   (Supabase is already in use on the x402 project) plus a moderation step.
+   cost, defence bill. Runs on the Tombe/APP figures already in `/math`. Pure
+   client-side arithmetic, no service, no cost.
+3. **Middle-power bloc map** — static TopoJSON + inline SVG. Never Mapbox: keys,
+   cost, and a tracking surface on an otherwise privacy-clean site.
+4. **Coalition** — `/join` is a `mailto:`, which costs nothing and needs no
+   backend. Only replace it if volume actually demands it.
 5. **`/support` — built, needs `SUPPORT_WALLET`.** A **colophon, not a plea**:
    what it costs, in the site's own ledger register. No modal, no thermometer.
    The rail is **deliberately processor-free** — USDC on Base, wallet to wallet,
