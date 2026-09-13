@@ -1,0 +1,106 @@
+/* ==========================================================================
+   Northern Temper — print.
+   
+   The dossier, the calculator and the long-form pieces are documents, and
+   people print documents. On paper the site becomes black on white: the dark
+   grounds waste toner and the red field is unreadable in greyscale.
+
+   The rule that matters here is the same one that governs the rest of the
+   site — a printed copy must be checkable. Every link prints its URL, and
+   every page carries the address it came from, so a photocopy handed to
+   somebody still leads back to the source.
+   ========================================================================== */
+@media print {
+  /* ---------- ground ---------- */
+  :root {
+    --surface-page: #fff;
+    --surface-raised: #fff;
+    --surface-footer: #fff;
+    --surface-track: #e8e8e8;
+    --text-body: #000;
+    --text-lede: #000;
+    --text-muted: #333;
+    --text-caption: #444;
+    /* The brand red is bright by design on screen; on paper it greyscales to a
+       pale tone that reads as washed out next to black text. Everything that
+       uses it — rules, bands, the big numerals — takes an oxblood that stays
+       dark in greyscale and uses less toner. */
+    --nt-red: #7a0a18;
+    --nt-red-lift: #7a0a18;
+    --text-accent: #7a0a18;
+    --data-strike: #7a0a18;
+    --data-primary: #9a9a9a;
+    --data-inert: #cfcfcf;
+    --border-hairline: #bbb;
+    --rule-accent: #7a0a18;
+  }
+
+  html, body { background: #fff !important; color: #000 !important; }
+  body::after { display: none !important; }              /* the film grain */
+  .nt-light, .nt-redfield {
+    background: #fff !important; color: #000 !important;
+  }
+  .nt-redfield { border-top: 3px solid #7a0a18; border-bottom: 3px solid #7a0a18; }
+
+  /* ---------- furniture that has no business on paper ---------- */
+  .nav, .share, .aurora, .progress, .cue, .toggle,
+  .foot nav, .brouillon a, .endpoints a::after { display: none !important; }
+
+  /* ---------- geometry ---------- */
+  @page { margin: 18mm 16mm; }
+  section { padding: 0 0 10mm !important; break-inside: auto; }
+  .nt-wrap { max-width: none !important; }
+
+  /* Each act starts on a fresh sheet; a chapter that begins four lines from
+     the bottom of a page reads as an accident. */
+  main > section + section { break-before: page; }
+
+  h1, h2, h3 { break-after: avoid; }
+  .nt-rule { break-after: avoid; }
+  tr, li, .stat, .river, .pillar, blockquote { break-inside: avoid; }
+  table { break-inside: auto; }
+  thead { display: table-header-group; }                 /* repeat on each sheet */
+
+  /* ---------- type ---------- */
+  body { font-size: 10.5pt; line-height: 1.45; }
+  .nt-display.xl { font-size: 30pt; }
+  .nt-display.lg { font-size: 24pt; }
+  .nt-display.md { font-size: 18pt; }
+  .nt-display.sm { font-size: 14pt; }
+  .nt-lede { font-size: 12pt; max-width: none; }
+  p { max-width: none; orphans: 3; widows: 3; }
+  .nt-prose { columns: 2; column-gap: 10mm; }
+
+  /* ---------- links print their destination ---------- */
+  a { color: #000 !important; text-decoration: underline; }
+  .col a[href^="http"]::after,
+  .nt-prose a[href^="http"]::after,
+  .doc a[href^="http"]::after {
+    content: " <" attr(href) ">";
+    font-size: 8.5pt; word-break: break-all; font-weight: 400;
+  }
+  /* Internal links resolve against the real origin, not a bare path. */
+  .col a[href^="/"]::after,
+  .nt-prose a[href^="/"]::after,
+  .doc a[href^="/"]::after {
+    content: " <northerntemper.ca" attr(href) ">";
+    font-size: 8.5pt; word-break: break-all;
+  }
+
+  /* ---------- data survives greyscale ---------- */
+  .bar, .fill { border: 1px solid #000; }
+  .bar.up, .fill.primary { background: #cfcfcf !important; }
+  .bar.us, .fill.strike, .bar.down { background: #6e6e6e !important; }
+  .fill span, .bar span { color: #000 !important; }
+
+  /* The map is a diagram; print it as one. */
+  .frame :global(.rest path) { fill: #ededed !important; }
+  .frame :global(path.partner) { fill: #b9b9b9 !important; }
+  .frame :global(path.incumbent) { fill: #6e6e6e !important; }
+  .frame :global(path.home) { fill: #2b2b2b !important; }
+  .frame :global(path), .frame :global(circle) { stroke: #000 !important; stroke-width: .5 !important; }
+
+  /* ---------- provenance, on every sheet ---------- */
+  .foot { border-top: 1px solid #000; padding: 4mm 0 0; }
+  .foot .blurb, .foot .bar { color: #000 !important; }
+}

@@ -5,9 +5,10 @@
   "private": true,
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "astro build && node tools/check-french.cjs && node tools/generate-llms-full.cjs",
     "preview": "astro preview",
-    "check": "astro check"
+    "check": "astro check",
+    "check:fr": "node tools/check-french.cjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.6.0",
@@ -19,5 +20,8 @@
     "@types/qrcode": "^1.5.6",
     "topojson-client": "^3.1.0",
     "world-atlas": "^2.0.2"
+  },
+  "overrides": {
+    "path-to-regexp": "^6.3.0"
   }
 }

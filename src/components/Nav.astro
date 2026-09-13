@@ -95,7 +95,14 @@ const here = (h: string) => (h === '/' ? pathname === '/' : pathname.startsWith(
   .menu a:hover { color: var(--nt-white); }
   .menu a[aria-current] { color: var(--nt-white); }
   .num { color: var(--text-accent); font-size: 10px; letter-spacing: .12em; }
-  .menu a.lang { color: var(--text-accent); letter-spacing: .22em; }
+  /* Every other item clears the 24px minimum target (WCAG 2.2 SC 2.5.8) on text
+     width alone; "FR" is two glyphs and lands at 16px on desktop. The mobile
+     rule below already gives it the full row. The trailing letter-space after
+     the R is padded back on the left so the pair still sits optically centred. */
+  .menu a.lang {
+    color: var(--text-accent); letter-spacing: .22em;
+    min-width: 24px; justify-content: center; padding-left: .22em;
+  }
   .menu a.lang:hover { color: var(--nt-white); }
   .menu a[aria-current] .num { color: var(--nt-red-lift); }
 

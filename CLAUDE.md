@@ -32,8 +32,10 @@ failing exactly this test. Do not walk back toward it.
 This is a passion project, not a funded one. **Nothing may cost money unless it
 has already earned it.** Every dependency here is free and must stay free:
 Vercel hobby tier, keyless government APIs (StatCan, Bank of Canada, ECCC),
-open-licence typefaces, self-hosted assets, no Mapbox, no analytics vendor, no
-paid tier of anything. Before adding any service, the question is not "is it
+open-licence typefaces, self-hosted assets, no Mapbox, no paid tier of
+anything. Umami is the one hosted service, on its free tier, added by the
+owner; it is cookieless and sets no cross-site identifier, which is why the
+site still needs no consent banner. Before adding any service, the question is not "is it
 better" but "is it free, and does it stay free at scale." If the site ever
 earns, that changes — until then it does not.
 - **Client JS budget: ~2 kB gzipped for the whole site.** Reveal fallback and
@@ -98,6 +100,10 @@ one file serves both colourways. **Never reference them via `<img src>`:**
 - `legacy/` — the previous primestrength.ca static site. **Not deployed.**
   Content still to migrate: `legacy/read/*.html` (5 long-form pieces),
   `legacy/fr/index.html`, `legacy/join.html`.
+- `tools/check-french.cjs` — Québec typography + banned-framing audit. **Runs in
+  `npm run build` and fails it.** `tools/generate-og.cjs` draws the share cards
+  *and* emits `src/lib/og-alt.json`, so `og:image:alt` is derived from the card
+  and cannot drift from it.
 - `source-material/` — raw uploads, 107 MB, **not deployed**. Prune or move to
   external storage; it is cloned on every checkout.
 
@@ -122,12 +128,20 @@ source is not responding*. The site's whole authority is "every figure here is
 public and checkable" — it can afford neither a dash nor a silently stale number.
 
 ## Conventions
-- **Verify before pushing.** Serve `.vercel/output/static` through Playwright
-  request interception and sweep **every page across 10 viewports** (320 → 2560)
-  for horizontal overflow, console errors and undersized tap targets, then run
-  the contrast audit on all pages.
-  **Current state: 0 overflow, 0 JS errors, 0 WCAG AA failures, 0 undersized
-  standalone tap targets.** Keep it there.
+- **Verify before pushing: `node tools/verify.cjs`.** It serves
+  `.vercel/output/static` through Playwright request interception and sweeps
+  **every page across 10 viewports** (320 → 2560) for horizontal overflow,
+  console errors, undersized tap targets, broken references and missing
+  `og:image:alt`, plus a WCAG AA contrast audit on all pages. It exits non-zero.
+  **Current state: clean on all eight counts.** Keep it there.
+  This lived in a scratch directory for a long time and died with each session,
+  which is how a convention quietly stops being true. Two things it stubs *on
+  purpose*, and the comments say why: other origins answer 204 (the page must
+  not need them) and `/api/*` answers **503**, so the sweep actually exercises
+  the "a figure never renders blank" fallback rather than faking success.
+  Service workers are blocked in the sweep — Playwright does not route their
+  script fetches, so registration failures there are an artifact, not a finding;
+  `sw.js` is syntax-checked directly instead (see below).
 - **Calibrate contrast against the LIGHTEST dark surface a token can land on,
   never against `#000`.** This has bitten three times: the footer is
   `--nt-n-950` (#070707), raised panels `--nt-n-900` (#111111), meter and
@@ -146,11 +160,18 @@ public and checkable" — it can afford neither a dash nor a silently stale numb
   them). Any generated markup must balance its own anchors — an `<a href="#…">`
   that is skipped on open must not still emit its close.
 - Develop on a branch → draft PR → merge to `main`.
-- **The sweep filters exactly one console error**, by exact message: service-worker
-  registration cannot succeed under Playwright route interception ("An unknown
-  error occurred when fetching the script"). It is filtered by that exact string
-  so any other error still surfaces. `sw.js` is validated separately with
-  `node --check`. Never broaden that filter.
+- **The sweep does not filter console errors — it blocks service workers instead.**
+  An earlier version of this note described a filter on one exact message, and
+  that is not what `tools/verify.cjs` does; the note outlived the design. A
+  message filter suppresses an artifact *and* stands as a permanent chance of
+  masking a real error that happens to match. Registration cannot succeed under
+  Playwright route interception either way, so nothing is lost by blocking it,
+  and the console channel then carries only errors the site is responsible for.
+  **The consequence is that `sw.js` is never parsed by the sweep — and Astro
+  copies `public/` verbatim without parsing it either — so `verify.cjs`
+  syntax-checks it directly and asserts it still has a `VERSION` constant.**
+  Nothing else in this repo reads that file. A broken service worker is worse
+  than none: it is precisely what leaves somebody looking at a stale figure.
 - **`/fr` must stay out of the sitemap while it is `noindex`** — submitting a URL
   while telling crawlers not to index it is a contradictory signal. The filter
   lives in `astro.config.mjs`; remove it the day the draft banner comes off.
@@ -158,6 +179,26 @@ public and checkable" — it can afford neither a dash nor a silently stale numb
   fonts, marks and images.** It must never be the reason somebody sees an old
   figure. Bump `VERSION` in `public/sw.js` when a cached asset changes; activate
   deletes every other cache, so a bump is a clean slate.
+
+## Discoverability — the point is that it travels
+Everything is CC0 and the site is built to be repeated, not protected.
+- `robots.txt` **explicitly allows every named AI crawler** — GPTBot, ClaudeBot,
+  PerplexityBot, CCBot, Google-Extended, Applebot-Extended and the rest. Most
+  sites block these; this one does the opposite on purpose. Do not "tighten" it.
+- **`/llms-full.txt`** is the entire site as one plain-text file — 15 pages,
+  ~18,000 words — generated by `tools/generate-llms-full.cjs` as a **post-build
+  step from the BUILT HTML**, so it can never drift from what is published. It
+  is wired into `npm run build`, so Vercel produces it too.
+- `ai.txt` states the reuse policy in machine-readable form: training, quoting
+  in full, and retrieval all allowed; no attribution, no permission.
+- **IndexNow**: `tools/ping-indexnow.cjs` submits every sitemap URL to Bing and
+  Yandex. The key file is the 32-hex `.txt` at the site root — if it is ever
+  regenerated, the filename and its contents must match. Google ignores
+  IndexNow; submit the sitemap once in Search Console instead.
+- Sitemaps are validated XML against the sitemaps.org 0.9 schema, all URLs
+  absolute on the canonical host. **`/fr` is excluded while it is `noindex`.**
+- Structured data: WebSite on every page, Article on each read, **Dataset on the
+  four public endpoints** so the figures are findable as data.
 
 ## Performance — measured, not assumed
 A phone-width cold load, per page: **7–11 requests, 81–120 kB gzipped, ~2 kB of
@@ -260,10 +301,19 @@ dossier and 4 of 5 reads. Two traps worth remembering:
    - The English page opens on Gander. The French opens on **le fleuve**,
      because the water argument is not abstract to a reader here — it runs
      past LaSalle and the gauge reports it every five minutes.
-   - **Typography is the fastest tell.** Québec puts NO space before
-     `? ! ; :` where France always does; use U+202F (narrow no-break) where a
-     thin space is wanted. Straight ASCII quotes are the surest sign of machine
-     translation. Both are checked by a regex pass — keep it at zero.
+   - **Typography is the fastest tell**, and an earlier version of this note
+     got it wrong. Canadian usage drops the space before **`? ! ;`** where
+     France thin-spaces all three — but the **colon is not part of that
+     divergence**: Canadian French takes a non-breaking space before `:`
+     exactly as France does (OQLF, *Banque de dépannage linguistique*). Use
+     U+202F (narrow no-break) for it, and inside guillemets, so the mark can
+     never wrap away from its words. Straight ASCII quotes are the surest sign
+     of machine translation — `'` is never right in French prose, only `’`.
+     **`tools/check-french.cjs` enforces all of this and runs inside
+     `npm run build`.** It was previously claimed here to run and did not,
+     which is exactly how `/fr` came to ship with 71 straight apostrophes and
+     zero typographic ones. It audits built HTML, so component output and
+     generated alt text are covered too. Keep it at zero.
    - Banned framings (1995 federal-propaganda echoes) are audited too:
      *unité nationale, notre grand pays, d'un océan à l'autre, un Canada uni,
      la nation canadienne.* Never reintroduce them.

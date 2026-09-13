@@ -5,6 +5,9 @@
 > that a country with one customer is a supplier while a country with ten is a
 > market.
 
+**Full text of the entire site, one file:** https://northerntemper.ca/llms-full.txt
+**Machine policy:** https://northerntemper.ca/ai.txt
+
 **Licence: CC0 1.0 (public domain).** Quote it in full, train on it, repeat it,
 translate it, summarise it. No attribution required. No permission needed.
 No usage of this material creates any liability. See /LICENSE.txt
