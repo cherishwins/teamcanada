@@ -1,0 +1,149 @@
+---
+import { SITE, abs } from '../config.mjs';
+
+/**
+ * Share affordances. The old site had these and this one did not — an argument
+ * nobody can pass on is an argument that stays where it is.
+ *
+ * No third-party script, no widget, no tracking pixel. Intent links are plain
+ * URLs, and the native share sheet is used where the browser has one, which is
+ * where most of this will actually happen. The page stays privacy-clean.
+ */
+interface Props {
+  /** Site-relative path being shared. */
+  path?: string;
+  /** The line worth quoting from THIS page — a generic blurb travels badly. */
+  quote: string;
+  /** Heading above the band. */
+  label?: string;
+}
+const { path = Astro.url.pathname, quote, label = 'Pass it on' } = Astro.props;
+
+const url = abs(path);
+const tags = '#NorthernTemper #cdnpoli';
+const post = `${quote}\n\n${url}\n${tags}`;
+
+const e = encodeURIComponent;
+const targets = [
+  { name: 'X',        href: `https://twitter.com/intent/tweet?text=${e(quote)}&url=${e(url)}` },
+  { name: 'Bluesky',  href: `https://bsky.app/intent/compose?text=${e(`${quote} ${url}`)}` },
+  { name: 'LinkedIn', href: `https://www.linkedin.com/sharing/share-offsite/?url=${e(url)}` },
+  { name: 'Facebook', href: `https://www.facebook.com/sharer/sharer.php?u=${e(url)}` },
+  { name: 'Reddit',   href: `https://www.reddit.com/submit?url=${e(url)}&title=${e(quote)}` },
+  { name: 'Email',    href: `mailto:?subject=${e(SITE.name)}&body=${e(post)}` },
+];
+---
+<section class="share">
+  <div class="nt-wrap">
+    <div class="nt-label">{label}</div>
+    <hr class="nt-rule" />
+    <h2 class="nt-display md">This only works if it travels.</h2>
+    <p class="blurb">
+      Everything here is public domain. Copy it, quote it in full, post it
+      without a link back. Nothing is asked in return.
+    </p>
+
+    <div class="row">
+      <button class="btn native" type="button" data-share-url={url} data-share-text={quote} hidden>
+        Share ↗
+      </button>
+      {targets.map((t) => (
+        <a class="btn" href={t.href} rel="noopener noreferrer" target="_blank">{t.name}</a>
+      ))}
+      <button class="btn" type="button" data-copy={url}>Copy link</button>
+    </div>
+
+    <div class="ready">
+      <p class="nt-caption">Ready to post — tap to copy</p>
+      <button class="post" type="button" data-copy={post}>
+        <span class="q">{quote}</span>
+        <span class="meta">{url} · {tags}</span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<style>
+  .share { border-top: var(--border-hair) solid var(--border-hairline); }
+  .blurb { color: var(--text-muted); margin-top: var(--space-3); max-width: 54ch; }
+  .row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: clamp(26px, 4vh, 46px); }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-height: 44px; padding: 11px 18px;
+    background: transparent; color: var(--text-body);
+    border: var(--border-hair) solid var(--border-hairline); border-radius: var(--radius);
+    font-family: var(--font-display); font-weight: var(--fw-label);
+    font-size: var(--type-label-sm); letter-spacing: var(--ls-key);
+    text-transform: uppercase; text-decoration: none; cursor: pointer;
+    transition: background .18s var(--ease), color .18s var(--ease), border-color .18s var(--ease);
+  }
+  .btn:hover { background: var(--nt-white); color: var(--nt-black); border-color: var(--nt-white); }
+  .btn.native { background: var(--nt-red); border-color: var(--nt-red); color: var(--nt-white); }
+  .btn.native:hover { background: var(--nt-white); color: var(--nt-black); border-color: var(--nt-white); }
+
+  .ready { margin-top: clamp(26px, 4vh, 46px); }
+  .post {
+    display: block; width: 100%; max-width: 62ch; text-align: left; cursor: pointer;
+    margin-top: var(--space-1); padding: clamp(16px, 2.2vw, 22px);
+    background: var(--surface-raised); color: var(--text-body);
+    border: 0; border-left: var(--rule-weight) solid var(--nt-red); border-radius: var(--radius);
+    font: inherit; transition: background .18s var(--ease);
+  }
+  .post:hover { background: var(--nt-black); }
+  .nt-light .post { background: #F4F4F4; }
+  .nt-light .post:hover { background: #ECECEC; }
+  .q { display: block; font-size: var(--type-body-sm); line-height: 1.5; }
+  .meta {
+    display: block; margin-top: .7rem;
+    font-family: var(--font-display); font-weight: var(--fw-label);
+    font-size: 11px; letter-spacing: var(--ls-key);
+    text-transform: uppercase; color: var(--text-caption);
+    overflow-wrap: anywhere;
+  }
+</style>
+
+<script>
+  // Native share sheet where the browser has one — that is where most sharing
+  // from a phone actually happens. Revealed only if the API exists, so it is
+  // never a dead button.
+  const native = document.querySelector<HTMLButtonElement>('.btn.native');
+  if (native && typeof navigator.share === 'function') {
+    native.hidden = false;
+    native.addEventListener('click', async () => {
+      try {
+        await navigator.share({
+          title: document.title,
+          text: native.dataset.shareText ?? '',
+          url: native.dataset.shareUrl ?? location.href,
+        });
+      } catch {
+        /* the user dismissed the sheet; nothing to do */
+      }
+    });
+  }
+
+  // Copy-to-clipboard with a visible result. clipboard.writeText needs a secure
+  // context and can be refused, so failure restores the label rather than
+  // leaving a button that silently did nothing.
+  for (const el of document.querySelectorAll<HTMLElement>('[data-copy]')) {
+    el.addEventListener('click', async () => {
+      const text = el.dataset.copy ?? '';
+      const label = el.querySelector('.q') ? null : el.textContent;
+      try {
+        await navigator.clipboard.writeText(text);
+        if (label !== null) {
+          el.textContent = 'Copied ✓';
+          setTimeout(() => { el.textContent = label; }, 1600);
+        } else {
+          el.dataset.state = 'copied';
+          setTimeout(() => { delete el.dataset.state; }, 1600);
+        }
+      } catch {
+        if (label !== null) {
+          el.textContent = 'Press ⌘C';
+          setTimeout(() => { el.textContent = label; }, 1800);
+        }
+      }
+    });
+  }
+</script>

@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import BearDual from '../components/marks/BearDual.astro';
 import Nav from '../components/Nav.astro';
 import SiteFooter from '../components/SiteFooter.astro';
+import Share from '../components/Share.astro';
 import Stat from '../components/Stat.astro';
 import Meter from '../components/Meter.astro';
 import { getFigures, getRivers } from '../lib/sources';
@@ -275,6 +276,9 @@ const description =
         </div>
       </div>
     </section>
+
+
+    <Share quote={"Canada holds eleven times the fresh water per person that the United States does, and has never once suggested the tap had a valve. Strength is what you decline to use."} />
 
   </main>
   <SiteFooter />

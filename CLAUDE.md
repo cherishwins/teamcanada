@@ -123,9 +123,13 @@ public and checkable" — it can afford neither a dash nor a silently stale numb
   the contrast audit on all pages.
   **Current state: 0 overflow, 0 JS errors, 0 WCAG AA failures, 0 undersized
   standalone tap targets.** Keep it there.
-- Contrast must be calibrated against the surface a token is **actually painted
-  on**. The footer is `--nt-n-950` (#070707), not `#000`, which drags every
-  ratio down ~0.18 — enough to fail a value tuned for pure black.
+- **Calibrate contrast against the LIGHTEST dark surface a token can land on,
+  never against `#000`.** This has bitten three times: the footer is
+  `--nt-n-950` (#070707), raised panels `--nt-n-900` (#111111), meter and
+  chart tracks `--nt-n-880` (#1C1C1C). A value tuned for pure black fails on
+  all three. `--nt-red-lift` and `--nt-n-440` are now set so they clear 4.5:1
+  on **all four** grounds, which means a token can move between surfaces
+  without a fresh audit. Keep that property when changing them.
 - Firefox and WebKit cannot be installed in the web sandbox (missing system
   libs), so cross-engine checking is done by auditing features statically.
   Guard `animation-timeline` with `@supports`, prefix `backdrop-filter` with
@@ -150,6 +154,10 @@ V   · THE BUILD /build    Refine · Compute · Corridor + C-5.     from teamcan
 /fr          La trempe du Nord           BROUILLON, noindex, Act I only
 /read + 5 long-form pieces   9,162 words migrated from the old site
 /join  /support  /privacy  /terms  /404
+
+Every act and the calculator carry a share band: native share sheet where the
+browser has one, plain intent links otherwise, and a ready-to-post block whose
+quote is specific to THAT page. No third-party widget, no tracking pixel.
 ```
 **Act IV is the argument that did not exist before.** Not "we don't need the
 Americans" but "we are already widening, and here is the monthly StatCan series
