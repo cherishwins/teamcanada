@@ -100,6 +100,8 @@ one file serves both colourways. **Never reference them via `<img src>`:**
 - `legacy/` — the previous primestrength.ca static site. **Not deployed.**
   Content still to migrate: `legacy/read/*.html` (5 long-form pieces),
   `legacy/fr/index.html`, `legacy/join.html`.
+- `.github/workflows/verify.yml` — build + `check-french` + `npm audit` + the
+  full sweep, on every PR and every push to `main`. Free: the repo is public.
 - `tools/check-french.cjs` — Québec typography + banned-framing audit. **Runs in
   `npm run build` and fails it.** `tools/generate-og.cjs` draws the share cards
   *and* emits `src/lib/og-alt.json`, so `og:image:alt` is derived from the card
@@ -132,8 +134,18 @@ public and checkable" — it can afford neither a dash nor a silently stale numb
   `.vercel/output/static` through Playwright request interception and sweeps
   **every page across 10 viewports** (320 → 2560) for horizontal overflow,
   console errors, undersized tap targets, broken references and missing
-  `og:image:alt`, plus a WCAG AA contrast audit on all pages. It exits non-zero.
-  **Current state: clean on all eight counts.** Keep it there.
+  `og:image:alt`, plus WCAG AA contrast and a full **axe-core** pass on all
+  pages. It exits non-zero. **Current state: clean on all nine counts.**
+  Keep it there.
+  **`.github/workflows/verify.yml` runs all of it on every PR and every push to
+  `main`**, so none of this depends on somebody remembering. The repo is public,
+  so Actions minutes are free and unmetered — that is the only reason it is
+  allowed to exist under the budget rule.
+  **Playwright is deliberately NOT in `package.json`.** Vercel installs
+  devDependencies to build, and a browser-automation library has no business in
+  the install path of a static site that never uses it at runtime; CI installs
+  it with `--no-save`. `axe-core` *is* a devDependency — 568 kB, dev-only, and
+  it never reaches a page.
   This lived in a scratch directory for a long time and died with each session,
   which is how a convention quietly stops being true. Two things it stubs *on
   purpose*, and the comments say why: other origins answer 204 (the page must
@@ -142,6 +154,17 @@ public and checkable" — it can afford neither a dash nor a silently stale numb
   Service workers are blocked in the sweep — Playwright does not route their
   script fetches, so registration failures there are an artifact, not a finding;
   `sw.js` is syntax-checked directly instead (see below).
+- **Accessibility is audited by machine, not by eye, and the eye was missing a
+  whole class of it.** Geometry and colour checks cannot see a scroll container
+  the keyboard never reaches, a heading level skipped so the document outline
+  has a hole in it, or content stranded outside every landmark. All three were
+  real here and all three are fixed: the four wide-table wrappers are
+  `tabindex="0" role="region"` with **distinct** names (two on one page sharing
+  a name is itself a failure); `/build`, `/privacy`, `/terms` and
+  `changed-my-mind` went `h1 → h3` and now go `h1 → h2`, with the scoped
+  selector moved to the new tag so **nothing changed visually** — the level was
+  wrong, the type was not; and `<Brouillon>` dropped `role="note"`, which had
+  been stripping `<aside>` of the `complementary` landmark it already had.
 - **Calibrate contrast against the LIGHTEST dark surface a token can land on,
   never against `#000`.** This has bitten three times: the footer is
   `--nt-n-950` (#070707), raised panels `--nt-n-900` (#111111), meter and
