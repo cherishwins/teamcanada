@@ -1,0 +1,98 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import Stat from '../components/Stat.astro';
+import { getFigures } from '../lib/sources';
+
+const figures = await getFigures();
+const fmt = new Intl.NumberFormat('en-CA');
+
+const description =
+  'Strip away the bickering and look at what Canada actually holds: oil, clean ' +
+  'power, uranium, two oceans, and the people. The hand, laid face up.';
+---
+<Base title="The Hand" description={description} path="/hand">
+  <Nav />
+  <main id="main">
+    <section class="open">
+      <div class="nt-wrap">
+        <div class="nt-label">Two · The Hand</div>
+        <hr class="nt-rule" />
+        <h1 class="nt-display lg">Look at the hand<br />we are holding.</h1>
+        <p class="nt-lede" style="margin-top:var(--space-4);">
+          Not slogans. Assets most countries on earth would trade almost anything for.
+        </p>
+      </div>
+    </section>
+
+    <section class="nt-light">
+      <div class="nt-wrap">
+        <div class="nt-label">The cards</div>
+        <hr class="nt-rule" />
+        <div class="trio">
+          <Stat value="170B" label="Barrels of proven oil"
+                note="Third in the world, and the cleanest major producer per barrel." />
+          <Stat value="~360" label="TWh of hydroelectricity"
+                note="A year. More than half our power is zero-carbon — among the highest per person of any democracy." />
+          <Stat value="100×" countTo={100} label="Uranium grade"
+                note="The Athabasca Basin runs roughly a hundred times the global average grade. A 1970s-Saudi energy position, inside a stable democracy." />
+        </div>
+
+        <div class="nt-prose">
+          <p>Add two oceans and a land bridge between Asia and Europe, and you have one of the most complete strategic hands any country has ever been dealt. The minerals, the water, the energy, the geography, the people.</p>
+          <p><strong>Everything. The only thing missing is the decision to use it as one country instead of ten arguing parts.</strong></p>
+          <p>None of this is a boast. Every line of it is in a government table somebody can check, which is the only reason it is worth saying out loud.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="nt-wrap">
+        <div class="nt-label">The country, this morning</div>
+        <hr class="nt-rule" />
+        <h2 class="nt-display md" style="max-width:17ch;">And the part that changes while you read.</h2>
+        <div class="live">
+          <div class="lrow"><span class="lk">Population</span><span class="lv">{fmt.format(figures.population.value)}</span><span class="la">{figures.population.asOf}</span></div>
+          <div class="lrow"><span class="lk">Real GDP · monthly, chained 2017 $</span><span class="lv">${fmt.format(Math.round(figures.gdp.value / 1000))}B</span><span class="la">{figures.gdp.asOf}</span></div>
+          <div class="lrow"><span class="lk">One US dollar, in Canadian dollars</span><span class="lv">{figures.usdcad.value.toFixed(4)}</span><span class="la">{figures.usdcad.asOf}</span></div>
+        </div>
+        <p class="nt-caption">Statistics Canada · Bank of Canada</p>
+        <p class="more"><a href="/bloc">Where it all goes · The Bloc →</a></p>
+      </div>
+    </section>
+  </main>
+  <SiteFooter />
+</Base>
+
+<style>
+  .open { padding-block: clamp(70px, 13vh, 180px); }
+  .open h1 { max-width: 13ch; }
+  .trio {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--gap-grid); margin-top: clamp(34px, 5vh, 66px);
+  }
+  .live { margin-top: clamp(28px, 4.4vh, 56px); border-top: var(--border-key) solid var(--border-hairline); }
+  .lrow {
+    display: grid; grid-template-columns: 1fr auto auto; gap: 16px; align-items: baseline;
+    padding: 17px 0; border-bottom: var(--border-hair) solid var(--border-hairline);
+  }
+  .lk { color: var(--text-muted); font-size: var(--type-body-sm); }
+  .lv {
+    font-family: var(--font-display); font-weight: var(--fw-display);
+    font-size: var(--type-number-sm); font-variant-numeric: tabular-nums; color: var(--text-accent);
+  }
+  .la {
+    font-family: var(--font-display); font-weight: var(--fw-label); font-size: 11px;
+    letter-spacing: var(--ls-key); text-transform: uppercase; color: var(--text-caption);
+    min-width: 9ch; text-align: right;
+  }
+  @media (max-width: 620px) { .lrow { grid-template-columns: 1fr auto; } .la { grid-column: 2; } }
+  .more { margin-top: clamp(26px, 4vh, 46px); }
+  .more a {
+    display: inline-flex; align-items: center; min-height: 44px;
+    font-family: var(--font-display); font-weight: var(--fw-label);
+    font-size: var(--type-label); letter-spacing: var(--ls-key);
+    text-transform: uppercase; color: var(--nt-red-lift); text-underline-offset: 5px;
+  }
+</style>

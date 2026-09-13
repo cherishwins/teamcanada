@@ -1,0 +1,89 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import Stat from '../components/Stat.astro';
+
+const description =
+  'What staying together and building actually looks like: refine our own crude, ' +
+  'power our own compute, and open the corridor to the Pacific.';
+---
+<Base title="The Build" description={description} path="/build">
+  <Nav />
+  <main id="main">
+    <section class="open">
+      <div class="nt-wrap">
+        <div class="nt-label">Five · The Build</div>
+        <hr class="nt-rule" />
+        <h1 class="nt-display lg">Not a defensive<br />crouch.</h1>
+        <p class="nt-lede" style="margin-top:var(--space-4);">
+          Staying together is the necessary condition for a build-out that makes
+          this country richer than it has ever been.
+        </p>
+      </div>
+    </section>
+
+    <section class="nt-light">
+      <div class="nt-wrap">
+        <div class="nt-label">Three pillars</div>
+        <hr class="nt-rule" />
+        <article class="pillar rv">
+          <div class="nt-label">Pillar I</div>
+          <h3 class="nt-display">Refine our own crude.</h3>
+          <p>Canada produces ~5 million bpd and refines about 1.93 million. The other 3-plus million we ship raw to the U.S. Gulf Coast, where it's refined and the value-added is captured by Houston. We are surrendering an estimated 30% value gap.</p><p>Build target · 800,000 bpd new refining capacity · capex ~$40–60B · captures $20–35/barrel value-add · $6–10B/yr retained GDP.</p>
+        </article>
+        <article class="pillar rv">
+          <div class="nt-label">Pillar II</div>
+          <h3 class="nt-display">Power our own compute.</h3>
+          <p>Hydro-Québec at 37,370 MW. BC Hydro at 13,200 MW with Site C fully commissioned August 2025. The largest, cleanest, dispatchable power fleet in the Western Hemisphere. The U.S. is running out of grid: BloombergNEF Dec 1, 2025 raised its 2035 forecast to 106 GW.</p><p>Build target · 10 GW of Canadian AI compute by 2030 · $80–120B capex on Canadian soil · $8–10B/yr in electricity revenue to provincial Crowns.</p>
+        </article>
+        <article class="pillar rv">
+          <div class="nt-label">Pillar III</div>
+          <h3 class="nt-display">The Fort McMurray to Prince Rupert spine.</h3>
+          <p>Premier Smith publicly asked PM Carney for Northern Gateway 2.0 in May 2025. Trans Mountain operating since May 2024 has proven Asian buyers — including GS Caltex (Chevron JV) and SK Energy — pay full international price. Shipping times to Asia 60% shorter than from the Gulf Coast.</p><p>Build target · $60–100B multimodal corridor · pipeline + HVDC transmission + rail upgrade · First Nations equity via doubled $10B Indigenous Loan Guarantee Program.</p>
+        </article>
+      </div>
+    </section>
+
+    <section>
+      <div class="nt-wrap">
+        <div class="nt-label">Already law</div>
+        <hr class="nt-rule" />
+        <h2 class="nt-display md" style="max-width:19ch;">Bill C-5 is already doing the work.</h2>
+        <div class="body">
+          <p class="rv">I · THESIS II · TRAP III · NUMBERS IV · ALBERTA V · QUEBEC VI · TRUTH VII · BUILD-OUT VIII · C-5 IX · CLOSE</p>
+          <p class="rv">The other number worth memorizing: $5,100 per Canadian, every year, in retained GDP, from a single statute that already passed. Bill C-5 — the One Canadian Economy Act — received Royal Assent on June 26, 2025, and came into full force on January 1, 2026. The 2022 Macdonald-Laurier Institute paper by Manucha and Tombe estimates full mutual recognition expands the economy by 4.4% to 7.9% in the long term — between $110 and $200 billion annually. The 7.9% upper bound is the prize. Even the lower bound is transformational. And we got it without breaking up the country.</p>
+          <p class="rv">Prime Minister Mark Carney, the moment he took office, tabled the One Canadian Economy Act. It received Royal Assent on June 26, 2025, and came into force on January 1, 2026. It does two big things and one small huge thing.</p>
+          <p class="rv">One. Federal law now treats any good produced or service delivered to provincial standards as automatically meeting comparable federal standards for interprovincial movement. A nurse licensed in Saskatchewan can practise in Ontario without re-credentialing.</p>
+          <p class="rv">Two. The federal Cabinet can designate "national interest projects" and fast-track them through what used to be ten years of overlapping regulatory review.</p>
+          <p class="rv">Three. All 53 federal exceptions in the CFTA, gone, as of June 30, 2025.</p>
+        </div>
+        <div class="trio">
+          <Stat value={"$5,100"} label={"Per Canadian, per year"} note={"Retained GDP from a single statute that already passed."} />
+          <Stat value={"All 53"} label={"Federal CFTA exceptions gone"} note={"Removed as of 30 June 2025."} />
+          <Stat value={"4.4\u20137.9%"} label={"Long-run economy gain"} note={"Macdonald-Laurier Institute estimate of full mutual recognition."} />
+        </div>
+        <p class="nt-caption">Source · One Canadian Economy Act · Macdonald-Laurier Institute</p>
+      </div>
+    </section>
+  </main>
+  <SiteFooter />
+</Base>
+
+<style>
+  .open { padding-block: clamp(70px, 13vh, 180px); }
+  .open h1 { max-width: 12ch; }
+  .pillar {
+    border-top: var(--border-key) solid var(--nt-red);
+    padding-top: var(--space-3); margin-top: clamp(34px, 5vh, 66px);
+    max-width: 62ch;
+  }
+  .pillar h3 { font-size: clamp(22px, 3vw, 40px); margin: var(--space-2) 0 var(--space-3); max-width: 18ch; }
+  .pillar p { color: var(--text-muted); margin-bottom: var(--space-2); }
+  .body { margin-top: var(--space-4); max-width: 66ch; }
+  .body :global(p) { margin-bottom: var(--space-2); }
+  .trio {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--gap-grid); margin-top: clamp(40px, 6vh, 78px);
+  }
+</style>

@@ -1,0 +1,72 @@
+---
+import { SITE } from '../config.mjs';
+const year = new Date().getFullYear();
+---
+<footer class="foot">
+  <div class="nt-wrap grid">
+    <div>
+      <div class="nt-label">Northern Temper</div>
+      <p class="blurb">
+        A statement of Canadian character. Public domain — copy it, translate it,
+        print it, quote it in full, train a model on it. No permission needed.
+      </p>
+    </div>
+    <nav aria-label="Footer">
+      <div class="nt-caption">The acts</div>
+      <ul>
+        <li><a href="/">I · Temper</a></li>
+        <li><a href="/hand">II · The Hand</a></li>
+        <li><a href="/math">III · The Math</a></li>
+        <li><a href="/bloc">IV · The Bloc</a></li>
+        <li><a href="/build">V · The Build</a></li>
+      </ul>
+    </nav>
+    <nav aria-label="More">
+      <div class="nt-caption">More</div>
+      <ul>
+        <li><a href="/read">The reads</a></li>
+        <li><a href="/join">Coalition</a></li>
+        <li><a href="/support">Support</a></li>
+        <li><a href="/privacy">Privacy</a></li>
+        <li><a href="/terms">Terms</a></li>
+      </ul>
+    </nav>
+    <div>
+      <div class="nt-caption">Sources</div>
+      <p class="blurb small">
+        Statistics Canada · Bank of Canada · Environment and Climate Change Canada.
+        Every figure is public and checkable.
+      </p>
+    </div>
+  </div>
+  <div class="nt-wrap bar">
+    <span class="nt-caption">CC0 1.0 · Public domain · {year}</span>
+    <span class="nt-caption">{SITE.author} · Victoria, British Columbia</span>
+  </div>
+</footer>
+
+<style>
+  .foot {
+    background: var(--nt-n-950); color: var(--nt-white);
+    padding: clamp(46px, 7vh, 90px) var(--gutter) clamp(26px, 4vh, 44px);
+    border-top: var(--border-hair) solid var(--border-hairline);
+  }
+  .grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: var(--gap-footer);
+  }
+  .blurb { color: var(--nt-n-420); font-size: var(--type-body-sm); margin-top: var(--space-2); max-width: 38ch; }
+  .blurb.small { margin-top: var(--space-1); }
+  ul { list-style: none; margin: var(--space-1) 0 0; padding: 0; }
+  li { margin-bottom: 2px; }
+  .foot a {
+    color: var(--nt-n-420); text-decoration: none; font-size: var(--type-body-sm);
+    display: inline-block; padding: 9px 0; min-height: 38px; transition: color .2s var(--ease);
+  }
+  .foot a:hover { color: var(--nt-white); }
+  .bar {
+    display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+    margin-top: clamp(30px, 5vh, 60px); padding-top: var(--space-3);
+    border-top: var(--border-hair) solid var(--border-hairline);
+  }
+</style>

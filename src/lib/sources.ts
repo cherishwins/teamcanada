@@ -228,3 +228,125 @@ export async function getRivers(): Promise<Rivers> {
     allLive: rivers.every((r) => r.live),
   };
 }
+
+/* ==========================================================================
+   Trade by partner — Statistics Canada, table 12-10-0011.
+   "International merchandise trade for all countries and by Principal
+   Trading Partners, monthly." Customs basis, seasonally adjusted, exports.
+
+   This is the evidence under Act IV. The argument is not that Canada should
+   find other partners; it is that the diversification is already measurable,
+   monthly, in an official series. Claimed vs. measured, again.
+
+   GOTCHA, and it matters: getDataFromVectorsAndLatestNPeriods returns rows in
+   an ORDER OF ITS OWN, not the order they were requested. Zipping the response
+   against the request array silently mislabels every country. Always index the
+   response by its own vectorId, which is what buildTrade does below.
+   ========================================================================== */
+
+export interface Partner {
+  name: string;
+  /** Most recent month's merchandise exports, $ millions. */
+  exports: number;
+  /** Change against the same month a year earlier, percent. */
+  changePct: number | null;
+  /** Share of the partners tracked here, percent. */
+  sharePct: number;
+  live: boolean;
+}
+
+/**
+ * Vector IDs resolved from the cube's own coordinates
+ * (Canada / Export / Customs / Seasonally adjusted / <partner>).
+ * Fallbacks are the July 2026 published values, $M.
+ */
+const PARTNERS: Array<{ name: string; vector: number; fallback: number; fallbackChange: number }> = [
+  { name: 'United States',  vector: 87008898, fallback: 48896, fallbackChange: 7.7 },
+  { name: 'United Kingdom', vector: 87008900, fallback: 6604,  fallbackChange: 112.2 },
+  { name: 'European Union', vector: 87008899, fallback: 4264,  fallbackChange: 28.3 },
+  { name: 'China',          vector: 87008907, fallback: 4049,  fallbackChange: 44.0 },
+  { name: 'Japan',          vector: 87008909, fallback: 1250,  fallbackChange: -10.4 },
+  { name: 'Mexico',         vector: 87008908, fallback: 1024,  fallbackChange: 38.5 },
+  { name: 'South Korea',    vector: 87008910, fallback: 863,   fallbackChange: 57.3 },
+  { name: 'India',          vector: 87008915, fallback: 456,   fallbackChange: 34.7 },
+  { name: 'Australia',      vector: 87008921, fallback: 386,   fallbackChange: 75.8 },
+];
+
+export interface Trade {
+  partners: Partner[];
+  /** Reference month of the latest figures (YYYY-MM-DD). */
+  asOf: string;
+  /** United States share of the tracked partners, percent. */
+  usSharePct: number;
+  /** Everyone except the United States, $M per month. */
+  restOfWorld: number;
+  fetchedAt: string;
+  allLive: boolean;
+}
+
+export async function getTrade(): Promise<Trade> {
+  // Start from the published fallbacks so a total failure still renders a
+  // complete, correctly-labelled table.
+  const values = new Map<number, { exports: number; changePct: number | null; live: boolean }>(
+    PARTNERS.map((p) => [p.vector, { exports: p.fallback, changePct: p.fallbackChange, live: false }]),
+  );
+  let asOf = '2026-07-01';
+
+  try {
+    const body = PARTNERS.map((p) => ({ vectorId: p.vector, latestN: 13 }));
+    const data = (await getJSON(`${WDS}/getDataFromVectorsAndLatestNPeriods`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    })) as Array<{
+      status?: string;
+      object?: { vectorId?: number; vectorDataPoint?: Array<{ refPer: string; value: number }> };
+    }>;
+
+    for (const row of data ?? []) {
+      // Index by the row's own vectorId — never by position. See the note above.
+      const vec = row.object?.vectorId;
+      if (row.status !== 'SUCCESS' || vec == null || !values.has(vec)) continue;
+      const pts = row.object?.vectorDataPoint;
+      if (!pts?.length) continue;
+
+      const last = pts[pts.length - 1];
+      const first = pts[0];
+      if (!Number.isFinite(last.value)) continue;
+
+      values.set(vec, {
+        exports: last.value,
+        changePct:
+          pts.length > 1 && Number.isFinite(first.value) && first.value !== 0
+            ? (last.value / first.value - 1) * 100
+            : null,
+        live: true,
+      });
+      asOf = last.refPer;
+    }
+  } catch {
+    /* fallbacks stand, and `live` stays false on every row */
+  }
+
+  const total = PARTNERS.reduce((sum, p) => sum + (values.get(p.vector)?.exports ?? 0), 0);
+  const partners: Partner[] = PARTNERS.map((p) => {
+    const v = values.get(p.vector)!;
+    return {
+      name: p.name,
+      exports: v.exports,
+      changePct: v.changePct,
+      sharePct: total ? (v.exports / total) * 100 : 0,
+      live: v.live,
+    };
+  }).sort((a, b) => b.exports - a.exports);
+
+  const us = partners.find((p) => p.name === 'United States');
+  return {
+    partners,
+    asOf,
+    usSharePct: us?.sharePct ?? 0,
+    restOfWorld: total - (us?.exports ?? 0),
+    fetchedAt: new Date().toISOString(),
+    allLive: partners.every((p) => p.live),
+  };
+}

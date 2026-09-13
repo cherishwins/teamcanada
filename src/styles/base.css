@@ -75,7 +75,7 @@ body::after {
 .nt-stamp {
   font-family: var(--font-display); font-weight: var(--fw-label);
   font-size: var(--type-stamp); letter-spacing: var(--ls-label);
-  text-transform: uppercase; line-height: var(--lh-label); color: var(--nt-n-460);
+  text-transform: uppercase; line-height: var(--lh-label); color: var(--text-caption);
 }
 
 .nt-caption {

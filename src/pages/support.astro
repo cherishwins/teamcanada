@@ -1,0 +1,152 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import { wallet, paymentURI, qrSVG, TIERS, USDC, CHAIN_ID } from '../lib/support';
+
+const to = wallet();
+const qrs = to
+  ? await Promise.all(TIERS.map(async (t) => ({ ...t, uri: paymentURI(to, t.usd), svg: await qrSVG(paymentURI(to, t.usd)) })))
+  : [];
+
+const description =
+  'What this costs and what it is for. Northern Temper is public domain and ' +
+  'nothing here is behind a payment. If it was worth something to you, here is where.';
+---
+<Base title="Support" description={description} path="/support">
+  <Nav />
+  <main id="main">
+    <section class="nt-light">
+      <div class="nt-wrap">
+        <div class="nt-label">The colophon</div>
+        <hr class="nt-rule" />
+        <h1 class="nt-display lg">What this cost.<br />What it is for.</h1>
+        <p class="nt-lede" style="margin-top:var(--space-4);max-width:30ch;">
+          Nothing on this site is behind a payment, and nothing ever will be.
+        </p>
+
+        <div class="nt-prose">
+          <p>Every word, figure, mark and line of code here is dedicated to the public domain under CC0. You can copy it, translate it, print it, sell it, quote it in full, or train a model on it. No permission, no attribution, no licence to breach.</p>
+          <p>That is the point of the thing, so this page is not an appeal. It is a receipt. Here is what it costs to run, in case you were curious, and here is where to send something if it was worth something to you.</p>
+          <p><strong>The more useful thing you can do is not money.</strong> It is putting your name on it — see <a href="/join">the coalition</a> — or simply sending a page to somebody who has only heard the loud version of this argument.</p>
+        </div>
+
+        <!-- the ledger -->
+        <div class="ledger">
+          <div class="lrow"><span class="k">Domain · northerntemper.ca</span><span class="v">$25 / yr</span></div>
+          <div class="lrow"><span class="k">Hosting · Vercel</span><span class="v">$20 / mo</span></div>
+          <div class="lrow"><span class="k">Typefaces · Oswald, Inter</span><span class="v">$0 · open licence</span></div>
+          <div class="lrow"><span class="k">Data · StatCan, Bank of Canada, ECCC</span><span class="v">$0 · public</span></div>
+          <div class="lrow"><span class="k">Writing and build</span><span class="v">unpaid</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- the rail -->
+    <section>
+      <div class="nt-wrap">
+        <div class="nt-label">If you want to</div>
+        <hr class="nt-rule" />
+        <h2 class="nt-display md" style="max-width:19ch;">Wallet to wallet. Nothing in between.</h2>
+        <p style="color:var(--text-muted);margin-top:var(--space-3);max-width:60ch;">
+          USDC on Base, straight to a wallet. There is no processor in this path —
+          no account to open, no card network, and nobody who can decide this
+          page is a political risk and switch the rail off. That independence is
+          the reason it is built this way.
+        </p>
+
+        {to ? (
+          <>
+            <div class="tiers">
+              {qrs.map((t) => (
+                <a class="tier rv" href={t.uri}>
+                  <span class="qr" set:html={t.svg} />
+                  <span class="amt">${t.usd}</span>
+                  <span class="tl">{t.label}</span>
+                  <span class="tn">{t.note}</span>
+                </a>
+              ))}
+            </div>
+            <div class="addr">
+              <div class="nt-caption">Or send any amount · USDC on Base</div>
+              <code class="mono">{to}</code>
+              <p class="warn">
+                Base network, USDC only. Sending another token, or using another
+                chain, will not arrive.
+              </p>
+            </div>
+          </>
+        ) : (
+          <div class="pending">
+            <p class="nt-caption">Rail not yet armed</p>
+            <p>
+              The receiving wallet is read from the <code class="mono">SUPPORT_WALLET</code>
+              environment variable and has not been set, so no address is shown.
+              This is deliberate — a hard-coded or guessed address sends money
+              somewhere nobody can spend it from.
+            </p>
+          </div>
+        )}
+
+        <p class="nt-caption chain">
+          USDC {USDC.slice(0, 10)}…{USDC.slice(-6)} · chain {CHAIN_ID} · Base mainnet
+        </p>
+      </div>
+    </section>
+  </main>
+  <SiteFooter />
+</Base>
+
+<style>
+  .ledger { margin-top: clamp(38px, 6vh, 74px); border-top: var(--border-key) solid var(--border-hairline); }
+  .lrow {
+    display: flex; justify-content: space-between; gap: 18px; flex-wrap: wrap;
+    padding: 15px 0; border-bottom: var(--border-hair) solid var(--border-hairline);
+  }
+  .k { color: var(--text-muted); font-size: var(--type-body-sm); }
+  .v {
+    font-family: var(--font-display); font-weight: var(--fw-label);
+    letter-spacing: .06em; text-transform: uppercase; font-size: var(--type-body-sm);
+  }
+
+  .tiers {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: var(--gap-grid); margin-top: clamp(34px, 5vh, 64px);
+  }
+  .tier {
+    display: block; text-decoration: none; color: inherit;
+    border: var(--border-hair) solid var(--border-hairline);
+    padding: clamp(18px, 2.4vw, 26px);
+    transition: border-color .2s var(--ease), background .2s var(--ease);
+  }
+  .tier:hover { border-color: var(--nt-red); background: var(--nt-n-900); }
+  .qr { display: block; width: 100%; max-width: 150px; aspect-ratio: 1; background: #fff; padding: 8px; }
+  .qr :global(svg) { display: block; width: 100%; height: 100%; }
+  .amt {
+    display: block; margin-top: var(--space-2);
+    font-family: var(--font-display); font-weight: var(--fw-display);
+    font-size: var(--type-number-md); line-height: .9; color: var(--nt-red-lift);
+    font-variant-numeric: tabular-nums;
+  }
+  .tl {
+    display: block; margin-top: .4rem;
+    font-family: var(--font-display); font-weight: var(--fw-label);
+    font-size: var(--type-label-sm); letter-spacing: var(--ls-key);
+    text-transform: uppercase;
+  }
+  .tn { display: block; margin-top: .5rem; color: var(--text-muted); font-size: var(--type-body-sm); }
+
+  .addr { margin-top: clamp(30px, 4.5vh, 56px); }
+  .mono {
+    display: block; margin-top: var(--space-1);
+    font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    font-size: clamp(11px, 2.4vw, 15px); word-break: break-all;
+    background: var(--nt-n-900); padding: 13px 15px;
+    border-left: var(--rule-weight) solid var(--nt-red);
+  }
+  .warn { color: var(--text-caption); font-size: var(--type-body-sm); margin-top: var(--space-2); max-width: 48ch; }
+  .pending { margin-top: clamp(30px, 4.5vh, 56px); max-width: 56ch; }
+  .pending p { color: var(--text-muted); margin-top: var(--space-1); }
+  .pending .mono { display: inline; padding: 2px 6px; border-left: 0; }
+  .chain { margin-top: clamp(30px, 4.5vh, 56px); }
+</style>

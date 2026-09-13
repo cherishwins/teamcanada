@@ -1,0 +1,94 @@
+---
+import type { Partner } from '../lib/sources';
+interface Props { partners: Partner[]; asOf: string; }
+const { partners, asOf } = Astro.props;
+
+// Growth is the story, not size. Scale the bars to the largest absolute change
+// so both directions read at the same visual weight.
+const maxAbs = Math.max(...partners.map((p) => Math.abs(p.changePct ?? 0)), 1);
+const fmt = new Intl.NumberFormat('en-CA');
+---
+<div class="chart">
+  <div class="head">
+    <span class="nt-caption">Partner</span>
+    <span class="nt-caption">Exports · $M / month</span>
+    <span class="nt-caption chg">Change vs. a year ago</span>
+  </div>
+
+  {partners.map((p) => {
+    const chg = p.changePct ?? 0;
+    const w = (Math.abs(chg) / maxAbs) * 100;
+    const us = p.name === 'United States';
+    return (
+      <div class="row rv" data-us={us ? 'true' : undefined}>
+        <span class="name">{p.name}</span>
+        <span class="val">{fmt.format(Math.round(p.exports))}</span>
+        <span class="track">
+          <span class={`bar ${chg < 0 ? 'down' : us ? 'us' : 'up'}`} style={`width:${w}%`}></span>
+          <span class="pct">{chg >= 0 ? '+' : ''}{chg.toFixed(1)}%</span>
+        </span>
+      </div>
+    );
+  })}
+  <p class="nt-caption src">
+    Statistics Canada table 12-10-0011 · merchandise exports, customs basis,
+    seasonally adjusted · {asOf}
+  </p>
+</div>
+
+<style>
+  .chart { margin-top: clamp(34px, 5vh, 66px); }
+  .head, .row {
+    display: grid;
+    /* `minmax(0, ...)` on every track, not a rem floor: a grid item's default
+       min-width is auto, so a nowrap label inside would otherwise push the
+       whole row — and therefore the page — wider than the viewport. */
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, .6fr) minmax(0, 2.3fr);
+    gap: clamp(8px, 1.4vw, 26px); align-items: center;
+  }
+  .head > *, .row > * { min-width: 0; }
+  .head { padding-bottom: var(--space-1); border-bottom: var(--border-key) solid var(--border-hairline); }
+  .chg { text-align: left; }
+  .row { padding: clamp(10px, 1.5vh, 16px) 0; border-bottom: var(--border-hair) solid var(--border-hairline); }
+  .name {
+    font-weight: var(--fw-body-medium); font-size: var(--type-body-sm);
+    overflow-wrap: anywhere;
+  }
+  .row[data-us] .name { color: var(--text-muted); }
+  .val {
+    font-family: var(--font-display); font-weight: var(--fw-label);
+    font-variant-numeric: tabular-nums; font-size: var(--type-body-sm);
+    letter-spacing: .04em; text-align: right; color: var(--text-muted);
+  }
+  .track { display: flex; align-items: center; gap: 8px; min-width: 0; }
+  /* The bar may shrink; the number may not. */
+  .bar { height: 16px; flex: 0 1 auto; min-width: 2px; }
+  /* frost = the growing partner, inert grey = the incumbent, red = shrinking */
+  .bar.up   { background: var(--data-primary); }
+  .bar.us   { background: var(--data-inert); }
+  .bar.down { background: var(--data-strike); }
+  .pct {
+    font-family: var(--font-display); font-weight: var(--fw-display);
+    font-variant-numeric: tabular-nums; font-size: var(--type-number-sm);
+    letter-spacing: var(--ls-number); white-space: nowrap; flex: none;
+  }
+  .src { margin-top: var(--space-3); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    @keyframes nt-grow-bar { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+    .bar { transform-origin: 0 50%; animation: nt-grow-bar var(--dur-bar) var(--ease) backwards; }
+    @supports ((animation-timeline: view()) and (animation-range: entry)) {
+      .bar { animation-timeline: view(); animation-range: entry 10% cover 40%; }
+    }
+  }
+
+  /* Below the fold of a phone the three-column grid stops working: stack the
+     numeric row under the name rather than crushing the bar to nothing. */
+  @media (max-width: 560px) {
+    .head { display: none; }
+    .row { grid-template-columns: 1fr auto; row-gap: 6px; }
+    .name { grid-column: 1; }
+    .val  { grid-column: 2; }
+    .track { grid-column: 1 / -1; }
+  }
+</style>

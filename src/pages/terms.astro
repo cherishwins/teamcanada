@@ -1,0 +1,49 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+---
+<Base title={"Terms"} description={"Terms of use. The content is public domain; the terms are short."} path="/terms">
+  <Nav />
+  <main id="main">
+    <section class="nt-light">
+      <div class="nt-wrap doc">
+        <div class="nt-label">Terms</div>
+        <hr class="nt-rule" />
+        <h1 class="nt-display md">Terms</h1>
+      <p>Terms of use</p>
+      <h3>Use it, quote it, share it. Just check the facts and play fair.</h3>
+      <p>By using <strong>primestrength.ca</strong> you agree to the following. Last updated 2 June 2026.</p>
+      <h3>What this is</h3>
+      <p class="lead">Team Canada is independent, non-partisan civic commentary and analysis. It isn&#x27;t legal, financial, or investment advice, and it isn&#x27;t affiliated with any political party, candidate, or government. Every figure is drawn from public sources (Statistics Canada, the IMF, the OECD and others) believed reliable at publication — but data gets revised. Verify before you rely on a number publicly.</p>
+      <h3>Quoting &amp; sharing</h3>
+      <p>The words and arguments here are free to quote, screenshot, and share <strong>with attribution to Team Canada / primestrength.ca</strong>. That&#x27;s the whole point — spread it. The brand marks (the seal, the Sentinel, the name &quot;Team Canada / Prime Strength&quot;) and third-party logos remain the property of their owners; don&#x27;t use them to imply endorsement you don&#x27;t have.</p>
+      <h3>If you submit a logo or business</h3>
+      <p>When you send your business to the coalition, you confirm you&#x27;re authorized to use that name and logo, and you give us permission to display them on the site to show your support. You can withdraw that permission any time by emailing us. We may decline or remove any submission at our discretion — this is a unity project, and we keep the wall in good faith.</p>
+      <h3>No warranty</h3>
+      <p>The site is provided &quot;as is,&quot; without warranties of any kind. We work to keep it accurate and online, but we don&#x27;t guarantee it&#x27;s error-free or always available. To the extent the law allows, we&#x27;re not liable for losses arising from your use of it.</p>
+      <h3>Links out</h3>
+      <p>We link to outside sources and sites we don&#x27;t control. Those links aren&#x27;t endorsements, and we&#x27;re not responsible for their content.</p>
+      <h3>Governing law</h3>
+      <p>These terms are governed by the laws of British Columbia and the federal laws of Canada that apply there. Questions? <a href="mailto:jesse@primestrength.ca">jesse@primestrength.ca</a>.</p>
+      <p><em>Une version française suivra. Écrivez-nous en français — on vous répondra en français.</em></p>
+      </div>
+    </section>
+  </main>
+  <SiteFooter />
+</Base>
+
+<style>
+  .doc { max-width: 64ch; }
+  .doc :global(h3) {
+    font-family: var(--font-display); font-weight: var(--fw-label);
+    text-transform: uppercase; letter-spacing: .06em;
+    font-size: clamp(16px, 1.8vw, 21px);
+    margin: clamp(28px, 4vh, 48px) 0 var(--space-2);
+  }
+  .doc :global(p) { margin-bottom: var(--space-2); max-width: none; }
+  .doc :global(p.lead) { font-size: var(--type-lede); line-height: var(--lh-lede); font-weight: var(--fw-body-medium); margin: var(--space-4) 0; }
+  .doc :global(a) { color: var(--nt-red); }
+  .doc :global(ul) { margin: var(--space-3) 0 var(--space-3) 1.1rem; }
+  .doc :global(li) { margin-bottom: .6rem; }
+</style>

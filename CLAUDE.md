@@ -78,8 +78,10 @@ one file serves both colourways. **Never reference them via `<img src>`:**
 - `src/layouts/Base.astro` — head, meta, OG, JSON-LD, skip link, reveal fallback.
 - `src/components/` — `Stat`, `Meter`, `marks/{BearDual,BearHead,LeafSeal}`.
 - `src/lib/sources.ts` — live figures from StatCan WDS + Bank of Canada Valet.
-- `src/pages/index.astro` — **Act I · Temper**.
-- `src/pages/api/figures.json.ts` — on-demand live figures, edge-cached 1h.
+- `src/components/Nav.astro`, `SiteFooter.astro`, `BlocChart.astro`.
+- `src/layouts/Read.astro` — the long-form layout (single 68ch column).
+- `src/lib/support.ts` — the processor-free support rail (see below).
+- `src/pages/api/{figures,rivers,trade}.json.ts` — on-demand live data.
 - `legacy/` — the previous primestrength.ca static site. **Not deployed.**
   Content still to migrate: `legacy/read/*.html` (5 long-form pieces),
   `legacy/fr/index.html`, `legacy/join.html`.
@@ -89,9 +91,17 @@ one file serves both colourways. **Never reference them via `<img src>`:**
 ## Live data — the rule that matters
 Both APIs are public and need no key:
 - **Bank of Canada Valet** — `FXUSDCAD`, `V39079` (policy rate).
-- **StatCan WDS** — vector `65201210` (monthly real GDP), `1` (population),
-  `41690973` (CPI). Confirm any new vector with `getSeriesInfoFromVector`
-  before wiring it; vector IDs are not guessable.
+- **StatCan WDS** — `65201210` (monthly real GDP), `1` (population),
+  `41690973` (CPI); trade by partner from table **12-10-0011**, vectors
+  resolved via `getSeriesInfoFromCubePidCoord`. Confirm any new vector with
+  `getSeriesInfoFromVector`; vector IDs are not guessable.
+- **Environment and Climate Change Canada** — `api.weather.gc.ca`,
+  `hydrometric-realtime`, five-minute river discharge.
+
+**THE WDS RETURNS ROWS OUT OF REQUEST ORDER.** Index the response by each
+row's own `vectorId`. Zipping it against the request array silently mislabels
+every series — wrong country on every number, on a site whose entire claim is
+that the figures are checkable.
 
 **A figure never renders blank.** Every series carries a hand-checked fallback
 with the date it was true. On failure the page shows the fallback *and says a
@@ -100,23 +110,51 @@ public and checkable" — it can afford neither a dash nor a silently stale numb
 
 ## Conventions
 - **Verify before pushing.** Serve `.vercel/output/static` through Playwright
-  request interception; check horizontal overflow and console errors at 1440 and
-  390, and run the contrast audit. **Current state: 0 WCAG AA failures.** Keep it.
+  request interception and sweep **every page across 10 viewports** (320 → 2560)
+  for horizontal overflow, console errors and undersized tap targets, then run
+  the contrast audit on all pages.
+  **Current state: 0 overflow, 0 JS errors, 0 WCAG AA failures, 0 undersized
+  standalone tap targets.** Keep it there.
+- Contrast must be calibrated against the surface a token is **actually painted
+  on**. The footer is `--nt-n-950` (#070707), not `#000`, which drags every
+  ratio down ~0.18 — enough to fail a value tuned for pure black.
+- Firefox and WebKit cannot be installed in the web sandbox (missing system
+  libs), so cross-engine checking is done by auditing features statically.
+  Guard `animation-timeline` with `@supports`, prefix `backdrop-filter` with
+  `-webkit-`, and always give `color-mix()` a plain `rgba()` fallback line
+  first — without it a Safari < 16.2 sticky nav renders fully transparent.
 - Content must never depend on an animation to be readable — `prefers-reduced-motion`
   and `@media print` both force `.rv` fully visible.
 - Develop on a branch → draft PR → merge to `main`.
 
-## Roadmap — the five acts
+## The site — 16 pages, all shipped
 ```
-I   · TEMPER    Character. Water, Gander, Kandahar.        ✅ shipped
-II  · THE HAND  What Canada holds.                         ← legacy/index.html
-III · THE MATH  Dossier №01, separation costed.            ← teamcanadawins repo
-IV  · THE BLOC  ★ Middle powers. Korea/Japan/EU/AU/MX.     ← legacy/read/the-closed-loop.html
-V   · THE BUILD Refine · Compute · Corridor + Bill C-5.    ← teamcanadawins repo
+I   · TEMPER    /         Character. Water, Gander, Kandahar.   live gauges
+II  · THE HAND  /hand     What Canada holds.                    live figures
+III · THE MATH  /math     Dossier No. 01, separation costed.     from teamcanadawins
+IV  · THE BLOC  /bloc     Middle powers.                        live trade data
+V   · THE BUILD /build    Refine · Compute · Corridor + C-5.     from teamcanadawins
+
+/read + 5 long-form pieces   9,162 words migrated from the old site
+/join  /support  /privacy  /terms  /404
 ```
-**Act IV is the new argument and the real flex** — not "we don't need you" but
-"we have other partners, and here is the signed paperwork." *The Closed Loop*
-(3,359 words, already written) is the Canada–Korea anchor case.
+**Act IV is the argument that did not exist before.** Not "we don't need the
+Americans" but "we are already widening, and here is the monthly StatCan series
+that proves it." The US is still ~72% of these exports and still growing —
+saying so plainly is what makes the rest credible. *The Closed Loop* is the
+Canada–Korea anchor case.
+
+## Migrating legacy content
+`/tmp` scripts are gone between sessions; the approach is what matters.
+Both old sites were parsed with a walker that captures **every element which
+directly contains text**, not a whitelist of tags — these pages put figures and
+claims in `<div>`/`<span>`, and a tag whitelist silently drops them. Verified by
+diffing the source vocabulary against the output: **0 words lost** across the
+dossier and 4 of 5 reads. Two traps worth remembering:
+- Astro parses `{` `}` in text as a JSX expression. Escape to `&#123;`/`&#125;`
+  or the build dies on any content containing a brace.
+- Pass component props as `label={"…"}`, never as a bare HTML attribute. A
+  quotation mark inside the text ends the attribute early.
 
 ## Open / pending
 1. **Acts II–V** — migrate the content above into `src/content/`.
@@ -126,10 +164,18 @@ V   · THE BUILD Refine · Compute · Corridor + Bill C-5.    ← teamcanadawins
    cost and a tracking surface on an otherwise privacy-clean site.
 4. **Coalition backend** — `legacy/join.html` is a `mailto:`. Needs a real store
    (Supabase is already in use on the x402 project) plus a moderation step.
-5. **`/support`** — a **colophon, not a plea.** What it cost, what it's for, in
-   the site's own ledger register. No modal, no banner, no thermometer. The
-   primary ask is the coalition; money is the footnote. If it ever runs during a
-   writ period, check Elections Canada third-party advertising thresholds.
+5. **`/support` — built, needs `SUPPORT_WALLET`.** A **colophon, not a plea**:
+   what it costs, in the site's own ledger register. No modal, no thermometer.
+   The rail is **deliberately processor-free** — USDC on Base, wallet to wallet,
+   so no platform can decide the page is a political risk and switch it off.
+   That independence is the reason it is built this way, and it is the owner's
+   explicit call. Set `SUPPORT_WALLET` in Vercel; the section hides itself when
+   unset rather than showing an address nobody can spend from. The EIP-681 URI
+   targets the **token contract** with the recipient as the `transfer` argument
+   — the arrangement that reads more naturally asks for native ETH and delivers
+   no USDC at all. QR is rendered to SVG server-side so the page ships no QR
+   library. If this ever runs during a writ period, check Elections Canada
+   third-party advertising thresholds.
 6. **French** — re-authored, never translated; ships as BROUILLON behind
    `noindex` until a native Québécois reviewer signs off (see
    `source-material/primestrength-bilingual.skill`).
