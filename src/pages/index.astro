@@ -3,11 +3,11 @@ import Base from '../layouts/Base.astro';
 import BearDual from '../components/marks/BearDual.astro';
 import Stat from '../components/Stat.astro';
 import Meter from '../components/Meter.astro';
-import { getFigures } from '../lib/sources';
+import { getFigures, getRivers } from '../lib/sources';
 
 // Fetched at build; the figures strip refreshes itself from /api/figures.json
 // on load, so a deploy is never required for the numbers to be current.
-const figures = await getFigures();
+const [figures, water] = await Promise.all([getFigures(), getRivers()]);
 const fmt = new Intl.NumberFormat('en-CA');
 
 const description =
@@ -96,6 +96,25 @@ const description =
         </div>
         <p class="pull rv">Eleven times the water,<br />per person, every year.</p>
         <p class="nt-caption">Source · Statistics Canada</p>
+
+        <!-- The same claim, measured rather than cited. -->
+        <div class="rivers rv" id="rivers">
+          <div class="nt-label">Flowing past a gauge, right now</div>
+          <hr class="nt-rule" />
+          <div class="rgrid">
+            {water.rivers.map((r) => (
+              <div class="river">
+                <div class="rv-n" data-river={r.station}>{fmt.format(r.discharge)}</div>
+                <div class="rv-u">m³/s</div>
+                <div class="rv-k">{r.name}<span class="rv-p">{r.province}</span></div>
+              </div>
+            ))}
+          </div>
+          <p class="nt-caption" id="rivers-note">
+            Environment and Climate Change Canada · real-time hydrometric gauges ·
+            <span data-river-at>{water.rivers[0]?.at?.slice(0, 16).replace('T', ' ')} UTC</span>
+          </p>
+        </div>
 
         <div class="trio" style="margin-top:clamp(48px,7vh,90px);">
           <Stat value="563" countTo={563} label="Lakes over 100 km²"
@@ -321,6 +340,34 @@ const description =
   .border-line {
     font-size: clamp(22px,3.1vw,44px); line-height: 1.16; max-width: 22ch;
     margin-top: clamp(38px,5.5vh,76px);
+  }
+
+  /* ---------- live rivers ---------- */
+  .rivers { margin-top: var(--stack-head-body); }
+  .rgrid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: var(--gap-grid);
+  }
+  .river { border-top: var(--border-key) solid var(--border-hairline); padding-top: var(--space-1); }
+  .rv-n {
+    font-family: var(--font-display); font-weight: var(--fw-display);
+    font-size: var(--type-number-md); line-height: .9;
+    color: var(--data-primary); font-variant-numeric: tabular-nums;
+    letter-spacing: var(--ls-number);
+  }
+  .nt-light .rv-n { color: var(--nt-black); }
+  .rv-u {
+    font-family: var(--font-display); font-weight: var(--fw-label);
+    font-size: var(--type-label-sm); letter-spacing: var(--ls-key);
+    text-transform: uppercase; color: var(--text-muted); margin-top: .2rem;
+  }
+  .rv-k {
+    font-size: var(--type-body-sm); color: var(--text-muted);
+    margin-top: .5rem; display: flex; gap: .5rem; align-items: baseline;
+  }
+  .rv-p {
+    font-family: var(--font-display); font-weight: var(--fw-label);
+    font-size: 10px; letter-spacing: var(--ls-key); color: var(--text-caption);
   }
 
   /* ---------- live figures ---------- */
