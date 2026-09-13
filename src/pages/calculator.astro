@@ -32,11 +32,42 @@ const CONST = {
 const sorted = [...provinces].sort((a, b) => b.gdp - a.gdp);
 const gdpYear = provinces[0]?.gdpYear ?? '2024';
 
+/**
+ * The default province is computed here, not only in the browser. Without this
+ * the page renders a table of em-dashes for anyone with JS off or blocked, and
+ * for every crawler — which contradicts the rule the rest of the site follows:
+ * nothing may depend on scripting to be readable. Script only handles changes.
+ */
+const canadaPop = provinces.reduce((s, p) => s + p.population, 0);
+const DEFAULT = provinces.find((p) => p.code === 'AB') ?? sorted[0];
+
+function bill(pop: number, gdpM: number) {
+  const lossLow = gdpM * CONST.frictionLow;
+  const lossHigh = gdpM * CONST.frictionHigh;
+  const debtLow = CONST.federalDebtB * 1000 * (pop / canadaPop);
+  const debtHigh = debtLow * 1.15;
+  const buildLow = ((CONST.buildStateLowB * 1000) / CONST.buildStateBasePop) * pop;
+  const buildHigh = ((CONST.buildStateHighB * 1000) / CONST.buildStateBasePop) * pop;
+  const natoLow = gdpM * 0.035;
+  const natoHigh = gdpM * CONST.natoPct;
+  const totLow = debtLow + buildLow;
+  const totHigh = debtHigh + buildHigh;
+  const recurring = lossLow + natoHigh;
+  return { lossLow, lossHigh, debtLow, debtHigh, buildLow, buildHigh,
+           natoLow, natoHigh, totLow, totHigh, recurring };
+}
+const d = bill(DEFAULT.population, DEFAULT.gdp);
+const big = (m: number) => {
+  const b = m / 1000;
+  return b >= 1 ? `$${b.toFixed(b < 10 ? 1 : 0)}B` : `$${Math.round(m)}M`;
+};
+const cad = new Intl.NumberFormat('en-CA', { style: 'currency', currency: 'CAD', maximumFractionDigits: 0 });
+
 const description =
   'Pick a province and see the bill. Trade friction, federal debt share, the ' +
   'cost of building a state from zero, and the defence floor — from StatCan figures.';
 ---
-<Base title="The Bill" description={description} path="/calculator">
+<Base title="The Bill" description={description} path="/calculator" ogImage="/og/calculator.png">
   <Nav />
   <main id="main">
     <section class="open">
@@ -57,7 +88,7 @@ const description =
           <label class="nt-label" for="prov">Province</label>
           <select id="prov" name="prov">
             {sorted.map((p) => (
-              <option value={p.code} selected={p.code === 'AB'}
+              <option value={p.code} selected={p.code === DEFAULT.code}
                       data-pop={p.population} data-gdp={p.gdp}>{p.name}</option>
             ))}
           </select>
@@ -65,15 +96,15 @@ const description =
 
         <div class="headline">
           <div class="hl">
-            <div class="hn" id="totalFirstYear">—</div>
+            <div class="hn" id="totalFirstYear">{big(d.totLow)}</div>
             <div class="hk">Day-one bill, low estimate</div>
           </div>
           <div class="hl">
-            <div class="hn" id="perPerson">—</div>
+            <div class="hn" id="perPerson">{cad.format((d.recurring * 1e6) / DEFAULT.population)}</div>
             <div class="hk">Per resident, every year after</div>
           </div>
           <div class="hl">
-            <div class="hn" id="annualLoss">—</div>
+            <div class="hn" id="annualLoss">{big(d.recurring)}/yr</div>
             <div class="hk">Recurring, every year after</div>
           </div>
         </div>
@@ -86,27 +117,27 @@ const description =
           <tbody>
             <tr>
               <th scope="row">Lost output, per year</th>
-              <td id="lossLow">—</td><td id="lossHigh">—</td>
+              <td id="lossLow">{big(d.lossLow)}</td><td id="lossHigh">{big(d.lossHigh)}</td>
               <td class="how">4% of provincial GDP at a 5% rise in trade friction with the rest of Canada; 6% at 8% friction. <span class="cite">Tombe, University of Calgary</span></td>
             </tr>
             <tr>
               <th scope="row">Share of federal debt</th>
-              <td id="debtLow">—</td><td id="debtHigh">—</td>
+              <td id="debtLow">{big(d.debtLow)}</td><td id="debtHigh">{big(d.debtHigh)}</td>
               <td class="how">Population share of the ${CONST.federalDebtB}B federal accumulated deficit. The high column adds 15% for the negotiation going badly. <span class="cite">Public Accounts, March 2025</span></td>
             </tr>
             <tr>
               <th scope="row">Building a state from zero</th>
-              <td id="buildLow">—</td><td id="buildHigh">—</td>
+              <td id="buildLow">{big(d.buildLow)}</td><td id="buildHigh">{big(d.buildHigh)}</td>
               <td class="how">Army, navy, air force, coast guard, central bank, passports, borders, customs, foreign service. Scaled per person from the Alberta Prosperity Project's own ${CONST.buildStateLowB}–${CONST.buildStateHighB}B estimate. <span class="cite">APP, fully costed plan</span></td>
             </tr>
             <tr>
               <th scope="row">Defence, per year</th>
-              <td id="natoLow">—</td><td id="natoHigh">—</td>
+              <td id="natoLow">{big(d.natoLow)}</td><td id="natoHigh">{big(d.natoHigh)}</td>
               <td class="how">5% of GDP, the NATO pledge adopted at the Hague in 2025. The low column is the 3.5% direct-military portion. <span class="cite">NATO Hague summit, 2025</span></td>
             </tr>
             <tr class="tot">
               <th scope="row">Day one, before anything is built</th>
-              <td id="totLow">—</td><td id="totHigh">—</td>
+              <td id="totLow">{big(d.totLow)}</td><td id="totHigh">{big(d.totHigh)}</td>
               <td class="how">Debt share plus standing up a state. The output loss and the defence bill recur every year afterwards.</td>
             </tr>
           </tbody>
@@ -116,7 +147,7 @@ const description =
           <p class="nt-label">A thing worth noticing</p>
           <p>
             The day-one bill per resident lands at roughly
-            <strong id="flatPer">—</strong> whichever province you pick. That is
+            <strong id="flatPer">{cad.format((d.totLow * 1e6) / DEFAULT.population)}</strong> whichever province you pick. That is
             not a coincidence and it is not a bug: both of its parts — the share
             of federal debt and the cost of standing up a state — scale with
             population. <strong>Leaving costs about the same per person
@@ -270,5 +301,7 @@ const description =
   }
 
   sel?.addEventListener('change', render);
+  // The default province is already rendered server-side; this re-render is a
+  // no-op that simply keeps one code path for every province.
   render();
 </script>

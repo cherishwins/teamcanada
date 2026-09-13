@@ -12,10 +12,11 @@ interface Props {
   standfirst: string;
   path: string;
   dateline?: string;
+  ogImage?: string;
 }
-const { title, description, imprint, standfirst, path, dateline } = Astro.props;
+const { title, description, imprint, standfirst, path, dateline, ogImage } = Astro.props;
 ---
-<Base title={title} description={description} path={path}>
+<Base title={title} description={description} path={path} ogImage={ogImage}>
   <Nav />
   <main id="main" class="read">
     <header class="rhead nt-light">
