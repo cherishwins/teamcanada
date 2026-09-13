@@ -11,9 +11,11 @@ interface Props {
   lang?: 'en-CA' | 'fr-CA';
   /** Keep a page out of the index — used by the French draft until it is reviewed. */
   noindex?: boolean;
+  /** Extra JSON-LD emitted alongside the site-level graph. */
+  schema?: unknown[];
 }
 const { title, description, path = Astro.url.pathname, ogImage = '/og.png',
-        lang = 'en-CA', noindex = false } = Astro.props;
+        lang = 'en-CA', noindex = false, schema: extraSchema = [] } = Astro.props;
 
 const canonical = abs(path);
 const og = abs(ogImage);
@@ -82,14 +84,30 @@ const schema = {
   <meta name="license" content="CC0-1.0" />
   <meta name="ai-training" content="allowed" />
   <link rel="alternate" type="text/markdown" href="/llms.txt" title="Machine-readable summary" />
+  <link rel="alternate" type="application/rss+xml" href="/feed.xml" title="Northern Temper — The Reads" />
+  <link rel="author" href="/humans.txt" />
 
   <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  {extraSchema.map((s) => (
+    <script type="application/ld+json" set:html={JSON.stringify(s)} />
+  ))}
 </head>
 <body>
   <a class="skip" href="#main">Skip to content</a>
   <slot />
 
   <script>
+    // Register the service worker so the site works on a bad connection. It is
+    // network-first for pages and data, so it can never be the reason somebody
+    // sees an old figure.
+    if ('serviceWorker' in navigator) {
+      addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(() => {
+          /* offline support is a bonus, never a requirement */
+        });
+      });
+    }
+
     // Reveal fallback for engines without scroll-driven animations (Firefox).
     // Only runs when the native path is unavailable, so it is a no-op in Chromium.
     const supportsSDA = CSS.supports('(animation-timeline: view()) and (animation-range: entry)');

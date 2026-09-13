@@ -1,5 +1,15 @@
 ---
 import Read from '../../layouts/Read.astro';
+import { articleSchema } from '../../lib/schema';
+const schema = [articleSchema({
+  title: "The Closed Loop",
+  description: "The full strategic case: how Canadian energy and Korean silicon become a single forty-year industrial trade.",
+  path: '/read/the-closed-loop',
+  image: '/og/the-closed-loop.png',
+  published: '2026-06-01',
+  section: "NPSI \u00b7 Working Paper No. 6",
+  words: 2717,
+})];
 ---
 <Read
   title={"The Closed Loop"}
@@ -8,6 +18,7 @@ import Read from '../../layouts/Read.astro';
   standfirst={"How Canada\u2019s energy, minerals and two-ocean geography become one forty-year trade with Korea. The hand, in detail."}
   path="/read/the-closed-loop"
   ogImage="/og/the-closed-loop.png"
+  schema={schema}
 >
       <p><a href="https://npsi.ca/">Home</a><a href="https://npsi.ca/about/">About</a><a href="https://npsi.ca/engage/">Engage</a></p>
       <p><a href="https://npsi.ca/">North Pacific Strategy Initiative</a></p>

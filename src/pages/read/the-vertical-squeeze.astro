@@ -1,5 +1,15 @@
 ---
 import Read from '../../layouts/Read.astro';
+import { articleSchema } from '../../lib/schema';
+const schema = [articleSchema({
+  title: "The Vertical Squeeze",
+  description: "Municipalities carry the most responsibility and the least revenue. The vertical fiscal imbalance, costed.",
+  path: '/read/the-vertical-squeeze',
+  image: '/og/the-vertical-squeeze.png',
+  published: '2026-05-29',
+  section: "Fit For Gov \u00b7 Dossier",
+  words: 3612,
+})];
 ---
 <Read
   title={"The Vertical Squeeze"}
@@ -8,6 +18,7 @@ import Read from '../../layouts/Read.astro';
   standfirst={"Why the order of government closest to you has the least power to pay for what you need \u2014 and what a fix actually looks like."}
   path="/read/the-vertical-squeeze"
   ogImage="/og/the-vertical-squeeze.png"
+  schema={schema}
 >
       <p>Fit For Gov</p>
       <p>FFG-DOSSIER-002 FISCAL-STRUCTURE STRAND MAY 2026 · v1.0</p>

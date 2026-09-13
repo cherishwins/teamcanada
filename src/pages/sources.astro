@@ -1,0 +1,264 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import Share from '../components/Share.astro';
+import { getFigures, getRivers, getTrade, getProvinces } from '../lib/sources';
+import { datasetSchema, DATASETS } from '../lib/schema';
+
+/**
+ * The receipts page.
+ *
+ * The site's entire claim is that every figure on it is public and checkable.
+ * This is where that stops being a claim. Each row names the number, where it
+ * comes from, the reference period it describes, and — where the figure is
+ * live — the endpoint serving it, which anyone can open and read for
+ * themselves. Where a figure has a known weakness, the row says so.
+ */
+const [figures, water, trade, provinces] = await Promise.all([
+  getFigures(), getRivers(), getTrade(), getProvinces(),
+]);
+const fmt = new Intl.NumberFormat('en-CA');
+
+interface Row {
+  figure: string;
+  value: string;
+  source: string;
+  table?: string;
+  period: string;
+  live: boolean;
+  note?: string;
+}
+
+const LIVE: Row[] = [
+  { figure: 'Population', value: fmt.format(figures.population.value),
+    source: 'Statistics Canada', table: '17-10-0009', period: figures.population.asOf, live: figures.population.live },
+  { figure: 'Real GDP, monthly', value: `$${fmt.format(Math.round(figures.gdp.value / 1000))}B`,
+    source: 'Statistics Canada', table: '36-10-0434', period: figures.gdp.asOf, live: figures.gdp.live },
+  { figure: 'Inflation, CPI year over year', value: `${figures.cpi.changePct?.toFixed(1) ?? '—'}%`,
+    source: 'Statistics Canada', table: '18-10-0004', period: figures.cpi.asOf, live: figures.cpi.live },
+  { figure: 'Policy interest rate', value: `${figures.policyRate.value.toFixed(2)}%`,
+    source: 'Bank of Canada', table: 'V39079', period: figures.policyRate.asOf, live: figures.policyRate.live },
+  { figure: 'One US dollar, in Canadian dollars', value: figures.usdcad.value.toFixed(4),
+    source: 'Bank of Canada', table: 'FXUSDCAD', period: figures.usdcad.asOf, live: figures.usdcad.live },
+  ...water.rivers.map((r) => ({
+    figure: `River discharge · ${r.name}`, value: `${fmt.format(r.discharge)} m³/s`,
+    source: 'Environment and Climate Change Canada', table: r.station,
+    period: r.at.slice(0, 16).replace('T', ' ') + ' UTC', live: r.live,
+  })),
+  ...trade.partners.slice(0, 4).map((p) => ({
+    figure: `Merchandise exports · ${p.name}`, value: `$${fmt.format(Math.round(p.exports))}M / month`,
+    source: 'Statistics Canada', table: '12-10-0011', period: trade.asOf, live: p.live,
+  })),
+  { figure: 'Provincial GDP and population', value: `${provinces.provinces.length} provinces`,
+    source: 'Statistics Canada', table: '36-10-0222 · 17-10-0009', period: provinces.provinces[0]?.gdpYear ?? '2024',
+    live: provinces.allLive, note: 'Feeds the calculator. Every line there states its own method.' },
+];
+
+const FIXED: Row[] = [
+  { figure: 'Renewable fresh water, per person', value: '109,837 m³', source: 'Statistics Canada',
+    period: 'as published', live: false,
+    note: 'Divides out to a population of about 31.7 million — Canada in 1998. The volume is unchanged; on today’s population it is about 83,975 m³. Disclosed on the home page.' },
+  { figure: 'The same figure, United States', value: '9,980 m³', source: 'Statistics Canada',
+    period: 'as published', live: false,
+    note: 'Same kind of vintage. Not restated here, because no verifiable US figure from a recent year is in hand — and inventing a sharper ratio would be the same error pointing the other way.' },
+  { figure: 'Annual water yield', value: '3,478 km³', source: 'Statistics Canada', period: 'long-run average', live: false },
+  { figure: 'Lakes larger than 100 km²', value: '563', source: 'Statistics Canada', period: '—', live: false,
+    note: 'Volume-based. No denominator, so no vintage problem.' },
+  { figure: 'Share of the world’s wetlands', value: '~25%', source: 'Statistics Canada', period: '—', live: false },
+  { figure: 'Great Lakes share of global fresh surface water', value: '~18%', source: 'Statistics Canada', period: '—', live: false },
+  { figure: 'Canada–US border that is water', value: '~40%', source: 'Statistics Canada', period: '—', live: false },
+  { figure: 'Passengers diverted, 11 September 2001', value: '33,000+', source: 'Transport Canada', period: '2001', live: false },
+  { figure: 'Aircraft and people received at Gander', value: '38 · 6,595', source: 'Transport Canada', period: '2001', live: false },
+  { figure: 'Canadian deaths, Afghanistan', value: '158', source: 'Canadian Armed Forces', period: '2001–2014', live: false },
+  { figure: 'Federal accumulated deficit', value: '$1,266B', source: 'Public Accounts of Canada', period: 'March 2025', live: false },
+  { figure: 'Trade-friction cost of separation', value: '4–6% of GDP', source: 'Tombe, University of Calgary', period: '—', live: false,
+    note: '4% at a 5% rise in friction; 6% at 8%. Feeds the calculator.' },
+  { figure: 'Cost of standing up a state', value: '$98–107B', source: 'Alberta Prosperity Project', period: '—', live: false,
+    note: 'The separation campaign’s own costing, used as published and scaled per person for other provinces.' },
+  { figure: 'Defence floor', value: '5% of GDP', source: 'NATO, Hague summit', period: '2025', live: false },
+  { figure: 'Bill C-5 retained GDP', value: '$5,100 per Canadian', source: 'Macdonald-Laurier Institute', period: '2022 paper', live: false },
+];
+
+const liveCount = LIVE.filter((r) => r.live).length;
+
+// Each public endpoint is declared as a Dataset. The site redistributes
+// government figures under CC0; markup is how that becomes findable as data
+// rather than as four anonymous JSON URLs.
+const schema = DATASETS.map(datasetSchema);
+
+const description =
+  'Every figure on this site, where it comes from, and what period it describes. ' +
+  'The live ones link to the endpoint serving them.';
+---
+<Base title="The Receipts" description={description} path="/sources" ogImage="/og/read.png" schema={schema}>
+  <Nav />
+  <main id="main">
+    <section class="open">
+      <div class="nt-wrap">
+        <div class="nt-label">Every figure, and where it came from</div>
+        <hr class="nt-rule" />
+        <h1 class="nt-display lg">Check it<br />yourself.</h1>
+        <p class="nt-lede" style="margin-top:var(--space-4);">
+          A claim you cannot check is just a claim. Here is the whole list.
+        </p>
+      </div>
+    </section>
+
+    <section class="nt-light">
+      <div class="nt-wrap">
+        <div class="nt-label">Live · {liveCount} of {LIVE.length} responding right now</div>
+        <hr class="nt-rule" />
+        <h2 class="nt-display md" style="max-width:20ch;">These are read on request, not typed in.</h2>
+        <p class="intro">
+          Four endpoints serve them, all public, all CORS-open, none requiring a
+          key. Open any of them and you will see the same numbers this page is
+          showing, with the reference period each one describes.
+        </p>
+
+        <ul class="endpoints">
+          <li><a href="/api/figures.json"><code>/api/figures.json</code><span>GDP · population · CPI · policy rate · USD/CAD</span></a></li>
+          <li><a href="/api/rivers.json"><code>/api/rivers.json</code><span>river discharge, four gauges, every five minutes</span></a></li>
+          <li><a href="/api/trade.json"><code>/api/trade.json</code><span>merchandise exports by trading partner, monthly</span></a></li>
+          <li><a href="/api/provinces.json"><code>/api/provinces.json</code><span>provincial GDP and population</span></a></li>
+        </ul>
+
+        <div class="tw">
+          <table>
+            <caption class="nt-caption">Live figures, as of this page load</caption>
+            <thead><tr><th scope="col">Figure</th><th scope="col">Value</th><th scope="col">Source</th><th scope="col">Reference</th></tr></thead>
+            <tbody>
+              {LIVE.map((r) => (
+                <tr>
+                  <th scope="row">{r.figure}{r.note && <span class="note">{r.note}</span>}</th>
+                  <td class="val">{r.value}</td>
+                  <td>{r.source}{r.table && <span class="tbl">{r.table}</span>}</td>
+                  <td class="per">{r.period}<span class={`dot ${r.live ? 'on' : 'off'}`}>{r.live ? 'live' : 'fallback'}</span></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="nt-wrap">
+        <div class="nt-label">Published figures</div>
+        <hr class="nt-rule" />
+        <h2 class="nt-display md" style="max-width:22ch;">These do not change on their own. Where one has a weakness, the row says so.</h2>
+
+        <div class="tw">
+          <table>
+            <thead><tr><th scope="col">Figure</th><th scope="col">Value</th><th scope="col">Source</th><th scope="col">Period</th></tr></thead>
+            <tbody>
+              {FIXED.map((r) => (
+                <tr>
+                  <th scope="row">{r.figure}{r.note && <span class="note">{r.note}</span>}</th>
+                  <td class="val">{r.value}</td>
+                  <td>{r.source}{r.table && <span class="tbl">{r.table}</span>}</td>
+                  <td class="per">{r.period}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="policy">
+          <p class="nt-label">How this page behaves when something breaks</p>
+          <p>
+            A figure never renders blank. Every live series carries a
+            hand-checked fallback with the date it was true, and if a source
+            stops responding the page shows that fallback <strong>and says
+            so</strong> — the right-hand column above will read
+            <em>fallback</em> rather than <em>live</em>.
+          </p>
+          <p>
+            A dash would hide the problem. A silently stale number would be
+            worse. Neither is available to a site whose only real asset is that
+            you can check it.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <Share
+      quote="Every figure on Northern Temper is public and checkable — here is the whole list, with the live endpoints serving them."
+      label="Pass it on"
+    />
+  </main>
+  <SiteFooter />
+</Base>
+
+<style>
+  .open { padding-block: clamp(70px, 13vh, 180px); }
+  .open h1 { max-width: 12ch; }
+  .intro { color: var(--text-muted); margin-top: var(--space-3); max-width: 60ch; }
+
+  .endpoints { list-style: none; margin: clamp(26px, 4vh, 48px) 0 0; padding: 0; }
+  .endpoints li { border-top: var(--border-hair) solid var(--border-hairline); }
+  .endpoints li:last-child { border-bottom: var(--border-hair) solid var(--border-hairline); }
+  .endpoints a {
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px;
+    padding: 14px 0; min-height: 44px; text-decoration: none; color: inherit;
+    transition: padding-inline-start .2s var(--ease);
+  }
+  .endpoints a:hover { padding-inline-start: 10px; }
+  .endpoints code {
+    font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    font-size: var(--type-body-sm); color: var(--nt-red);
+  }
+  .endpoints span { color: var(--text-muted); font-size: var(--type-body-sm); }
+
+  .tw { overflow-x: auto; margin-top: clamp(28px, 4vh, 52px); -webkit-overflow-scrolling: touch; }
+  table { width: 100%; border-collapse: collapse; min-width: 40rem; }
+  caption { text-align: left; padding-bottom: var(--space-2); }
+  th[scope='col'] {
+    background: var(--nt-black); color: var(--nt-white); text-align: left;
+    font-family: var(--font-display); font-weight: var(--fw-label);
+    font-size: var(--type-label-sm); letter-spacing: var(--ls-key);
+    text-transform: uppercase; padding: 11px 13px;
+  }
+  td, th[scope='row'] {
+    border-bottom: var(--border-hair) solid var(--border-hairline);
+    padding: 13px; vertical-align: top; text-align: left;
+    font-size: var(--type-body-sm);
+  }
+  th[scope='row'] { font-weight: var(--fw-body-strong); width: 34%; }
+  .note { display: block; font-weight: var(--fw-body); color: var(--text-muted); margin-top: .4rem; max-width: 46ch; }
+  .val {
+    font-family: var(--font-display); font-weight: var(--fw-display);
+    font-variant-numeric: tabular-nums; letter-spacing: var(--ls-number);
+    white-space: nowrap; font-size: var(--type-number-sm);
+  }
+  .tbl {
+    display: block; font-family: ui-monospace, Menlo, monospace;
+    font-size: 11px; color: var(--text-caption); margin-top: .3rem;
+  }
+  .per { white-space: nowrap; color: var(--text-muted); }
+  .dot {
+    display: block; margin-top: .35rem;
+    font-family: var(--font-display); font-weight: var(--fw-label);
+    font-size: 10px; letter-spacing: var(--ls-key); text-transform: uppercase;
+  }
+  .dot.on { color: var(--nt-red); }
+  .dot.off { color: var(--text-caption); }
+
+  .policy {
+    margin-top: clamp(34px, 5vh, 64px); max-width: 62ch;
+    padding: clamp(20px, 2.6vw, 30px);
+    border-left: var(--rule-weight) solid var(--nt-red); background: var(--surface-raised);
+  }
+  .policy p + p { margin-top: var(--space-2); }
+  .policy p:not(.nt-label) { color: var(--text-muted); font-size: var(--type-body-sm); }
+
+  /* A four-column table is unreadable on a phone; stack it instead. */
+  @media (max-width: 760px) {
+    table { min-width: 0; }
+    thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+    tr { display: block; border-bottom: var(--border-key) solid var(--border-hairline); padding: var(--space-2) 0; }
+    td, th[scope='row'] { display: block; width: auto; border: 0; padding: 0 0 .4rem; }
+    th[scope='row'] { font-size: 1rem; padding-bottom: .5rem; }
+    .per { color: var(--text-caption); }
+  }
+</style>

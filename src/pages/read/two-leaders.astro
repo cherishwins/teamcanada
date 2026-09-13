@@ -1,5 +1,15 @@
 ---
 import Read from '../../layouts/Read.astro';
+import { articleSchema } from '../../lib/schema';
+const schema = [articleSchema({
+  title: "The Wave Hit Every G7 Democracy. Two Leaders Beat It.",
+  description: "Anti-incumbent anger flattened the West. Japan and Canada are the exceptions \u2014 and the reason is a method, not a party.",
+  path: '/read/two-leaders',
+  image: '/og/two-leaders.png',
+  published: '2026-05-12',
+  section: "A governance reading",
+  words: 785,
+})];
 ---
 <Read
   title={"The Wave Hit Every G7 Democracy. Two Leaders Beat It."}
@@ -8,6 +18,7 @@ import Read from '../../layouts/Read.astro';
   standfirst={"Anti-incumbent anger flattened the West. Two leaders are the exceptions, and the reason is a method anyone can copy."}
   path="/read/two-leaders"
   ogImage="/og/two-leaders.png"
+  schema={schema}
 >
       <p>A governance reading</p>
       <p class="lead">Across the developed world, voters are throwing out whoever is in charge. Two leaders are bucking the trend — and the reason is worth understanding no matter who you vote for.</p>
