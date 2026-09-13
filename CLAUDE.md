@@ -220,9 +220,18 @@ dossier and 4 of 5 reads. Two traps worth remembering:
    - Banned framings (1995 federal-propaganda echoes) are audited too:
      *unité nationale, notre grand pays, d'un océan à l'autre, un Canada uni,
      la nation canadienne.* Never reintroduce them.
-7. **Fact-check:** the 109,837 / 9,980 m³ water figures work back to mid-2000s
-   population denominators. The 11:1 ratio holds; the absolutes are ~20 years
-   old. Footnote the vintage or refresh both sides from the same year.
+7. ~~Fact-check the water figures~~ — **done, and disclosed on the page.**
+   The published per-capita figure divides out to **31.7 million people** —
+   Canada in 1998. The volume never changed; the divisor did. `/` and `/fr`
+   both carry an expandable note giving the implied population, the
+   current-population figure (**~83,975 m³**, computed live from StatCan's own
+   yield and StatCan's own population), and the point that the volume-based
+   claims carry no denominator and are unaffected.
+   **Flagging this ourselves is the posture, not a concession.** Do not quietly
+   delete the note to make the headline look stronger.
+   Still open: the US side is reproduced as published and has the same kind of
+   vintage. Replace both from one recent year when a verifiable US figure is in
+   hand — do not invent a new ratio in the meantime.
 8. **Legal:** "Team Canada" is a Canadian Olympic Committee mark. The rebrand
    sidesteps it — do not reintroduce the name as a public brand.
 
