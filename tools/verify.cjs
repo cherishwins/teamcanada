@@ -15,9 +15,28 @@
  *
  *   node tools/verify.cjs [.vercel/output/static]
  */
-const { chromium } = require('/opt/node22/lib/node_modules/playwright');
 const path = require('path');
 const fs = require('fs');
+
+/**
+ * Playwright is deliberately NOT in package.json.
+ *
+ * Vercel installs devDependencies to build, so listing a browser-automation
+ * library there would add its weight to every single deploy of a site that
+ * never uses it at runtime. CI installs it explicitly instead (--no-save), and
+ * the sandbox has it globally. Resolve whichever is present.
+ */
+function loadChromium() {
+  for (const m of ['playwright', '@playwright/test', '/opt/node22/lib/node_modules/playwright']) {
+    try { return require(m).chromium; } catch { /* try the next one */ }
+  }
+  console.error('verify: playwright not found — run `npm i --no-save playwright`');
+  process.exit(1);
+}
+const chromium = loadChromium();
+
+/** axe-core IS a devDependency: 568 kB, dev-only, and it never reaches a page. */
+const AXE = fs.readFileSync(require.resolve('axe-core/axe.min.js'), 'utf8');
 
 const ROOT = process.argv[2] || '.vercel/output/static';
 
@@ -137,7 +156,7 @@ function checkServiceWorker() {
   const swProblems = checkServiceWorker();
   for (const m of swProblems) console.log(`  SW        ${m}`);
   const browser = await chromium.launch();
-  let overflow = 0, jsErrors = 0, taps = 0, contrast = 0, missing = 0, altMissing = 0, broken = 0;
+  let overflow = 0, jsErrors = 0, taps = 0, contrast = 0, missing = 0, altMissing = 0, broken = 0, axeFails = 0;
   const report = [];
 
   for (const width of VIEWPORTS) {
@@ -178,6 +197,20 @@ function checkServiceWorker() {
       // Contrast and metadata do not change with width; check once, at 1280.
       if (width === 1280) {
         for (const c of await page.evaluate(CONTRAST_PROBE)) { contrast++; report.push(`  CONTRAST  ${p}  ${c.ratio}:1 (needs ${c.need}) ${c.px}px  "${c.text}"`); }
+        // axe-core catches the whole class of failures a geometry-and-colour
+        // sweep cannot see: a scroll container the keyboard cannot reach, a
+        // heading level skipped so the outline has a hole in it, content
+        // stranded outside every landmark. All three were real here.
+        await page.addScriptTag({ content: AXE });
+        const violations = await page.evaluate(async () =>
+          (await axe.run(document, { resultTypes: ['violations'] })).violations
+            .map((v) => ({ id: v.id, impact: v.impact, help: v.help, n: v.nodes.length,
+                           sample: v.nodes[0]?.html.slice(0, 110) })));
+        for (const v of violations) {
+          axeFails++;
+          report.push(`  AXE       ${p}  [${v.impact}] ${v.id} × ${v.n} — ${v.help}\n              ${v.sample}`);
+        }
+
         const alt = await page.evaluate(() => {
           const g = (s) => document.querySelector(s)?.getAttribute('content') || '';
           return { img: g('meta[property="og:image"]'), alt: g('meta[property="og:image:alt"]'), talt: g('meta[name="twitter:image:alt"]') };
@@ -200,7 +233,8 @@ function checkServiceWorker() {
   console.log(`  pages missing og alt     ${altMissing}`);
   console.log(`  broken references        ${broken}`);
   console.log(`  service-worker problems  ${swProblems.length}`);
-  const bad = overflow + jsErrors + taps + contrast + missing + altMissing + broken + swProblems.length;
+  console.log(`  axe-core violations      ${axeFails}`);
+  const bad = overflow + jsErrors + taps + contrast + missing + altMissing + broken + swProblems.length + axeFails;
   console.log(bad ? `\nverify: ${bad} issue(s)` : '\nverify: clean');
   process.exit(bad ? 1 : 0);
 })();

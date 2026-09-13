@@ -1,0 +1,66 @@
+# Every check this repo relies on, run on every change.
+#
+# The repo is public, so Actions minutes are free and unmetered — this costs
+# nothing, which is the only reason it is allowed to exist here.
+#
+# It exists because the same failure has now happened twice: a convention was
+# written down in CLAUDE.md, the script enforcing it lived in a scratch
+# directory, the session ended, and the rule quietly stopped being true. The
+# French typography pass was reinstated only after /fr had shipped with 71
+# straight apostrophes. Committing the scripts fixed half of that. This fixes
+# the other half — nobody has to remember to run them.
+name: verify
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# A new push supersedes the run in flight; no point verifying a stale commit.
+concurrency:
+  group: verify-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # Playwright is intentionally absent from package.json: Vercel installs
+      # devDependencies to build, and a browser-automation library has no place
+      # in the install path of a static site that never uses it at runtime.
+      - name: Install Playwright (CI only)
+        run: |
+          npm i --no-save playwright
+          npx playwright install --with-deps chromium
+
+      # `npm run build` also runs tools/check-french.cjs and fails on a single
+      # typography or banned-framing issue, and generates llms-full.txt.
+      - name: Build
+        run: npm run build
+
+      - name: Audit dependencies
+        run: npm audit --audit-level=high
+
+      # 20 pages x 10 viewports: overflow, console errors, tap targets,
+      # contrast, broken references, og:image:alt, the service worker, and
+      # axe-core. Exits non-zero on any of the nine.
+      - name: Sweep
+        run: node tools/verify.cjs
+
+      - name: Upload report on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-output
+          path: .vercel/output/static
+          retention-days: 3
