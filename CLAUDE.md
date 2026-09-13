@@ -146,6 +146,7 @@ III · THE MATH  /math     Dossier No. 01, separation costed.     from teamcanad
 IV  · THE BLOC  /bloc     Middle powers.                        live trade data
 V   · THE BUILD /build    Refine · Compute · Corridor + C-5.     from teamcanadawins
 
+/calculator  The bill, per province      live StatCan GDP + population
 /read + 5 long-form pieces   9,162 words migrated from the old site
 /join  /support  /privacy  /terms  /404
 ```
@@ -170,9 +171,17 @@ dossier and 4 of 5 reads. Two traps worth remembering:
 ## Open / pending
 1. **`SUPPORT_WALLET`** — the one thing blocking the support rail. Set it in
    Vercel and `/support` arms itself.
-2. **Separation-cost calculator** — province → GDP hit, debt share, build-a-state
-   cost, defence bill. Runs on the Tombe/APP figures already in `/math`. Pure
-   client-side arithmetic, no service, no cost.
+2. ~~Separation-cost calculator~~ — **built at `/calculator`.** Live StatCan
+   provincial GDP (36-10-0222) and population (17-10-0009); every line states
+   its own method and cites its source on the page. Pure client-side
+   arithmetic, no service, no cost.
+   It cross-validates against the dossier's independent research: Alberta's
+   debt share computes to $155B (dossier: $155B), Quebec's to $277B (dossier:
+   ~$278B), from live population alone.
+   **Day-one cost per resident is near-constant across provinces** — both its
+   components scale with population. That is not a bug; the page says so
+   explicitly, because a headline that reads identically everywhere otherwise
+   looks broken. What varies is the recurring bill, driven by GDP per head.
 3. **Middle-power bloc map** — static TopoJSON + inline SVG. Never Mapbox: keys,
    cost, and a tracking surface on an otherwise privacy-clean site.
 4. **Coalition** — `/join` is a `mailto:`, which costs nothing and needs no

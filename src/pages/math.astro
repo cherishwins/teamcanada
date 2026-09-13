@@ -19,6 +19,7 @@ const description =
         <p class="nt-lede" style="margin-top:var(--space-4);">
           Dossier No. 01. A briefing for Canadians who can read a balance sheet.
         </p>
+        <p class="more"><a href="/calculator">Run it for your own province →</a></p>
       </div>
     </section>
 
@@ -192,6 +193,13 @@ const description =
 <style>
   .open { padding-block: clamp(70px, 13vh, 180px); }
   .open h1 { max-width: 14ch; }
+  .more { margin-top: clamp(24px, 3.6vh, 42px); }
+  .more a {
+    display: inline-flex; align-items: center; min-height: 44px;
+    font-family: var(--font-display); font-weight: var(--fw-label);
+    font-size: var(--type-label); letter-spacing: var(--ls-key);
+    text-transform: uppercase; color: var(--nt-red-lift); text-underline-offset: 5px;
+  }
   .doc { max-width: 72ch; }
   .doc :global(h2) {
     margin: clamp(46px, 7vh, 90px) 0 var(--space-3);

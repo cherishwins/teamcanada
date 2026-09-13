@@ -32,6 +32,7 @@ const here = (h: string) => (h === '/' ? pathname === '/' : pathname.startsWith(
       ))}
     </ul>
     <ul class="aux">
+      <li><a href="/calculator" aria-current={here('/calculator') ? 'page' : undefined}>The bill</a></li>
       <li><a href="/read" aria-current={here('/read') ? 'page' : undefined}>The reads</a></li>
       <li><a href="/join" aria-current={here('/join') ? 'page' : undefined}>Coalition</a></li>
     </ul>
