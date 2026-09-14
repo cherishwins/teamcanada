@@ -6,30 +6,31 @@ import SiteFooter from '../components/SiteFooter.astro';
 import Share from '../components/Share.astro';
 import Stat from '../components/Stat.astro';
 import Meter from '../components/Meter.astro';
-import { getFigures, getRivers } from '../lib/sources';
+import { getFigures, getRivers, getWater } from '../lib/sources';
 
 // Fetched at build; the figures strip refreshes itself from /api/figures.json
 // on load, so a deploy is never required for the numbers to be current.
-const [figures, water] = await Promise.all([getFigures(), getRivers()]);
+const [figures, water, aquastat] = await Promise.all([getFigures(), getRivers(), getWater()]);
 const fmt = new Intl.NumberFormat('en-CA');
 
 /**
- * The published per-capita water figure is Statistics Canada's, but it was
- * computed on the population of its publication year — it works back to about
- * 31.7 million people, which is Canada around 1998. The VOLUME has not changed;
- * only the divisor has. Rather than quietly printing a number whose denominator
- * is a quarter-century old, the page shows both and says which is which. A site
- * whose whole claim is that its figures are checkable has to be the one that
- * flags this.
+ * This page used to print 109,837 m³ against 9,980 and call it eleven to one.
+ * Those came from two different publications on two different dates, and the
+ * Canadian one divided its volume by the population of its publication year —
+ * about 31.7 million, Canada in 1998. A ratio assembled from two vintages is
+ * not a checkable number, and this site has no business printing one.
+ *
+ * It now uses FAO AQUASTAT: one source, one reference year, both countries,
+ * the same definition on each side. The ratio is COMPUTED from the two figures
+ * rather than typed, so it cannot drift from them when the data updates.
  */
-const WATER_YIELD_KM3 = 3478;   // StatCan, average annual water yield
-const PUBLISHED_PER_CAPITA = 109837;
-const currentPerCapita = Math.round((WATER_YIELD_KM3 * 1e9) / figures.population.value);
-const impliedPop = Math.round((WATER_YIELD_KM3 * 1e9) / PUBLISHED_PER_CAPITA);
+const ratio = aquastat.ratio;
+const km3 = (m3: number) => fmt.format(Math.round(m3 / 1e9));
+const volumeGapPct = Math.abs(aquastat.canada.volume / aquastat.usa.volume - 1) * 100;
 
 const description =
   'What we are. What we hold. And what we have never once used against a neighbour, ' +
-  'though we have always been able to. Eleven times the fresh water per person. Never once a threat.';
+  'though we have always been able to. Nearly nine times the fresh water per person. Never once a threat.';
 ---
 <Base title="Northern Temper" description={description} path="/" ogImage="/og/home.png">
   <div class="progress" aria-hidden="true"></div>
@@ -96,48 +97,67 @@ const description =
       <div class="nt-wrap">
         <div class="nt-label">Three · What we hold</div>
         <hr class="nt-rule" />
-        <h2 class="nt-display lg rv">Eleven<br />to one.</h2>
+        <h2 class="nt-display lg rv">The same<br />water.</h2>
         <p class="nt-lede rv" style="margin-top:1.4rem;">
-          Renewable fresh water produced per person, per year, in cubic metres.
+          Canada and the United States generate almost exactly the same amount of
+          fresh water each year — {km3(aquastat.canada.volume)} cubic kilometres
+          against {km3(aquastat.usa.volume)} — a difference of {volumeGapPct.toFixed(0)}%.
           This is not an argument. It is a measurement.
         </p>
 
         <div class="compare rv">
           <div class="side">
-            <div class="cn" data-count="109837" data-sep="true">109,837</div>
+            <div class="cn" data-count={aquastat.canada.perCapita} data-sep="true">{fmt.format(aquastat.canada.perCapita)}</div>
             <div class="ck">Canada</div>
           </div>
           <div class="side muted">
-            <div class="cn" data-count="9980" data-sep="true">9,980</div>
+            <div class="cn" data-count={aquastat.usa.perCapita} data-sep="true">{fmt.format(aquastat.usa.perCapita)}</div>
             <div class="ck">United States</div>
           </div>
         </div>
-        <p class="pull rv">Eleven times the water,<br />per person, every year.</p>
-        <p class="nt-caption">Source · Statistics Canada</p>
+        <p class="pull rv">Almost the same water.<br />{ratio.toFixed(1)}× the share, per person.</p>
+        <p class="nt-caption">
+          Cubic metres per person, per year · Source · {aquastat.source}, {aquastat.year}
+          {!aquastat.live && ' · a source is not responding; the last verified figures are shown'}
+        </p>
 
         <details class="vintage rv">
-          <summary>About that number</summary>
+          <summary>This page used to say eleven times</summary>
           <div class="vbody">
             <p>
-              The per-person figures above are Statistics Canada's, and they are
-              printed as published — but they were worked out on the populations
-              of the year they were published. The Canadian one divides out to
-              about {fmt.format(impliedPop)} people, which is roughly where this
-              country stood in 1998.
+              It did, and the number was not defensible. It came from dividing
+              109,837 m³ by 9,980 — two figures published separately, on
+              different dates, worked out different ways. The Canadian one
+              divided its volume by the population of its own publication year,
+              which works back to about 31.7 million people. That is Canada
+              in 1998.
             </p>
             <p>
-              <strong>The water has not changed. The divisor has.</strong> On the
-              same {fmt.format(WATER_YIELD_KM3)} cubic kilometres of annual yield
-              and today's population of {fmt.format(figures.population.value)},
-              Canada produces about <strong>{fmt.format(currentPerCapita)} m³ per
-              person per year</strong> — roughly a quarter less than the
-              published figure, because there are a quarter more of us.
+              <strong>The water never changed. The divisor did</strong> — and a
+              ratio assembled out of two vintages is not a checkable number,
+              whatever it happens to say. The figures above come instead from
+              FAO AQUASTAT: one source, one reference year
+              ({aquastat.year}), the same definition applied on both sides of
+              the border. The ratio on this page is computed from those two
+              figures rather than typed, so it cannot drift from them.
             </p>
             <p>
-              None of that touches the claims underneath it, which carry no
-              denominator at all: third-largest renewable supply on earth, 563
-              lakes over 100 km², a quarter of the world's wetlands, and forty
-              per cent of the longest border. Those are volumes, and they hold.
+              It is a smaller number than the one we used to print. It is also
+              one anybody can check in a single request, which is worth more.
+              <a href="/api/water.json">Here is the endpoint.</a>
+            </p>
+            <p>
+              “Internal renewable” means water generated inside the country.
+              The broader measure adds river flow arriving from elsewhere — and
+              a good deal of what arrives in the United States arrives from
+              Canada. We use the narrower one, because it describes what a
+              country actually makes rather than what passes through it.
+            </p>
+            <p>
+              None of this touches the claims underneath, which carry no
+              denominator at all: 563 lakes over 100 km², a quarter of the
+              world's wetlands, and forty per cent of the longest border.
+              Those are volumes, and they hold.
             </p>
             <p class="nt-caption">
               We would rather point at this ourselves than have it pointed out.
@@ -192,7 +212,7 @@ const description =
         <div class="nt-prose rv">
           <p>Steel is tempered by heat and then by cold. What comes out is not softer. It is harder to break, and it holds an edge.</p>
           <p>That is the word we chose and it is the word we mean. Temper is the metal. Temper is also the thing we do not lose.</p>
-          <p>We have sat on eleven times the water, a quarter of the world's wetlands, and the largest shared lakes on the planet, for the entire history of the relationship.</p>
+          <p>We have sat on nearly nine times the water per person, a quarter of the world's wetlands, and the largest shared lakes on the planet, for the entire history of the relationship.</p>
           <p>We have never once threatened the tap. It has never seriously been proposed. It will not be, because a country that would do that is a different country than this one, and we are not interested in becoming it to win an argument.</p>
           <p>Anger is loud and anger burns out. What we have instead is colder and lasts longer. It is the thing that gets a concession road plowed at four in the morning and a stranger's car pushed out of a snowbank by people who never introduce themselves.</p>
           <p><strong>We are patient because winter taught us. The season always turns.</strong></p>
@@ -262,7 +282,7 @@ const description =
         <div class="scols">
           <div>
             <h3 class="sh">The water</h3>
-            <p>Statistics Canada: Canada 109,837 m³ of renewable fresh water per person annually; United States 9,980 m³. Third-largest renewable supply in the world, averaging 3,478 km³ of annual flow. 563 lakes larger than 100 km², more than any other country. The Great Lakes hold roughly 18% of the global stock of fresh surface water. About 25% of the world's wetlands. Approximately 40% of the Canada–United States boundary is water.</p>
+            <p>FAO AQUASTAT, reference year {aquastat.year}, served through the World Bank: renewable internal fresh water of {fmt.format(aquastat.canada.perCapita)} m³ per person per year in Canada against {fmt.format(aquastat.usa.perCapita)} m³ in the United States, on total volumes of {km3(aquastat.canada.volume)} and {km3(aquastat.usa.volume)} cubic kilometres. Live at <a href="/api/water.json">/api/water.json</a>. Statistics Canada: third-largest renewable supply in the world; 563 lakes larger than 100 km², more than any other country. The Great Lakes hold roughly 18% of the global stock of fresh surface water. About 25% of the world's wetlands. Approximately 40% of the Canada–United States boundary is water.</p>
           </div>
           <div>
             <h3 class="sh">The record</h3>
@@ -278,7 +298,7 @@ const description =
     </section>
 
 
-    <Share quote={"Canada holds eleven times the fresh water per person that the United States does, and has never once suggested the tap had a valve. Strength is what you decline to use."} />
+    <Share quote={"Canada and the United States make almost exactly the same amount of fresh water every year. Canada has a fraction of the people — and has never once suggested the tap had a valve. Strength is what you decline to use."} />
 
   </main>
   <SiteFooter />

@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import Nav from '../components/Nav.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import Share from '../components/Share.astro';
-import { getFigures, getRivers, getTrade, getProvinces } from '../lib/sources';
+import { getFigures, getRivers, getTrade, getProvinces, getWater } from '../lib/sources';
 import { datasetSchema, DATASETS } from '../lib/schema';
 
 /**
@@ -15,8 +15,8 @@ import { datasetSchema, DATASETS } from '../lib/schema';
  * live — the endpoint serving it, which anyone can open and read for
  * themselves. Where a figure has a known weakness, the row says so.
  */
-const [figures, water, trade, provinces] = await Promise.all([
-  getFigures(), getRivers(), getTrade(), getProvinces(),
+const [figures, water, trade, provinces, aquastat] = await Promise.all([
+  getFigures(), getRivers(), getTrade(), getProvinces(), getWater(),
 ]);
 const fmt = new Intl.NumberFormat('en-CA');
 
@@ -50,19 +50,30 @@ const LIVE: Row[] = [
     figure: `Merchandise exports · ${p.name}`, value: `$${fmt.format(Math.round(p.exports))}M / month`,
     source: 'Statistics Canada', table: '12-10-0011', period: trade.asOf, live: p.live,
   })),
+  { figure: 'Renewable internal fresh water, per person · Canada',
+    value: `${fmt.format(aquastat.canada.perCapita)} m³/yr`,
+    source: 'FAO AQUASTAT, via the World Bank', table: 'ER.H2O.INTR.PC',
+    period: aquastat.year, live: aquastat.live,
+    note: 'Replaces the 109,837 m³ figure this site used to print. That one divided its volume by the population of its publication year — about 31.7 million, Canada in 1998 — and was paired with a US figure from a different source and date. A ratio built from two vintages is not checkable. This pair is one source, one year, one definition.' },
+  { figure: 'The same figure, United States',
+    value: `${fmt.format(aquastat.usa.perCapita)} m³/yr`,
+    source: 'FAO AQUASTAT, via the World Bank', table: 'ER.H2O.INTR.PC',
+    period: aquastat.year, live: aquastat.live },
+  { figure: 'Renewable internal fresh water, total · Canada',
+    value: `${fmt.format(Math.round(aquastat.canada.volume / 1e9))} km³/yr`,
+    source: 'FAO AQUASTAT, via the World Bank', table: 'ER.H2O.INTR.K3',
+    period: aquastat.year, live: aquastat.live,
+    note: '“Internal” means generated inside the country. The broader measure adds inflow from elsewhere — and much of what reaches the United States arrives from Canada, which makes it the wrong measure for this claim.' },
+  { figure: 'The same figure, United States',
+    value: `${fmt.format(Math.round(aquastat.usa.volume / 1e9))} km³/yr`,
+    source: 'FAO AQUASTAT, via the World Bank', table: 'ER.H2O.INTR.K3',
+    period: aquastat.year, live: aquastat.live },
   { figure: 'Provincial GDP and population', value: `${provinces.provinces.length} provinces`,
     source: 'Statistics Canada', table: '36-10-0222 · 17-10-0009', period: provinces.provinces[0]?.gdpYear ?? '2024',
     live: provinces.allLive, note: 'Feeds the calculator. Every line there states its own method.' },
 ];
 
 const FIXED: Row[] = [
-  { figure: 'Renewable fresh water, per person', value: '109,837 m³', source: 'Statistics Canada',
-    period: 'as published', live: false,
-    note: 'Divides out to a population of about 31.7 million — Canada in 1998. The volume is unchanged; on today’s population it is about 83,975 m³. Disclosed on the home page.' },
-  { figure: 'The same figure, United States', value: '9,980 m³', source: 'Statistics Canada',
-    period: 'as published', live: false,
-    note: 'Same kind of vintage. Not restated here, because no verifiable US figure from a recent year is in hand — and inventing a sharper ratio would be the same error pointing the other way.' },
-  { figure: 'Annual water yield', value: '3,478 km³', source: 'Statistics Canada', period: 'long-run average', live: false },
   { figure: 'Lakes larger than 100 km²', value: '563', source: 'Statistics Canada', period: '—', live: false,
     note: 'Volume-based. No denominator, so no vintage problem.' },
   { figure: 'Share of the world’s wetlands', value: '~25%', source: 'Statistics Canada', period: '—', live: false },

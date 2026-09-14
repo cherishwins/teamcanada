@@ -95,6 +95,14 @@ export function datasetSchema(d: DatasetMeta) {
 
 export const DATASETS: DatasetMeta[] = [
   {
+    name: 'Renewable fresh water, Canada and the United States',
+    description: 'Renewable internal freshwater resources per capita and in total, for Canada and the United States, from FAO AQUASTAT via the World Bank. One source, one reference year and one definition on both sides of the border, so the ratio between them is a figure anyone can reproduce in a single request.',
+    endpoint: '/api/water.json',
+    provider: 'FAO AQUASTAT; The World Bank',
+    frequency: 'P1Y',
+    keywords: ['Canada', 'United States', 'fresh water', 'renewable water resources', 'AQUASTAT', 'per capita', 'open data'],
+  },
+  {
     name: 'Canadian economic figures, live',
     description: 'Real GDP, population, CPI, the policy interest rate and USD/CAD, read on request from Statistics Canada and the Bank of Canada. Each figure carries the reference period it describes and a flag saying whether it came back live.',
     endpoint: '/api/figures.json',

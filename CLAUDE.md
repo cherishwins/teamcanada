@@ -12,8 +12,9 @@ The site consolidates four previously separate builds of the same argument
 across repos and hosts was the actual problem; one app is the fix.
 
 ### The thesis, and the guardrail
-**Restraint is the flex.** "We hold eleven times the water and have never once
-mentioned the tap" is a harder claim than any taunt — it cannot be screenshotted
+**Restraint is the flex.** "We make as much fresh water as they do, share it
+with a fraction of the people, and have never once mentioned the tap" is a
+harder claim than any taunt — it cannot be screenshotted
 against us, it survives a change of government, and it reads as strength to the
 skeptic we need. The pressure from the south is the *weather*, never the villain.
 
@@ -22,10 +23,11 @@ three seconds, and an American neighbour feels respect without being insulted.*
 An earlier identity ("Unyielding Dominion", roaring grizzly) was retired for
 failing exactly this test. Do not walk back toward it.
 
-> **The "eleven times" in that line is under review — see Open item 7.** The
-> posture is not in question; the multiplier is. A same-year, same-method
-> source (FAO AQUASTAT, 2022) gives **8.67×**, and a stronger framing besides.
-> Do not cite 11× as settled, and do not change it without the owner.
+> **"Eleven times" is retired — see Open item 7.** It came from two figures of
+> different vintages and was not reproducible from any single source. The site
+> now runs on FAO AQUASTAT: same year, same definition, both countries, and the
+> ratio is **computed from the two live figures rather than typed**. Never
+> reintroduce 11×.
 
 ## Stack / infra
 - **Framework:** Astro 7, `output: 'static'` + `@astrojs/vercel` 11. Acts are
@@ -370,56 +372,49 @@ dossier and 4 of 5 reads. Two traps worth remembering:
    - Banned framings (1995 federal-propaganda echoes) are audited too:
      *unité nationale, notre grand pays, d'un océan à l'autre, un Canada uni,
      la nation canadienne.* Never reintroduce them.
-7. ~~Fact-check the water figures~~ — **done, and disclosed on the page.**
-   The published per-capita figure divides out to **31.7 million people** —
-   Canada in 1998. The volume never changed; the divisor did. `/` and `/fr`
-   both carry an expandable note giving the implied population, the
-   current-population figure (**~83,975 m³**, computed live from StatCan's own
-   yield and StatCan's own population), and the point that the volume-based
-   claims carry no denominator and are unaffected.
-   **Flagging this ourselves is the posture, not a concession.** Do not quietly
-   delete the note to make the headline look stronger.
-   **The verifiable same-year figures are now in hand, and they do not say 11.**
-   FAO AQUASTAT, served keyless through the World Bank
-   (`api.worldbank.org/v2/country/CAN;USA/indicator/ER.H2O.INTR.PC?format=json`,
-   and `…INTR.K3` for volumes) — one source, one year, one method, both
-   countries:
+7. ~~Fact-check the water figures~~ — **done, replaced, and live.**
+   The site used to print **109,837 m³ against 9,980** and call it eleven to
+   one. Those came from separate publications on different dates, and the
+   Canadian one divided its volume by the population of its own publication
+   year — about 31.7 million, Canada in 1998. **A ratio assembled from two
+   vintages is not a checkable number**, which is disqualifying on a site whose
+   entire claim is that its figures are checkable.
 
-   | 2022, renewable **internal** freshwater | Canada | United States | ratio |
+   Now: **FAO AQUASTAT, served key-free through the World Bank**, one source,
+   one reference year, the same definition on both sides of the border.
+
+   | renewable **internal** fresh water | Canada | United States | ratio |
    |---|---|---|---|
    | per capita | 73,170 m³ | 8,437 m³ | **8.67×** |
    | total volume | 2,850 km³ | 2,818 km³ | **1.01×** |
 
-   Cross-validated before trusting: each country's volume ÷ its per-capita
-   figure implies 39.0 M and 334.0 M, matching actual 2022 populations to
-   within 0.2%, so the two indicators are internally consistent.
+   **The second row is the argument.** The two countries make almost exactly
+   the same amount of fresh water; the whole per-capita gap is population. That
+   is harder than "eleven times" because it is reproducible in one request and
+   it carries its own explanation. `/` leads on it, `/fr` leads on it, and the
+   home page keeps an open `<details>` titled *"This page used to say eleven
+   times"* — **flagging our own correction in public is the posture. Do not
+   delete that note.**
 
-   **The second row is the better argument.** Canada and the United States
-   generate almost exactly the same amount of fresh water — a 1% difference.
-   The entire per-capita gap is population: 39 million against 334 million.
-   *"Canada and the United States make nearly identical amounts of fresh water
-   each year. Canada has one-eighth the people."* That is harder than "eleven
-   times", because it is one source, one year, one method, and it carries its
-   own explanation — nobody can screenshot it back as inflated.
-
-   Three things to keep straight before anyone acts on this:
-   - **Internal, not total.** Internal renewable is water generated *within* the
-     country. Total renewable counts cross-border inflow — and the US total
-     counts water arriving **from Canada**, which is why total is the wrong
-     measure for this particular claim.
-   - **StatCan's 3,478 km³ "water yield" is a different definition** from FAO's
-     2,850 km³ internal renewable. Both are legitimate; they are **not
-     interchangeable**, and mixing definitions across countries is exactly how
-     you arrive at 11.
-   - **The endpoint is keyless and free**, so this figure could be *live* like
-     the rest, with its own `/sources` row and JSON endpoint — which would make
-     the site's headline claim as checkable as its river gauges.
-
-   **NOT ACTED ON — this is the owner's call, not a maintenance decision.**
-   Changing it touches the Act I headline, `/fr`, the share text, **sixteen OG
-   cards that print `11×`**, and `/sources`. Recorded here so the research
-   survives the session; do not quietly switch the number, and equally do not
-   treat "eleven times" as settled when a same-year source says 8.67.
+   Rules that must hold:
+   - **`ER.H2O.INTR.PC` / `ER.H2O.INTR.K3`, and index rows by
+     `countryiso3code`** ('CAN'/'USA'). `country.id` is the TWO-letter code and
+     will never match — the same row-order discipline the StatCan reader needs,
+     for the same reason.
+   - **`getWater()` rejects a year mismatch between the two countries** and
+     falls back rather than print a cross-vintage ratio. That guard is the
+     whole point of this change; do not remove it.
+   - **The ratio is computed, never typed** — in both languages. French uses a
+     decimal comma (`8,7`), via a separate `Intl` formatter.
+   - **`internal`, not `total`.** Total renewable counts cross-border inflow,
+     and much of what reaches the US arrives from Canada — the wrong measure
+     for a claim about what Canada makes.
+   - **The `home` and `fr` OG cards print the ratio and a PNG cannot update
+     itself.** If AQUASTAT's reference year moves and the ratio shifts, rerun
+     `tools/generate-og.cjs`. A card disagreeing with the page it links to is
+     worse than no card.
+   - Live at `/api/water.json`, on `/sources` as four live rows, and carrying
+     Dataset markup.
 8. **Legal:** "Team Canada" is a Canadian Olympic Committee mark. The rebrand
    sidesteps it — do not reintroduce the name as a public brand.
 

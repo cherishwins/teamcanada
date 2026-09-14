@@ -443,3 +443,105 @@ export async function getProvinces(): Promise<Provinces> {
     allLive: provinces.every((p) => p.live),
   };
 }
+
+/* ==========================================================================
+   Water — FAO AQUASTAT, served key-free through the World Bank.
+   https://api.worldbank.org/v2 — public, no key, CORS-open.
+
+   This replaces the site's oldest and weakest pair of numbers. The published
+   figures it supersedes (109,837 m³ for Canada against 9,980 for the US, an
+   11:1 ratio) came from two different vintages — the Canadian one divides its
+   volume by the population of 1998 — and no single source states them
+   together. A ratio assembled from two dates is not checkable, and this site
+   has no business printing one.
+
+   These two indicators are one source, one year, one method, both countries:
+     ER.H2O.INTR.PC  renewable internal freshwater per capita, m³
+     ER.H2O.INTR.K3  renewable internal freshwater, total, billion m³
+
+   "Internal" means generated WITHIN the country. Total renewable would count
+   cross-border inflow — and the US total counts water arriving from Canada,
+   which makes it the wrong measure for a claim about what Canada holds.
+   ========================================================================== */
+
+const WB = 'https://api.worldbank.org/v2';
+
+export interface WaterCountry {
+  /** Renewable internal freshwater per person, m³/year. */
+  perCapita: number;
+  /** Renewable internal freshwater, total, m³/year. */
+  volume: number;
+}
+
+export interface Water {
+  canada: WaterCountry;
+  usa: WaterCountry;
+  /** Reference year both countries share. */
+  year: string;
+  source: string;
+  live: boolean;
+  /** Canada ÷ US, per person. Computed, never hard-coded. */
+  ratio: number;
+  fetchedAt: string;
+}
+
+/** Hand-verified 2026-09-14 against the same two indicators, reference year 2022. */
+const WATER_FALLBACK = {
+  canada: { perCapita: 73170, volume: 2850e9 },
+  usa:    { perCapita: 8437,  volume: 2818e9 },
+  year: '2022',
+};
+
+/**
+ * Both indicators, both countries, in two calls.
+ *
+ * `mrnev=1` asks for the most recent non-empty value, which matters because
+ * AQUASTAT publishes on a long cycle and the latest year is frequently blank.
+ * Rows are indexed by their own country id rather than by position — the same
+ * discipline the StatCan reader uses, and for the same reason.
+ */
+export async function getWater(): Promise<Water> {
+  const read = async (indicator: string): Promise<Record<string, { v: number; y: string }>> => {
+    const raw = await getJSON(`${WB}/country/CAN;USA/indicator/${indicator}?format=json&mrnev=1`);
+    const rows = Array.isArray(raw) && Array.isArray(raw[1]) ? raw[1] : [];
+    const out: Record<string, { v: number; y: string }> = {};
+    for (const r of rows as Array<Record<string, any>>) {
+      // countryiso3code is 'CAN'/'USA'; country.id is the TWO-letter 'CA'/'US'
+      // and would never match, so do not "fall back" to it. A row without the
+      // three-letter code is unusable and correctly leaves the set incomplete,
+      // which trips the guard below and shows the hand-checked figures instead.
+      const id = r?.countryiso3code;
+      const v = Number(r?.value);
+      if (typeof id === 'string' && Number.isFinite(v) && v > 0) out[id] = { v, y: String(r.date) };
+    }
+    return out;
+  };
+
+  try {
+    const [pc, vol] = await Promise.all([read('ER.H2O.INTR.PC'), read('ER.H2O.INTR.K3')]);
+    const can = pc.CAN, usa = pc.USA, canV = vol.CAN, usaV = vol.USA;
+    if (!can || !usa || !canV || !usaV) throw new Error('incomplete');
+    // Both indicators must describe the same year, or the ratio is exactly the
+    // kind of cross-vintage artefact this whole change exists to remove.
+    if (can.y !== usa.y) throw new Error(`year mismatch ${can.y}/${usa.y}`);
+
+    const canada = { perCapita: Math.round(can.v), volume: canV.v * 1e9 };
+    const usaOut = { perCapita: Math.round(usa.v), volume: usaV.v * 1e9 };
+    return {
+      canada, usa: usaOut, year: can.y,
+      source: 'FAO AQUASTAT, via the World Bank',
+      live: true,
+      ratio: canada.perCapita / usaOut.perCapita,
+      fetchedAt: new Date().toISOString(),
+    };
+  } catch {
+    const { canada, usa, year } = WATER_FALLBACK;
+    return {
+      canada, usa, year,
+      source: 'FAO AQUASTAT, via the World Bank',
+      live: false,
+      ratio: canada.perCapita / usa.perCapita,
+      fetchedAt: new Date().toISOString(),
+    };
+  }
+}
