@@ -22,6 +22,11 @@ three seconds, and an American neighbour feels respect without being insulted.*
 An earlier identity ("Unyielding Dominion", roaring grizzly) was retired for
 failing exactly this test. Do not walk back toward it.
 
+> **The "eleven times" in that line is under review — see Open item 7.** The
+> posture is not in question; the multiplier is. A same-year, same-method
+> source (FAO AQUASTAT, 2022) gives **8.67×**, and a stronger framing besides.
+> Do not cite 11× as settled, and do not change it without the owner.
+
 ## Stack / infra
 - **Framework:** Astro 7, `output: 'static'` + `@astrojs/vercel` 11. Acts are
   pre-rendered HTML; only `src/pages/api/*` runs on demand.
@@ -249,7 +254,7 @@ V   · THE BUILD /build    Refine · Compute · Corridor + C-5.     from teamcan
 /fr          La trempe du Nord           BROUILLON, noindex, Act I only
 /offline     Service-worker fallback     noindex
 /read + 5 long-form pieces   9,162 words migrated from the old site
-/join  /support  /privacy  /terms  /404
+/join  /privacy  /terms  /404          /support is HIDDEN (noindex, unlinked)
 /feed.xml    RSS for the five reads
 robots.txt · llms.txt · humans.txt · site.webmanifest · sw.js · security.txt
 
@@ -276,8 +281,17 @@ dossier and 4 of 5 reads. Two traps worth remembering:
   quotation mark inside the text ends the attribute early.
 
 ## Open / pending
-1. **`SUPPORT_WALLET`** — the one thing blocking the support rail. Set it in
-   Vercel and `/support` arms itself.
+1. **THIS SITE DOES NOT ASK FOR MONEY.** Owner's decision, and it is settled —
+   not "not yet", not "once there's traffic". Northern Temper makes its
+   argument and asks the reader for nothing.
+   `/support` carries `noindex`, is out of the sitemap, out of `llms.txt` and
+   out of `llms-full.txt`, and nothing links to it. The page and
+   `src/lib/support.ts` are **untouched on disk and deliberately preserved** —
+   the owner intends to reuse that code on a different site, so do not delete
+   it. **Never re-link it here, never re-add it to the sitemap, never propose
+   a donation, tip jar, membership or "support us" surface on this site, and
+   never ask for `SUPPORT_WALLET` again.** If a future session thinks the site
+   should monetise: it should not. That is the point of it.
 2. ~~Separation-cost calculator~~ — **built at `/calculator`.** Live StatCan
    provincial GDP (36-10-0222) and population (17-10-0009); every line states
    its own method and cites its source on the page. Pure client-side
@@ -298,13 +312,29 @@ dossier and 4 of 5 reads. Two traps worth remembering:
    serving it. Where a figure has a known weakness the row says so, including
    the water vintage. Add a row whenever a new figure appears anywhere on the
    site; a number that is not on that page is a number nobody can check.
-5. **`/support` — built, needs `SUPPORT_WALLET`.** A **colophon, not a plea**:
+5. **`/support` — retired from this site, and the code kept on purpose.**
+   The rail itself is **sound work, not sloppy work** — the EIP-681 argument
+   ordering, the server-rendered QR, the self-hiding-when-unset behaviour are
+   all correct and worth reusing. What was wrong was never the craft; it was
+   the **fit**. The addressable audience for a USDC-on-Base payment on a
+   Canadian civic-pride site rounds to zero, because using it needs a wallet,
+   USDC *specifically on Base*, and enough familiarity to trust a URI scheme.
+   A well-built bridge to an island nobody lives on is still good bridge-
+   building — and still the wrong project. That is a targeting error, not a
+   quality one, and the distinction matters because the code deserves to be
+   reused somewhere it fits.
+   **The owner intends exactly that: reuse it on a different site.** Keep
+   `src/lib/support.ts` intact. What follows is the original design, kept so
+   the preserved code is explicable — NOT a spec to rebuild here:
+
+   A **colophon, not a plea**:
    what it costs, in the site's own ledger register. No modal, no thermometer.
    The rail is **deliberately processor-free** — USDC on Base, wallet to wallet,
    so no platform can decide the page is a political risk and switch it off.
-   That independence is the reason it is built this way, and it is the owner's
-   explicit call. Set `SUPPORT_WALLET` in Vercel; the section hides itself when
-   unset rather than showing an address nobody can spend from. The EIP-681 URI
+   That independence was the reason it was built this way. **The owner has
+   since reversed that call** — see the top of this item. The section still
+   hides itself when `SUPPORT_WALLET` is unset, which is why nothing leaked
+   while the page was live and unset. The EIP-681 URI
    targets the **token contract** with the recipient as the `transfer` argument
    — the arrangement that reads more naturally asks for native ETH and delivers
    no USDC at all. QR is rendered to SVG server-side so the page ships no QR
@@ -349,9 +379,47 @@ dossier and 4 of 5 reads. Two traps worth remembering:
    claims carry no denominator and are unaffected.
    **Flagging this ourselves is the posture, not a concession.** Do not quietly
    delete the note to make the headline look stronger.
-   Still open: the US side is reproduced as published and has the same kind of
-   vintage. Replace both from one recent year when a verifiable US figure is in
-   hand — do not invent a new ratio in the meantime.
+   **The verifiable same-year figures are now in hand, and they do not say 11.**
+   FAO AQUASTAT, served keyless through the World Bank
+   (`api.worldbank.org/v2/country/CAN;USA/indicator/ER.H2O.INTR.PC?format=json`,
+   and `…INTR.K3` for volumes) — one source, one year, one method, both
+   countries:
+
+   | 2022, renewable **internal** freshwater | Canada | United States | ratio |
+   |---|---|---|---|
+   | per capita | 73,170 m³ | 8,437 m³ | **8.67×** |
+   | total volume | 2,850 km³ | 2,818 km³ | **1.01×** |
+
+   Cross-validated before trusting: each country's volume ÷ its per-capita
+   figure implies 39.0 M and 334.0 M, matching actual 2022 populations to
+   within 0.2%, so the two indicators are internally consistent.
+
+   **The second row is the better argument.** Canada and the United States
+   generate almost exactly the same amount of fresh water — a 1% difference.
+   The entire per-capita gap is population: 39 million against 334 million.
+   *"Canada and the United States make nearly identical amounts of fresh water
+   each year. Canada has one-eighth the people."* That is harder than "eleven
+   times", because it is one source, one year, one method, and it carries its
+   own explanation — nobody can screenshot it back as inflated.
+
+   Three things to keep straight before anyone acts on this:
+   - **Internal, not total.** Internal renewable is water generated *within* the
+     country. Total renewable counts cross-border inflow — and the US total
+     counts water arriving **from Canada**, which is why total is the wrong
+     measure for this particular claim.
+   - **StatCan's 3,478 km³ "water yield" is a different definition** from FAO's
+     2,850 km³ internal renewable. Both are legitimate; they are **not
+     interchangeable**, and mixing definitions across countries is exactly how
+     you arrive at 11.
+   - **The endpoint is keyless and free**, so this figure could be *live* like
+     the rest, with its own `/sources` row and JSON endpoint — which would make
+     the site's headline claim as checkable as its river gauges.
+
+   **NOT ACTED ON — this is the owner's call, not a maintenance decision.**
+   Changing it touches the Act I headline, `/fr`, the share text, **sixteen OG
+   cards that print `11×`**, and `/sources`. Recorded here so the research
+   survives the session; do not quietly switch the number, and equally do not
+   treat "eleven times" as settled when a same-year source says 8.67.
 8. **Legal:** "Team Canada" is a Canadian Olympic Committee mark. The rebrand
    sidesteps it — do not reintroduce the name as a public brand.
 

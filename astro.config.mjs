@@ -21,7 +21,10 @@ export default defineConfig({
       // /fr is a noindex draft. Listing it in the sitemap while the page tells
       // crawlers not to index it is a contradictory signal — submit it only
       // once the BROUILLON banner comes off and the noindex goes with it.
-      filter: (page) => !page.includes('/fr'),
+      // /fr is a noindex draft; /support is hidden until the owner is ready
+      // for it to exist publicly. Both carry noindex, and submitting a URL
+      // while telling crawlers not to index it is a contradictory signal.
+      filter: (page) => !page.includes('/fr') && !page.includes('/support'),
     }),
   ],
   build: { inlineStylesheets: 'auto' },

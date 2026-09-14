@@ -20,7 +20,7 @@ const ORDER = [
   '/', '/hand', '/math', '/bloc', '/build', '/calculator', '/sources',
   '/read/the-closed-loop', '/read/the-vertical-squeeze', '/read/changed-my-mind',
   '/read/two-leaders', '/read/honest-answer',
-  '/join', '/support', '/fr',
+  '/join', '/fr',
 ];
 
 const DROP = /<(script|style|svg|nav|noscript)[^>]*>[\s\S]*?<\/\1>/gi;
