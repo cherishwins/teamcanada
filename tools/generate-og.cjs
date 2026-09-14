@@ -3,8 +3,12 @@ const fs=require('fs'),path=require('path');
 const ROOT=process.argv[2] || 'public', OUT=process.argv[3] || 'public/og';
 
 const CARDS=[
+ // NOTE: home and fr carry a figure derived from live AQUASTAT data. If the
+ // reference year moves and the ratio shifts, RERUN this generator — a PNG
+ // cannot update itself, and a card disagreeing with the page it links to is
+ // worse than no card. /api/water.json is the number of record.
  {slug:'home',      label:'A statement of Canadian character', title:'Northern\nTemper',
-  line:'What we hold, and what we have never once used against a neighbour.', stat:'11×', statk:'the fresh water, per person'},
+  line:'What we hold, and what we have never once used against a neighbour.', stat:'8.7×', statk:'the fresh water, per person'},
  {slug:'hand',      label:'Two · The Hand', title:'Look at\nthe hand',
   line:'170 billion barrels. 360 TWh. A hundred times the world uranium grade.', stat:'100×', statk:'uranium grade, Athabasca'},
  {slug:'math',      label:'Three · The Math', title:'The math of\nstaying together',
@@ -38,10 +42,10 @@ const CARDS=[
  // Typographic apostrophes throughout — a straight quote is the fastest tell.
  {slug:'fr',        label:'Une affirmation du caractère canadien', title:'La trempe\ndu Nord',
   line:'Ce que nous détenons, et ce dont nous ne nous sommes jamais servis contre un voisin.',
-  stat:'11×', statk:'l\u2019eau douce, par personne',
+  stat:'8,7\u00d7', statk:'l\u2019eau douce, par personne',
   alt:'Carte de partage Northern Temper, sur fond noir, avec la marque aux deux ours\u202f: '
     + '\u00ab\u202fLa trempe du Nord\u202f\u00bb. Ce que nous détenons, et ce dont nous ne nous '
-    + 'sommes jamais servis contre un voisin. 11\u00d7 l\u2019eau douce, par personne.'},
+    + 'sommes jamais servis contre un voisin. 8,7\u00d7 l\u2019eau douce, par personne.'},
 ];
 
 const bear = fs.readFileSync(path.join(ROOT,'marks/nt-bear-dual.svg'),'utf8');

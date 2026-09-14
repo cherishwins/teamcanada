@@ -24,6 +24,7 @@ No usage of this material creates any liability. See /LICENSE.txt
 
 ## Live data endpoints — public, CORS-open, no key
 
+- `/api/water.json`     Renewable fresh water, Canada vs the US, FAO AQUASTAT
 - `/api/figures.json`   GDP, population, CPI, policy rate, USD/CAD
 - `/api/rivers.json`    real-time discharge at four gauges
 - `/api/trade.json`     monthly merchandise exports by trading partner
