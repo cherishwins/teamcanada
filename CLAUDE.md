@@ -22,6 +22,11 @@ three seconds, and an American neighbour feels respect without being insulted.*
 An earlier identity ("Unyielding Dominion", roaring grizzly) was retired for
 failing exactly this test. Do not walk back toward it.
 
+> **The "eleven times" in that line is under review — see Open item 7.** The
+> posture is not in question; the multiplier is. A same-year, same-method
+> source (FAO AQUASTAT, 2022) gives **8.67×**, and a stronger framing besides.
+> Do not cite 11× as settled, and do not change it without the owner.
+
 ## Stack / infra
 - **Framework:** Astro 7, `output: 'static'` + `@astrojs/vercel` 11. Acts are
   pre-rendered HTML; only `src/pages/api/*` runs on demand.
@@ -369,9 +374,47 @@ dossier and 4 of 5 reads. Two traps worth remembering:
    claims carry no denominator and are unaffected.
    **Flagging this ourselves is the posture, not a concession.** Do not quietly
    delete the note to make the headline look stronger.
-   Still open: the US side is reproduced as published and has the same kind of
-   vintage. Replace both from one recent year when a verifiable US figure is in
-   hand — do not invent a new ratio in the meantime.
+   **The verifiable same-year figures are now in hand, and they do not say 11.**
+   FAO AQUASTAT, served keyless through the World Bank
+   (`api.worldbank.org/v2/country/CAN;USA/indicator/ER.H2O.INTR.PC?format=json`,
+   and `…INTR.K3` for volumes) — one source, one year, one method, both
+   countries:
+
+   | 2022, renewable **internal** freshwater | Canada | United States | ratio |
+   |---|---|---|---|
+   | per capita | 73,170 m³ | 8,437 m³ | **8.67×** |
+   | total volume | 2,850 km³ | 2,818 km³ | **1.01×** |
+
+   Cross-validated before trusting: each country's volume ÷ its per-capita
+   figure implies 39.0 M and 334.0 M, matching actual 2022 populations to
+   within 0.2%, so the two indicators are internally consistent.
+
+   **The second row is the better argument.** Canada and the United States
+   generate almost exactly the same amount of fresh water — a 1% difference.
+   The entire per-capita gap is population: 39 million against 334 million.
+   *"Canada and the United States make nearly identical amounts of fresh water
+   each year. Canada has one-eighth the people."* That is harder than "eleven
+   times", because it is one source, one year, one method, and it carries its
+   own explanation — nobody can screenshot it back as inflated.
+
+   Three things to keep straight before anyone acts on this:
+   - **Internal, not total.** Internal renewable is water generated *within* the
+     country. Total renewable counts cross-border inflow — and the US total
+     counts water arriving **from Canada**, which is why total is the wrong
+     measure for this particular claim.
+   - **StatCan's 3,478 km³ "water yield" is a different definition** from FAO's
+     2,850 km³ internal renewable. Both are legitimate; they are **not
+     interchangeable**, and mixing definitions across countries is exactly how
+     you arrive at 11.
+   - **The endpoint is keyless and free**, so this figure could be *live* like
+     the rest, with its own `/sources` row and JSON endpoint — which would make
+     the site's headline claim as checkable as its river gauges.
+
+   **NOT ACTED ON — this is the owner's call, not a maintenance decision.**
+   Changing it touches the Act I headline, `/fr`, the share text, **sixteen OG
+   cards that print `11×`**, and `/sources`. Recorded here so the research
+   survives the session; do not quietly switch the number, and equally do not
+   treat "eleven times" as settled when a same-year source says 8.67.
 8. **Legal:** "Team Canada" is a Canadian Olympic Committee mark. The rebrand
    sidesteps it — do not reintroduce the name as a public brand.
 
