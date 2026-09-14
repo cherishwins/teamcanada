@@ -5,10 +5,11 @@
   "private": true,
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && node tools/check-french.cjs && node tools/generate-llms-full.cjs",
+    "build": "astro build && node tools/check-french.cjs && node tools/check-llms.cjs && node tools/generate-llms-full.cjs",
     "preview": "astro preview",
     "check": "astro check",
-    "check:fr": "node tools/check-french.cjs"
+    "check:fr": "node tools/check-french.cjs",
+    "check:llms": "node tools/check-llms.cjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.6.0",
