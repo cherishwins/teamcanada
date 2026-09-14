@@ -249,7 +249,7 @@ V   · THE BUILD /build    Refine · Compute · Corridor + C-5.     from teamcan
 /fr          La trempe du Nord           BROUILLON, noindex, Act I only
 /offline     Service-worker fallback     noindex
 /read + 5 long-form pieces   9,162 words migrated from the old site
-/join  /support  /privacy  /terms  /404
+/join  /privacy  /terms  /404          /support is HIDDEN (noindex, unlinked)
 /feed.xml    RSS for the five reads
 robots.txt · llms.txt · humans.txt · site.webmanifest · sw.js · security.txt
 
@@ -276,8 +276,13 @@ dossier and 4 of 5 reads. Two traps worth remembering:
   quotation mark inside the text ends the attribute early.
 
 ## Open / pending
-1. **`SUPPORT_WALLET`** — the one thing blocking the support rail. Set it in
-   Vercel and `/support` arms itself.
+1. ~~`SUPPORT_WALLET`~~ — **the money ask is HIDDEN, by the owner's decision.**
+   `/support` carries `noindex`, is out of the sitemap, out of `llms.txt` and
+   out of `llms-full.txt`, and nothing on the site links to it. The page and
+   `src/lib/support.ts` are untouched on disk — this is hidden, not deleted,
+   and it comes back by reverting that commit. **Do not re-link it, do not
+   re-add it to the sitemap, and do not ask for `SUPPORT_WALLET` again** until
+   the owner raises it.
 2. ~~Separation-cost calculator~~ — **built at `/calculator`.** Live StatCan
    provincial GDP (36-10-0222) and population (17-10-0009); every line states
    its own method and cites its source on the page. Pure client-side
@@ -298,13 +303,28 @@ dossier and 4 of 5 reads. Two traps worth remembering:
    serving it. Where a figure has a known weakness the row says so, including
    the water vintage. Add a row whenever a new figure appears anywhere on the
    site; a number that is not on that page is a number nobody can check.
-5. **`/support` — built, needs `SUPPORT_WALLET`.** A **colophon, not a plea**:
+5. **`/support` — HIDDEN. And if it ever returns, build the SIMPLE version.**
+   The owner's judgement, and it is correct: the USDC-on-Base rail was
+   over-engineered for this site. Using it requires a crypto wallet, USDC
+   *specifically on Base*, and enough familiarity to trust an EIP-681 link —
+   which for a Canadian civic-pride audience is close to nobody. The
+   processor-independence argument was real (a platform can decide a political
+   site is a risk) but it bought insurance against a hypothetical at the cost
+   of being unusable by almost everyone who would actually want to chip in.
+   **If a money ask ever comes back, it should be a plain QR code somebody can
+   scan with the banking app already on their phone** — Interac e-Transfer or
+   equivalent — not a chain, a token contract and a URI scheme. Simple beats
+   sovereign here. What follows is the original design, kept only so the code
+   on disk is explicable, NOT as a spec to rebuild:
+
+   A **colophon, not a plea**:
    what it costs, in the site's own ledger register. No modal, no thermometer.
    The rail is **deliberately processor-free** — USDC on Base, wallet to wallet,
    so no platform can decide the page is a political risk and switch it off.
-   That independence is the reason it is built this way, and it is the owner's
-   explicit call. Set `SUPPORT_WALLET` in Vercel; the section hides itself when
-   unset rather than showing an address nobody can spend from. The EIP-681 URI
+   That independence was the reason it was built this way. **The owner has
+   since reversed that call** — see the top of this item. The section still
+   hides itself when `SUPPORT_WALLET` is unset, which is why nothing leaked
+   while the page was live and unset. The EIP-681 URI
    targets the **token contract** with the recipient as the `transfer` argument
    — the arrangement that reads more naturally asks for native ETH and delivers
    no USDC at all. QR is rendered to SVG server-side so the page ships no QR

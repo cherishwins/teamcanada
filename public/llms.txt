@@ -21,7 +21,6 @@ No usage of this material creates any liability. See /LICENSE.txt
 - `/build`       Act V · The Build — refining, compute, the Pacific corridor
 - `/calculator`  The bill, per province, with every line's method shown
 - `/read`        Five long-form pieces, sourced in full
-- `/support`     A colophon. Nothing on the site is behind a payment.
 
 ## Live data endpoints — public, CORS-open, no key
 
