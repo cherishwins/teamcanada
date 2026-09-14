@@ -109,11 +109,19 @@ one file serves both colourways. **Never reference them via `<img src>`:**
   `legacy/fr/index.html`, `legacy/join.html`.
 - `.github/workflows/verify.yml` — build + `check-french` + `npm audit` + the
   full sweep, on every PR and every push to `main`. Free: the repo is public.
-- `tools/check-french.cjs` — Québec typography + banned-framing audit, and
-  `tools/check-llms.cjs` — llms.txt shape + no-restated-figures. **Both run in
-  `npm run build` and fail it.** `tools/generate-og.cjs` draws the share cards
-  *and* emits `src/lib/og-alt.json`, so `og:image:alt` is derived from the card
-  and cannot drift from it.
+- `tools/check-french.cjs` — Québec typography + banned-framing audit;
+  `tools/check-llms.cjs` — llms.txt shape + no-restated-figures; and
+  `tools/check-docs.cjs` — **every path THIS file names must exist.** All three
+  run in `npm run build` and fail it. The last one is here because this file has
+  now described something untrue three times (a French pass that was not in the
+  repo, a console-error filter the sweep does not have, a renamed JSON), and each
+  was found by accident. A path is the cheapest claim to check; the prose still
+  cannot be, so keep the prose honest by hand. `tools/generate-og.cjs` draws the share cards
+  *and* emits `src/lib/og-manifest.json`, which carries each card's
+  **content-hashed path and its alt text together**, so neither can drift from
+  the card it describes. (This line said `og-alt.json` for one commit after the
+  file was renamed — the same drift this repo keeps catching, in the file whose
+  job is to prevent it.)
 - `source-material/` — raw uploads, 107 MB, **not deployed**. Prune or move to
   external storage; it is cloned on every checkout.
 
