@@ -281,13 +281,17 @@ dossier and 4 of 5 reads. Two traps worth remembering:
   quotation mark inside the text ends the attribute early.
 
 ## Open / pending
-1. ~~`SUPPORT_WALLET`~~ — **the money ask is HIDDEN, by the owner's decision.**
+1. **THIS SITE DOES NOT ASK FOR MONEY.** Owner's decision, and it is settled —
+   not "not yet", not "once there's traffic". Northern Temper makes its
+   argument and asks the reader for nothing.
    `/support` carries `noindex`, is out of the sitemap, out of `llms.txt` and
-   out of `llms-full.txt`, and nothing on the site links to it. The page and
-   `src/lib/support.ts` are untouched on disk — this is hidden, not deleted,
-   and it comes back by reverting that commit. **Do not re-link it, do not
-   re-add it to the sitemap, and do not ask for `SUPPORT_WALLET` again** until
-   the owner raises it.
+   out of `llms-full.txt`, and nothing links to it. The page and
+   `src/lib/support.ts` are **untouched on disk and deliberately preserved** —
+   the owner intends to reuse that code on a different site, so do not delete
+   it. **Never re-link it here, never re-add it to the sitemap, never propose
+   a donation, tip jar, membership or "support us" surface on this site, and
+   never ask for `SUPPORT_WALLET` again.** If a future session thinks the site
+   should monetise: it should not. That is the point of it.
 2. ~~Separation-cost calculator~~ — **built at `/calculator`.** Live StatCan
    provincial GDP (36-10-0222) and population (17-10-0009); every line states
    its own method and cites its source on the page. Pure client-side
@@ -308,19 +312,20 @@ dossier and 4 of 5 reads. Two traps worth remembering:
    serving it. Where a figure has a known weakness the row says so, including
    the water vintage. Add a row whenever a new figure appears anywhere on the
    site; a number that is not on that page is a number nobody can check.
-5. **`/support` — HIDDEN. And if it ever returns, build the SIMPLE version.**
-   The owner's judgement, and it is correct: the USDC-on-Base rail was
-   over-engineered for this site. Using it requires a crypto wallet, USDC
-   *specifically on Base*, and enough familiarity to trust an EIP-681 link —
-   which for a Canadian civic-pride audience is close to nobody. The
-   processor-independence argument was real (a platform can decide a political
-   site is a risk) but it bought insurance against a hypothetical at the cost
-   of being unusable by almost everyone who would actually want to chip in.
-   **If a money ask ever comes back, it should be a plain QR code somebody can
-   scan with the banking app already on their phone** — Interac e-Transfer or
-   equivalent — not a chain, a token contract and a URI scheme. Simple beats
-   sovereign here. What follows is the original design, kept only so the code
-   on disk is explicable, NOT as a spec to rebuild:
+5. **`/support` — retired from this site, and the code kept on purpose.**
+   The rail itself is **sound work, not sloppy work** — the EIP-681 argument
+   ordering, the server-rendered QR, the self-hiding-when-unset behaviour are
+   all correct and worth reusing. What was wrong was never the craft; it was
+   the **fit**. The addressable audience for a USDC-on-Base payment on a
+   Canadian civic-pride site rounds to zero, because using it needs a wallet,
+   USDC *specifically on Base*, and enough familiarity to trust a URI scheme.
+   A well-built bridge to an island nobody lives on is still good bridge-
+   building — and still the wrong project. That is a targeting error, not a
+   quality one, and the distinction matters because the code deserves to be
+   reused somewhere it fits.
+   **The owner intends exactly that: reuse it on a different site.** Keep
+   `src/lib/support.ts` intact. What follows is the original design, kept so
+   the preserved code is explicable — NOT a spec to rebuild here:
 
    A **colophon, not a plea**:
    what it costs, in the site's own ledger register. No modal, no thermometer.
