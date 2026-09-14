@@ -1,5 +1,5 @@
 const { chromium } = require('/opt/node22/lib/node_modules/playwright');
-const fs=require('fs'),path=require('path');
+const fs=require('fs'),path=require('path'),crypto=require('crypto');
 const ROOT=process.argv[2] || 'public', OUT=process.argv[3] || 'public/og';
 
 const CARDS=[
@@ -110,13 +110,26 @@ function altFor(c){
        + `\u201c${title}\u201d${stop} ${c.line} ${c.stat}, ${c.statk}.`;
 }
 
-function writeAltManifest(){
-  const manifest = { '/og.png':
-    'Northern Temper share card, black with the two-bear mark, beneath the words Northern Temper.' };
-  for (const c of CARDS) manifest['/og/' + c.slug + '.png'] = altFor(c);
-  const dest = path.join(__dirname, '..', 'src', 'lib', 'og-alt.json');
+/** slug -> hashed public path, filled in as each card is written. */
+const hashed = {};
+
+/**
+ * One manifest carrying both the hashed URL and the alt text, keyed by the
+ * stable path a page asks for. Pages keep writing ogImage="/og/home.png" and
+ * never learn about the hash; Base.astro resolves it. Generated, so neither
+ * half can drift from the card it describes.
+ */
+function writeManifest(){
+  const manifest = { '/og.png': {
+    src: '/og.png',
+    alt: 'Northern Temper share card, black with the two-bear mark, beneath the words Northern Temper.',
+  } };
+  for (const c of CARDS) {
+    manifest['/og/' + c.slug + '.png'] = { src: hashed[c.slug] || ('/og/' + c.slug + '.png'), alt: altFor(c) };
+  }
+  const dest = path.join(__dirname, '..', 'src', 'lib', 'og-manifest.json');
   fs.writeFileSync(dest, JSON.stringify(manifest, null, 2) + '\n');
-  console.log('  src/lib/og-alt.json'.padEnd(34) + Object.keys(manifest).length + ' entries');
+  console.log('  src/lib/og-manifest.json'.padEnd(34) + Object.keys(manifest).length + ' entries');
 }
 
 (async()=>{
@@ -127,10 +140,38 @@ function writeAltManifest(){
     await p.setContent(page(c),{waitUntil:'load'});
     await p.evaluate(()=>document.fonts.ready);
     await p.waitForTimeout(120);
-    await p.screenshot({path:path.join(OUT,c.slug+'.png')});
-    const kb=Math.round(fs.statSync(path.join(OUT,c.slug+'.png')).size/1024);
-    console.log(`  og/${c.slug}.png`.padEnd(34)+kb+'KB');
+    // Write the canonical name first, then a COPY under a content hash.
+    //
+    // LinkedIn — and every platform that mirrors OG images rather than hot-
+    // linking them — caches by URL and rehosts the bytes on its own CDN. Post
+    // Inspector proved it: re-scraping northerntemper.ca refreshed the title
+    // and description but kept serving an 11× card from media.licdn.com, at a
+    // path that had not changed. Re-scraping cannot fix that; only a different
+    // URL can. Hashing the filename means the URL changes exactly when the
+    // image does, which is the only version of this that nobody has to
+    // remember to do.
+    //
+    // The unhashed copy stays so that links already in the wild keep resolving
+    // to something rather than 404ing. Nothing on the site references it.
+    const base = path.join(OUT, c.slug + '.png');
+    await p.screenshot({ path: base });
+    const bytes = fs.readFileSync(base);
+    const hash = crypto.createHash('sha256').update(bytes).digest('hex').slice(0, 8);
+    hashed[c.slug] = `/og/${c.slug}.${hash}.png`;
+    fs.writeFileSync(path.join(OUT, `${c.slug}.${hash}.png`), bytes);
+    console.log(`  og/${c.slug}.${hash}.png`.padEnd(34) + Math.round(bytes.length / 1024) + 'KB');
   }
   await b.close();
-  writeAltManifest();
+  pruneStaleHashes();
+  writeManifest();
 })();
+
+/** Drop hashed cards from earlier runs so the folder does not accumulate. */
+function pruneStaleHashes(){
+  const keep = new Set(Object.values(hashed).map((u) => path.basename(u)));
+  let dropped = 0;
+  for (const f of fs.readdirSync(OUT)) {
+    if (/^.+\.[0-9a-f]{8}\.png$/.test(f) && !keep.has(f)) { fs.unlinkSync(path.join(OUT, f)); dropped++; }
+  }
+  if (dropped) console.log('  pruned stale hashed cards'.padEnd(34) + dropped);
+}

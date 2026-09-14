@@ -109,8 +109,9 @@ one file serves both colourways. **Never reference them via `<img src>`:**
   `legacy/fr/index.html`, `legacy/join.html`.
 - `.github/workflows/verify.yml` — build + `check-french` + `npm audit` + the
   full sweep, on every PR and every push to `main`. Free: the repo is public.
-- `tools/check-french.cjs` — Québec typography + banned-framing audit. **Runs in
-  `npm run build` and fails it.** `tools/generate-og.cjs` draws the share cards
+- `tools/check-french.cjs` — Québec typography + banned-framing audit, and
+  `tools/check-llms.cjs` — llms.txt shape + no-restated-figures. **Both run in
+  `npm run build` and fail it.** `tools/generate-og.cjs` draws the share cards
   *and* emits `src/lib/og-alt.json`, so `og:image:alt` is derived from the card
   and cannot drift from it.
 - `source-material/` — raw uploads, 107 MB, **not deployed**. Prune or move to
@@ -221,6 +222,28 @@ Everything is CC0 and the site is built to be repeated, not protected.
   is wired into `npm run build`, so Vercel produces it too.
 - `ai.txt` states the reuse policy in machine-readable form: training, quoting
   in full, and retrieval all allowed; no attribution, no permission.
+- **`llms.txt` states only what does NOT change, and `tools/check-llms.cjs`
+  enforces that in the build.** This exists because of a real failure: when the
+  water claim was replaced, every *generated* surface corrected itself — `/`,
+  `/fr`, `/sources` and `llms-full.txt` are built from live data or from the
+  published HTML — while hand-written `llms.txt` went on asserting the retired
+  **11:1** ratio as fact, on the one file whose whole job is to be quoted by
+  machines. Google PageSpeed's agentic-browsing audit is what surfaced it.
+  The checker refuses a restated per-capita figure or any `N:1` ratio, and
+  enforces the llmstxt.org shape: H1 first, then H2 sections whose file lists
+  are real markdown links, `- [name](url): notes` — a bare path in backticks
+  does not parse and the file is silently less useful than it looks.
+  **Link to the endpoint; never restate a live number in a static file.**
+- **OG card filenames are CONTENT-HASHED** (`/og/home.41655b70.png`), resolved
+  through generated `src/lib/og-manifest.json`. Pages still write
+  `ogImage="/og/home.png"` and never see the hash. This is not tidiness:
+  LinkedIn and every platform that *mirrors* OG images rehosts the bytes on its
+  own CDN and caches by URL. Post Inspector proved it — a re-scrape refreshed
+  our title and description while still serving an `11×` card from
+  `media.licdn.com`. **Re-scraping cannot fix a stale card; only a different URL
+  can.** The hash changes exactly when the image does, so nobody has to remember
+  to bump anything. The unhashed copy is still written so links already in the
+  wild resolve to something rather than 404.
 - **IndexNow**: `tools/ping-indexnow.cjs` submits every sitemap URL to Bing and
   Yandex. The key file is the 32-hex `.txt` at the site root — if it is ever
   regenerated, the filename and its contents must match. Google ignores
@@ -236,12 +259,23 @@ JavaScript**. Roughly **67 kB of that is fonts** — five Latin-subset WOFF2 fac
 at about 13 kB each, all genuinely used. That is where the weight is, and it is
 already near the floor without dropping a weight from the design system.
 
-`build.inlineStylesheets` stays on **`'auto'`**, and this was measured rather
-than assumed. `'always'` removes the 2–3 render-blocking stylesheet links, but
-those are 1–2 kB gzipped each and fetched in parallel over HTTP/2 from one
-origin — about **one** round trip, not three — while inlining re-sends ~3 kB of
-shared CSS on every page instead of caching it once. For anyone reading more
-than a single page, `'auto'` wins. Do not switch without re-measuring.
+`build.inlineStylesheets` is **`'always'`**, and this REVERSES an earlier note
+here that argued for `'auto'`. That note's premise was wrong: it reasoned about
+"anyone reading more than a single page", but this site travels by share link,
+so almost every session is one page — Lighthouse labels its own run *"Single
+page session"*. Measured, gzipped, on the real build:
+
+| | first load | requests | render-blocking | each extra page |
+|---|---|---|---|---|
+| `'auto'` | 15,359 B HTML + 9,830 B CSS = **25,189 B** | 4 | 2 | 14,670 B |
+| `'always'` | **21,198 B** HTML | 1 | **0** | 18,923 B |
+
+Inlining is **3,991 B smaller on first load** — the CSS compresses better in
+context than as three separately-gzipped files — *and* removes a chain PageSpeed
+costs at **730 ms** on Slow 4G. It costs **+4,253 B per additional page**, so
+break-even is under one extra page on bytes alone, before counting the 730 ms
+that only the first load ever pays. **Re-measure before changing this back**, and
+re-check the premise as well as the numbers — that is what was wrong last time.
 
 ## The site — 16 pages, all shipped
 ```
