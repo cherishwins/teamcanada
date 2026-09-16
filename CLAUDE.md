@@ -249,10 +249,16 @@ public and checkable" — it can afford neither a dash nor a silently stale numb
   syntax-checks it directly and asserts it still has a `VERSION` constant.**
   Nothing else in this repo reads that file. A broken service worker is worse
   than none: it is precisely what leaves somebody looking at a stale figure.
-- **`/_vercel/*` is same-origin but platform-served: the TAG is in the build,
-  the FILE never is.** `webAnalytics: { enabled: true }` makes the adapter
-  write `<script src="/_vercel/insights/script.js">` into every page at build
-  time, while the asset only exists on Vercel's edge. `tools/verify.cjs` serves
+- **`/_vercel/*` is same-origin but platform-served: the LOADER is in the
+  build, the FILE never is.** `webAnalytics: { enabled: true }` makes the
+  adapter write an **inline bootstrap** into every page at build time — not a
+  `<script src>` tag. It sets `script.src = '/_vercel/insights/script.js'` and
+  appends it to `<head>` at runtime, and the asset behind that path exists only
+  on Vercel's edge. (An earlier version of this note said it writes a
+  `<script src>`. It does not, and the difference matters: a scan that only
+  reads `src` attributes cannot see a vendor that loads itself this way, which
+  is how most third-party snippets ship. `check-privacy` reads inline script
+  bodies too, for exactly that reason.) `tools/verify.cjs` serves
   the local output, so it counted that as a broken reference on all 20 pages at
   all 10 viewports — **200 failures, and that is what turned `main` red on
   PR #34.** The sweep now answers `/_vercel/*` with 204, exactly as it answers
