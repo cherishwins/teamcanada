@@ -5,6 +5,7 @@ import SiteFooter from '../components/SiteFooter.astro';
 import Share from '../components/Share.astro';
 import { getFigures, getRivers, getTrade, getProvinces, getWater } from '../lib/sources';
 import { datasetSchema, DATASETS } from '../lib/schema';
+import { FIXED_FIGURES } from '../lib/figures';
 
 /**
  * The receipts page.
@@ -73,23 +74,19 @@ const LIVE: Row[] = [
     live: provinces.allLive, note: 'Feeds the calculator. Every line there states its own method.' },
 ];
 
-const FIXED: Row[] = [
-  { figure: 'Lakes larger than 100 km²', value: '563', source: 'Statistics Canada', period: '—', live: false,
-    note: 'Volume-based. No denominator, so no vintage problem.' },
-  { figure: 'Share of the world’s wetlands', value: '~25%', source: 'Statistics Canada', period: '—', live: false },
-  { figure: 'Great Lakes share of global fresh surface water', value: '~18%', source: 'Statistics Canada', period: '—', live: false },
-  { figure: 'Canada–US border that is water', value: '~40%', source: 'Statistics Canada', period: '—', live: false },
-  { figure: 'Passengers diverted, 11 September 2001', value: '33,000+', source: 'Transport Canada', period: '2001', live: false },
-  { figure: 'Aircraft and people received at Gander', value: '38 · 6,595', source: 'Transport Canada', period: '2001', live: false },
-  { figure: 'Canadian deaths, Afghanistan', value: '158', source: 'Canadian Armed Forces', period: '2001–2014', live: false },
-  { figure: 'Federal accumulated deficit', value: '$1,266B', source: 'Public Accounts of Canada', period: 'March 2025', live: false },
-  { figure: 'Trade-friction cost of separation', value: '4–6% of GDP', source: 'Tombe, University of Calgary', period: '—', live: false,
-    note: '4% at a 5% rise in friction; 6% at 8%. Feeds the calculator.' },
-  { figure: 'Cost of standing up a state', value: '$98–107B', source: 'Alberta Prosperity Project', period: '—', live: false,
-    note: 'The separation campaign’s own costing, used as published and scaled per person for other provinces.' },
-  { figure: 'Defence floor', value: '5% of GDP', source: 'NATO, Hague summit', period: '2025', live: false },
-  { figure: 'Bill C-5 retained GDP', value: '$5,100 per Canadian', source: 'Macdonald-Laurier Institute', period: '2022 paper', live: false },
-];
+// /sources used to retype all twelve of these. It now renders
+// src/lib/figures.ts, which is also what /calculator and /math read, so the
+// receipts page cannot disagree with the page it is the receipt for. That was
+// not hypothetical: the federal debt figure printed as $1266B on /calculator
+// and $1,266B here, from two copies of the same number.
+const FIXED: Row[] = FIXED_FIGURES.map((f) => ({
+  figure: f.figure,
+  value: f.display,
+  source: f.source,
+  period: f.period,
+  live: false,
+  note: f.note,
+}));
 
 const liveCount = LIVE.filter((r) => r.live).length;
 
