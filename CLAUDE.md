@@ -252,6 +252,13 @@ public and checkable" — it can afford neither a dash nor a silently stale numb
   script sat in `package.json` for months with its dependency missing, so it
   could not run at all; the first thing it found once wired up was a StatCan
   round-trip on `/fr` whose result was discarded.
+  **`npm i --no-save X` PRUNES every other un-saved package** — it reconciles
+  `node_modules` to `package.json` plus `X`. A second `--no-save` install in a
+  later CI step deleted Playwright and the sweep died with "playwright not
+  found". So `verify.yml` installs Playwright, `@astrojs/check` and
+  `typescript` in **one** step and calls `npx astro check` directly; the
+  `npm run check` script still self-installs, because on a developer's machine
+  there is nothing to prune.
 - **`/fr` must stay out of the sitemap while it is `noindex`** — submitting a URL
   while telling crawlers not to index it is a contradictory signal. The filter
   lives in `astro.config.mjs`; remove it the day the draft banner comes off.
