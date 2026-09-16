@@ -93,12 +93,23 @@
   .bar.us, .fill.strike, .bar.down { background: #6e6e6e !important; }
   .fill span, .bar span { color: #000 !important; }
 
-  /* The map is a diagram; print it as one. */
-  .frame :global(.rest path) { fill: #ededed !important; }
-  .frame :global(path.partner) { fill: #b9b9b9 !important; }
-  .frame :global(path.incumbent) { fill: #6e6e6e !important; }
-  .frame :global(path.home) { fill: #2b2b2b !important; }
-  .frame :global(path), .frame :global(circle) { stroke: #000 !important; stroke-width: .5 !important; }
+  /* The map is a diagram; print it as one.
+
+     NO :global() HERE. These five rules carried it until now and every one of
+     them was dead: `:global()` is Astro compiler syntax, stripped only inside a
+     <style> block in a .astro file. This is a plain stylesheet reached through
+     an @import, so nothing strips it, and `:global(...)` is not a selector any
+     browser can parse — it fails to parse, and a rule with an unparseable
+     selector is dropped whole. The printed bloc map has been coming out with
+     none of its greyscale fills. Verified in Chromium:
+     CSS.supports('selector(.frame :global(.rest path))') is false, while the
+     same selector without :global() is true. lightningcss warned about it on
+     every single build and the warning was read as noise. */
+  .frame .rest path { fill: #ededed !important; }
+  .frame path.partner { fill: #b9b9b9 !important; }
+  .frame path.incumbent { fill: #6e6e6e !important; }
+  .frame path.home { fill: #2b2b2b !important; }
+  .frame path, .frame circle { stroke: #000 !important; stroke-width: .5 !important; }
 
   /* ---------- provenance, on every sheet ---------- */
   .foot { border-top: 1px solid #000; padding: 4mm 0 0; }
