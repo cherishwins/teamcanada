@@ -4,6 +4,7 @@ import Nav from '../components/Nav.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import Share from '../components/Share.astro';
 import Stat from '../components/Stat.astro';
+import { FEDERAL_DEBT } from '../lib/figures';
 
 const description =
   'Dossier No. 01 — the math of staying together, and the trap of being broken ' +
@@ -57,8 +58,8 @@ const description =
       <p class="rv">Population — Statistics Canada, July 2025</p>
       <p class="rv">$3.1T</p>
       <p class="rv">Canada nominal GDP, 2024</p>
-      <p class="rv">$1,266B</p>
-      <p class="rv">Federal accumulated deficit, March 2025</p>
+      <p class="rv">{FEDERAL_DEBT.display}</p>
+      <p class="rv">Federal accumulated deficit, {FEDERAL_DEBT.period}</p>
       <p class="rv">5.0M bpd</p>
       <p class="rv">Canadian oil production · 4th globally</p>
       <p class="rv">All 34</p>

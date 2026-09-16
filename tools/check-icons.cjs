@@ -1,0 +1,114 @@
+#!/usr/bin/env node
+/**
+ * The generated icons must still match public/favicon.svg.
+ *
+ * tools/generate-favicons.cjs is deliberately NOT in the build — icons change
+ * about once a year and rasterising them on every deploy produces identical
+ * bytes for no reason. But "run this by hand when you change the art" is the
+ * kind of instruction this repo has watched fail repeatedly, and the last time
+ * it failed here the result was two different favicons: the .ico carried the
+ * ringed LeafSeal, favicon.svg carried a ringless leaf, and which mark a
+ * reader saw depended on whether their browser preferred .ico or .svg. Nobody
+ * noticed for months, because a binary does not show up in a diff you can read.
+ *
+ * So this re-renders from the source and compares. If someone edits the SVG
+ * and forgets the generator, the build fails and says which command to run.
+ *
+ * It also checks the two things about the icon markup that are easy to get
+ * wrong and invisible until someone pins a tab in Safari:
+ *   · mask-icon must point at a monochrome, transparent file — never at
+ *     favicon.svg, which has an opaque <rect> that Safari will happily fill.
+ *   · no icon may be referenced that the deploy does not contain.
+ */
+const fs = require('fs');
+const path = require('path');
+const sharp = require('sharp');
+
+const ROOT = process.argv[2] || '.vercel/output/static';
+const SRC = path.join('public', 'favicon.svg');
+const fail = [];
+
+if (!fs.existsSync(SRC) || !fs.existsSync(ROOT)) {
+  console.error(`check-icons: ${!fs.existsSync(SRC) ? SRC : ROOT} not found — run \`astro build\` first`);
+  process.exit(1);
+}
+
+(async () => {
+  const svg = fs.readFileSync(SRC);
+
+  // ---- 1. The PNG outputs still match the source drawing.
+  for (const size of [16, 32]) {
+    const file = path.join(ROOT, `favicon-${size}.png`);
+    if (!fs.existsSync(file)) {
+      fail.push(`favicon-${size}.png is missing from the build`);
+      continue;
+    }
+    const expected = await sharp(svg, { density: 512 })
+      .resize(size, size, { fit: 'contain' })
+      .png({ compressionLevel: 9 })
+      .toBuffer();
+    if (!expected.equals(fs.readFileSync(file))) {
+      fail.push(
+        `favicon-${size}.png no longer matches ${SRC} — run \`node tools/generate-favicons.cjs\``,
+      );
+    }
+  }
+
+  // ---- 2. The .ico carries the same frames.
+  const ico = path.join(ROOT, 'favicon.ico');
+  if (!fs.existsSync(ico)) {
+    fail.push('favicon.ico is missing from the build');
+  } else {
+    const d = fs.readFileSync(ico);
+    const count = d.readUInt16LE(4);
+    const sizes = [];
+    for (let i = 0; i < count; i++) {
+      const o = 6 + i * 16;
+      sizes.push(d.readUInt8(o) || 256);
+      const off = d.readUInt32LE(o + 12);
+      if (!d.subarray(off, off + 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]))) {
+        fail.push(`favicon.ico frame ${i} is not a PNG payload — regenerate it`);
+      }
+    }
+    for (const want of [16, 32, 48]) {
+      if (!sizes.includes(want)) fail.push(`favicon.ico has no ${want}x${want} frame (has ${sizes.join(', ') || 'none'})`);
+    }
+  }
+
+  // ---- 3. mask-icon is monochrome and transparent.
+  const mask = path.join(ROOT, 'mask-icon.svg');
+  if (!fs.existsSync(mask)) {
+    fail.push('mask-icon.svg is missing from the build');
+  } else {
+    const m = fs.readFileSync(mask, 'utf8');
+    if (/<rect\b/i.test(m) || /\bfill="(?!none)[^"]+"/i.test(m)) {
+      fail.push(
+        'mask-icon.svg has a background rect or a fill colour. Safari fills a mask icon itself, ' +
+          'so an opaque shape renders the pinned tab as a solid block.',
+      );
+    }
+  }
+
+  // ---- 4. Every icon the pages reference actually shipped.
+  const home = path.join(ROOT, 'index.html');
+  if (fs.existsSync(home)) {
+    const html = fs.readFileSync(home, 'utf8');
+    for (const m of html.matchAll(/<link[^>]+rel="(?:icon|apple-touch-icon|mask-icon)"[^>]*href="(\/[^"]+)"/gi)) {
+      const href = m[1];
+      if (!fs.existsSync(path.join(ROOT, href.replace(/^\//, '')))) {
+        fail.push(`the pages reference ${href}, which is not in the deploy`);
+      }
+      if (/rel="mask-icon"/i.test(m[0]) && href === '/favicon.svg') {
+        fail.push('mask-icon points at favicon.svg — it needs the monochrome mask-icon.svg');
+      }
+    }
+  }
+
+  if (fail.length) {
+    console.error('check-icons: the icons and their source have come apart\n');
+    for (const f of fail) console.error(`  ✗ ${f}`);
+    console.error('');
+    process.exit(1);
+  }
+  console.log('check-icons: favicon.ico (16/32/48), favicon-16/32.png and mask-icon.svg all match public/favicon.svg');
+})();

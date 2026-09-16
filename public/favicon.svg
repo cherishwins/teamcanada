@@ -1,4 +1,34 @@
+<!--
+  The tab icon, drawn for 16 pixels rather than shrunk to them.
+
+  What shipped before was the full LeafSeal — a red leaf inside a red ring on
+  black. It is a good mark at 180px and it fails at 16, for three reasons that
+  are all visible the moment you render it at true size:
+
+    · The ring is a hairline at 16px. It cannot resolve, so it antialiases into
+      a dark red halo, and it steals about a third of the frame from the leaf.
+    · #C8102E on #000 is two dark colours. On a dark browser tab strip the tile
+      edge vanishes and the whole icon reads as a smudge.
+    · The .ico and this file disagreed — the .ico carried the ring, this file
+      did not — so the site had two different favicons depending on browser.
+
+  So: no ring below 48px, and the leaf goes WHITE. White on black reads on a
+  dark tab strip (the leaf carries it) and on a light one (the tile carries
+  it), which neither red-on-black nor red-on-white manages. The token nt-red-lift was
+  tried and rejected: it is an accessibility colour for small text, and as a
+  mark at 16px it is a washed pink.
+
+  The black field is kept on purpose. It is the site's own ground, it matches
+  theme_color and background_color in the manifest, and it keeps this in the
+  same family as apple-touch-icon and the 192/512 icons, which still carry the
+  full seal and are left alone — they are big enough to hold it.
+
+  favicon.ico, favicon-16.png and favicon-32.png are generated FROM THIS FILE
+  by tools/generate-favicons.cjs. Change the art here, then rerun it, or the
+  browsers that prefer .ico will go back to disagreeing with the ones that
+  prefer .svg. mask-icon.svg is generated from it too.
+-->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Northern Temper">
   <rect width="512" height="512" fill="#000"/>
-  <path fill="#C8102E" d="M256 44 L279 124 C281 133 290 136 298 131 L348 105 L334 182 C332 193 338 199 347 197 L412 189 L402 222 C400 230 402 234 409 237 L436 248 L349 317 C341 324 345 332 348 341 L357 365 L276 350 C269 349 264 353 264 361 L268 448 L244 448 L248 361 C248 353 243 349 236 350 L155 365 L164 341 C167 332 171 324 163 317 L76 248 L103 237 C110 234 112 230 110 222 L100 189 L165 197 C174 199 180 193 178 182 L164 105 L214 131 C222 136 231 133 233 124 Z"/>
+  <path fill="#fff" d="M256 44 L279 124 C281 133 290 136 298 131 L348 105 L334 182 C332 193 338 199 347 197 L412 189 L402 222 C400 230 402 234 409 237 L436 248 L349 317 C341 324 345 332 348 341 L357 365 L276 350 C269 349 264 353 264 361 L268 448 L244 448 L248 361 C248 353 243 349 236 350 L155 365 L164 341 C167 332 171 324 163 317 L76 248 L103 237 C110 234 112 230 110 222 L100 189 L165 197 C174 199 180 193 178 182 L164 105 L214 131 C222 136 231 133 233 124 Z"/>
 </svg>

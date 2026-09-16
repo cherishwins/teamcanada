@@ -85,10 +85,28 @@ const schema = {
   <meta name="twitter:image" content={og} />
   <meta name="twitter:image:alt" content={ogAlt} />
 
+  {/*
+    All four small icons are generated from public/favicon.svg by
+    tools/generate-favicons.cjs, so the .ico and the .svg cannot drift apart
+    again — they used to carry different marks, and which one you saw depended
+    on your browser.
+
+    mask-icon points at mask-icon.svg, NOT at favicon.svg. Safari fills a mask
+    icon with the colour on this link, so it needs a monochrome shape on a
+    transparent ground; handed favicon.svg, which has an opaque black rect
+    covering the canvas, Safari filled the rectangle and the pinned tab was a
+    solid block.
+
+    favicon-32.png was in public/ for months referenced by nothing. It is a
+    real line now rather than dead weight: a PNG fallback for the handful of
+    readers and older Android builds that take neither .ico nor .svg.
+  */}
   <link rel="icon" href="/favicon.ico" sizes="any" />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />
+  <link rel="icon" href="/favicon-16.png" type="image/png" sizes="16x16" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-  <link rel="mask-icon" href="/favicon.svg" color="#C8102E" />
+  <link rel="mask-icon" href="/mask-icon.svg" color="#C8102E" />
   <link rel="manifest" href="/site.webmanifest" />
 
   <meta

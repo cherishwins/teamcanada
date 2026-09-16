@@ -5,13 +5,15 @@
   "private": true,
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && node tools/check-french.cjs && node tools/check-llms.cjs && node tools/check-privacy.cjs && node tools/check-docs.cjs && node tools/generate-llms-full.cjs",
+    "build": "astro build && node tools/check-french.cjs && node tools/check-llms.cjs && node tools/check-privacy.cjs && node tools/check-figures.cjs && node tools/check-icons.cjs && node tools/check-docs.cjs && node tools/generate-llms-full.cjs",
     "preview": "astro preview",
     "check": "npm i --no-save @astrojs/check typescript && astro check",
     "check:fr": "node tools/check-french.cjs",
     "check:llms": "node tools/check-llms.cjs",
     "check:docs": "node tools/check-docs.cjs",
-    "check:privacy": "node tools/check-privacy.cjs"
+    "check:privacy": "node tools/check-privacy.cjs",
+    "check:figures": "node tools/check-figures.cjs",
+    "icons": "node tools/generate-favicons.cjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.6.0",

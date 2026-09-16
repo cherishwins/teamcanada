@@ -81,8 +81,8 @@ divergences, both documented in-file and both worth pushing back upstream:
    Measured on black: `--nt-red` labels 3.57:1, `--nt-n-560` cue 3.14:1,
    `--nt-n-500` caption 3.88:1, `--nt-n-600` colophon 3.04:1. Three are fixed
    by using a step the system **already defines** — `--nt-n-460` (#767676,
-   4.62:1). Only the red label needs a new value: `--nt-red-lift #D23D56`
-   (4.54:1), the same hue lifted 19%. `--nt-red` itself is untouched and
+   4.62:1). Only the red label needs a new value: `--nt-red-lift #D95A6F`,
+   which clears 4.5:1 on all four dark surfaces in use. `--nt-red` itself is untouched and
    remains the strike colour for rules, fields and large numerals.
    **If these are folded upstream, delete `a11y.css`** — that is the better fix.
 
@@ -106,6 +106,13 @@ one file serves both colourways. **Never reference them via `<img src>`:**
 - `src/layouts/Base.astro` — head, meta, OG, JSON-LD, skip link, reveal fallback.
 - `src/components/` — `Stat`, `Meter`, `marks/{BearDual,BearHead,LeafSeal}`.
 - `src/lib/sources.ts` — live figures from StatCan WDS + Bank of Canada Valet.
+- `src/lib/figures.ts` — **the one place a hand-entered number is written.**
+  `sources.ts` covers figures that come from an endpoint; this covers the ones
+  that come from a document and therefore have to be typed by a person. It
+  carries each figure's machine value, its exact `display` string, its source
+  and period, and — where the publisher runs on a cycle — a `reviewBy` date
+  that fails the build once it passes. `/calculator`, `/math` and `/sources`
+  all render from it.
 - `src/components/Nav.astro`, `SiteFooter.astro`, `BlocChart.astro`.
 - `src/layouts/Read.astro` — the long-form layout (single 68ch column).
 - `src/lib/support.ts` — the processor-free support rail (see below).
@@ -125,19 +132,34 @@ one file serves both colourways. **Never reference them via `<img src>`:**
   `tools/check-docs.cjs` — **every path THIS file names must exist**; and
   `tools/check-privacy.cjs` — **`/privacy` must name exactly the analytics
   vendors the site actually ships**, and no third-party script origin may reach
-  a page undisclosed. All four run in `npm run build` and fail it.
+  a page undisclosed; and `tools/check-figures.cjs` — **no hand-entered figure
+  may go stale or be typed twice.** All five run in `npm run build` and fail it.
   **`check-docs` is here because this file has now described something untrue
   three times** (a French pass that was not in the repo, a console-error filter
   the sweep does not have, a renamed JSON), and each was found by accident. A
   path is the cheapest claim to check; the prose still cannot be, so keep the
   prose honest by hand. **`check-privacy` is here because the fourth time it
   happened, the untrue sentence was on the public privacy policy** — /privacy
-  said "one provider, not several" while two shipped. Same failure, worse page. `tools/generate-og.cjs` draws the share cards
+  said "one provider, not several" while two shipped. Same failure, worse page.
+  **`check-figures` is here because the same number was typed in three places
+  and two of them disagreed** — see `src/lib/figures.ts`. **`check-icons` is
+  here because the same thing happened in binary:** `favicon.ico` carried the
+  ringed LeafSeal and `favicon.svg` carried a ringless leaf, so which mark a
+  reader saw depended on whether their browser preferred `.ico` or `.svg`, and
+  a binary does not show up in a diff anyone reads.
+  `tools/generate-favicons.cjs` now draws `favicon.ico` (16/32/48),
+  `favicon-16.png`, `favicon-32.png` and `mask-icon.svg` **from
+  `public/favicon.svg`**, and `check-icons` re-renders and compares so the
+  generator cannot be skipped. It is not in the build — icons change about once
+  a year and rasterising them every deploy produces identical bytes — so run
+  `npm run icons` after changing the art. `tools/generate-og.cjs` draws the share cards
   *and* emits `src/lib/og-manifest.json`, which carries each card's
   **content-hashed path and its alt text together**, so neither can drift from
   the card it describes. (This line said `og-alt.json` for one commit after the
   file was renamed — the same drift this repo keeps catching, in the file whose
   job is to prevent it.)
+- `tools/generate-favicons.cjs` — every small icon, drawn from
+  `public/favicon.svg`; `tools/check-icons.cjs` — proves they still match.
 - `source-material/` — raw uploads, 107 MB, **not deployed**. Prune or move to
   external storage; it is cloned on every checkout.
 
@@ -243,7 +265,7 @@ public and checkable" — it can afford neither a dash nor a silently stale numb
   (`<strong>Vercel</strong> Web Analytics`) would have read fine to a human and
   failed `includes()` silently. Its own negative test passed while asserting
   nothing. Every checker in `tools/` should be run once against a deliberately
-  broken input before it is trusted — all four have been.
+  broken input before it is trusted — all five have been.
 - **`astro check` runs in CI, not in the build, and its dependencies stay out of
   `package.json`.** `@astrojs/check` + `typescript` pull 75 packages — a Volar
   language server, Emmet, Prettier, the VS Code language services — and Vercel
@@ -259,6 +281,55 @@ public and checkable" — it can afford neither a dash nor a silently stale numb
   `typescript` in **one** step and calls `npx astro check` directly; the
   `npm run check` script still self-installs, because on a developer's machine
   there is nothing to prune.
+- **A number typed in two places is a number that will disagree with itself,
+  and this site already did it.** The federal accumulated deficit was a raw
+  constant in `/calculator`, the string `$1,266B` in `/math`, and `$1,266B`
+  again in `/sources`. The calculator interpolated its constant and printed
+  **`$1266B`** — same figure, two spellings, on the site whose whole argument
+  is that its figures are checkable. Nobody chose that; three copies did.
+  Every hand-entered figure now lives in `src/lib/figures.ts` and every page
+  renders its `display` string. `tools/check-figures.cjs` refuses a build where
+  any page prints the ungrouped spelling of a grouped figure, which is exactly
+  how the bug reappears.
+- **A figure that comes from a DOCUMENT needs a `reviewBy` date; one that comes
+  from an ENDPOINT does not.** Public Accounts of Canada is tabled each autumn
+  and has no key-free API, so `$1,266B` cannot be live and "somebody will
+  remember" is not a mechanism. It carries `reviewBy: '2026-12-15'` and a note
+  saying what to replace it with. Do not put review dates on figures with no
+  next edition — 563 lakes is not waiting on a release, and noise there teaches
+  people to ignore the real ones.
+  **The figure itself was verified against the primary source, not carried
+  forward:** the Annual Financial Report for 2024-25 (Finance Canada, published
+  7 November 2025) states the accumulated deficit "stood at $1,266.5 billion at
+  March 31, 2025". **Never substitute StatCan `10-10-0002`** — that series is
+  *central government debt*, a different definition, and swapping it in would
+  repeat the two-vintages error that retired "eleven times". The Fiscal
+  Monitor's running year-end number is not a substitute either; Finance labels
+  it pre-adjustment and superseded by Public Accounts.
+- **The tab icon is drawn FOR 16px, not shrunk to it.** What shipped was the
+  full LeafSeal — red leaf, red ring, black field — and all three of its
+  failures are visible the moment it is rendered at true size: the ring is a
+  hairline that antialiases into a halo and steals a third of the frame; and
+  `#C8102E` on `#000` is two dark colours, so on a dark browser tab strip the
+  tile edge vanishes and the icon reads as a smudge. It is now **a white leaf
+  on black with no ring below 48px**. White carries on a dark strip and the
+  black tile carries on a light one, which neither red-on-black nor
+  red-on-white manages — all four were rendered at 16px and compared before
+  choosing. `--nt-red-lift` was tried and rejected: it is a colour for small
+  text, and as a mark it is a washed pink. The black field is deliberate — it
+  is the site's ground, it matches `theme_color`, and it keeps the family with
+  `apple-touch-icon` and the 192/512 icons, which still carry the full seal
+  because they are big enough to hold it.
+- **`mask-icon` needs a MONOCHROME, TRANSPARENT file.** Safari fills a mask
+  icon with the colour on the `<link>`, so it was handed `favicon.svg` — which
+  has an opaque `<rect>` across the whole canvas — and filled the rectangle:
+  the pinned tab was a solid block. It points at generated `mask-icon.svg`
+  now, and `check-icons` refuses a build where a mask icon has a rect or a
+  fill, or where the link points back at `favicon.svg`.
+- **XML comments cannot contain `--`.** Writing `--nt-red-lift` inside the
+  comment in `favicon.svg` made the file invalid XML; browsers tolerated it,
+  the SVG rasteriser did not, and the generator failed outright. Name a CSS
+  custom property without its leading dashes inside any SVG comment.
 - **`/fr` must stay out of the sitemap while it is `noindex`** — submitting a URL
   while telling crawlers not to index it is a contradictory signal. The filter
   lives in `astro.config.mjs`; remove it the day the draft banner comes off.

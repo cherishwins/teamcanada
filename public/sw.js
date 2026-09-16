@@ -10,7 +10,7 @@
  * Bump VERSION whenever a cached asset changes. The activate handler deletes
  * every cache that is not the current one, so a bump is a clean slate.
  */
-const VERSION = 'nt-v1';
+const VERSION = 'nt-v2';
 
 /** Enough to render something useful with no network at all. */
 const CORE = [
