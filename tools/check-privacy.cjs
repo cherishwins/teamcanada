@@ -165,21 +165,49 @@ if (enabled.length > 1 && singular.test(page)) {
 
 // ---- 4. No undisclosed third-party script may reach a page.
 // The vendor list above only catches what this file already knows about. This
-// catches the next integration nobody wrote a detector for: any <script src>
-// pointing off-origin that is not on the allowlist fails the build. That is
-// the actual recurring risk here — a widget arrives through a dashboard, not
-// through a code review.
+// catches the next integration nobody wrote a detector for. That is the actual
+// recurring risk here — a widget arrives through a dashboard, not through a
+// code review.
+//
+// TWO PLACES, because the first draft only looked at one and would have missed
+// the very vendor that prompted this file. Vercel Web Analytics does NOT ship a
+// <script src> tag: the adapter writes an INLINE bootstrap that does
+// `script.src = '/_vercel/insights/script.js'` and appends it to <head> at
+// runtime. It happens to be same-origin so it would not have tripped this check
+// either way, but almost every third-party snippet on the web has that exact
+// shape — an inline loader that fetches the real payload. A scan that only
+// reads src attributes is blind to all of them.
+//
+// Checked against the live site when this was written: no executable inline
+// script on any page contains an absolute URL, so flagging every off-allowlist
+// one is precise rather than noisy. JSON-LD is skipped — it is data the browser
+// never executes, and it legitimately cites schema.org.
 const ALLOWED_ORIGINS = ['https://cloud.umami.is'];
 const thirdParty = new Set();
 for (const file of walk(ROOT).filter((f) => f.endsWith('.html'))) {
   const html = fs.readFileSync(file, 'utf8');
+  const where = path.relative(ROOT, file);
+
   for (const m of html.matchAll(/<script[^>]+src=["'](https?:\/\/[^"']+)["']/gi)) {
     const origin = new URL(m[1]).origin;
-    if (!ALLOWED_ORIGINS.includes(origin)) thirdParty.add(`${origin} (in ${path.relative(ROOT, file)})`);
+    if (!ALLOWED_ORIGINS.includes(origin)) thirdParty.add(`${origin} — <script src> in ${where}`);
+  }
+
+  for (const m of html.matchAll(/<script(?![^>]*\ssrc=)([^>]*)>([\s\S]*?)<\/script>/gi)) {
+    if (/ld\+json/i.test(m[1])) continue;
+    for (const u of m[2].matchAll(/https?:\/\/[^"'\s)]+/g)) {
+      let origin;
+      try {
+        origin = new URL(u[0]).origin;
+      } catch {
+        continue; // not a URL we can parse; not our business
+      }
+      if (!ALLOWED_ORIGINS.includes(origin)) thirdParty.add(`${origin} — inline script in ${where}`);
+    }
   }
 }
 for (const t of thirdParty) {
-  fail.push(`undisclosed third-party script origin: ${t} — add it to ALLOWED_ORIGINS and to /privacy, or remove it`);
+  fail.push(`undisclosed third-party origin: ${t} — add it to ALLOWED_ORIGINS and to /privacy, or remove it`);
 }
 
 function walk(dir, out = []) {

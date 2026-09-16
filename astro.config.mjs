@@ -21,9 +21,11 @@ export default defineConfig({
   // posture survives — the cost is bytes and a second party receiving reader
   // data, not a legal one.
   //
-  // THE TRAP: the adapter writes <script src="/_vercel/insights/script.js">
-  // into every page at BUILD time, but the file behind it exists only on
-  // Vercel's edge. So the tag is in the local output and the asset is not —
+  // THE TRAP: the adapter writes an INLINE bootstrap into every page at BUILD
+  // time — not a <script src> tag. It does `script.src =
+  // '/_vercel/insights/script.js'` and appends it to <head> at runtime, and
+  // the file behind that path exists only on Vercel's edge. So the loader is
+  // in the local output and the asset is not —
   // which made `tools/verify.cjs` report 200 broken references and turned
   // `main` red the moment this merged. verify.cjs now answers /_vercel/* with
   // 204, the same way it answers a third-party origin, so the sweep still
