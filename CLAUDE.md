@@ -40,13 +40,24 @@ This is a passion project, not a funded one. **Nothing may cost money unless it
 has already earned it.** Every dependency here is free and must stay free:
 Vercel hobby tier, keyless government APIs (StatCan, Bank of Canada, ECCC),
 open-licence typefaces, self-hosted assets, no Mapbox, no paid tier of
-anything. Umami is the one hosted service, on its free tier, added by the
-owner; it is cookieless and sets no cross-site identifier, which is why the
-site still needs no consent banner. Before adding any service, the question is not "is it
+anything. Before adding any service, the question is not "is it
 better" but "is it free, and does it stay free at scale." If the site ever
 earns, that changes — until then it does not.
+- **TWO analytics vendors now ship: Umami and Vercel Web Analytics.** This line
+  said "Umami is the one hosted service" for months and it is no longer true —
+  a one-click Vercel dashboard integration opened PR #34, it was merged, and
+  the second vendor went live. Both are free and both are cookieless (checked:
+  neither script touches `document.cookie` or browser storage), so the
+  no-consent-banner posture is intact. **Whether to keep the second one is an
+  open question for the owner — see Open item 9.** What is NOT open is that
+  `/privacy` must name whatever ships; `tools/check-privacy.cjs` now fails the
+  build if it does not.
 - **Client JS budget: ~2 kB gzipped for the whole site.** Reveal fallback and
   count-up only. If a feature needs a framework, question the feature first.
+  **This budget is currently exceeded.** Measured gzipped on the deployed page:
+  the site's own script is 1,172 B and `/_vercel/insights/script.js` is
+  1,497 B — 2,669 B, more than double what the site shipped before. Umami's own
+  script is a further 2,317 B from a third-party origin.
 
 ## Brand — Northern Temper Design System
 **The published design system is the source of truth**, not this file and not
@@ -111,12 +122,17 @@ one file serves both colourways. **Never reference them via `<img src>`:**
   full sweep, on every PR and every push to `main`. Free: the repo is public.
 - `tools/check-french.cjs` — Québec typography + banned-framing audit;
   `tools/check-llms.cjs` — llms.txt shape + no-restated-figures; and
-  `tools/check-docs.cjs` — **every path THIS file names must exist.** All three
-  run in `npm run build` and fail it. The last one is here because this file has
-  now described something untrue three times (a French pass that was not in the
-  repo, a console-error filter the sweep does not have, a renamed JSON), and each
-  was found by accident. A path is the cheapest claim to check; the prose still
-  cannot be, so keep the prose honest by hand. `tools/generate-og.cjs` draws the share cards
+  `tools/check-docs.cjs` — **every path THIS file names must exist**; and
+  `tools/check-privacy.cjs` — **`/privacy` must name exactly the analytics
+  vendors the site actually ships**, and no third-party script origin may reach
+  a page undisclosed. All four run in `npm run build` and fail it.
+  **`check-docs` is here because this file has now described something untrue
+  three times** (a French pass that was not in the repo, a console-error filter
+  the sweep does not have, a renamed JSON), and each was found by accident. A
+  path is the cheapest claim to check; the prose still cannot be, so keep the
+  prose honest by hand. **`check-privacy` is here because the fourth time it
+  happened, the untrue sentence was on the public privacy policy** — /privacy
+  said "one provider, not several" while two shipped. Same failure, worse page. `tools/generate-og.cjs` draws the share cards
   *and* emits `src/lib/og-manifest.json`, which carries each card's
   **content-hashed path and its alt text together**, so neither can drift from
   the card it describes. (This line said `og-alt.json` for one commit after the
@@ -211,6 +227,31 @@ public and checkable" — it can afford neither a dash nor a silently stale numb
   syntax-checks it directly and asserts it still has a `VERSION` constant.**
   Nothing else in this repo reads that file. A broken service worker is worse
   than none: it is precisely what leaves somebody looking at a stale figure.
+- **`/_vercel/*` is same-origin but platform-served: the TAG is in the build,
+  the FILE never is.** `webAnalytics: { enabled: true }` makes the adapter
+  write `<script src="/_vercel/insights/script.js">` into every page at build
+  time, while the asset only exists on Vercel's edge. `tools/verify.cjs` serves
+  the local output, so it counted that as a broken reference on all 20 pages at
+  all 10 viewports — **200 failures, and that is what turned `main` red on
+  PR #34.** The sweep now answers `/_vercel/*` with 204, exactly as it answers
+  a third-party origin, so it still proves the page works without it. Keep that
+  case narrow: `/_vercel/` only, never a general "ignore missing files" rule,
+  or the broken-reference count stops meaning anything.
+- **A checker that cannot fail is worse than no checker.** The first draft of
+  `check-privacy` matched vendor names against raw HTML; Astro stamps
+  `data-astro-cid-…` onto styled tags, and a name split by markup
+  (`<strong>Vercel</strong> Web Analytics`) would have read fine to a human and
+  failed `includes()` silently. Its own negative test passed while asserting
+  nothing. Every checker in `tools/` should be run once against a deliberately
+  broken input before it is trusted — all four have been.
+- **`astro check` runs in CI, not in the build, and its dependencies stay out of
+  `package.json`.** `@astrojs/check` + `typescript` pull 75 packages — a Volar
+  language server, Emmet, Prettier, the VS Code language services — and Vercel
+  installs devDependencies on every production build for a command it never
+  runs. Same rule as Playwright: `npm i --no-save`, in CI only. The `check`
+  script sat in `package.json` for months with its dependency missing, so it
+  could not run at all; the first thing it found once wired up was a StatCan
+  round-trip on `/fr` whose result was discarded.
 - **`/fr` must stay out of the sitemap while it is `noindex`** — submitting a URL
   while telling crawlers not to index it is a contradictory signal. The filter
   lives in `astro.config.mjs`; remove it the day the draft banner comes off.
@@ -459,6 +500,23 @@ dossier and 4 of 5 reads. Two traps worth remembering:
      Dataset markup.
 8. **Legal:** "Team Canada" is a Canadian Olympic Committee mark. The rebrand
    sidesteps it — do not reintroduce the name as a public brand.
+9. **Two analytics vendors — the owner's call, and it is genuinely open.**
+   Vercel Web Analytics was removed once (PR #28) as redundant with Umami, then
+   re-enabled through the Vercel dashboard's one-click integration (PR #34).
+   Neither state is wrong; they trade different things:
+   - **Keep both.** Vercel's numbers are first-party, survive ad-blockers that
+     take Umami out, and need no third-party origin. Cost: +1,497 B gzipped on
+     every page, and a second party receiving reader data.
+   - **Drop Vercel, keep Umami.** Restores the ~2 kB JS budget and the "one
+     provider" posture that `/privacy` used to state. Cost: the numbers
+     under-count wherever `cloud.umami.is` is blocked, which on a politically
+     adjacent site is not a small share.
+   - **Drop Umami, keep Vercel.** The only option that removes a third-party
+     origin from the page entirely — the cleanest privacy posture of the three,
+     and the smallest payload. Cost: Hobby-tier event caps, and the owner
+     already set Umami up.
+   Until the owner decides, both ship and `/privacy` names both. Whichever way
+   it goes, `tools/check-privacy.cjs` makes the page follow the config.
 
 ## Sister projects (separate repos, do not merge in)
 - **x402-facilitator** — USDC/Base payments. Real work, zero relation to this

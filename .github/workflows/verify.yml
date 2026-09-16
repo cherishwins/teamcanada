@@ -43,10 +43,22 @@ jobs:
           npm i --no-save playwright
           npx playwright install --with-deps chromium
 
-      # `npm run build` also runs tools/check-french.cjs and fails on a single
-      # typography or banned-framing issue, and generates llms-full.txt.
+      # `npm run build` also runs check-french, check-llms, check-privacy and
+      # check-docs — any one of them fails the build — and generates
+      # llms-full.txt.
       - name: Build
         run: npm run build
+
+      # `astro check` is TypeScript + Astro diagnostics. @astrojs/check pulls a
+      # Volar language server, Emmet, Prettier and the VS Code language
+      # services — 75 packages of editor toolchain — so it follows the
+      # Playwright rule and stays out of package.json rather than being
+      # installed on every Vercel production build for a command Vercel never
+      # runs. The script sat in package.json for months with its dependency
+      # missing, so it could not run at all; it runs here now, and the first
+      # thing it found was a StatCan fetch on /fr whose result was discarded.
+      - name: Type-check
+        run: npm run check
 
       - name: Audit dependencies
         run: npm audit --audit-level=high

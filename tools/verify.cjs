@@ -55,8 +55,8 @@ const MIME = { html: 'text/html', css: 'text/css', js: 'text/javascript',
   xml: 'application/xml', txt: 'text/plain' };
 
 /**
- * Two kinds of request are deliberately not served from the static output, and
- * a sweep that counted them as 404s would drown the real signal:
+ * Three kinds of request are deliberately not served from the static output,
+ * and a sweep that counted them as 404s would drown the real signal:
  *
  *   - Another origin. Umami and Vercel Speed Insights live on their own hosts.
  *     The page is required to work without them, so they answer 204 and the
@@ -66,6 +66,16 @@ const MIME = { html: 'text/html', css: 'text/css', js: 'text/javascript',
  *     rule CLAUDE.md actually cares about — "a figure never renders blank; on
  *     failure the page shows the fallback and says a source is not responding."
  *     Stubbing them with plausible success would test nothing.
+ *   - /_vercel/*. SAME-ORIGIN, but served by the platform's edge and never
+ *     written into the build. `webAnalytics: { enabled: true }` puts
+ *     `/_vercel/insights/script.js` on every page at BUILD time — the tag is
+ *     in the HTML, only the file is absent — so before this case existed the
+ *     sweep reported 20 pages × 10 viewports = 200 broken references and
+ *     `main` went red. It answers 204, on the same logic as another origin:
+ *     the page must work without it. That it is 204 and not 200 is the point,
+ *     because /offline and every fallback path must survive its absence.
+ *     Narrow on purpose — `/_vercel/` only, not a wildcard for anything
+ *     missing.
  *
  * Anything else that 404s is a genuinely broken reference, and is counted.
  */
@@ -76,6 +86,7 @@ function serve(page, onBroken) {
     if (u.pathname.startsWith('/api/')) {
       return route.fulfill({ status: 503, contentType: 'application/json', body: '{"error":"stubbed by tools/verify.cjs"}' });
     }
+    if (u.pathname.startsWith('/_vercel/')) return route.fulfill({ status: 204, body: '' });
     let f = path.join(ROOT, decodeURIComponent(u.pathname));
     if (f.endsWith('/')) f += 'index.html';
     if (fs.existsSync(f) && fs.statSync(f).isDirectory()) f = path.join(f, 'index.html');

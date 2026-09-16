@@ -3,7 +3,7 @@ import Base from '../../layouts/Base.astro';
 import Brouillon from '../../components/Brouillon.astro';
 import BearDual from '../../components/marks/BearDual.astro';
 import Stat from '../../components/Stat.astro';
-import { getRivers, getFigures, getWater } from '../../lib/sources';
+import { getRivers, getWater } from '../../lib/sources';
 
 /**
  * French, re-authored — not translated.
@@ -11,14 +11,22 @@ import { getRivers, getFigures, getWater } from '../../lib/sources';
  * The register follows the house rules: Lagacé by default (first person, dry,
  * concrete, short), Hébert where a mechanism has to be explained, Laferrière
  * for the two moments of warmth. Vouvoiement throughout. Guillemets with
- * non-breaking spaces, and no space before ? !; : — Québec usage, which is
- * the fastest tell that a page was not written in France or by a machine.
+ * non-breaking spaces, no space before ? ! ; — but a narrow no-break space
+ * (U+202F) before the colon, which Québec keeps exactly as France does. This
+ * comment said "no space before : " for months while tools/check-french.cjs
+ * enforced the opposite; the code was right and the note was wrong. Typography
+ * is the fastest tell that a page was not written in France or by a machine.
  *
  * The English page leads with Gander. This one leads with le fleuve, because
  * for a reader here the water argument is not an abstraction — it runs past
  * Montréal at nine thousand cubic metres a second and the gauge says so.
+ *
+ * getFigures() used to be awaited here and its result thrown away — a StatCan
+ * round-trip on every build for a binding nothing read. `astro check` found
+ * it; nothing else would have, because a wasted fetch that succeeds looks
+ * exactly like a fetch that mattered.
  */
-const [water, figures, aquastat] = await Promise.all([getRivers(), getFigures(), getWater()]);
+const [water, aquastat] = await Promise.all([getRivers(), getWater()]);
 const fmt = new Intl.NumberFormat('fr-CA');
 // Le rapport se dit avec une virgule décimale, jamais un point.
 const dec1 = new Intl.NumberFormat('fr-CA', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
