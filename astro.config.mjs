@@ -8,8 +8,27 @@ import { SITE } from './src/config.mjs';
 export default defineConfig({
   site: SITE.origin,
   output: 'static',
-  // Vercel Web Analytics enabled alongside Umami analytics.
-  // See: https://vercel.com/docs/analytics/quickstart
+  // TWO analytics vendors now ship on every page, and that is a live decision
+  // rather than a settled one — see CLAUDE.md. Umami has always been here.
+  // Vercel Web Analytics was removed once as redundant, then re-enabled
+  // through the Vercel dashboard's one-click integration.
+  //
+  // Measured on the deployed page, gzipped: the site's own script is 1,172 B
+  // and /_vercel/insights/script.js is 1,497 B, so enabling this MORE THAN
+  // DOUBLES first-party JavaScript against a documented ~2 kB budget. It is
+  // cookieless and uses no browser storage (checked: the script touches
+  // neither document.cookie nor localStorage), so the no-consent-banner
+  // posture survives — the cost is bytes and a second party receiving reader
+  // data, not a legal one.
+  //
+  // THE TRAP: the adapter writes <script src="/_vercel/insights/script.js">
+  // into every page at BUILD time, but the file behind it exists only on
+  // Vercel's edge. So the tag is in the local output and the asset is not —
+  // which made `tools/verify.cjs` report 200 broken references and turned
+  // `main` red the moment this merged. verify.cjs now answers /_vercel/* with
+  // 204, the same way it answers a third-party origin, so the sweep still
+  // proves the page works without it. tools/check-privacy.cjs reads both this
+  // flag and that tag, and fails the build if /privacy disagrees with either.
   adapter: vercel({
     webAnalytics: { enabled: true },
   }),
