@@ -107,8 +107,22 @@ const VENDORS = [
 // explanation of the decision reads as the decision.
 const flagOn = (c) => /webAnalytics\s*:\s*\{[^}]*\benabled\s*:\s*true/.test(stripComments(c));
 
+/**
+ * ORDER MATTERS, and getting it wrong cost a red build.
+ *
+ * This stripped block comments first. A `//` line elsewhere in the config
+ * happened to contain the two characters that CLOSE a block comment, the
+ * non-greedy block regex paired an earlier `/*` with that stray sequence, and
+ * everything after it survived misaligned — so `webAnalytics: { enabled: true }`
+ * stopped matching and this checker reported analytics as OFF while it was on.
+ * A false alarm, but a loud one, and a checker nobody trusts is a checker
+ * nobody keeps.
+ *
+ * Line comments go first now: whatever a `//` line contains is gone before
+ * block pairing ever looks at it.
+ */
 function stripComments(src) {
-  return src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '');
+  return src.replace(/^\s*\/\/.*$/gm, '').replace(/\/\*[\s\S]*?\*\//g, '');
 }
 
 // A tag in the HTML with the flag off, or the flag on with no tag, means the

@@ -36,13 +36,22 @@ export default defineConfig({
   }),
   integrations: [
     sitemap({
-      // /fr is a noindex draft. Listing it in the sitemap while the page tells
-      // crawlers not to index it is a contradictory signal — submit it only
-      // once the BROUILLON banner comes off and the noindex goes with it.
-      // /fr is a noindex draft; /support is hidden until the owner is ready
-      // for it to exist publicly. Both carry noindex, and submitting a URL
-      // while telling crawlers not to index it is a contradictory signal.
-      filter: (page) => !page.includes('/fr') && !page.includes('/support'),
+      // A URL in the sitemap is a request to index it. A `noindex` on the page
+      // is an instruction not to. Sending both is a contradictory signal, so
+      // every noindex page has to be filtered out here.
+      //
+      // This rule was already written down and still got applied incompletely:
+      // /fr (a BROUILLON draft) and /support (hidden on purpose) were filtered,
+      // and `/offline` was NOT — it carries `noindex, nofollow` and was being
+      // submitted to Google anyway. It is the service-worker fallback; it is
+      // not a page anybody should reach from search.
+      //
+      // Do not maintain this list by memory. tools/check-sitemap.cjs reads the
+      // built sitemap, reads the robots meta on each page it lists, and fails
+      // the build on any disagreement — which is the only reason the next
+      // noindex page will not repeat this.
+      filter: (page) =>
+        !page.includes('/fr') && !page.includes('/support') && !page.includes('/offline'),
     }),
   ],
   // MEASURED, and this reverses an earlier call recorded in CLAUDE.md.
