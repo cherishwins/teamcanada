@@ -133,7 +133,9 @@ one file serves both colourways. **Never reference them via `<img src>`:**
   `tools/check-privacy.cjs` — **`/privacy` must name exactly the analytics
   vendors the site actually ships**, and no third-party script origin may reach
   a page undisclosed; and `tools/check-figures.cjs` — **no hand-entered figure
-  may go stale or be typed twice.** All five run in `npm run build` and fail it.
+  may go stale or be typed twice**; and `tools/check-sitemap.cjs` — **nothing
+  in the sitemap may be `noindex`, and nothing indexable may be missing from
+  it.** All seven run in `npm run build` and fail it.
   **`check-docs` is here because this file has now described something untrue
   three times** (a French pass that was not in the repo, a console-error filter
   the sweep does not have, a renamed JSON), and each was found by accident. A
@@ -160,6 +162,7 @@ one file serves both colourways. **Never reference them via `<img src>`:**
   job is to prevent it.)
 - `tools/generate-favicons.cjs` — every small icon, drawn from
   `public/favicon.svg`; `tools/check-icons.cjs` — proves they still match.
+- `tools/check-sitemap.cjs` — the sitemap and the pages' robots meta must agree.
 - `source-material/` — raw uploads, 107 MB, **not deployed**. Prune or move to
   external storage; it is cloned on every checkout.
 
@@ -271,7 +274,15 @@ public and checkable" — it can afford neither a dash nor a silently stale numb
   (`<strong>Vercel</strong> Web Analytics`) would have read fine to a human and
   failed `includes()` silently. Its own negative test passed while asserting
   nothing. Every checker in `tools/` should be run once against a deliberately
-  broken input before it is trusted — all five have been.
+  broken input before it is trusted — all seven have been.
+  **A checker can also fail for the WRONG reason, which costs just as much
+  trust.** `check-privacy` stripped block comments before line comments, so a
+  `//` line elsewhere in `astro.config.mjs` that happened to contain the two
+  characters closing a block comment mispaired the regex, hid
+  `webAnalytics: { enabled: true }`, and turned the build red claiming analytics
+  was off while it was on. Line comments are stripped first now. When a checker
+  parses source text, assume the source contains the characters your parser
+  cares about.
 - **`astro check` runs in CI, not in the build, and its dependencies stay out of
   `package.json`.** `@astrojs/check` + `typescript` pull 75 packages — a Volar
   language server, Emmet, Prettier, the VS Code language services — and Vercel
@@ -336,9 +347,29 @@ public and checkable" — it can afford neither a dash nor a silently stale numb
   comment in `favicon.svg` made the file invalid XML; browsers tolerated it,
   the SVG rasteriser did not, and the generator failed outright. Name a CSS
   custom property without its leading dashes inside any SVG comment.
-- **`/fr` must stay out of the sitemap while it is `noindex`** — submitting a URL
-  while telling crawlers not to index it is a contradictory signal. The filter
-  lives in `astro.config.mjs`; remove it the day the draft banner comes off.
+- **A `noindex` page must stay out of the sitemap, and the filter is NOT the
+  place that rule is enforced.** A sitemap entry asks Google to index a URL; a
+  `noindex` on the page tells it not to. Sending both is contradictory, and
+  Google resolves it by trusting the page — so the entry is wasted crawl budget
+  on a site already sitting in the *Discovered — currently not indexed* queue.
+  **This rule was written down here, restated in `astro.config.mjs`, and still
+  applied incompletely:** the filter excluded `/fr` and `/support` and missed
+  **`/offline`**, which carries `noindex, nofollow` and was submitted to Google
+  for as long as the sitemap has existed. Reading the filter would never have
+  revealed it — the filter looks complete. It is only visible by comparing the
+  sitemap against the pages, which is what `tools/check-sitemap.cjs` now does
+  on every build, in both directions: no noindex URL in the sitemap, and no
+  indexable page missing from it. Remove `/fr` from the filter the day the
+  BROUILLON banner comes off.
+- **Google's Dataset parser is NARROWER than schema.org, and `spatialCoverage`
+  is where that bites.** It accepts Text, a `Place` carrying `geo`, or a
+  `GeoShape` — and nothing else. `Country` is perfectly valid schema.org (it
+  descends from Place) and Search Console still rejected all five datasets with
+  *"Invalid object type for field spatialCoverage"*. It is plain Text now, and
+  **per-dataset**, because it was never the same for all of them: the water
+  dataset covers Canada *and* the United States, so `Country: Canada` was wrong
+  on the facts as well as the type. Do not swap Text for a bounding box unless
+  the four coordinates can be cited.
 - **The service worker is network-first for pages and data, cache-first only for
   fonts, marks and images.** It must never be the reason somebody sees an old
   figure. Bump `VERSION` in `public/sw.js` when a cached asset changes; activate
@@ -421,7 +452,7 @@ V   · THE BUILD /build    Refine · Compute · Corridor + C-5.     from teamcan
 /calculator  The bill, per province      live StatCan GDP + population
 /sources     The receipts                every figure, source, period, endpoint
 /fr          La trempe du Nord           BROUILLON, noindex, Act I only
-/offline     Service-worker fallback     noindex
+/offline     Service-worker fallback     noindex, OUT of the sitemap
 /read + 5 long-form pieces   9,162 words migrated from the old site
 /join  /privacy  /terms  /404          /support is HIDDEN (noindex, unlinked)
 /feed.xml    RSS for the five reads

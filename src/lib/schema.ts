@@ -66,6 +66,25 @@ export interface DatasetMeta {
   /** ISO-8601 repeat interval, e.g. "PT1H" */
   frequency: string;
   keywords: string[];
+  /**
+   * Where the data is ABOUT, as plain text.
+   *
+   * Google's Dataset documentation accepts Text, a Place carrying `geo`, or a
+   * GeoShape — and nothing else. It does NOT accept Country, which is what
+   * this file emitted, and Search Console flagged all five datasets with
+   * "Invalid object type for field spatialCoverage". Country is perfectly good
+   * schema.org (it descends from Place); Google's Dataset parser is simply
+   * narrower than schema.org, which is the trap.
+   *
+   * Text is used rather than a Place with a bounding box because a box means
+   * typing four coordinates, and this repo does not type numbers it cannot
+   * cite. Google documents the named-location form explicitly.
+   *
+   * It is per-dataset because it is NOT the same for all of them: the water
+   * dataset covers Canada AND the United States, and saying "Canada" there was
+   * wrong on the facts as well as the type.
+   */
+  spatialCoverage: string;
 }
 
 export function datasetSchema(d: DatasetMeta) {
@@ -80,7 +99,7 @@ export function datasetSchema(d: DatasetMeta) {
     creator: PERSON,
     publisher: PUBLISHER,
     keywords: d.keywords,
-    spatialCoverage: { '@type': 'Country', name: 'Canada' },
+    spatialCoverage: d.spatialCoverage,
     includedInDataCatalog: { '@type': 'DataCatalog', name: `${SITE.name} — public figures`, url: abs('/sources') },
     distribution: [{
       '@type': 'DataDownload',
@@ -98,6 +117,7 @@ export const DATASETS: DatasetMeta[] = [
     name: 'Renewable fresh water, Canada and the United States',
     description: 'Renewable internal freshwater resources per capita and in total, for Canada and the United States, from FAO AQUASTAT via the World Bank. One source, one reference year and one definition on both sides of the border, so the ratio between them is a figure anyone can reproduce in a single request.',
     endpoint: '/api/water.json',
+    spatialCoverage: 'Canada and the United States',
     provider: 'FAO AQUASTAT; The World Bank',
     frequency: 'P1Y',
     keywords: ['Canada', 'United States', 'fresh water', 'renewable water resources', 'AQUASTAT', 'per capita', 'open data'],
@@ -106,6 +126,7 @@ export const DATASETS: DatasetMeta[] = [
     name: 'Canadian economic figures, live',
     description: 'Real GDP, population, CPI, the policy interest rate and USD/CAD, read on request from Statistics Canada and the Bank of Canada. Each figure carries the reference period it describes and a flag saying whether it came back live.',
     endpoint: '/api/figures.json',
+    spatialCoverage: 'Canada',
     provider: 'Statistics Canada; Bank of Canada',
     frequency: 'PT1H',
     keywords: ['Canada', 'GDP', 'population', 'inflation', 'CPI', 'exchange rate', 'open data'],
@@ -114,6 +135,7 @@ export const DATASETS: DatasetMeta[] = [
     name: 'Canadian river discharge, real time',
     description: 'Discharge in cubic metres per second at four gauges, one per major drainage basin — Fraser, Mackenzie, St. Lawrence and Ottawa — from the Environment and Climate Change Canada hydrometric network.',
     endpoint: '/api/rivers.json',
+    spatialCoverage: 'Canada',
     provider: 'Environment and Climate Change Canada',
     frequency: 'PT5M',
     keywords: ['Canada', 'hydrometric', 'river discharge', 'fresh water', 'open data'],
@@ -122,6 +144,7 @@ export const DATASETS: DatasetMeta[] = [
     name: 'Canadian merchandise exports by trading partner',
     description: 'Monthly merchandise exports, customs basis, seasonally adjusted, for nine principal trading partners, with year-over-year change and share.',
     endpoint: '/api/trade.json',
+    spatialCoverage: 'Canada',
     provider: 'Statistics Canada',
     frequency: 'P1M',
     keywords: ['Canada', 'trade', 'exports', 'trading partners', 'open data'],
@@ -130,6 +153,7 @@ export const DATASETS: DatasetMeta[] = [
     name: 'Canadian provincial GDP and population',
     description: 'GDP at market prices and the most recent quarterly population estimate for all ten provinces.',
     endpoint: '/api/provinces.json',
+    spatialCoverage: 'Canada',
     provider: 'Statistics Canada',
     frequency: 'P1Y',
     keywords: ['Canada', 'provinces', 'GDP', 'population', 'open data'],
