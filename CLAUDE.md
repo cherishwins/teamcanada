@@ -189,7 +189,8 @@ one file serves both colourways. **Never reference them via `<img src>`:**
 - `tools/check-csp.cjs` — the CSP in `vercel.json` matches the built scripts.
 - `tools/check-links.cjs` + `.github/workflows/links.yml` — external links
   still resolve; weekly and on demand, never on a PR (other people's outages
-  must not turn a review red).
+  must not turn a review red). The same workflow runs
+  `tools/check-csp-live.cjs` — the CSP against the real vendors on production.
 - `.htmlvalidate.json` — config for the HTML validity step in CI.
 - `source-material/` — raw uploads, 107 MB, **not deployed**. Prune or move to
   external storage; it is cloned on every checkout.
@@ -417,6 +418,22 @@ public and checkable" — it can afford neither a dash nor a silently stale numb
   `X-Frame-Options: DENY` and `Cross-Origin-Opener-Policy: same-origin` ride
   alongside. HSTS is Vercel's default and deliberately NOT `includeSubDomains`
   — nobody has audited every subdomain for HTTPS, and that flag is one-way.
+  **`connect-src` names `gateway.umami.is`, not just `cloud.umami.is`, and
+  that was found on the deploy, not in the repo.** Umami's script is served
+  from `cloud.umami.is` and posts its beacons to `gateway.umami.is/api/send`.
+  The first policy allowed only the former; the build passed, the sweep passed,
+  CI passed, and on the preview the browser refused every analytics hit.
+  Nothing local can see where a third-party script connects, because the sweep
+  stubs other origins on purpose. So `tools/check-csp-live.cjs` opens real
+  pages on a real deployment and fails on any violation — weekly against
+  production from `links.yml`, and by hand against a preview URL after any
+  CSP change. **Verify a CSP on the deploy, never only in the sweep.**
+- **Vercel's `source` patterns are path-to-regexp 6, not regex.** `{8}` is
+  not a quantifier there; `"/og/(.*)\\.[0-9a-f]{8}\\.png"` was accepted by
+  the deploy and matched nothing, so the hashed OG cards kept revalidating
+  after the "fix". A pattern is only fixed when the header shows on the
+  deployed asset. Test candidates against `path-to-regexp@6.1.0` before
+  pushing; the working form is `"/og/([a-z0-9-]+\\.[0-9a-f]+)\\.png"`.
 - **Production ignored the adapter's `_astro/*` immutable route.** The
   adapter writes it into `.vercel/output/config.json`, and the live site
   served the hashed JS bundle with `max-age=0, must-revalidate` anyway — every
