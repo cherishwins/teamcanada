@@ -749,6 +749,51 @@ dossier and 4 of 5 reads. Two traps worth remembering:
    Until the owner decides, both ship and `/privacy` names both. Whichever way
    it goes, `tools/check-privacy.cjs` makes the page follow the config.
 
+## The record — approved 24 September 2026, in progress
+**Owner decisions (24 Sept 2026):** reference first, the "closest to you" tool
+is a lens on it, never the product; **federal first**, Alberta referendum
+tracker second, **BC only after the Elections BC third-party call and a
+Hansard spike**; the home is Northern Temper, not a sister site; the JS budget
+exception is granted ("adding value and not costing us").
+
+**Data, probed not assumed.** OpenParliament.ca API: keyless JSON for votes,
+per-member ballots, memberships and politicians; no advertised rate limit, so
+be polite (User-Agent with contact, ~150 ms between requests, sequential).
+LEGISinfo: every federal bill and stage as JSON. Represent (Open North):
+postal code → riding → MP, 60 requests/minute free; **it returns BOTH the 2013
+and 2023 boundary sets, filter to the current one.** The official House
+division page is `https://www.ourcommons.ca/members/en/votes/45/1/N` with
+**lowercase `members`** — the capitalised path is refused with a 403 by
+their WAF, and the first draft of the report linked every division to it.
+**BC and Alberta legislatures have no API**; Hansard is HTML and PDF.
+
+**Method.** Agreement math, never a spectrum: a party's position on a division
+is the majority of its cast ballots; a member's party-line rate is the share
+of their cast votes matching it (parties with fewer than three casters have
+no line, so Greens and independents are reported but not rated); pairwise
+agreement is over the votes both members cast; the reader becomes a member by
+voting on the same motions. **All divisions, never a curated "key votes"
+list** — curation is where bias enters. Yes/No count; Paired and Didn't vote
+are shown as what they are.
+
+**Spike, 45-1 (174 divisions, 29 May 2025 → 23 Sept 2026, 59,579 ballots):**
+party-line 99.9%; 307 of 344 members never broke with their party; most
+dissent Erskine-Smith, 6 of 164. Conservatives agree with Liberals on 26.4%
+of divisions and with the Bloc on 51.7%; Bloc–NDP 71.1%. Same-party pairs
+agree 99.2%, cross-party 33.5%. **159 of 174 divisions had zero dissent in
+every party; none saw any party split 10% or more.** 128 of 174 were
+genuinely contested (≥ 20% on the losing side); one 164–164 tie (26 Mar 2026).
+Bill C-5 third reading 306–31: Conservatives and Liberals for, Bloc, NDP and
+Green against, one Liberal against. 43 BC MPs. Regenerate:
+`node tools/record/fetch.cjs 45-1 && node tools/record/analyse.cjs 45-1`
+(`tools/record/fetch.cjs`, `tools/record/analyse.cjs`; ~3 minutes; the
+4.4 MB JSON is not committed).
+
+**Not built yet:** pages, endpoints, Dataset markup, the reader-as-member
+tool, and freshness (a scheduled Action hitting a Vercel deploy hook after
+sitting days — free, no server). Nothing BC-provincial ships during the
+campaign without Elections BC's answer.
+
 ## Sister projects (separate repos, do not merge in)
 - **x402-facilitator** — USDC/Base payments. Real work, zero relation to this
   argument. It is a Fit For Gov capability proof, not a donation rail for a
