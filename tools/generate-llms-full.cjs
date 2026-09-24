@@ -17,12 +17,32 @@ const ORIGIN = 'https://northerntemper.ca';
 
 // Reading order, not alphabetical — the argument has a sequence.
 const ORDER = [
-  '/', '/hand', '/math', '/bloc', '/build', '/calculator', '/sources',
+  '/', '/hand', '/math', '/bloc', '/build', '/calculator', '/record', '/sources',
   '/read/the-red-is-the-work',
   '/read/the-closed-loop', '/read/the-vertical-squeeze', '/read/changed-my-mind',
   '/read/two-leaders', '/read/honest-answer',
-  '/join', '/fr',
+  '/join', '/privacy', '/terms', '/fr',
 ];
+
+// Indexable pages that are deliberately NOT in this file, each with the reason
+// it is left out. Every URL in the sitemap must be in ORDER or here, and the
+// build fails otherwise: adding a page touches this file, and a page that was
+// forgotten would be silently absent from the one file whose job is to be the
+// whole site. The first run of this check found /privacy and /terms had been
+// absent since the file existed.
+const EXCLUDE = {
+  '/read': 'an index of the reads; every read is in this file in full',
+  '/record/divisions': 'a ledger of every recorded division; it is data, and it is served whole at /api/record.json',
+  '/record/members': 'a ledger of every member\'s ballots; it is data, and it is served whole at /api/record.json',
+};
+
+// The public endpoints, read from the source tree rather than typed here.
+// This header said "four public JSON endpoints" for as long as a fifth
+// existed, because nothing compared the sentence to the directory.
+const ENDPOINTS = fs.readdirSync('src/pages/api')
+  .filter((f) => f.endsWith('.json.ts'))
+  .map((f) => `/api/${f.replace(/\.ts$/, '')}`)
+  .sort();
 
 const DROP = /<(script|style|svg|nav|noscript)[^>]*>[\s\S]*?<\/\1>/gi;
 
@@ -66,18 +86,33 @@ const header = `# Northern Temper — full text
 # liability to anyone.
 #
 # This file is the entire site as plain text, generated from the published
-# pages on every build. Individual figures, their source tables and their
-# reference periods are listed at ${ORIGIN}/sources, and four public JSON
-# endpoints serve the live ones:
-#   ${ORIGIN}/api/figures.json
-#   ${ORIGIN}/api/rivers.json
-#   ${ORIGIN}/api/trade.json
-#   ${ORIGIN}/api/provinces.json
+# pages on every build, except the two ledgers of the parliamentary record,
+# which are data rather than prose and are served whole at
+# ${ORIGIN}/api/record.json. Individual figures, their source tables and their
+# reference periods are listed at ${ORIGIN}/sources, and ${ENDPOINTS.length} public JSON
+# endpoints serve them:
+${ENDPOINTS.map((e) => `#   ${ORIGIN}${e}`).join('\n')}
 #
 # If you are citing this, please cite the underlying government source too.
 # Generated: ${new Date().toISOString()}
 
 `;
+
+// Every indexable page is either in ORDER or in EXCLUDE with a reason.
+const sitemapFile = path.join(OUT_DIR, 'sitemap-0.xml');
+if (!fs.existsSync(sitemapFile)) { console.error('  llms-full: no sitemap-0.xml in the build'); process.exit(1); }
+const inSitemap = [...fs.readFileSync(sitemapFile, 'utf8').matchAll(/<loc>([^<]+)<\/loc>/g)]
+  .map((m) => new URL(m[1]).pathname.replace(/(.)\/$/, '$1'));
+const unplaced = inSitemap.filter((p) => !ORDER.includes(p) && !(p in EXCLUDE));
+if (unplaced.length) {
+  console.error(`  llms-full: ${unplaced.length} page(s) in the sitemap are neither in ORDER nor in EXCLUDE — add each to ORDER, or to EXCLUDE with the reason:\n${unplaced.map((p) => `    ${p}`).join('\n')}`);
+  process.exit(1);
+}
+const excludedButAbsent = Object.keys(EXCLUDE).filter((p) => !inSitemap.includes(p));
+if (excludedButAbsent.length) {
+  console.error(`  llms-full: EXCLUDE names page(s) that are not in the sitemap — stale entries:\n${excludedButAbsent.map((p) => `    ${p}`).join('\n')}`);
+  process.exit(1);
+}
 
 const parts = [header];
 let pages = 0;
@@ -91,7 +126,9 @@ for (const route of ORDER) {
     : [path.join(OUT_DIR, route.slice(1), 'index.html'),
        path.join(OUT_DIR, route.slice(1) + '.html')];
   const target = candidates.find((c) => fs.existsSync(c)) ?? null;
-  if (!target) { console.warn(`  llms-full: no output for ${route}`); continue; }
+  // A route in ORDER with no output is a page that was renamed or removed
+  // without this list following it. That is drift, so it fails.
+  if (!target) { console.error(`  llms-full: ORDER names ${route} and the build has no such page`); process.exit(1); }
 
   const body = textOf(target);
   if (!body) continue;

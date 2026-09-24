@@ -6,6 +6,7 @@ import Share from '../components/Share.astro';
 import { getFigures, getRivers, getTrade, getProvinces, getWater } from '../lib/sources';
 import { datasetSchema, DATASETS } from '../lib/schema';
 import { FIXED_FIGURES } from '../lib/figures';
+import { compute } from '../lib/record';
 
 /**
  * The receipts page.
@@ -41,6 +42,7 @@ interface Row {
  *   Statistics Canada  NN-NN-NNNN  → the web table (pid is the ID plus "01")
  *   Bank of Canada     Valet series → the most recent observation, as JSON
  *   World Bank         indicator    → Canada and the US, latest value, JSON
+ *   OpenParliament     votes/45-1   → every recorded division of that session
  *
  * Returns null for anything it does not recognise; the ID then renders as
  * plain text rather than a link to nowhere.
@@ -49,6 +51,7 @@ function upstream(id: string): string | null {
   if (/^\d{2}-\d{2}-\d{4}$/.test(id)) return `https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=${id.replace(/-/g, '')}01`;
   if (/^(V\d+|FX[A-Z]{6})$/.test(id)) return `https://www.bankofcanada.ca/valet/observations/${id}/json?recent=1`;
   if (/^ER\.H2O\./.test(id)) return `https://api.worldbank.org/v2/country/CAN;USA/indicator/${id}?format=json&mrv=1`;
+  if (/^votes\/\d+-\d+$/.test(id)) return `https://openparliament.ca/${id}/`;
   return null;
 }
 /** A row may cite two tables ("36-10-0222 · 17-10-0009"); each gets its own link. */
@@ -113,6 +116,23 @@ const FIXED: Row[] = FIXED_FIGURES.map((f) => ({
 
 const liveCount = LIVE.filter((r) => r.live).length;
 
+// The record's headline figures are counts over the committed snapshot, not
+// fetched and not typed: /record, /record/divisions and /record/members render
+// them from the same compute(). They are here because a number that is not on
+// this page is a number nobody can check.
+const rec = compute();
+const pct = (x: number | null) => (x === null ? '—' : `${(x * 100).toFixed(1)}%`);
+const COUNTED: Row[] = [
+  { figure: 'Recorded divisions, 45th Parliament', value: String(rec.summary.divisions),
+    source: 'House of Commons of Canada, via OpenParliament.ca', table: 'votes/45-1', period: `${rec.first} to ${rec.last}`, live: false },
+  { figure: 'Ballots on the record', value: fmt.format(rec.summary.ballots),
+    source: 'House of Commons of Canada, via OpenParliament.ca', table: 'votes/45-1', period: `${rec.first} to ${rec.last}`, live: false },
+  { figure: 'Party-line rate, all rated members', value: pct(rec.summary.partyLine),
+    source: 'Counted from the ballots; method on /record', period: `${rec.first} to ${rec.last}`, live: false,
+    note: 'A party\'s position on a division is the majority of the ballots its members cast; a member\'s rate is the share of their own that matched it. Paired and "didn\'t vote" are never a position.' },
+];
+const WORDS = ['No', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten'];
+
 // Each public endpoint is declared as a Dataset. The site redistributes
 // government figures under CC0; markup is how that becomes findable as data
 // rather than as four anonymous JSON URLs.
@@ -142,16 +162,15 @@ const description =
         <hr class="nt-rule" />
         <h2 class="nt-display md" style="max-width:20ch;">These are read on request, not typed in.</h2>
         <p class="intro">
-          Four endpoints serve them, all public, all CORS-open, none requiring a
-          key. Open any of them and you will see the same numbers this page is
+          {WORDS[DATASETS.length] ?? DATASETS.length} endpoints serve them, all public, all CORS-open, none requiring a
+          key. Open any of them and you will see the same numbers this site is
           showing, with the reference period each one describes.
         </p>
 
         <ul class="endpoints">
-          <li><a href="/api/figures.json"><code>/api/figures.json</code><span>GDP · population · CPI · policy rate · USD/CAD</span></a></li>
-          <li><a href="/api/rivers.json"><code>/api/rivers.json</code><span>river discharge, four gauges, every five minutes</span></a></li>
-          <li><a href="/api/trade.json"><code>/api/trade.json</code><span>merchandise exports by trading partner, monthly</span></a></li>
-          <li><a href="/api/provinces.json"><code>/api/provinces.json</code><span>provincial GDP and population</span></a></li>
+          {DATASETS.map((d) => (
+            <li><a href={d.endpoint}><code>{d.endpoint}</code><span>{d.short}</span></a></li>
+          ))}
         </ul>
 
         <section class="tw" tabindex="0" aria-label="Live figures, scrolls sideways">
@@ -186,6 +205,25 @@ const description =
             <thead><tr><th scope="col">Figure</th><th scope="col">Value</th><th scope="col">Source</th><th scope="col">Period</th></tr></thead>
             <tbody>
               {FIXED.map((r) => (
+                <tr>
+                  <th scope="row">{r.figure}{r.note && <span class="note">{r.note}</span>}</th>
+                  <td class="val">{r.value}</td>
+                  <td>{r.source}{r.table && ids(r.table).map((id) => upstream(id)
+                    ? <a class="tbl" href={upstream(id)!}>{id}</a>
+                    : <span class="tbl">{id}</span>)}</td>
+                  <td class="per">{r.period}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </section>
+
+        <section class="tw" tabindex="0" aria-label="Counted figures, scrolls sideways">
+          <table>
+            <caption class="nt-caption">Counted, not fetched and not typed: the record's own figures, from the committed snapshot</caption>
+            <thead><tr><th scope="col">Figure</th><th scope="col">Value</th><th scope="col">Source</th><th scope="col">Period</th></tr></thead>
+            <tbody>
+              {COUNTED.map((r) => (
                 <tr>
                   <th scope="row">{r.figure}{r.note && <span class="note">{r.note}</span>}</th>
                   <td class="val">{r.value}</td>

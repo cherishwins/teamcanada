@@ -40,7 +40,7 @@ const AXE = fs.readFileSync(require.resolve('axe-core/axe.min.js'), 'utf8');
 
 const ROOT = process.argv[2] || '.vercel/output/static';
 
-const PAGES = ['/', '/hand', '/math', '/bloc', '/build', '/calculator', '/sources',
+const PAGES = ['/', '/hand', '/math', '/bloc', '/build', '/calculator', '/record', '/record/divisions', '/record/members', '/sources',
   '/read', '/read/the-closed-loop', '/read/the-vertical-squeeze', '/read/changed-my-mind',
   '/read/two-leaders', '/read/honest-answer', '/join', '/support', '/privacy',
   '/terms', '/fr', '/offline', '/404.html'];

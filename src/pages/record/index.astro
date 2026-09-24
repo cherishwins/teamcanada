@@ -1,0 +1,147 @@
+---
+import Record from '../../layouts/Record.astro';
+import Share from '../../components/Share.astro';
+import Stat from '../../components/Stat.astro';
+import { compute } from '../../lib/record';
+import { datasetSchema, DATASETS } from '../../lib/schema';
+
+/**
+ * The record. Every recorded division of the session, every member's ballot,
+ * counted. There is no adjective on this page by design: a party's position is
+ * the majority of the ballots its members cast, a member's rate is the share
+ * of their votes that matched it, and every number links to the official
+ * record. The reader does the judging.
+ *
+ * This is the front page: the count, the party agreement matrix, the method.
+ * The two ledgers (/record/divisions, /record/members) are their own pages so
+ * that the page a share link lands on is the size of any other page here,
+ * and so a reader searching for a member's name searches a page that only
+ * has members on it.
+ *
+ * Rendered entirely at build time from the committed snapshot in
+ * src/data/record/ — no fetch, no client script.
+ */
+const r = compute();
+const S = r.summary;
+const fmt = new Intl.NumberFormat('en-CA');
+const pct = (x: number | null) => (x === null ? '—' : `${(x * 100).toFixed(1)}%`);
+const day = (iso: string) => new Date(`${iso}T12:00:00Z`).toLocaleDateString('en-CA', { day: 'numeric', month: 'long', year: 'numeric' });
+const ordinal = (n: number) => `${n}${['th', 'st', 'nd', 'rd'][(n % 100 > 10 && n % 100 < 14) ? 0 : Math.min(n % 10, 4) % 4] ?? 'th'}`;
+const parl = `${ordinal(r.parliament)} Parliament`;
+
+const description =
+  `Every recorded division of the ${parl} of Canada, every member's ballot, counted: ` +
+  `${S.divisions} divisions, ${fmt.format(S.ballots)} ballots, a party-line rate of ${pct(S.partyLine)}. ` +
+  'No adjectives. Every number links to the official record.';
+
+const schema = [datasetSchema(DATASETS.find((d) => d.endpoint === '/api/record.json')!)];
+---
+<Record
+  title="The Record" description={description} path="/record" schema={schema}
+  label="The record" heading="How they<br>actually voted."
+  caption={`${S.divisions} divisions, ${day(r.first)} to ${day(r.last)} · snapshot ${r.fetched.slice(0, 10)} · House of Commons of Canada, via OpenParliament.ca`}
+>
+  <p slot="lede" class="nt-lede">
+    Every recorded division of the {parl}. Every member's ballot. Counted, not characterised.
+  </p>
+
+  <!-- ===== the House in numbers ===== -->
+  <section class="nt-light">
+    <div class="nt-wrap">
+      <div class="nt-label">The House in numbers</div>
+      <hr class="nt-rule" />
+      <h2 class="nt-display md" style="max-width:20ch;">Members vote as a bench. Here is the count.</h2>
+      <div class="stats">
+        <Stat value={pct(S.partyLine)} label="Party-line rate, all rated members" />
+        <Stat value={`${S.neverBroke} of ${S.rated}`} label="Never once voted against their party" />
+        <Stat value={`${S.withDissent} of ${S.divisions}`} label="Divisions with any dissent inside a party" />
+        <Stat value={`${S.contested} of ${S.divisions}`} label="Divisions with 20% or more on the losing side" />
+        <Stat value={fmt.format(S.ballots)} label="Ballots on the record" separated />
+      </div>
+      <div class="nt-prose">
+        <p>
+          A party's position on a division is the majority of the ballots its members cast. A member's
+          party-line rate is the share of their own ballots that matched it. On {S.anyPartySplit10 === 0 ? 'no division' : `${S.anyPartySplit10} divisions`} in this
+          Parliament did any party split by ten per cent or more, so the comparison that carries
+          information is between parties, and that is the one the next table makes.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== who agrees with whom ===== -->
+  <section>
+    <div class="nt-wrap">
+      <div class="nt-label">Who agrees with whom</div>
+      <hr class="nt-rule" />
+      <h2 class="nt-display md" style="max-width:22ch;">The share of divisions where two parties' majorities voted the same way.</h2>
+      <section class="tw" tabindex="0" aria-label="Party agreement matrix, scrolls sideways">
+        <table class="matrix">
+          <caption class="nt-caption">Parties with at least three members casting ballots. Greens and independents are on the members ledger but have no line to be rated against.</caption>
+          <thead><tr><th scope="col"><span class="sr">Party</span></th>{r.parties.map((p) => <th scope="col">{p}</th>)}</tr></thead>
+          <tbody>
+            {r.parties.map((a) => (
+              <tr>
+                <th scope="row">{a}</th>
+                {r.parties.map((b) => <td class={a === b ? 'self' : undefined}>{a === b ? '' : pct(r.agreement[a][b])}</td>)}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </section>
+    </div>
+  </section>
+
+  <!-- ===== the ledgers ===== -->
+  <section class="nt-light">
+    <div class="nt-wrap">
+      <div class="nt-label">The ledgers</div>
+      <hr class="nt-rule" />
+      <h2 class="nt-display md" style="max-width:20ch;">Every row, as the House recorded it.</h2>
+      <div class="ledgers">
+        <a href="/record/divisions">
+          <div class="n">{S.divisions}</div>
+          <div class="k">Every division</div>
+          <p class="d">Date, motion, result, and each party's position with its dissent count. Each number links to the official record.</p>
+        </a>
+        <a href="/record/members">
+          <div class="n">{r.members.length}</div>
+          <div class="k">Every member</div>
+          <p class="d">Party, riding, ballots cast, party-line rate, and every division where they broke with their party.</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== method and sources ===== -->
+  <section>
+    <div class="nt-wrap">
+      <div class="nt-label">Method and sources</div>
+      <hr class="nt-rule" />
+      <h2 class="nt-display md" style="max-width:20ch;">Everything here is a count. Check any of it.</h2>
+      <div class="nt-prose">
+        <p>
+          The divisions and every ballot come from the House of Commons of Canada as published by
+          <a href="https://openparliament.ca/">OpenParliament.ca</a>, an open, keyless API. The party a member
+          is scored against is the party they sat for on the day of the vote, from the membership record, so
+          a member who crossed the floor is measured against the right bench on both sides of the crossing.
+        </p>
+        <p>
+          Paired ballots and "didn't vote" are shown as what they are and are never counted as a position.
+          Parties with fewer than three members casting ballots have no majority to score against, so
+          Green and independent members are listed but not rated. All {S.divisions} divisions are included,
+          procedural and substantive alike; nothing is selected, because selection is where an opinion would enter.
+        </p>
+        <p>
+          The whole record is at <a href="/api/record.json"><code>/api/record.json</code></a>, public domain like
+          everything else here, and rebuilt from the House's record after each sitting day. Every other figure on
+          this site is on <a href="/sources">the receipts page</a>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <Share
+    quote={`${pct(S.partyLine)}. Every recorded division of the ${parl}, every member's ballot, counted: ${S.neverBroke} of ${S.rated} MPs have never once voted against their party. The record, no adjectives.`}
+  />
+</Record>

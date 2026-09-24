@@ -1,0 +1,78 @@
+# The record, kept current without a server.
+#
+# The site is static and the House sits on weekdays. Every morning this fetches
+# only the divisions the committed snapshot does not have yet (a run with
+# nothing new makes about three requests to OpenParliament), BUILDS THE SITE
+# with the new data so all nine checkers prove it renders, and commits the
+# snapshot to main. Vercel deploys from that push like any other.
+#
+# It commits to main directly rather than opening a PR because a daily PR
+# that a person must merge is a record that goes stale the first week nobody
+# does; the build step is the review. Owner's call, on by default — see
+# CLAUDE.md, "The record".
+#
+# A push made with GITHUB_TOKEN does not trigger `push` workflows, so verify.yml
+# would never see the bot's commit on its own. The last step dispatches it by
+# hand (workflow_dispatch is the one event that IS allowed to chain), so the
+# ten-count sweep, astro check and html-validate run on every snapshot exactly
+# as they run on every human commit. Vercel deploys from the push regardless
+# and runs the nine build checkers again on its side.
+#
+# Free: the repo is public, so Actions minutes are unmetered.
+name: record
+
+on:
+  schedule:
+    - cron: '23 6 * * 1-6' # 06:23 UTC Monday to Saturday, the morning after each possible sitting day
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write # to dispatch verify.yml on the new commit
+
+concurrency:
+  group: record
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+
+      - name: Fetch new divisions
+        run: node tools/record/fetch.cjs 45-1
+
+      - name: Anything new?
+        id: diff
+        run: |
+          if git diff --quiet -- src/data/record; then echo "changed=false" >> "$GITHUB_OUTPUT"; else echo "changed=true" >> "$GITHUB_OUTPUT"; fi
+
+      # The build is the gate: all nine checkers run against the new snapshot.
+      # A snapshot that does not render never reaches main.
+      - name: Build with the new snapshot
+        if: steps.diff.outputs.changed == 'true'
+        run: npm run build
+
+      - name: Commit the snapshot
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          git config user.name "record[bot]"
+          git config user.email "record-bot@northerntemper.ca"
+          n=$(node -e 'console.log(require("./src/data/record/45-1.json").votes.length)')
+          git add src/data/record
+          git commit -m "record: ${n} divisions on record as of $(date -u +%Y-%m-%d)"
+          git push origin main
+
+      - name: Run the full verification on the new commit
+        if: steps.diff.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run verify.yml --ref main

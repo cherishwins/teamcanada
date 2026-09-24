@@ -2,6 +2,13 @@ const { chromium } = require('/opt/node22/lib/node_modules/playwright');
 const fs=require('fs'),path=require('path'),crypto=require('crypto');
 const ROOT=process.argv[2] || 'public', OUT=process.argv[3] || 'public/og';
 
+// The record's headline figure, from the same compute() the pages use.
+const record = require('./record/load.cjs')();
+const CP_MONTHS=['Jan','Feb','Mar','Apr','May','June','July','Aug','Sept','Oct','Nov','Dec'];
+const cpDate = iso => { const [y,m,d]=iso.split('-').map(Number); return `${d} ${CP_MONTHS[m-1]} ${y}`; };
+const recordStat = () => `${(record.summary.partyLine*100).toFixed(1)}%`;
+const recordStatk = () => `party-line, ${record.summary.divisions} divisions to ${cpDate(record.last)}`;
+
 const CARDS=[
  // NOTE: home and fr carry a figure derived from live AQUASTAT data. If the
  // reference year moves and the ratio shifts, RERUN this generator — a PNG
@@ -19,6 +26,16 @@ const CARDS=[
   line:'Refine our own crude. Power our own compute. Open the corridor.', stat:'$5,100', statk:'per Canadian, already law'},
  {slug:'calculator',label:'Run the numbers yourself', title:'Pick a province.\nSee the bill.',
   line:'Arithmetic on published figures. Every line shows its working.', stat:'$253B', statk:'Alberta, day one'},
+ // The stat is the party-line rate computed by src/lib/record.ts. Typed here
+ // like the water ratio on the home card: a PNG cannot update itself. Rerun
+ // this generator if it moves — at 99.9% it will not move soon.
+ // The record card's figure is COUNTED from the committed snapshot at the moment
+ // this runs, and DATED, because the snapshot moves after every sitting day and
+ // a PNG cannot. A dated figure is true forever; an undated one is true until
+ // the next division. Rerun this generator when the card should catch up.
+ {slug:'record',    label:'The record', title:'How they\nactually voted',
+  line:'Every division. Every ballot. Counted, not characterised.',
+  stat:recordStat(), statk:recordStatk()},
  // The stat is the sum of `words` in src/pages/read/index.astro. Typed here
  // because this generator is standalone CJS and the index is Astro; update it
  // when a read is added.
