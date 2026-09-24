@@ -79,6 +79,28 @@ const MIME = { html: 'text/html', css: 'text/css', js: 'text/javascript',
  *
  * Anything else that 404s is a genuinely broken reference, and is counted.
  */
+/**
+ * The production Content-Security-Policy, served on every HTML response here
+ * exactly as Vercel serves it, so the sweep proves the policy against every
+ * page at every width. tools/check-csp.cjs proves the hash LIST matches the
+ * build; this proves the policy does not BREAK anything — a directive that
+ * blocks the nav toggle or the share button shows up as a violation below,
+ * not as a bug report from a reader.
+ */
+const CSP = (() => {
+  const cfg = JSON.parse(fs.readFileSync('vercel.json', 'utf8'));
+  const rule = (cfg.headers || []).find((h) => h.source === '/(.*)');
+  return rule?.headers?.find((h) => h.key.toLowerCase() === 'content-security-policy')?.value || '';
+})();
+
+/** Runs in every document before any page script: records CSP violations. */
+const CSP_PROBE = `
+  window.__csp = [];
+  document.addEventListener('securitypolicyviolation', (e) => {
+    window.__csp.push({ directive: e.effectiveDirective, blocked: e.blockedURI, sample: (e.sample || '').slice(0, 60) });
+  });
+`;
+
 function serve(page, onBroken) {
   return page.route('**/*', (route) => {
     const u = new URL(route.request().url());
@@ -92,7 +114,13 @@ function serve(page, onBroken) {
     if (fs.existsSync(f) && fs.statSync(f).isDirectory()) f = path.join(f, 'index.html');
     if (!fs.existsSync(f) && fs.existsSync(f + '/index.html')) f += '/index.html';
     if (fs.existsSync(f) && fs.statSync(f).isFile()) {
-      return route.fulfill({ status: 200, contentType: MIME[path.extname(f).slice(1)] || 'application/octet-stream', body: fs.readFileSync(f) });
+      const html = f.endsWith('.html');
+      return route.fulfill({
+        status: 200,
+        contentType: MIME[path.extname(f).slice(1)] || 'application/octet-stream',
+        headers: html && CSP ? { 'content-security-policy': CSP } : {},
+        body: fs.readFileSync(f),
+      });
     }
     onBroken(u.pathname);
     return route.fulfill({ status: 404, body: 'not found' });
@@ -167,7 +195,7 @@ function checkServiceWorker() {
   const swProblems = checkServiceWorker();
   for (const m of swProblems) console.log(`  SW        ${m}`);
   const browser = await chromium.launch();
-  let overflow = 0, jsErrors = 0, taps = 0, contrast = 0, missing = 0, altMissing = 0, broken = 0, axeFails = 0;
+  let overflow = 0, jsErrors = 0, taps = 0, contrast = 0, missing = 0, altMissing = 0, broken = 0, axeFails = 0, cspFails = 0;
   const report = [];
 
   for (const width of VIEWPORTS) {
@@ -183,6 +211,7 @@ function checkServiceWorker() {
     });
     const page = await ctx.newPage();
     let current = '';
+    await page.addInitScript(CSP_PROBE);
     await serve(page, (p) => { broken++; report.push(`  BROKEN    ${width}px  ${current}  -> ${p}`); });
     page.on('pageerror', (e) => { jsErrors++; report.push(`  JS ERROR  ${width}px  ${current}  ${e.message}`); });
     page.on('console', (m) => {
@@ -200,6 +229,12 @@ function checkServiceWorker() {
       if (!res || res.status() !== 200) { missing++; report.push(`  MISSING   ${width}px  ${p}`); continue; }
       await page.waitForTimeout(40);
 
+      // Read violations now, before the sweep's own axe injection below — that
+      // is tooling, not the site, and it goes in through CDP for that reason.
+      for (const v of await page.evaluate(() => window.__csp || [])) {
+        cspFails++; report.push(`  CSP       ${width}px  ${p}  ${v.directive} blocked ${v.blocked}${v.sample ? `  "${v.sample}"` : ''}`);
+      }
+
       const over = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
       if (over > 0) { overflow++; report.push(`  OVERFLOW  ${width}px  ${p}  +${over}px`); }
 
@@ -212,7 +247,11 @@ function checkServiceWorker() {
         // sweep cannot see: a scroll container the keyboard cannot reach, a
         // heading level skipped so the outline has a hole in it, content
         // stranded outside every landmark. All three were real here.
-        await page.addScriptTag({ content: AXE });
+        // Evaluated through CDP rather than injected as a <script> tag: a tag
+        // would be an unhashed inline script and the page's own CSP would
+        // rightly refuse it. The probe above has already been read, so this
+        // cannot be mistaken for a site violation either way.
+        await page.evaluate(AXE);
         const violations = await page.evaluate(async () =>
           (await axe.run(document, { resultTypes: ['violations'] })).violations
             .map((v) => ({ id: v.id, impact: v.impact, help: v.help, n: v.nodes.length,
@@ -245,7 +284,8 @@ function checkServiceWorker() {
   console.log(`  broken references        ${broken}`);
   console.log(`  service-worker problems  ${swProblems.length}`);
   console.log(`  axe-core violations      ${axeFails}`);
-  const bad = overflow + jsErrors + taps + contrast + missing + altMissing + broken + swProblems.length + axeFails;
+  console.log(`  CSP violations           ${cspFails}`);
+  const bad = overflow + jsErrors + taps + contrast + missing + altMissing + broken + swProblems.length + axeFails + cspFails;
   console.log(bad ? `\nverify: ${bad} issue(s)` : '\nverify: clean');
   process.exit(bad ? 1 : 0);
 })();

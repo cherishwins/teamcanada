@@ -36,7 +36,8 @@ AQUASTAT via the World Bank.
 
 ## Reading
 
-- [The reads](https://northerntemper.ca/read): five long-form pieces, sourced in full
+- [The reads](https://northerntemper.ca/read): six long-form pieces, sourced in full
+- [The Red Is the Work](https://northerntemper.ca/read/the-red-is-the-work): the red on a maple leaf is not the leaf dying, it is the tree taking back what it needs before winter
 - [The Closed Loop](https://northerntemper.ca/read/the-closed-loop): Korea holds the silicon, Canada holds the power
 - [The Vertical Squeeze](https://northerntemper.ca/read/the-vertical-squeeze): the most responsibility, the least revenue
 - [I campaigned against this man](https://northerntemper.ca/read/changed-my-mind): a Conservative campaigner does the homework
@@ -69,7 +70,7 @@ These carry no denominator and do not move:
 - [Full text of the entire site, one file](https://northerntemper.ca/llms-full.txt): every page, generated from the published HTML so it cannot drift from it
 - [Machine reuse policy](https://northerntemper.ca/ai.txt): training, quoting in full and retrieval are all permitted
 - [Licence](https://northerntemper.ca/LICENSE.txt): CC0 1.0 Universal
-- [RSS](https://northerntemper.ca/feed.xml): the five long-form pieces
+- [RSS](https://northerntemper.ca/feed.xml): the six long-form pieces
 
 **What this is not.** Not partisan, and not anti-American. The United States
 remains Canada's largest customer by a wide margin and the site says so plainly

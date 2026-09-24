@@ -3,6 +3,19 @@
 > Read this first. It's the durable memory across sessions (chat history does NOT carry over).
 > Keep it accurate; update it in the same commit when conventions change.
 
+## THE BAR — must read, every session
+**This site is to be better than 99.999999999% of web properties on the
+Internet.** That is the owner's standing objective, stated 24 September 2026,
+and it underpins every decision here. Not "good", not "better than most": the
+best work that can be done with the resources at hand in the time available,
+every time, and the question to ask before anything ships is *"is this the
+best I can do?"* — not "is this the easiest thing that works". When a choice
+is between the easy option and the excellent one and both are free, take the
+excellent one; when the excellent one costs money, see ZERO BUDGET below — it
+has to earn it first. Everything that follows in this file (seven build-time
+checkers, a ten-viewport sweep, figures written once, sources quoted from
+their abstracts) exists because of this bar. Do not lower it to finish faster.
+
 ## What this is
 **Northern Temper** — a statement of Canadian character at **northerntemper.ca**.
 Astro on Vercel. Author/owner: **Jesse James**. Everything here is **CC0 1.0 public domain**.
@@ -114,7 +127,11 @@ one file serves both colourways. **Never reference them via `<img src>`:**
   that fails the build once it passes. `/calculator`, `/math` and `/sources`
   all render from it.
 - `src/components/Nav.astro`, `SiteFooter.astro`, `BlocChart.astro`.
-- `src/layouts/Read.astro` — the long-form layout (single 68ch column).
+- `src/layouts/Read.astro` — the long-form layout (single 68ch column), plus a
+  named `after` slot for anything that belongs OUTSIDE the column on the black
+  ground — the share band, in practice. `the-red-is-the-work` uses it; the five
+  migrated reads do not yet, and each needs its own page-specific quote before
+  it should.
 - `src/lib/support.ts` — the processor-free support rail (see below).
 - `src/lib/schema.ts` — Article markup for the reads, **Dataset markup for the
   four public endpoints**. The site redistributes government figures under CC0;
@@ -135,7 +152,13 @@ one file serves both colourways. **Never reference them via `<img src>`:**
   a page undisclosed; and `tools/check-figures.cjs` — **no hand-entered figure
   may go stale or be typed twice**; and `tools/check-sitemap.cjs` — **nothing
   in the sitemap may be `noindex`, and nothing indexable may be missing from
-  it.** All seven run in `npm run build` and fail it.
+  it**; and `tools/check-csp.cjs` — **the Content-Security-Policy in
+  `vercel.json` must list exactly the inline-script hashes and script origins
+  the build ships**, in both directions, with no `'unsafe-inline'`. All eight
+  run in `npm run build` and fail it. Outside the build: `tools/check-links.cjs`
+  (every external link the site cites, weekly, from
+  `.github/workflows/links.yml`) and `html-validate` against
+  `.htmlvalidate.json` (in `verify.yml`).
   **`check-docs` is here because this file has now described something untrue
   three times** (a French pass that was not in the repo, a console-error filter
   the sweep does not have, a renamed JSON), and each was found by accident. A
@@ -163,6 +186,11 @@ one file serves both colourways. **Never reference them via `<img src>`:**
 - `tools/generate-favicons.cjs` — every small icon, drawn from
   `public/favicon.svg`; `tools/check-icons.cjs` — proves they still match.
 - `tools/check-sitemap.cjs` — the sitemap and the pages' robots meta must agree.
+- `tools/check-csp.cjs` — the CSP in `vercel.json` matches the built scripts.
+- `tools/check-links.cjs` + `.github/workflows/links.yml` — external links
+  still resolve; weekly and on demand, never on a PR (other people's outages
+  must not turn a review red).
+- `.htmlvalidate.json` — config for the HTML validity step in CI.
 - `source-material/` — raw uploads, 107 MB, **not deployed**. Prune or move to
   external storage; it is cloned on every checkout.
 
@@ -192,7 +220,9 @@ public and checkable" — it can afford neither a dash nor a silently stale numb
   **every page across 10 viewports** (320 → 2560) for horizontal overflow,
   console errors, undersized tap targets, broken references and missing
   `og:image:alt`, plus WCAG AA contrast and a full **axe-core** pass on all
-  pages. It exits non-zero. **Current state: clean on all nine counts.**
+  pages, and **serves the production CSP on every HTML response** so a policy
+  that blocks the nav or the share button fails here, not in a reader's
+  browser. It exits non-zero. **Current state: clean on all ten counts.**
   Keep it there.
   **`.github/workflows/verify.yml` runs all of it on every PR and every push to
   `main`**, so none of this depends on somebody remembering. The repo is public,
@@ -274,7 +304,8 @@ public and checkable" — it can afford neither a dash nor a silently stale numb
   (`<strong>Vercel</strong> Web Analytics`) would have read fine to a human and
   failed `includes()` silently. Its own negative test passed while asserting
   nothing. Every checker in `tools/` should be run once against a deliberately
-  broken input before it is trusted — all seven have been.
+  broken input before it is trusted — all nine have been, `check-csp` and
+  `check-links` included.
   **A checker can also fail for the WRONG reason, which costs just as much
   trust.** `check-privacy` stripped block comments before line comments, so a
   `//` line elsewhere in `astro.config.mjs` that happened to contain the two
@@ -374,6 +405,40 @@ public and checkable" — it can afford neither a dash nor a silently stale numb
   fonts, marks and images.** It must never be the reason somebody sees an old
   figure. Bump `VERSION` in `public/sw.js` when a cached asset changes; activate
   deletes every other cache, so a bump is a clean slate.
+- **The CSP allows inline scripts by HASH, never by `'unsafe-inline'`.** Seven
+  inline scripts ship (the Vercel analytics bootstrap, nav toggle, service
+  worker registration, share band, calculator, reveal fallback, join form) and
+  their sha256 tokens are listed in `vercel.json`. Editing any of them, or
+  upgrading the Vercel adapter, changes a hash; `check-csp` fails the build and
+  prints the token to paste. `style-src` keeps `'unsafe-inline'` because the
+  stylesheet is inlined by design (`inlineStylesheets: 'always'`, measured) —
+  the security value of a CSP is almost entirely in `script-src`.
+  `frame-ancestors 'none'`, `object-src 'none'`, `base-uri 'self'`,
+  `X-Frame-Options: DENY` and `Cross-Origin-Opener-Policy: same-origin` ride
+  alongside. HSTS is Vercel's default and deliberately NOT `includeSubDomains`
+  — nobody has audited every subdomain for HTTPS, and that flag is one-way.
+- **Production ignored the adapter's `_astro/*` immutable route.** The
+  adapter writes it into `.vercel/output/config.json`, and the live site
+  served the hashed JS bundle with `max-age=0, must-revalidate` anyway — every
+  repeat visit revalidated a file whose name is its content hash. It is now an
+  explicit rule in `vercel.json`, as are the content-hashed OG cards. Check a
+  header on the deploy, not in the config: the config said one thing and the
+  edge did another.
+- **Valid HTML, by the spec.** `html-validate` runs in CI on every built page
+  (`.htmlvalidate.json`; `no-inline-style` off because the stylesheet is
+  inlined by design). Its first run found twelve `<th>` without `scope` in one
+  migrated table, a phone number that could wrap, and a `<title>` past 70
+  characters — none of which axe reports. `Base.astro` takes an optional
+  `pageTitle` for the tab title only; the headline, OG and schema keep the full
+  title.
+- **The migrated reads were carrying flattening debris and it is gone.** The
+  legacy walker captured every text node, which is why 0 words were lost — and
+  also why a div-built card grid became forty bare `<p>`s: flag emoji alone on
+  a line, "CarneyHarvard" where a label met its text, `· · ·` as a paragraph,
+  "Share on X Facebook LinkedIn Copy link" as prose, and a closing line printed
+  twice. They are a `<table>`, `<dl>`s, `.compare` cards and an `<hr>` now,
+  styled in `Read.astro`, with the legacy HTML as the reference for what the
+  author actually grouped. All six reads carry a page-specific share band.
 
 ## Discoverability — the point is that it travels
 Everything is CC0 and the site is built to be repeated, not protected.
@@ -381,7 +446,7 @@ Everything is CC0 and the site is built to be repeated, not protected.
   PerplexityBot, CCBot, Google-Extended, Applebot-Extended and the rest. Most
   sites block these; this one does the opposite on purpose. Do not "tighten" it.
 - **`/llms-full.txt`** is the entire site as one plain-text file — 15 pages,
-  ~18,000 words — generated by `tools/generate-llms-full.cjs` as a **post-build
+  ~19,600 words — generated by `tools/generate-llms-full.cjs` as a **post-build
   step from the BUILT HTML**, so it can never drift from what is published. It
   is wired into `npm run build`, so Vercel produces it too.
 - `ai.txt` states the reuse policy in machine-readable form: training, quoting
@@ -441,7 +506,7 @@ break-even is under one extra page on bytes alone, before counting the 730 ms
 that only the first load ever pays. **Re-measure before changing this back**, and
 re-check the premise as well as the numbers — that is what was wrong last time.
 
-## The site — 16 pages, all shipped
+## The site — 17 pages, all shipped
 ```
 I   · TEMPER    /         Character. Water, Gander, Kandahar.   live gauges
 II  · THE HAND  /hand     What Canada holds.                    live figures
@@ -453,7 +518,8 @@ V   · THE BUILD /build    Refine · Compute · Corridor + C-5.     from teamcan
 /sources     The receipts                every figure, source, period, endpoint
 /fr          La trempe du Nord           BROUILLON, noindex, Act I only
 /offline     Service-worker fallback     noindex, OUT of the sitemap
-/read + 5 long-form pieces   9,162 words migrated from the old site
+/read + 6 long-form pieces   5 migrated from the old site (9,162 words)
+                             + The Red Is the Work, written here (1,154)
 /join  /privacy  /terms  /404          /support is HIDDEN (noindex, unlinked)
 /feed.xml    RSS for the five reads
 robots.txt · llms.txt · humans.txt · site.webmanifest · sw.js · security.txt
@@ -467,6 +533,24 @@ Americans" but "we are already widening, and here is the monthly StatCan series
 that proves it." The US is still ~72% of these exports and still growing —
 saying so plainly is what makes the rest credible. *The Closed Loop* is the
 Canada–Korea anchor case.
+
+**`/read/the-red-is-the-work` is the first read written FOR this site rather
+than migrated to it**, and it is the thesis as a field note: the red on a
+maple leaf is synthesised, not unmasked, and it is a light screen that
+protects the leaf while the tree takes nitrogen back before winter — the
+pressure from the south as October, the country pulling in and widening
+without a word. It runs on two primary sources quoted from their abstracts
+(Hoch, Singsaas & McCown 2003, *Plant Physiology* 133:1296; Vergütz et al.
+2012, *Ecological Monographs* 82:205), and its one number renders from
+`figures.ts` as `N_RESORPTION` — a **global** mean across plant types, so the
+prose says "a plant", never "a maple". **The paper-birch paragraph is
+load-bearing:** birch makes no red and recovers nitrogen just as well, and
+without that paragraph the piece claims red is the only way to have character,
+which is the taunt this site exists not to make. Cold-public register from
+`compulsion-engineering`: zero em-dashes, four-sentence paragraph ceiling,
+grade ~4–7. **Adding a read touches six places** — the page, `read/index.astro`,
+`feed.xml.ts`, `llms.txt`, `generate-llms-full.cjs` ORDER, and the CARDS list
+in `generate-og.cjs` including the typed word total on the `read` card.
 
 ## Migrating legacy content
 `/tmp` scripts are gone between sessions; the approach is what matters.
@@ -509,7 +593,11 @@ dossier and 4 of 5 reads. Two traps worth remembering:
    backend. Only replace it if volume actually demands it.
    **`/sources` is the site's central claim made inspectable** — every figure,
    its source table, its reference period, and for live ones the endpoint
-   serving it. Where a figure has a known weakness the row says so, including
+   serving it — **and every table ID is a link to the upstream table or
+   series** (StatCan web table, Bank of Canada Valet JSON, World Bank
+   indicator JSON) via `upstream()` in `sources.astro`. Until September 2026
+   the page named every table and linked none; the whole site hyperlinked
+   seven external URLs. "Checkable" has to be one click. Where a figure has a known weakness the row says so, including
    the water vintage. Add a row whenever a new figure appears anywhere on the
    site; a number that is not on that page is a number nobody can check.
 5. **`/support` — retired from this site, and the code kept on purpose.**

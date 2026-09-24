@@ -5,6 +5,8 @@ import SiteFooter from '../components/SiteFooter.astro';
 
 interface Props {
   title: string;
+  /** Shorter <title> only, for a headline that would overrun a tab. See Base. */
+  pageTitle?: string;
   description: string;
   /** Caps label above the headline, e.g. "NPSI · Working Paper No. 6". */
   imprint: string;
@@ -15,9 +17,9 @@ interface Props {
   ogImage?: string;
   schema?: unknown[];
 }
-const { title, description, imprint, standfirst, path, dateline, ogImage, schema } = Astro.props;
+const { title, pageTitle, description, imprint, standfirst, path, dateline, ogImage, schema } = Astro.props;
 ---
-<Base title={title} description={description} path={path} ogImage={ogImage} schema={schema}>
+<Base title={title} pageTitle={pageTitle} description={description} path={path} ogImage={ogImage} schema={schema}>
   <Nav />
   <main id="main" class="read">
     <header class="rhead nt-light">
@@ -35,6 +37,10 @@ const { title, description, imprint, standfirst, path, dateline, ogImage, schema
         <slot />
       </div>
     </article>
+    {/* Anything a read wants OUTSIDE the 68ch column — a share band, most
+        likely — goes here, on the site's black ground rather than inside the
+        light article. Empty on the reads that do not use it. */}
+    <slot name="after" />
   </main>
   <SiteFooter />
 </Base>
@@ -82,6 +88,46 @@ const { title, description, imprint, standfirst, path, dateline, ogImage, schema
   }
   .col :global(ul), .col :global(ol) { margin: var(--space-3) 0 var(--space-3) 1.1rem; }
   .col :global(li) { margin-bottom: .7rem; }
+
+  /* A section break inside a read: a short red rule, the site's own mark for
+     "a beat passes". The migrated pieces carried this as a literal "· · ·"
+     paragraph, which a screen reader announced as three dots. */
+  .col :global(hr) {
+    border: 0; width: 72px; margin: clamp(30px, 4.5vh, 56px) 0;
+    border-top: var(--rule-weight) solid var(--nt-red);
+  }
+
+  /* Definition lists carry the two-sided comparisons: the term is the person,
+     the description is the record. Reads as a table to a screen reader and as
+     labelled paragraphs to everyone else, and it never needs to scroll. */
+  .col :global(dl) { margin: var(--space-3) 0 var(--space-4); }
+  .col :global(dt) {
+    font-family: var(--font-display); font-weight: var(--fw-label);
+    text-transform: uppercase; letter-spacing: .06em;
+    font-size: var(--type-label-sm); color: var(--nt-red);
+    margin-top: var(--space-3);
+  }
+  .col :global(dd) { margin: var(--space-1) 0 0; }
+
+  /* Side-by-side cards, e.g. two leaders. One column on a phone. */
+  .col :global(.compare) {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+    gap: clamp(18px, 3vw, 36px); margin: clamp(28px, 4vh, 52px) 0;
+  }
+  .col :global(.compare > article) {
+    border-top: var(--border-key) solid var(--nt-red); padding-top: var(--space-3);
+  }
+  .col :global(.compare h3) { margin-top: 0; }
+  .col :global(.compare .big) {
+    font-family: var(--font-display); font-weight: var(--fw-display);
+    font-size: clamp(40px, 6vw, 64px); line-height: .9; color: var(--nt-red);
+    margin: var(--space-3) 0 0;
+  }
+  .col :global(.compare .big small) {
+    display: block; font-family: var(--font-display); font-weight: var(--fw-label);
+    font-size: var(--type-stamp); letter-spacing: var(--ls-caption); text-transform: uppercase;
+    color: var(--text-caption); margin-top: var(--space-1);
+  }
   .col :global(figcaption), .col :global(.fig) {
     font-family: var(--font-display); font-weight: var(--fw-label);
     font-size: var(--type-stamp); letter-spacing: var(--ls-caption);
@@ -92,6 +138,10 @@ const { title, description, imprint, standfirst, path, dateline, ogImage, schema
   /* Tables scroll inside their own box rather than widening the page. */
   .col :global(.tw) { overflow-x: auto; margin: clamp(28px, 4vh, 52px) 0; -webkit-overflow-scrolling: touch; }
   .col :global(table) { width: 100%; border-collapse: collapse; font-size: var(--type-body-sm); min-width: 34rem; }
+  /* A three-column table with short cells wraps at phone width instead of
+     scrolling; scrolling would hide the column that carries the point. */
+  .col :global(table.narrow) { min-width: 0; }
+  .col :global(caption) { text-align: left; caption-side: top; }
   .col :global(th) {
     background: var(--nt-black); color: var(--nt-white); text-align: left;
     font-family: var(--font-display); font-weight: var(--fw-label);

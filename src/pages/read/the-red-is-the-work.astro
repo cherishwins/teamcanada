@@ -1,0 +1,107 @@
+---
+import Read from '../../layouts/Read.astro';
+import Share from '../../components/Share.astro';
+import { articleSchema } from '../../lib/schema';
+import { N_RESORPTION } from '../../lib/figures';
+
+/**
+ * The first read written FOR this site rather than migrated to it.
+ *
+ * The argument runs on two primary sources and nothing else, and both are
+ * quoted from their abstracts rather than from a summary of them:
+ *
+ *   Hoch, Singsaas & McCown, "Resorption protection. Anthocyanins facilitate
+ *   nutrient recovery in autumn by shielding leaves from potentially damaging
+ *   light levels", Plant Physiology 133(3): 1296–1305, 2003.
+ *   doi:10.1104/pp.103.027631
+ *
+ *   Vergütz, Manzoni, Porporato, Novais & Jackson, "Global resorption
+ *   efficiencies and concentrations of carbon and nutrients in leaves of
+ *   terrestrial plants", Ecological Monographs 82(2): 205–220, 2012.
+ *   doi:10.1890/11-0416.1
+ *
+ * The one number in the piece renders from src/lib/figures.ts and sits on
+ * /sources like every other figure here. It is a global mean across plant
+ * types, not a maple figure, and the text says "a plant", not "a maple", on
+ * purpose. Do not tighten it to maples without a maple source.
+ *
+ * The birch paragraph is load-bearing. Hoch included paper birch, which makes
+ * no red at all and recovered its nitrogen as well as the best of the red
+ * species. Without that paragraph the piece claims red is the only way to
+ * have character, which is both untrue and exactly the taunt this site
+ * exists not to make.
+ */
+const schema = [articleSchema({
+  title: "The Red Is the Work",
+  description: "The red on a maple leaf is not the leaf dying. The tree makes it, on purpose, to cover the work of taking back what it needs before winter. A reading of the flag.",
+  path: '/read/the-red-is-the-work',
+  image: '/og/the-red-is-the-work.png',
+  published: '2026-09-24',
+  section: "A reading of the leaf",
+  words: 1154,
+})];
+---
+<Read
+  title={"The Red Is the Work"}
+  description={"The red on a maple leaf is not the leaf dying. The tree makes it, on purpose, to cover the work of taking back what it needs before winter. A reading of the flag."}
+  imprint={"A reading of the leaf"}
+  standfirst={"The colour on the flag is not a leaf giving up. It is a tree getting ready for a long winter, on purpose. Here is what it actually does."}
+  path="/read/the-red-is-the-work"
+  dateline="24 September 2026"
+  ogImage="/og/the-red-is-the-work.png"
+  schema={schema}
+>
+      <p class="lead">The red on a maple leaf is not the leaf dying. It is the tree working.</p>
+
+      <p>Every October a whole country walks past the same thing and reads it wrong. The leaf turns, the leaf falls, and we call it the end of something. We put it on the flag, and we still read it as a farewell.</p>
+      <p>It is not a farewell. It is a plan, and the plan is worth knowing this year in particular.</p>
+
+      <h2>What the yellow is, and what the red is</h2>
+      <p>Start with the yellow, because the yellow is the easy part. A leaf is green all summer because it is full of chlorophyll, and chlorophyll is loud enough to cover everything else. When the days shorten, the tree stops making it. The green goes, and what was underneath shows through: the yellows and oranges that have been there since June.</p>
+      <p>A yellow leaf is a leaf with the green taken away.</p>
+      <p>The red is different. The red was not there in June. It is made new, in the last few weeks, out of sugar, by a tree that is about to let the leaf go.</p>
+      <p>That should stop you. A tree is about to drop a leaf, and it spends sugar to paint it first. Nothing in a forest spends anything on decoration. So what is the red for?</p>
+
+      <h2>The man who took the red away</h2>
+      <p>In 2003 a plant scientist named William Hoch and two colleagues at the University of Wisconsin did the obvious experiment. They took three shrubs that turn red in autumn and found a form of each that cannot make the red at all. Then they put the normal plants and the red-less ones side by side through a hard autumn: bright light and cold, the weather that makes a Canadian October.</p>
+      <p>The normal plants went red and did what trees do. The others could not. Their leaves burned in the light and dropped while still green, with what the paper calls irreversible damage. And the plants that could not make red got significantly less nitrogen back from their leaves before the leaves fell.</p>
+      <p>That last line is the whole thing.</p>
+      <p>Before a maple drops a leaf, it takes back what it needs. Nitrogen, phosphorus, the expensive parts. The best global estimate, from about a thousand measurements across eighty-six studies, is that a plant recovers roughly {N_RESORPTION.display} of the nitrogen in a leaf before it lets go. Most of what it spent the summer building goes back into the wood, down into the roots, and waits.</p>
+      <p>But taking it back is slow, and a leaf that is being emptied is a leaf that is easy to burn. The chlorophyll is going, the light is still coming in, and a bright cold day can wreck the machinery before the tree is finished with it. So the tree makes a sunscreen. A red one. It holds the light off long enough for the withdrawal to finish.</p>
+      <p>The red is not the leaf giving up. The red is the tree covering its own work.</p>
+      <blockquote>The red is the work.</blockquote>
+
+      <h2>The harder the autumn, the more of it you see</h2>
+      <p>Here is the part that should sound familiar.</p>
+      <p>The reddest autumns are not the gentle ones. They come after bright cold days and cool nights, the weather that traps the most sugar in the leaf and throws the most light at it. A mild grey October gives you a dull season. A hard, clear one gives you the year people drive out to look at.</p>
+      <p>The colour is brightest when the conditions are worst, because that is when the work is hardest and the cover matters most.</p>
+      <p>And the tree does not wait to be told. It does not wait for the thermometer.</p>
+      <p>The days have been getting shorter since June, and it has been reading them. By the time the first frost arrives it has been pulling in for weeks. It prepares on the calendar, not on the panic.</p>
+      <p>Nobody argues with October. The tree does not hold a press conference about the cold. It does not threaten the cold. It does the one thing that will still matter in April, and it does it without a sound, and from the outside the whole operation looks like a leaf changing colour.</p>
+
+      <h2>The second autumn</h2>
+      <p>This is the second autumn Canada has spent with the weather coming from the south.</p>
+      <p>Look at what the country has done with it, because it is on the record. It did not shout. It did not close a tap it has never once mentioned in two hundred years of sharing the largest body of fresh surface water on the planet.</p>
+      <p>It went and found other customers, month by month, and <a href="/bloc">Statistics Canada publishes the series</a>. It passed <a href="/build">a law to take down its own internal walls</a>. It pulled in, and it widened, and it kept its voice down.</p>
+      <p>From the outside that looks like nothing happening. That is the point. It looked like nothing happening on the tree, too.</p>
+      <p>Every leaf on a maple pays into the same trunk. The nitrogen from ten thousand leaves becomes one reserve, the reserve belongs to the whole tree, and in spring it goes wherever it is needed. A leaf that kept its nitrogen would fall with it. There is no version of the plan where the leaves each keep their own.</p>
+
+      <h2>What it costs</h2>
+      <p>The honest bill is this: restraint is invisible while you are doing it.</p>
+      <p>Half the reason people call it weakness is that there is nothing to see. The tree at its most disciplined looks like a tree losing its leaves. A country at its most disciplined looks like a country not reacting. The work does not show until months later, and by then nobody remembers that it was work.</p>
+      <p>And it is worth saying straight: red is not the only way. Hoch put a paper birch in the same experiment. Birch makes no red at all. It turns yellow and drops, and it got its nitrogen back as well as the best of the red ones, by a different route.</p>
+      <p>The claim here is not that red is the only character worth having. The claim is about what the red is, on the tree and on the flag.</p>
+
+      <h2>March</h2>
+      <p>Then the nights freeze and the days thaw, and the sap runs.</p>
+      <p>What runs out of a maple in March is what the tree put away before the leaf fell. Sugar, held in the wood all winter, sent up on the first warm afternoon after a hard night. Every bucket on every tree in Quebec is last autumn's withdrawal coming back as this spring's gift.</p>
+      <p>That is the whole season on one leaf. Pull in before the cold. Cover the work. Say nothing. Run first when it turns.</p>
+      <p>The red is the work. It always was. Look at the flag again.</p>
+
+      <p class="fig">Sources · Hoch, Singsaas &amp; McCown, <a href="https://doi.org/10.1104/pp.103.027631">Plant Physiology 133:1296, 2003</a> · Vergütz, Manzoni, Porporato, Novais &amp; Jackson, <a href="https://doi.org/10.1890/11-0416.1">Ecological Monographs 82:205, 2012</a> · <a href="/sources">every figure on this site, with its source</a></p>
+
+      <Share
+        slot="after"
+        quote={"The red on a maple leaf is not the leaf dying. The tree makes it, on purpose, to cover the work of taking back what it needs before winter. The red is the work."}
+      />
+</Read>

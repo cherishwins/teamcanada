@@ -19,12 +19,17 @@ const CARDS=[
   line:'Refine our own crude. Power our own compute. Open the corridor.', stat:'$5,100', statk:'per Canadian, already law'},
  {slug:'calculator',label:'Run the numbers yourself', title:'Pick a province.\nSee the bill.',
   line:'Arithmetic on published figures. Every line shows its working.', stat:'$253B', statk:'Alberta, day one'},
+ // The stat is the sum of `words` in src/pages/read/index.astro. Typed here
+ // because this generator is standalone CJS and the index is Astro; update it
+ // when a read is added.
  {slug:'read',      label:'The reads', title:"Read the\nhomework",
-  line:'Every claim, laid out in full, with sources.', stat:'9,162', statk:'words, sourced'},
+  line:'Every claim, laid out in full, with sources.', stat:'10,316', statk:'words, sourced'},
  {slug:'support',   label:'The colophon', title:'What this cost.\nWhat it is for.',
   line:'Public domain. Nothing here is behind a payment.', stat:'CC0', statk:'no permission needed'},
  {slug:'join',      label:'The coalition', title:'Put your name\nbehind one country',
   line:'No account. No fee. Free to leave whenever you like.', stat:'∅', statk:'nothing to sign'},
+ {slug:'the-red-is-the-work', label:'A reading of the leaf', title:'The red\nis the work',
+  line:'Not a leaf giving up. A tree getting ready for a long winter, on purpose.', stat:'62%', statk:'of the nitrogen, taken back first'},
  {slug:'the-closed-loop', label:'NPSI · Working Paper No. 6', title:'The Closed\nLoop',
   line:'Korea holds the silicon. Canada holds the power.', stat:'37 GW', statk:'Hydro-Québec capacity'},
  {slug:'the-vertical-squeeze', label:'Fit For Gov · Dossier', title:'The Vertical\nSqueeze',

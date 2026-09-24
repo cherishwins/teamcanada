@@ -1,0 +1,34 @@
+# Every external link the site cites, checked weekly.
+#
+# Deliberately NOT part of verify.yml. A publisher's outage or a rate limit
+# must never turn a PR red, and a deploy must never wait on somebody else's
+# server. So this runs on its own clock and on demand; a red run here means
+# "a receipt has gone missing, go look", never "cannot ship".
+#
+# Free: the repo is public, so Actions minutes are unmetered.
+name: links
+
+on:
+  schedule:
+    - cron: '17 6 * * 1' # Mondays, 06:17 UTC — off the hour so it is not queued behind everyone else's
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      # The checker reads the BUILT html, so the set of links it checks is
+      # exactly the set a reader can click, generated pages included.
+      - name: Build
+        run: npm run build
+      - name: Check every external link
+        run: node tools/check-links.cjs

@@ -103,6 +103,29 @@ export const BUILD_STATE_BASE_POP = 5057077;
 export const NATO_PCT = 0.05;
 
 /**
+ * Nitrogen a plant recovers from a leaf before dropping it.
+ *
+ * Vergütz, Manzoni, Porporato, Novais & Jackson, "Global resorption
+ * efficiencies and concentrations of carbon and nutrients in leaves of
+ * terrestrial plants", Ecological Monographs 82(2): 205–220, 2012,
+ * doi:10.1890/11-0416.1. From the abstract: a meta-analysis of 86 studies and
+ * about 1,000 data points across six plant types found N resorption "differed
+ * significantly from the commonly used global value of 50% (62.1%)".
+ *
+ * A GLOBAL mean across ferns, forbs, grasses, conifers and both kinds of woody
+ * angiosperm — not a maple figure. /read/the-red-is-the-work says "a plant",
+ * not "a maple", for that reason; do not tighten the prose to maples without
+ * a maple source. A published finding, not a release: no next edition, so no
+ * review date.
+ */
+export const N_RESORPTION: StaticFigure = {
+  value: 62.1,
+  display: '62%',
+  source: 'Vergütz et al., Ecological Monographs',
+  period: '2012 paper',
+};
+
+/**
  * The figures /sources lists as fixed, in the order the page shows them.
  *
  * /sources used to retype each of these. It now renders this array, so a figure
@@ -136,4 +159,6 @@ export const FIXED_FIGURES: readonly (StaticFigure & { figure: string; note?: st
     source: 'NATO, Hague summit', period: '2025' },
   { figure: 'Bill C-5 retained GDP', value: 5100, display: '$5,100 per Canadian',
     source: 'Macdonald-Laurier Institute', period: '2022 paper' },
+  { figure: 'Leaf nitrogen a plant takes back before the leaf falls', ...N_RESORPTION,
+    note: 'Global mean across six plant types, 86 studies, about 1,000 data points. Not a maple-specific figure, and the read that cites it says “a plant”, not “a maple”.' },
 ];
