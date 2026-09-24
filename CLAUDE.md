@@ -154,8 +154,10 @@ one file serves both colourways. **Never reference them via `<img src>`:**
   in the sitemap may be `noindex`, and nothing indexable may be missing from
   it**; and `tools/check-csp.cjs` — **the Content-Security-Policy in
   `vercel.json` must list exactly the inline-script hashes and script origins
-  the build ships**, in both directions, with no `'unsafe-inline'`. All eight
-  run in `npm run build` and fail it. Outside the build: `tools/check-links.cjs`
+  the build ships**, in both directions, with no `'unsafe-inline'`; and
+  `tools/check-internal-links.cjs` — **every same-origin `href` in the build
+  must land on a page the build produced.** All nine run in `npm run build`
+  and fail it. Outside the build: `tools/check-links.cjs`
   (every external link the site cites, weekly, from
   `.github/workflows/links.yml`) and `html-validate` against
   `.htmlvalidate.json` (in `verify.yml`).
@@ -187,6 +189,15 @@ one file serves both colourways. **Never reference them via `<img src>`:**
   `public/favicon.svg`; `tools/check-icons.cjs` — proves they still match.
 - `tools/check-sitemap.cjs` — the sitemap and the pages' robots meta must agree.
 - `tools/check-csp.cjs` — the CSP in `vercel.json` matches the built scripts.
+- `tools/check-internal-links.cjs` — no link inside the site points at a page
+  that does not exist. **This was a gap for as long as the site existed:** the
+  sweep counts broken *resources* and `check-links` checks *external*
+  citations, so two "Read next" links carried over from the legacy site
+  (`/read/two-leaders.html`, `/read/honest-answer.html`) passed eight
+  checkers and a ten-count sweep and 404'd on production until a phone-width
+  crawl of the live site tripped over them. Reachability is a claim too: the
+  crawl proved every sitemap page reachable by tapping from `/`, acts and
+  receipts in one tap via the hamburger, every read in two.
 - `tools/check-links.cjs` + `.github/workflows/links.yml` — external links
   still resolve; weekly and on demand, never on a PR (other people's outages
   must not turn a review red). The same workflow runs
@@ -305,8 +316,8 @@ public and checkable" — it can afford neither a dash nor a silently stale numb
   (`<strong>Vercel</strong> Web Analytics`) would have read fine to a human and
   failed `includes()` silently. Its own negative test passed while asserting
   nothing. Every checker in `tools/` should be run once against a deliberately
-  broken input before it is trusted — all nine have been, `check-csp` and
-  `check-links` included.
+  broken input before it is trusted — all ten have been, `check-csp`,
+  `check-links` and `check-internal-links` included.
   **A checker can also fail for the WRONG reason, which costs just as much
   trust.** `check-privacy` stripped block comments before line comments, so a
   `//` line elsewhere in `astro.config.mjs` that happened to contain the two
