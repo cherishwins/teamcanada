@@ -31,6 +31,29 @@ interface Row {
   note?: string;
 }
 
+/**
+ * The upstream page or endpoint behind a series ID, so "checkable" is one
+ * click rather than a search. Before this, the receipts page NAMED every
+ * table and linked none of them: a reader had to know that 17-10-0009 is a
+ * StatCan table and how to find it. The weekly link check
+ * (tools/check-links.cjs) keeps these alive.
+ *
+ *   Statistics Canada  NN-NN-NNNN  → the web table (pid is the ID plus "01")
+ *   Bank of Canada     Valet series → the most recent observation, as JSON
+ *   World Bank         indicator    → Canada and the US, latest value, JSON
+ *
+ * Returns null for anything it does not recognise; the ID then renders as
+ * plain text rather than a link to nowhere.
+ */
+function upstream(id: string): string | null {
+  if (/^\d{2}-\d{2}-\d{4}$/.test(id)) return `https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=${id.replace(/-/g, '')}01`;
+  if (/^(V\d+|FX[A-Z]{6})$/.test(id)) return `https://www.bankofcanada.ca/valet/observations/${id}/json?recent=1`;
+  if (/^ER\.H2O\./.test(id)) return `https://api.worldbank.org/v2/country/CAN;USA/indicator/${id}?format=json&mrv=1`;
+  return null;
+}
+/** A row may cite two tables ("36-10-0222 · 17-10-0009"); each gets its own link. */
+const ids = (table: string) => table.split(' · ');
+
 const LIVE: Row[] = [
   { figure: 'Population', value: fmt.format(figures.population.value),
     source: 'Statistics Canada', table: '17-10-0009', period: figures.population.asOf, live: figures.population.live },
@@ -131,7 +154,7 @@ const description =
           <li><a href="/api/provinces.json"><code>/api/provinces.json</code><span>provincial GDP and population</span></a></li>
         </ul>
 
-        <div class="tw" tabindex="0" role="region" aria-label="Live figures, scrolls sideways">
+        <section class="tw" tabindex="0" aria-label="Live figures, scrolls sideways">
           <table>
             <caption class="nt-caption">Live figures, as of this page load</caption>
             <thead><tr><th scope="col">Figure</th><th scope="col">Value</th><th scope="col">Source</th><th scope="col">Reference</th></tr></thead>
@@ -140,13 +163,15 @@ const description =
                 <tr>
                   <th scope="row">{r.figure}{r.note && <span class="note">{r.note}</span>}</th>
                   <td class="val">{r.value}</td>
-                  <td>{r.source}{r.table && <span class="tbl">{r.table}</span>}</td>
+                  <td>{r.source}{r.table && ids(r.table).map((id) => upstream(id)
+                    ? <a class="tbl" href={upstream(id)!}>{id}</a>
+                    : <span class="tbl">{id}</span>)}</td>
                   <td class="per">{r.period}<span class={`dot ${r.live ? 'on' : 'off'}`}>{r.live ? 'live' : 'fallback'}</span></td>
                 </tr>
               ))}
             </tbody>
           </table>
-        </div>
+        </section>
       </div>
     </section>
 
@@ -156,7 +181,7 @@ const description =
         <hr class="nt-rule" />
         <h2 class="nt-display md" style="max-width:22ch;">These do not change on their own. Where one has a weakness, the row says so.</h2>
 
-        <div class="tw" tabindex="0" role="region" aria-label="Fixed figures, scrolls sideways">
+        <section class="tw" tabindex="0" aria-label="Fixed figures, scrolls sideways">
           <table>
             <thead><tr><th scope="col">Figure</th><th scope="col">Value</th><th scope="col">Source</th><th scope="col">Period</th></tr></thead>
             <tbody>
@@ -164,13 +189,15 @@ const description =
                 <tr>
                   <th scope="row">{r.figure}{r.note && <span class="note">{r.note}</span>}</th>
                   <td class="val">{r.value}</td>
-                  <td>{r.source}{r.table && <span class="tbl">{r.table}</span>}</td>
+                  <td>{r.source}{r.table && ids(r.table).map((id) => upstream(id)
+                    ? <a class="tbl" href={upstream(id)!}>{id}</a>
+                    : <span class="tbl">{id}</span>)}</td>
                   <td class="per">{r.period}</td>
                 </tr>
               ))}
             </tbody>
           </table>
-        </div>
+        </section>
 
         <div class="policy">
           <p class="nt-label">How this page behaves when something breaks</p>
@@ -243,6 +270,15 @@ const description =
     display: block; font-family: ui-monospace, Menlo, monospace;
     font-size: 11px; color: var(--text-caption); margin-top: .3rem;
   }
+  /* A table ID that is a link looks like one (underline, not just colour)
+     and is a CONTROL: a 44px box with the text centred, so the tap target
+     is real. The first build of this shipped 11px-tall links and the sweep
+     refused it 150 times. */
+  a.tbl {
+    display: flex; align-items: center; min-height: 44px; min-width: 44px;
+    margin-top: 0; text-decoration: underline; text-underline-offset: 2px;
+  }
+  a.tbl:hover { color: var(--nt-red); }
   .per { white-space: nowrap; color: var(--text-muted); }
   .dot {
     display: block; margin-top: .35rem;

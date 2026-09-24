@@ -5,6 +5,12 @@ import OG_MANIFEST from '../lib/og-manifest.json';
 
 interface Props {
   title: string;
+  /**
+   * A shorter form for the <title> tag only, when the headline plus the site
+   * name would run past ~70 characters and be cut off in a tab or a result.
+   * The headline itself, OG and schema all keep the full title.
+   */
+  pageTitle?: string;
   description: string;
   /** Site-relative path, e.g. "/dossier". Used for canonical, OG and hreflang. */
   path?: string;
@@ -17,7 +23,7 @@ interface Props {
   /** Extra JSON-LD emitted alongside the site-level graph. */
   schema?: unknown[];
 }
-const { title, description, path = Astro.url.pathname, ogImage = '/og.png',
+const { title, pageTitle, description, path = Astro.url.pathname, ogImage = '/og.png',
         ogImageAlt, lang = 'en-CA', noindex = false, schema: extraSchema = [] } = Astro.props;
 
 const canonical = abs(path);
@@ -39,7 +45,7 @@ const og = abs(ogEntry?.src ?? ogImage);
 // the card itself, because alt text maintained by hand drifts the moment a card
 // is re-worded and nothing catches it.
 const ogAlt = ogImageAlt ?? ogEntry?.alt ?? OG_MANIFEST['/og.png'].alt;
-const fullTitle = path === '/' ? `${SITE.name} — ${SITE.tagline}` : `${title} — ${SITE.name}`;
+const fullTitle = path === '/' ? `${SITE.name} — ${SITE.tagline}` : `${pageTitle ?? title} — ${SITE.name}`;
 
 const schema = {
   '@context': 'https://schema.org',

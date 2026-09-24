@@ -1,5 +1,6 @@
 ---
 import Read from '../../layouts/Read.astro';
+import Share from '../../components/Share.astro';
 import { articleSchema } from '../../lib/schema';
 const schema = [articleSchema({
   title: "The Wave Hit Every G7 Democracy. Two Leaders Beat It.",
@@ -13,6 +14,7 @@ const schema = [articleSchema({
 ---
 <Read
   title={"The Wave Hit Every G7 Democracy. Two Leaders Beat It."}
+  pageTitle={"Two Leaders Beat the Wave"}
   description={"Anti-incumbent anger flattened the West. Japan and Canada are the exceptions \u2014 and the reason is a method, not a party."}
   imprint={"A governance reading"}
   standfirst={"Anti-incumbent anger flattened the West. Two leaders are the exceptions, and the reason is a method anyone can copy."}
@@ -28,26 +30,28 @@ const schema = [articleSchema({
       <p>Against that backdrop, two leaders stand out for the opposite reason. They are <strong>more</strong> popular than the wave should allow. One is in Japan. One is in Canada. They sit on opposite sides of the planet and opposite ends of the political spectrum. So why are they the exceptions?</p>
       <h2>The two exceptions</h2>
       <p>Both lead with strong public approval at a time when that is nearly impossible. Here is who they are and what they share.</p>
-      <p>Sanae Takaichi</p>
-      <p>Japan · since 2025</p>
-      <p>🇯🇵</p>
-      <p>~60%</p>
-      <p>approval, per major Japanese trackers</p>
-      <ul>
-      <li>Ran on stability and a clear economic plan after years of drift.</li>
-      <li>Spoke directly to national pride and to people&#x27;s wallets at the same time.</li>
-      <li>Delivered visible action fast, instead of asking for patience.</li>
-      </ul>
-      <p>Mark Carney</p>
-      <p>Canada · since 2025</p>
-      <p>🇨🇦</p>
-      <p>~58%</p>
-      <p>approval, per major Canadian trackers</p>
-      <ul>
-      <li>A career economist who took office during a tariff fight with the U.S.</li>
-      <li>Scrapped his own side&#x27;s most unpopular policy when it stopped working.</li>
-      <li>Moved fast on the economy rather than defending the status quo.</li>
-      </ul>
+      <div class="compare">
+        <article>
+          <h3>🇯🇵 Sanae Takaichi</h3>
+          <p class="fig">Japan · since 2025</p>
+          <p class="big">~60% <small>approval, per major Japanese trackers</small></p>
+          <ul>
+            <li>Ran on stability and a clear economic plan after years of drift.</li>
+            <li>Spoke directly to national pride and to people&#x27;s wallets at the same time.</li>
+            <li>Delivered visible action fast, instead of asking for patience.</li>
+          </ul>
+        </article>
+        <article>
+          <h3>🇨🇦 Mark Carney</h3>
+          <p class="fig">Canada · since 2025</p>
+          <p class="big">~58% <small>approval, per major Canadian trackers</small></p>
+          <ul>
+            <li>A career economist who took office during a tariff fight with the U.S.</li>
+            <li>Scrapped his own side&#x27;s most unpopular policy when it stopped working.</li>
+            <li>Moved fast on the economy rather than defending the status quo.</li>
+          </ul>
+        </article>
+      </div>
       <p>Approval figures are drawn from major published polls in early-to-mid 2026 and move from week to week. Treat them as a range, not a scoreboard.</p>
       <h2>What they actually share</h2>
       <p>Strip away the flags and the politics and the same three habits show up in both. None of them belong to a party. Any government could copy them.</p>
@@ -67,4 +71,9 @@ const schema = [articleSchema({
       <p><a href="/read/honest-answer.html"> Read next One question. Seven leaders. An honest answer. → </a></p>
       <p class="fig">Strong · Proud · Free.</p>
       <p>Approval data: major published Japanese &amp; Canadian polls, early–mid 2026. Ranges, not fixed figures. Verify before citing.</p>
+
+      <Share
+        slot="after"
+        quote={"Anti-incumbent anger flattened every G7 democracy. Two leaders beat it, and the reason is a method any government could copy, not a party."}
+      />
 </Read>

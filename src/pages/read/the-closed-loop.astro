@@ -1,5 +1,6 @@
 ---
 import Read from '../../layouts/Read.astro';
+import Share from '../../components/Share.astro';
 import { articleSchema } from '../../lib/schema';
 const schema = [articleSchema({
   title: "The Closed Loop",
@@ -74,8 +75,8 @@ const schema = [articleSchema({
       <blockquote>Korea wants Canadian gas, Canadian uranium, Canadian critical minerals, and Canadian shipbuilding inputs. That is not a forecast. It is the published content of Korea&#x27;s own energy and industrial strategy.</blockquote>
       <h3>The mirror: why Korea is the anchor.</h3>
       <p>Korea imports the overwhelming majority of its primary energy, is expanding its nuclear fleet, builds a majority of the world&#x27;s LNG carriers, is a primary SMR-deployment market, and through Samsung and SK Hynix commands roughly four-fifths of the global high-bandwidth-memory market — SK Hynix alone supplying the lion&#x27;s share of the HBM inside Nvidia&#x27;s accelerators. Korea makes the silicon the AI economy runs on and lacks the energy to run it. Canada has the energy and lacks the silicon. That is a closed loop waiting to be wired.</p>
-      <div class="tw" tabindex="0" role="region" aria-label="Comparison table, scrolls sideways"><table>
-      <thead><tr><th>Canadian asset</th><th>Korean need it serves</th><th>Status · May 2026</th></tr></thead>
+      <section class="tw" tabindex="0" aria-label="Comparison table, scrolls sideways"><table>
+      <thead><tr><th scope="col">Canadian asset</th><th scope="col">Korean need it serves</th><th scope="col">Status · May 2026</th></tr></thead>
       <tbody>
       <tr><td>LNG &amp; natural gas</td><td>Majority import-dependent; gas for power &amp; industry</td><td>LNG Canada exporting since 2025; Korean yards build the carriers</td></tr>
       <tr><td>Uranium (Athabasca)</td><td>Expanding fleet; cutting ~32% Russian enriched-fuel reliance</td><td>Active diversification; Canada the obvious non-adversarial supplier</td></tr>
@@ -83,7 +84,7 @@ const schema = [articleSchema({
       <tr><td>Critical minerals</td><td>Battery &amp; magnet chains outside Chinese control</td><td>Stated ROK preference for diversified sourcing</td></tr>
       <tr><td>Sovereign AI compute</td><td>Korean HBM needs energy-dense, secure host geographies</td><td>The unbuilt piece — the opportunity this paper names</td></tr>
       <tr><td>Submarine programme</td><td>Hanwha Ocean exporting KSS-III &amp; industrial base</td><td>CPSP short-list; industrial MOUs signed early 2026 (WP-03)</td></tr>
-      </tbody></table></div>
+      </tbody></table></section>
       <p>Each is a multi-decade flow, denominated in hundreds of billions across the next forty years, currently structured one transaction at a time. The move is to stop structuring them separately. The place that makes that legible is a single town in northern Alberta.</p>
       <p>Part IV</p>
       <h2>Where the Loop Closes</h2>
@@ -120,4 +121,9 @@ const schema = [articleSchema({
       </ul>
       <p>Working Papers on Pacific Sovereignty &amp; Bilateral Architecture</p>
       <p>North Pacific Strategy Initiative DOCUMENT NPSI-WP-006 · v1.0 · ISSUED 31 MAY 2026 · VICTORIA, BC EDITOR Jesse James · <a href="mailto:jesse@fitforgov.com">jesse@fitforgov.com</a> · <a href="https://npsi.ca">npsi.ca</a> CITATION James, J. (2026). The Closed Loop: The Three Rails as One Circuit. NPSI Working Paper No. 6. Working-paper text under <a href="https://creativecommons.org/licenses/by/4.0/">CC-BY-4.0</a>. The imprint and wordmark are not licensed. VOL. I · EST. MMXXVI</p>
+
+      <Share
+        slot="after"
+        quote={"Korea holds the silicon. Canada holds the power. One forty-year trade, and the anchor case for a country that widens instead of walking away."}
+      />
 </Read>

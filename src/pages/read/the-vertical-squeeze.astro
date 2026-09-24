@@ -1,5 +1,6 @@
 ---
 import Read from '../../layouts/Read.astro';
+import Share from '../../components/Share.astro';
 import { articleSchema } from '../../lib/schema';
 const schema = [articleSchema({
   title: "The Vertical Squeeze",
@@ -77,8 +78,8 @@ const schema = [articleSchema({
       <p>Net position<strong>+$954</strong></p>
       <p>That last card is the quiet alarm of the whole dossier. The federal benefit system pays the retiree the same amount in every city. The provincial and municipal stack decides how much survives. Carry that identical senior to Calgary and the margin is +$5,614. In Vancouver, +$4,530. In Toronto, +$954. Ottawa sends the same cheque. The lower floors decide whether it lands.</p>
       <p>TABLE 1 — Annual per-citizen accounting, 2026 statutory rates. &quot;Total paid&quot; sums all modelled layers; &quot;received&quot; sums GST/HST credit, provincial top-ups, the Canada Workers Benefit, and (retiree) OAS+GIS. Owner households assume a representative, non-luxury home value per city; the retiree is mortgage-free. An incidence sketch, not a tax return — see methodology, note 6.</p>
-      <div class="tw" tabindex="0" role="region" aria-label="Comparison table, scrolls sideways"><table>
-      <thead><tr><th>City</th><th>Household</th><th>Income</th><th>Income tax</th><th>Payroll</th><th>Sales</th><th>Fuel</th><th>Property</th><th>Paid</th><th>Received</th><th>Net</th><th>Eff.</th></tr></thead>
+      <section class="tw" tabindex="0" aria-label="Comparison table, scrolls sideways"><table>
+      <thead><tr><th scope="col">City</th><th scope="col">Household</th><th scope="col">Income</th><th scope="col">Income tax</th><th scope="col">Payroll</th><th scope="col">Sales</th><th scope="col">Fuel</th><th scope="col">Property</th><th scope="col">Paid</th><th scope="col">Received</th><th scope="col">Net</th><th scope="col">Eff.</th></tr></thead>
       <tbody>
       <tr><td>Calgary</td><td>Low-income</td><td>35,000</td><td>3,656</td><td>2,445</td><td>1,200</td><td>207</td><td>900</td><td>8,408</td><td>975</td><td>−7,433</td><td>24%</td></tr>
       <tr><td>Calgary</td><td>Median</td><td>65,000</td><td>10,753</td><td>4,719</td><td>1,700</td><td>322</td><td>2,730</td><td>20,224</td><td>0</td><td>−20,224</td><td>31%</td></tr>
@@ -92,7 +93,7 @@ const schema = [articleSchema({
       <tr><td>Toronto</td><td>Median</td><td>65,000</td><td>10,391</td><td>4,719</td><td>4,420</td><td>266</td><td>4,828</td><td>24,623</td><td>0</td><td>−24,623</td><td>38%</td></tr>
       <tr><td>Toronto</td><td>High</td><td>150,000</td><td>40,218</td><td>5,770</td><td>4,960</td><td>342</td><td>8,875</td><td>63,265</td><td>0</td><td>−63,265</td><td>42%</td></tr>
       <tr><td>Toronto</td><td>Retiree</td><td>32,000</td><td>3,194</td><td>0</td><td>2,860</td><td>133</td><td>6,390</td><td>12,577</td><td>13,531</td><td>+954</td><td>39%</td></tr>
-      </tbody></table></div>
+      </tbody></table></section>
       <p>§ III — Equal Per Head, Except Where It Isn&#x27;t03 / 06</p>
       <p>Two of the three big federal transfers are paid on a strict equal-per-capita basis. Every Canadian&#x27;s notional share of the Health and Social Transfers is identical. Then there is equalization — the one needs-adjusted layer, and the one that generates nearly all the heat.</p>
       <p>In 2025–26 Ottawa moved a record ~$103.8 billion through major transfers, of which $26.2 billion was equalization. Quebec received $13.6 billion; Manitoba $4.7 billion; the Atlantic provinces their shares. British Columbia, Alberta, and Saskatchewan received nothing.7 The per-capita view makes the structure legible in a way the totals do not.</p>
@@ -154,6 +155,11 @@ const schema = [articleSchema({
       </ul>
       <p>All sources public and unclassified. Figures reflect rates published as of May 2026. This dossier is independent commentary by a civic-technology practice; it is not a government publication.</p>
       <p>Fit For Gov is a civic-technology practice that delivers custom software for Canadian municipalities, beginning with secure websites as the standard starting engagement.</p>
-      <p><a href="tel:+12504155678">+1 250 415 5678</a></p>
+      <p><a href="tel:+12504155678">+1&nbsp;250&nbsp;415&nbsp;5678</a></p>
       <p><strong>jesse@fitforgov.com</strong> · fitforgov.com Jesse James, Principal · Registered in British Columbia FFG-DOSSIER-002 · The Vertical Squeeze · v1.0 · May 2026 Set in Instrument Serif, Inter Tight &amp; JetBrains Mono.</p>
+
+      <Share
+        slot="after"
+        quote={"The order of government closest to you carries the most responsibility on the least revenue. The imbalance, costed line by line."}
+      />
 </Read>

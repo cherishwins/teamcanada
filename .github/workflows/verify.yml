@@ -46,7 +46,7 @@ jobs:
       # sweep failed with "playwright not found". Install them together, once.
       - name: Install CI-only tools
         run: |
-          npm i --no-save playwright @astrojs/check typescript
+          npm i --no-save playwright @astrojs/check typescript html-validate
           npx playwright install --with-deps chromium
 
       # `npm run build` also runs check-french, check-llms, check-privacy and
@@ -69,6 +69,15 @@ jobs:
       # them above, so it runs the binary directly.
       - name: Type-check
         run: npx astro check
+
+      # Valid HTML, by the spec rather than by "the browser coped". The Astro
+      # compiler refuses unbalanced tags but says nothing about a <th> without
+      # scope, a title that will be cut off in a tab, or a phone number that
+      # can wrap. The first run found twelve of the first kind in one table.
+      # Config in .htmlvalidate.json; no-inline-style is off there because the
+      # stylesheet is inlined by design and a few layout nudges are attributes.
+      - name: Validate HTML
+        run: npx html-validate '.vercel/output/static/**/*.html'
 
       - name: Audit dependencies
         run: npm audit --audit-level=high
