@@ -1,12 +1,13 @@
-# Every external link the site cites, checked weekly.
+# The two checks that need the outside world, on their own clock.
 #
-# Deliberately NOT part of verify.yml. A publisher's outage or a rate limit
-# must never turn a PR red, and a deploy must never wait on somebody else's
-# server. So this runs on its own clock and on demand; a red run here means
-# "a receipt has gone missing, go look", never "cannot ship".
+# Deliberately NOT part of verify.yml. A publisher's outage, a rate limit, or
+# a vendor moving an endpoint must never turn a PR red, and a deploy must
+# never wait on somebody else's server. So these run weekly and on demand; a
+# red run here means "something outside the repo moved, go look", never
+# "cannot ship".
 #
 # Free: the repo is public, so Actions minutes are unmetered.
-name: links
+name: weekly
 
 on:
   schedule:
@@ -17,6 +18,7 @@ permissions:
   contents: read
 
 jobs:
+  # Every external link the built site cites still resolves.
   links:
     runs-on: ubuntu-latest
     steps:
@@ -32,3 +34,22 @@ jobs:
         run: npm run build
       - name: Check every external link
         run: node tools/check-links.cjs
+
+  # The Content-Security-Policy against the real vendors on the real site.
+  # The sweep stubs every other origin, so it cannot see where a third-party
+  # script actually connects — the first policy blocked Umami's beacons while
+  # CI was green. The vendors' endpoints are theirs to move; this notices.
+  csp-live:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      # Playwright stays out of package.json (see verify.yml); one install.
+      - name: Install Playwright
+        run: |
+          npm i --no-save playwright
+          npx playwright install --with-deps chromium
+      - name: Check the CSP on production
+        run: node tools/check-csp-live.cjs https://northerntemper.ca
