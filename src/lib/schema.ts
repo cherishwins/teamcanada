@@ -7,9 +7,10 @@ import { SITE, abs } from '../config.mjs';
  *
  *  1. Article on each long-form piece, so a search engine understands them as
  *     articles with an author and a date rather than as anonymous pages.
- *  2. Dataset on the public endpoints. This site publishes four open,
- *     key-free, CORS-open feeds of Canadian government figures — that is a
- *     genuine dataset, and Dataset markup is how it becomes findable as one.
+ *  2. Dataset on the public endpoints. This site publishes six open,
+ *     key-free, CORS-open feeds — five of Canadian government figures and one
+ *     of the House of Commons' own record — that is a genuine dataset, and
+ *     Dataset markup is how it becomes findable as one.
  *     For a site whose only real asset is checkability, being indexed as a
  *     data source is the discovery channel that actually fits.
  */
@@ -67,6 +68,13 @@ export interface DatasetMeta {
   frequency: string;
   keywords: string[];
   /**
+   * The one-line blurb /sources prints beside the endpoint. It lives here so
+   * that the receipts page lists its endpoints FROM this array and cannot
+   * omit one: it did, for as long as /api/water.json existed, because the list
+   * there was typed by hand and said "four endpoints" while five shipped.
+   */
+  short: string;
+  /**
    * Where the data is ABOUT, as plain text.
    *
    * Google's Dataset documentation accepts Text, a Place carrying `geo`, or a
@@ -114,9 +122,20 @@ export function datasetSchema(d: DatasetMeta) {
 
 export const DATASETS: DatasetMeta[] = [
   {
+    name: 'Recorded divisions of the House of Commons of Canada, 45th Parliament',
+    description: 'Every recorded division of the 45th Parliament with every member\'s ballot, each party\'s majority position and dissent count, each member\'s party-line rate and the divisions where they broke with their party, and the party-vs-party agreement matrix. Counted from the House of Commons record as published by OpenParliament.ca; the party attributed to a member is the one they sat for on the day of the vote. Rebuilt after each sitting day.',
+    endpoint: '/api/record.json',
+    short: 'every recorded division and every ballot of the 45th Parliament, rebuilt after each sitting day',
+    spatialCoverage: 'Canada',
+    provider: 'House of Commons of Canada; OpenParliament.ca',
+    frequency: 'P1D',
+    keywords: ['Canada', 'House of Commons', 'Parliament', 'recorded divisions', 'votes', 'members of Parliament', 'party discipline', 'open data'],
+  },
+  {
     name: 'Renewable fresh water, Canada and the United States',
     description: 'Renewable internal freshwater resources per capita and in total, for Canada and the United States, from FAO AQUASTAT via the World Bank. One source, one reference year and one definition on both sides of the border, so the ratio between them is a figure anyone can reproduce in a single request.',
     endpoint: '/api/water.json',
+    short: 'renewable fresh water, Canada and the United States, one source and one year',
     spatialCoverage: 'Canada and the United States',
     provider: 'FAO AQUASTAT; The World Bank',
     frequency: 'P1Y',
@@ -126,6 +145,7 @@ export const DATASETS: DatasetMeta[] = [
     name: 'Canadian economic figures, live',
     description: 'Real GDP, population, CPI, the policy interest rate and USD/CAD, read on request from Statistics Canada and the Bank of Canada. Each figure carries the reference period it describes and a flag saying whether it came back live.',
     endpoint: '/api/figures.json',
+    short: 'GDP · population · CPI · policy rate · USD/CAD',
     spatialCoverage: 'Canada',
     provider: 'Statistics Canada; Bank of Canada',
     frequency: 'PT1H',
@@ -135,6 +155,7 @@ export const DATASETS: DatasetMeta[] = [
     name: 'Canadian river discharge, real time',
     description: 'Discharge in cubic metres per second at four gauges, one per major drainage basin — Fraser, Mackenzie, St. Lawrence and Ottawa — from the Environment and Climate Change Canada hydrometric network.',
     endpoint: '/api/rivers.json',
+    short: 'river discharge, four gauges, every five minutes',
     spatialCoverage: 'Canada',
     provider: 'Environment and Climate Change Canada',
     frequency: 'PT5M',
@@ -144,6 +165,7 @@ export const DATASETS: DatasetMeta[] = [
     name: 'Canadian merchandise exports by trading partner',
     description: 'Monthly merchandise exports, customs basis, seasonally adjusted, for nine principal trading partners, with year-over-year change and share.',
     endpoint: '/api/trade.json',
+    short: 'merchandise exports by trading partner, monthly',
     spatialCoverage: 'Canada',
     provider: 'Statistics Canada',
     frequency: 'P1M',
@@ -153,6 +175,7 @@ export const DATASETS: DatasetMeta[] = [
     name: 'Canadian provincial GDP and population',
     description: 'GDP at market prices and the most recent quarterly population estimate for all ten provinces.',
     endpoint: '/api/provinces.json',
+    short: 'provincial GDP and population',
     spatialCoverage: 'Canada',
     provider: 'Statistics Canada',
     frequency: 'P1Y',

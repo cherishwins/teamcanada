@@ -15,6 +15,8 @@ excellent one; when the excellent one costs money, see ZERO BUDGET below — it
 has to earn it first. Everything that follows in this file (seven build-time
 checkers, a ten-viewport sweep, figures written once, sources quoted from
 their abstracts) exists because of this bar. Do not lower it to finish faster.
+(That parenthesis said "seven" checkers when it was written; it is nine now,
+plus a generator that fails. Counts in prose drift; the tools do not.)
 
 ## What this is
 **Northern Temper** — a statement of Canadian character at **northerntemper.ca**.
@@ -134,11 +136,27 @@ one file serves both colourways. **Never reference them via `<img src>`:**
   it should.
 - `src/lib/support.ts` — the processor-free support rail (see below).
 - `src/lib/schema.ts` — Article markup for the reads, **Dataset markup for the
-  four public endpoints**. The site redistributes government figures under CC0;
-  Dataset markup is how that becomes findable as data rather than as four
+  six public endpoints**. The site redistributes government figures under CC0;
+  Dataset markup is how that becomes findable as data rather than as six
   anonymous JSON URLs, which is the discovery channel that actually fits a site
-  whose only asset is checkability.
-- `src/pages/api/{figures,rivers,trade}.json.ts` — on-demand live data.
+  whose only asset is checkability. Each dataset carries a `short` blurb and
+  **`/sources` renders its endpoint list from this array** — the list there
+  was typed by hand and said "four endpoints" for as long as `water.json`
+  existed.
+- `src/pages/api/{figures,rivers,trade,provinces,water}.json.ts` — on-demand
+  live data. `src/pages/api/record.json.ts` is **prerendered** from the
+  committed snapshot, so it is a static file: its CORS header comes from
+  `vercel.json`, not from code like the others.
+- **The record** — `src/lib/record.ts` (the one copy of the math; the pages,
+  the endpoint, the report and the share card all call its `compute()`),
+  `src/data/record/45-1.json` (the committed snapshot, ~174 kB, one character
+  per ballot), `src/layouts/Record.astro` (the shared frame and the ledger
+  styles, global under `.rec` on purpose), `src/pages/record/index.astro`
+  (the front page), `src/pages/record/divisions.astro` and
+  `src/pages/record/members.astro` (the ledgers), `tools/record/fetch.cjs`
+  (incremental snapshot writer), `tools/record/load.cjs` (bundles `record.ts`
+  for CommonJS tools), `tools/record/analyse.cjs` (the report),
+  `.github/workflows/record.yml` (the daily refresh). See "The record" below.
 - `legacy/` — the previous primestrength.ca static site. **Not deployed.**
   Content still to migrate: `legacy/read/*.html` (5 long-form pieces),
   `legacy/fr/index.html`, `legacy/join.html`.
@@ -156,8 +174,10 @@ one file serves both colourways. **Never reference them via `<img src>`:**
   `vercel.json` must list exactly the inline-script hashes and script origins
   the build ships**, in both directions, with no `'unsafe-inline'`; and
   `tools/check-internal-links.cjs` — **every same-origin `href` in the build
-  must land on a page the build produced.** All nine run in `npm run build`
-  and fail it. Outside the build: `tools/check-links.cjs`
+  must land on a page the build produced, and every `#fragment` must name an
+  id on that page.** All nine run in `npm run build` and fail it, and so does
+  `tools/generate-llms-full.cjs` if a sitemap page is in neither its reading
+  order nor its exclusion list. Outside the build: `tools/check-links.cjs`
   (every external link the site cites, weekly, from
   `.github/workflows/links.yml`) and `html-validate` against
   `.htmlvalidate.json` (in `verify.yml`).
@@ -190,7 +210,10 @@ one file serves both colourways. **Never reference them via `<img src>`:**
 - `tools/check-sitemap.cjs` — the sitemap and the pages' robots meta must agree.
 - `tools/check-csp.cjs` — the CSP in `vercel.json` matches the built scripts.
 - `tools/check-internal-links.cjs` — no link inside the site points at a page
-  that does not exist. **This was a gap for as long as the site existed:** the
+  that does not exist, and no fragment points at an id that is not there
+  (the members ledger links every break to `/record/divisions#vN`, and a
+  fragment that names nothing lands the reader at the top of a 174-row table
+  with no idea why). **This was a gap for as long as the site existed:** the
   sweep counts broken *resources* and `check-links` checks *external*
   citations, so two "Read next" links carried over from the legacy site
   (`/read/two-leaders.html`, `/read/honest-answer.html`) passed eight
@@ -281,7 +304,30 @@ public and checkable" — it can afford neither a dash nor a silently stale numb
 - **Astro 7's compiler rejects unbalanced tags outright** (Astro 5 tolerated
   them). Any generated markup must balance its own anchors — an `<a href="#…">`
   that is skipped on open must not still emit its close.
-- Develop on a branch → draft PR → merge to `main`.
+- Develop on a branch → draft PR → merge to `main`. The one exception is
+  `record[bot]`, which commits a new snapshot straight to `main` after the
+  build passes — see "The record".
+- **A push made with `GITHUB_TOKEN` triggers no workflow.** GitHub forbids
+  workflows chaining off their own token, so when `record.yml` pushes to
+  `main`, `verify.yml`'s `push` trigger never fires and the sweep would never
+  see a bot commit. `workflow_dispatch` is the one event that IS allowed to
+  chain, so `verify.yml` carries it and `record.yml` dispatches it by hand
+  after the push (`actions: write`). Vercel deploys from the push regardless
+  and runs the nine build checkers again on its side.
+- **A scoped `<style>` stamps `data-astro-cid-…` onto every element it could
+  match, and on a ledger that is the page.** The first record page carried
+  5,935 of them, 154 kB of a 391 kB file, on cells whose only styling was a
+  border. `Record.astro` uses `<style is:global>` under a `.rec` class that
+  nothing else on the site uses; the same ledgers now carry 136. Reach for
+  this only for a page that is mostly a table; scoping is the right default
+  everywhere else.
+- **Links change ground, and the colour has to change with them.** The record
+  front page alternates white and black sections, and when the method section
+  moved from one to the other in a refactor its `--nt-red` links went to
+  3.57:1 on black. The sweep caught it before it shipped. In `Record.astro`
+  links are `--nt-red-lift` by default and `--nt-red` inside `.nt-light`, so
+  a section can move between grounds without a fresh audit; do the same
+  anywhere links sit on both.
 - **The sweep does not filter console errors — it blocks service workers instead.**
   An earlier version of this note described a filter on one exact message, and
   that is not what `tools/verify.cjs` does; the note outlived the design. A
@@ -473,10 +519,16 @@ Everything is CC0 and the site is built to be repeated, not protected.
 - `robots.txt` **explicitly allows every named AI crawler** — GPTBot, ClaudeBot,
   PerplexityBot, CCBot, Google-Extended, Applebot-Extended and the rest. Most
   sites block these; this one does the opposite on purpose. Do not "tighten" it.
-- **`/llms-full.txt`** is the entire site as one plain-text file — 15 pages,
-  ~19,600 words — generated by `tools/generate-llms-full.cjs` as a **post-build
+- **`/llms-full.txt`** is the entire site as one plain-text file — 18 pages,
+  ~21,300 words — generated by `tools/generate-llms-full.cjs` as a **post-build
   step from the BUILT HTML**, so it can never drift from what is published. It
-  is wired into `npm run build`, so Vercel produces it too.
+  is wired into `npm run build`, so Vercel produces it too. **Every sitemap URL
+  must be in its `ORDER` or in its `EXCLUDE` with a reason, or the build
+  fails.** The first run of that check found `/privacy` and `/terms` had never
+  been in the file. The two record ledgers are excluded on purpose: they are
+  data, and `/api/record.json` serves them whole. The endpoint list in its
+  header is read from `src/pages/api/`, because the typed one said "four"
+  while five shipped.
 - `ai.txt` states the reuse policy in machine-readable form: training, quoting
   in full, and retrieval all allowed; no attribution, no permission.
 - **`llms.txt` states only what does NOT change, and `tools/check-llms.cjs`
@@ -508,7 +560,7 @@ Everything is CC0 and the site is built to be repeated, not protected.
 - Sitemaps are validated XML against the sitemaps.org 0.9 schema, all URLs
   absolute on the canonical host. **`/fr` is excluded while it is `noindex`.**
 - Structured data: WebSite on every page, Article on each read, **Dataset on the
-  four public endpoints** so the figures are findable as data.
+  six public endpoints** so the figures are findable as data.
 
 ## Performance — measured, not assumed
 A phone-width cold load, per page: **7–11 requests, 81–120 kB gzipped, ~2 kB of
@@ -534,7 +586,7 @@ break-even is under one extra page on bytes alone, before counting the 730 ms
 that only the first load ever pays. **Re-measure before changing this back**, and
 re-check the premise as well as the numbers — that is what was wrong last time.
 
-## The site — 17 pages, all shipped
+## The site — 20 indexable pages, all shipped
 ```
 I   · TEMPER    /         Character. Water, Gander, Kandahar.   live gauges
 II  · THE HAND  /hand     What Canada holds.                    live figures
@@ -543,6 +595,9 @@ IV  · THE BLOC  /bloc     Middle powers.                        live trade data
 V   · THE BUILD /build    Refine · Compute · Corridor + C-5.     from teamcanadawins
 
 /calculator  The bill, per province      live StatCan GDP + population
+/record      How they actually voted     the count, the party matrix, the method
+  /record/divisions  every recorded division, every party's position
+  /record/members    every member, party-line rate, every break
 /sources     The receipts                every figure, source, period, endpoint
 /fr          La trempe du Nord           BROUILLON, noindex, Act I only
 /offline     Service-worker fallback     noindex, OUT of the sitemap
@@ -748,6 +803,93 @@ dossier and 4 of 5 reads. Two traps worth remembering:
      already set Umami up.
    Until the owner decides, both ship and `/privacy` names both. Whichever way
    it goes, `tools/check-privacy.cjs` makes the page follow the config.
+
+## The record — approved 24 September 2026, v1 shipped the same day
+**Owner decisions (24 Sept 2026):** reference first, the "closest to you" tool
+is a lens on it, never the product; **federal first**, Alberta referendum
+tracker second, **BC only after the Elections BC third-party call and a
+Hansard spike**; the home is Northern Temper, not a sister site; the JS budget
+exception is granted ("adding value and not costing us"); and the daily
+refresh commits to `main` by bot, because a daily PR a person must merge is a
+record that goes stale the first week nobody does.
+
+**What ships.** `/record` is the front page: five counts, the party agreement
+matrix, the two ledgers offered as numbers, the method, a share band. It is
+the size of any other page here (49 kB, 14 kB gzipped) because share links
+land on it. `/record/divisions` (174 rows, 18 kB gzipped) and
+`/record/members` (349 rows, 26 kB gzipped) are the ledgers, split out so the
+front page stays light and so a reader searching a member's name searches a
+page that has only members on it. Every division number links to the official
+House page; every member links to OpenParliament; every break links to
+`/record/divisions#vN` and `check-internal-links` proves the id exists.
+`/api/record.json` is the whole computed record, **prerendered** (the only
+static file under `/api/`; CORS from `vercel.json`), with Dataset markup and
+three rows on `/sources` under "Counted". No client script: it is all
+rendered at build from `src/data/record/45-1.json`.
+
+**Data, probed not assumed.** OpenParliament.ca API: keyless JSON for votes,
+per-member ballots, memberships and politicians; no advertised rate limit, so
+be polite (User-Agent with contact, ~150 ms between requests, sequential).
+LEGISinfo: every federal bill and stage as JSON. Represent (Open North):
+postal code → riding → MP, 60 requests/minute free; **it returns BOTH the 2013
+and 2023 boundary sets, filter to the current one.** The official House
+division page is `https://www.ourcommons.ca/members/en/votes/45/1/N` with
+**lowercase `members`** — the capitalised path is refused with a 403 by
+their WAF, and so is anything fetched with curl's User-Agent, so `check-links`
+will report those rows unverifiable rather than dead. **BC and Alberta
+legislatures have no API**; Hansard is HTML and PDF.
+
+**Method.** Agreement math, never a spectrum: a party's position on a division
+is the majority of its cast ballots; a member's party-line rate is the share
+of their cast votes matching it (parties with fewer than three casters have
+no line, so Greens and independents are reported but not rated; members with
+fewer than twenty comparable votes are listed without a rate); pairwise
+agreement is over the divisions both parties took a position on; the party a
+member is scored against is the one they sat for on the day, from the
+membership record. **All divisions, never a curated "key votes" list** —
+curation is where bias enters. Yea/Nay count; Paired and Didn't vote are
+shown as what they are and are never a position. **The math exists in one
+copy, `src/lib/record.ts`:** the three pages and the endpoint import it, and
+`tools/record/load.cjs` bundles it with esbuild so `analyse.cjs` and
+`generate-og.cjs` call the same `compute()`.
+
+**The snapshot format** is one character per ballot: `members[]`,
+`memberships[]` (with the OpenParliament URL, so an incremental run never
+refetches one), and `votes[]` each carrying a `ballots` string of `Y/N/P/A/-`
+indexed by member position. 59,579 ballots in 174 kB, committed, diffable.
+`node tools/record/fetch.cjs 45-1` fetches only the divisions the snapshot
+lacks (a run with nothing new is about three requests) and only bumps
+`fetched` when something was; `node tools/record/analyse.cjs` prints the
+report. **`fetched` moving only on real change is what makes the workflow's
+diff gate mean something.**
+
+**Freshness.** `.github/workflows/record.yml`, 06:23 UTC Monday to Saturday
+and on demand: fetch, `git diff --quiet` gate, **`npm run build` with the new
+snapshot so all nine checkers pass before anything is committed**, commit as
+`record[bot]`, push to `main`, then dispatch `verify.yml` by hand (a
+`GITHUB_TOKEN` push triggers nothing on its own — see Conventions). `main` is
+unprotected, which is what lets the push land; if that ever changes, the bot
+needs a bypass or the workflow needs to open PRs instead.
+
+**The share card's figure is counted and dated, never typed.** `generate-og`
+reads `compute()` at generation time and prints "99.9% · party-line, 174
+divisions to 23 Sept 2026". The snapshot moves daily and a PNG cannot, so the
+date is what keeps the card true; rerun the generator when it should catch up.
+
+**What the count says (45-1, 174 divisions, 29 May 2025 → 23 Sept 2026):**
+party-line 99.9%; 307 of 344 rated members never broke; most dissent
+Erskine-Smith, 6 of 164. Conservatives agree with Liberals on 26.4% of
+divisions and with the Bloc on 51.7%; Bloc–NDP 71.1%. **159 of 174 divisions
+had zero dissent in every party; none saw any party split 10% or more.**
+128 of 174 were genuinely contested (≥ 20% on the losing side); one 164–164
+tie (26 Mar 2026). Bill C-5 third reading 306–31. The consequence for design:
+within a party there is nothing to plot, so v1 compares parties and shows the
+member ledger as the receipt. **A "graph of members" would be five dots.**
+
+**Next, in order:** the reader-as-member lens (vote on the same motions, see
+which bench you sat with; the JS exception covers it, ~5–10 kB); the Alberta
+referendum tracker; then BC, and nothing BC-provincial ships during the
+campaign without Elections BC's answer on third-party status.
 
 ## Sister projects (separate repos, do not merge in)
 - **x402-facilitator** — USDC/Base payments. Real work, zero relation to this

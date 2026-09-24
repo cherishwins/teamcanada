@@ -1,0 +1,61 @@
+---
+import Record from '../../layouts/Record.astro';
+import { compute } from '../../lib/record';
+
+/** The ledger of divisions. One row per recorded vote, every party's position on it. See /record for the method. */
+const r = compute();
+const S = r.summary;
+const day = (iso: string) => new Date(`${iso}T12:00:00Z`).toLocaleDateString('en-CA', { day: 'numeric', month: 'long', year: 'numeric' });
+const ordinal = (n: number) => `${n}${['th', 'st', 'nd', 'rd'][(n % 100 > 10 && n % 100 < 14) ? 0 : Math.min(n % 10, 4) % 4] ?? 'th'}`;
+const parl = `${ordinal(r.parliament)} Parliament`;
+
+const description =
+  `Every recorded division of the ${parl} of Canada, ${day(r.first)} to ${day(r.last)}: number, date, motion, result, ` +
+  'and each party\'s majority position with its dissent count. Each number links to the official record.';
+---
+<Record
+  title="The Record: every division" description={description} path="/record/divisions"
+  label="The record · every division" heading={`All ${S.divisions},<br>as the House recorded them.`}
+  caption={`${day(r.first)} to ${day(r.last)} · snapshot ${r.fetched.slice(0, 10)} · House of Commons of Canada, via OpenParliament.ca`}
+>
+  <p slot="lede" class="nt-lede">
+    Motion text as published. Each party column shows the position of its majority and, in brackets,
+    how many of its members voted the other way. The number links to the official record.
+  </p>
+
+  <section class="nt-light">
+    <div class="nt-wrap">
+      <section class="tw" tabindex="0" aria-label="Every recorded division, scrolls sideways">
+        <table class="ledger">
+          <thead>
+            <tr>
+              <th scope="col">No.</th><th scope="col">Date</th><th scope="col">Motion</th><th scope="col">Result</th><th scope="col">Yea–Nay</th>
+              {r.parties.map((p) => <th scope="col">{p}</th>)}
+            </tr>
+          </thead>
+          <tbody>
+            {r.divisions.map((d) => (
+              <tr id={`v${d.n}`}>
+                <td><a href={d.official}>{d.n}</a></td>
+                <td class="nowrap">{d.date}</td>
+                <td class="motion">{d.desc}</td>
+                <td class="nowrap">{d.result}</td>
+                <td class="nowrap num">{d.yea}–{d.nay}</td>
+                {r.parties.map((p) => {
+                  const pos = d.positions[p];
+                  return <td class="nowrap num">{pos ? `${pos.pos === 'Y' ? 'Yea' : 'Nay'}${pos.dissent ? ` (${pos.dissent})` : ''}` : '—'}</td>;
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </section>
+      <p class="foot">
+        A party's position is the majority of the ballots its members cast; parties with fewer than three
+        casting have none. How each member voted is on <a href="/record/members">the members ledger</a>;
+        the method, the party agreement matrix and the sources are on <a href="/record">the record's front page</a>.
+        The whole record is at <a href="/api/record.json"><code>/api/record.json</code></a>.
+      </p>
+    </div>
+  </section>
+</Record>

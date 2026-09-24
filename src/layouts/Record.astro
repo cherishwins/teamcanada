@@ -1,0 +1,96 @@
+---
+/**
+ * The record's three pages share one frame: the opener, the ground, and the
+ * ledger styling. The styles are global under `.rec` on purpose: a scoped
+ * <style> stamps `data-astro-cid-…` onto every element it might match, and on
+ * a ledger of five thousand cells that attribute alone was 154 kB of the
+ * page. Nothing else on the site uses `.rec`.
+ */
+import Base from './Base.astro';
+import Nav from '../components/Nav.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+
+interface Props {
+  title: string;
+  pageTitle?: string;
+  description: string;
+  path: string;
+  schema?: unknown[];
+  /** The small red label above the rule. */
+  label: string;
+  /** Renders inside the <h1>; may carry a <br> (bare: html-validate wants void tags unclosed). */
+  heading: string;
+  /** One line under the heading, muted. */
+  caption?: string;
+}
+const { title, pageTitle, description, path, schema, label, heading, caption } = Astro.props;
+---
+<Base title={title} pageTitle={pageTitle} description={description} path={path} ogImage="/og/record.png" schema={schema}>
+  <Nav />
+  <main id="main" class="rec">
+    <section class="open">
+      <div class="nt-wrap">
+        <div class="nt-label">{label}</div>
+        <hr class="nt-rule" />
+        <h1 class="nt-display lg" set:html={heading} />
+        <slot name="lede" />
+        {caption && <p class="nt-caption cap">{caption}</p>}
+      </div>
+    </section>
+    <slot />
+  </main>
+  <SiteFooter />
+</Base>
+
+<style is:global>
+  .rec .open { padding-block: clamp(70px, 13vh, 180px); }
+  .rec .open .nt-lede { margin-top: var(--space-4); }
+  .rec .open .cap { margin-top: var(--space-3); }
+  .rec .stats {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+    gap: clamp(22px, 3.4vw, 48px); margin: clamp(30px, 5vh, 64px) 0;
+  }
+  .rec .nt-prose { max-width: 62ch; }
+  .rec .nt-prose p + p { margin-top: var(--space-2); }
+  /* Links: the strike red on the white ground, the lifted red on the black.
+     --nt-red on black is 3.57:1; the sweep caught exactly that the moment the
+     method section moved from one ground to the other. */
+  .rec .nt-prose a, .rec .foot a { color: var(--nt-red-lift); text-underline-offset: 3px; }
+  .rec .nt-light .nt-prose a, .rec .nt-light .foot a { color: var(--nt-red); }
+  .rec .foot { margin-top: clamp(26px, 4vh, 46px); color: var(--text-muted); max-width: 62ch; }
+  .rec .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+  /* Tables scroll inside their own box, never widen the page. Keyboard-reachable regions with distinct names. */
+  .rec .tw { overflow-x: auto; margin-top: clamp(26px, 4vh, 46px); -webkit-overflow-scrolling: touch; }
+  .rec table { width: 100%; border-collapse: collapse; font-size: var(--type-body-sm); }
+  .rec caption { text-align: left; caption-side: top; margin-bottom: var(--space-2); }
+  .rec th {
+    text-align: left; font-family: var(--font-display); font-weight: var(--fw-label);
+    font-size: var(--type-label-sm); letter-spacing: var(--ls-key); text-transform: uppercase;
+    padding: 11px 13px; border-bottom: var(--border-key) solid var(--border-hairline); vertical-align: bottom;
+  }
+  .rec td { padding: 9px 13px; border-bottom: var(--border-hair) solid var(--border-hairline); vertical-align: top; }
+  .rec tbody th { font-weight: var(--fw-label); border-bottom: var(--border-hair) solid var(--border-hairline); }
+  .rec .nowrap { white-space: nowrap; }
+  .rec .num { font-variant-numeric: tabular-nums; }
+  .rec .motion { min-width: 28rem; }
+  .rec .matrix { max-width: 40rem; }
+  .rec .matrix td { font-variant-numeric: tabular-nums; }
+  .rec .matrix td.self { background: var(--border-hairline); }
+
+  /* A link in a ledger is a control: 44px tall, however small the type. */
+  .rec td a { display: inline-flex; align-items: center; min-height: 44px; min-width: 44px; color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+  .rec td a:hover { color: var(--nt-red); }
+  .rec .breaks a { margin-right: 6px; }
+
+  /* The two ledgers, offered from the front page as what they are: counts. */
+  .rec .ledgers { display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: var(--space-3); margin-top: clamp(26px, 4vh, 46px); }
+  .rec .ledgers a {
+    display: block; padding: var(--space-3) 0; text-decoration: none; color: inherit;
+    border-top: var(--border-key) solid var(--nt-red);
+  }
+  .rec .ledgers .n { font-family: var(--font-display); font-weight: var(--fw-display); font-size: clamp(44px, 6vw, 72px); line-height: .9; letter-spacing: -.01em; }
+  .rec .ledgers .k { margin-top: var(--space-2); font-family: var(--font-display); font-weight: var(--fw-label); font-size: var(--type-label); letter-spacing: var(--ls-key); text-transform: uppercase; }
+  .rec .ledgers .d { margin-top: var(--space-1); color: var(--text-muted); font-size: var(--type-body-sm); max-width: 34ch; }
+  .rec .ledgers a:hover .k { color: var(--nt-red); }
+</style>

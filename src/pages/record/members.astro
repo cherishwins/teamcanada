@@ -1,0 +1,64 @@
+---
+import Record from '../../layouts/Record.astro';
+import { compute } from '../../lib/record';
+
+/** The ledger of members. One row per member who cast a ballot, with their party-line rate and every break. See /record for the method. */
+const r = compute();
+const S = r.summary;
+const pct = (x: number | null) => (x === null ? '—' : `${(x * 100).toFixed(1)}%`);
+const day = (iso: string) => new Date(`${iso}T12:00:00Z`).toLocaleDateString('en-CA', { day: 'numeric', month: 'long', year: 'numeric' });
+const ordinal = (n: number) => `${n}${['th', 'st', 'nd', 'rd'][(n % 100 > 10 && n % 100 < 14) ? 0 : Math.min(n % 10, 4) % 4] ?? 'th'}`;
+const parl = `${ordinal(r.parliament)} Parliament`;
+
+const description =
+  `Every member of the ${parl} of Canada who cast a ballot in a recorded division: party, riding, ballots cast, ` +
+  'party-line rate, and every division where they broke with their party. Each name links to their record on OpenParliament.ca.';
+---
+<Record
+  title="The Record: every member" description={description} path="/record/members"
+  label="The record · every member" heading={`All ${r.members.length}<br>who cast a ballot.`}
+  caption={`${S.divisions} divisions, ${day(r.first)} to ${day(r.last)} · snapshot ${r.fetched.slice(0, 10)} · House of Commons of Canada, via OpenParliament.ca`}
+>
+  <p slot="lede" class="nt-lede">
+    "With party" is the share of a member's cast ballots that matched their party's majority, for members
+    with at least twenty comparable votes. "Breaks" links to each division where they did not. Paired and
+    "didn't vote" are the House's own categories.
+  </p>
+
+  <section class="nt-light">
+    <div class="nt-wrap">
+      <section class="tw" tabindex="0" aria-label="Every member's voting record, scrolls sideways">
+        <table class="ledger">
+          <thead>
+            <tr>
+              <th scope="col">Member</th><th scope="col">Party</th><th scope="col">Riding</th><th scope="col">Prov.</th>
+              <th scope="col">Cast</th><th scope="col">With party</th><th scope="col">Breaks</th><th scope="col">Paired</th><th scope="col">Didn't vote</th>
+            </tr>
+          </thead>
+          <tbody>
+            {r.members.map((m) => (
+              <tr id={`mp-${m.id}`}>
+                <td class="nowrap"><a href={m.openparliament}>{m.name}</a></td>
+                <td class="nowrap">{m.party ?? '—'}</td>
+                <td>{m.riding ?? '—'}</td>
+                <td class="nowrap">{m.province ?? '—'}</td>
+                <td class="num">{m.cast}</td>
+                <td class="num">{pct(m.rate)}</td>
+                <td class="breaks">{m.breaks.length === 0 ? '0' : m.breaks.map((n) => <a href={`/record/divisions#v${n}`}>{n}</a>)}</td>
+                <td class="num">{m.paired}</td>
+                <td class="num">{m.absent}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </section>
+      <p class="foot">
+        The party a member is scored against is the one they sat for on the day of each vote. A member with
+        fewer than twenty comparable votes, or whose party had fewer than three members casting, is listed
+        without a rate. Every division is on <a href="/record/divisions">the divisions ledger</a>; the method,
+        the party agreement matrix and the sources are on <a href="/record">the record's front page</a>.
+        The whole record is at <a href="/api/record.json"><code>/api/record.json</code></a>.
+      </p>
+    </div>
+  </section>
+</Record>

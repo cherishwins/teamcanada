@@ -23,6 +23,10 @@ figure is a figure that will eventually be wrong.
 ## Data
 
 - [The Receipts](https://northerntemper.ca/sources): every figure on the site, its source table, its reference period, and the endpoint serving it
+- [The Record](https://northerntemper.ca/record): every recorded division of the 45th Parliament, every member's ballot, counted; party positions, party-line rates, the party agreement matrix, no adjectives
+- [Every division](https://northerntemper.ca/record/divisions): the ledger of divisions, one row per recorded vote with every party's position and dissent count, each linked to the official record
+- [Every member](https://northerntemper.ca/record/members): the ledger of members, one row per MP with ballots cast, party-line rate and every break with their party
+- [Record data](https://northerntemper.ca/api/record.json): the whole record as JSON, rebuilt after each sitting day
 - [Water](https://northerntemper.ca/api/water.json): renewable internal fresh water, Canada and the United States, FAO AQUASTAT via the World Bank
 - [Economy](https://northerntemper.ca/api/figures.json): GDP, population, CPI, policy rate, USD/CAD
 - [Rivers](https://northerntemper.ca/api/rivers.json): real-time discharge at four gauges, one per major basin
