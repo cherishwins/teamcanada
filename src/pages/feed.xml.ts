@@ -19,6 +19,9 @@ interface Item {
 }
 
 const ITEMS: Item[] = [
+  { slug: 'the-red-is-the-work', title: 'The Red Is the Work', imprint: 'A reading of the leaf',
+    summary: 'The red on a maple leaf is not the leaf dying. The tree makes it, on purpose, to cover the work of taking back what it needs before winter. A reading of the flag.',
+    date: '2026-09-24' },
   { slug: 'the-closed-loop', title: 'The Closed Loop', imprint: 'NPSI · Working Paper No. 6',
     summary: 'How Canadian energy, minerals and two-ocean geography become one forty-year trade with Korea. Korea holds the silicon; Canada holds the power.',
     date: '2026-06-01' },

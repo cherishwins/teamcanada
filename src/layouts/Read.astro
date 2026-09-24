@@ -35,6 +35,10 @@ const { title, description, imprint, standfirst, path, dateline, ogImage, schema
         <slot />
       </div>
     </article>
+    {/* Anything a read wants OUTSIDE the 68ch column — a share band, most
+        likely — goes here, on the site's black ground rather than inside the
+        light article. Empty on the reads that do not use it. */}
+    <slot name="after" />
   </main>
   <SiteFooter />
 </Base>
