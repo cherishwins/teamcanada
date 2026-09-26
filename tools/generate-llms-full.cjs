@@ -50,8 +50,19 @@ function textOf(file) {
   let html = fs.readFileSync(file, 'utf8');
   html = html.replace(DROP, ' ');
   // Keep block boundaries as newlines so paragraphs survive as paragraphs.
-  html = html.replace(/<\/(p|h1|h2|h3|h4|li|tr|blockquote|div|section|figcaption)>/gi, '\n');
-  html = html.replace(/<br\s*\/?>/gi, '\n');
+  // Table cells and definition terms are boundaries too. Without them every
+  // table on the site reached this file with its cells run together
+  // ("Canadian assetKorean need it serves", "Total paid$10,401Benefits
+  // received"): the glued-words failure the sweep counts on the page, in the
+  // one file whose job is to be read by machines. A row keeps its cells on one
+  // line, separated by " | "; a term and its description each get a line.
+  html = html.replace(/<\/(th|td)>/gi, ' | ');
+  html = html.replace(/<\/(p|h1|h2|h3|h4|li|tr|blockquote|div|section|figcaption|caption|dt|dd)>/gi, '\n');
+  // A <br> can carry attributes: a scoped style stamps data-astro-cid-… onto
+  // it, and `<br\s*\/?>` missed every one of those, so every act headline
+  // broken over two lines reached this file as one glued word ("The math
+  // ofstaying together.", "We do notgo first.").
+  html = html.replace(/<br\b[^>]*>/gi, '\n');
   html = html.replace(/<[^>]+>/g, '');
   html = html
     .replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&lt;/g, '<')
@@ -61,6 +72,9 @@ function textOf(file) {
   return html
     .split('\n')
     .map((l) => l.replace(/[ \t ]+/g, ' ').trim())
+    // An empty corner cell leaves a leading separator, a row's last cell a
+    // trailing one.
+    .map((l) => l.replace(/^(\|\s*)+|(\s*\|)+$/g, ''))
     .filter(Boolean)
     // The skip link and the draft banner are furniture, not argument.
     .filter((l) => !/^(Skip to content|Menu)$/i.test(l))
@@ -133,7 +147,8 @@ for (const route of ORDER) {
   const body = textOf(target);
   if (!body) continue;
   pages++;
-  words += body.split(/\s+/).length;
+  // A cell separator is not a word.
+  words += body.split(/\s+/).filter((w) => w !== '|').length;
   parts.push(
     `\n${'='.repeat(72)}\n` +
     `${titleOf(target)}\n${ORIGIN}${route}\n` +

@@ -129,6 +129,25 @@ export const N_RESORPTION: StaticFigure = {
 };
 
 /**
+ * Bill C-5's retained GDP, per Canadian, per year. From the 2022
+ * Macdonald-Laurier Institute paper by Manucha and Tombe on full mutual
+ * recognition between provinces. A published estimate, not a release: no next
+ * edition, so no review date.
+ *
+ * /math prints it three times and /build twice. Four of those were typed as
+ * `$5,100`, and the fifth, the figure Act III's playbook section builds to,
+ * had been lost in migration: its label printed with no number above it. All
+ * five now render `display` from here. /sources shows it with its unit, "per
+ * Canadian", composed below rather than typed a second time.
+ */
+export const C5_RETAINED_GDP: StaticFigure = {
+  value: 5100,
+  display: '$5,100',
+  source: 'Macdonald-Laurier Institute',
+  period: '2022 paper',
+};
+
+/**
  * The figures /sources lists as fixed, in the order the page shows them.
  *
  * /sources used to retype each of these. It now renders this array, so a figure
@@ -160,8 +179,8 @@ export const FIXED_FIGURES: readonly (StaticFigure & { figure: string; note?: st
     note: 'The separation campaign’s own costing, used as published and scaled per person for other provinces.' },
   { figure: 'Defence floor', value: 5, display: '5% of GDP',
     source: 'NATO, Hague summit', period: '2025' },
-  { figure: 'Bill C-5 retained GDP', value: 5100, display: '$5,100 per Canadian',
-    source: 'Macdonald-Laurier Institute', period: '2022 paper' },
+  { figure: 'Bill C-5 retained GDP', ...C5_RETAINED_GDP,
+    display: `${C5_RETAINED_GDP.display} per Canadian` },
   { figure: 'Leaf nitrogen a plant takes back before the leaf falls', ...N_RESORPTION,
     note: 'Global mean across six plant types, 86 studies, about 1,000 data points. Not a maple-specific figure, and the read that cites it says “a plant”, not “a maple”.' },
 ];
