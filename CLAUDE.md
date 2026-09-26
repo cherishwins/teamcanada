@@ -887,7 +887,12 @@ dossier and 4 of 5 reads. Two traps worth remembering:
 3. **Middle-power bloc map** — static TopoJSON + inline SVG. Never Mapbox: keys,
    cost, and a tracking surface on an otherwise privacy-clean site.
 4. **Coalition** — `/join` is a `mailto:`, which costs nothing and needs no
-   backend. Only replace it if volume actually demands it.
+   backend. Only replace it if volume actually demands it. The form needs
+   scripting to open a mail app; without it the form is hidden and the address
+   is shown instead (`method="dialog"`, so a stray submit goes nowhere). It
+   used to submit to `/join` as a GET, putting the reader's email and message
+   in the address bar while the page and `/privacy` said nothing leaves the
+   browser.
    **`/sources` is the site's central claim made inspectable** — every figure,
    its source table, its reference period, and for live ones the endpoint
    serving it — **and every table ID is a link to the upstream table or

@@ -52,7 +52,18 @@ const members = [
         <hr class="nt-rule" />
         <h2 class="nt-display md" style="max-width:16ch;">Three fields. That is all we need.</h2>
 
-        <form class="jf" id="jf" novalidate>
+        {/* The form only works with scripting: it opens a mail app, and there is
+            no server to post to. Without scripting it used to submit to /join
+            as a GET, which put the reader's email and message in the address
+            bar and history, sent nothing, and said nothing, while this page
+            and /privacy promised nothing leaves the browser. method="dialog"
+            makes a submission outside a dialog do nothing at all, the script
+            still handles every real one, and readers without scripting get
+            the address instead of the form (Base.astro hides .needs-js). */}
+        <noscript>
+          <p class="nojs">Scripting is off, so this form cannot open your email app. Write to <a href={`mailto:${SITE.email}?subject=Coalition`}>{SITE.email}</a> with your business name, website and email.</p>
+        </noscript>
+        <form class="jf needs-js" id="jf" method="dialog" novalidate>
           <div class="f">
             <label for="biz">Business name</label>
             <input id="biz" name="biz" type="text" autocomplete="organization" required />
@@ -74,6 +85,7 @@ const members = [
             This opens your email client with the message ready to send — nothing
             is transmitted from this page, and no data is stored here.
           </p>
+          <p class="hint">Nothing opened? Write to <a href={`mailto:${SITE.email}?subject=Coalition`}>{SITE.email}</a>.</p>
         </form>
       </div>
     </section>
@@ -123,6 +135,8 @@ const members = [
   }
   .btn:hover { background: var(--nt-white); color: var(--nt-black); }
   .hint { grid-column: 1 / -1; color: var(--text-caption); font-size: var(--type-body-sm); max-width: 52ch; }
+  .hint a, .nojs a { color: var(--nt-red-lift); overflow-wrap: anywhere; }
+  .nojs { max-width: 52ch; margin-top: var(--space-4); }
 </style>
 
 <script define:vars={{ to: SITE.email }}>
