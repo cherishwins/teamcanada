@@ -87,8 +87,9 @@ function canonicalOf(file) {
 let pages = 0;
 for (const f of htmlFiles) {
   // The error page is served with a 404 at every missing path, where robots
-  // meta and canonicals are ignored. At its own filename it answers 200, so it
-  // carries noindex, and check-sitemap holds it to that.
+  // meta and canonicals are ignored. Its own filename redirects to /404 (the
+  // generic .html rule in vercel.json); it carries noindex regardless, and
+  // check-sitemap holds it to that.
   if (/^(404|500)\.html$/.test(rel(f))) continue;
   pages++;
   const c = canonicalOf(f);

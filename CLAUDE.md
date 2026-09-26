@@ -269,7 +269,9 @@ one file serves both colourways. **Never reference them via `<img src>`:**
   measures each maskable icon's safe zone.
 - `tools/check-sitemap.cjs` — the sitemap and the pages' robots meta must
   agree (every `.html` the build writes, not only `index.html`: `404.html`
-  answers 200 at its own filename and was indexable there), and the `X-Robots-Tag` rules in `vercel.json` must reach exactly the
+  answered 200 at its own filename, indexable, until the generic `.html`
+  redirect in `vercel.json` began sending it to `/404`; it carries `noindex`
+  now so the rule does not depend on that redirect), and the `X-Robots-Tag` rules in `vercel.json` must reach exactly the
   five machine text files, no more and no fewer.
 - `tools/check-csp.cjs` — the CSP in `vercel.json` matches the built scripts.
 - `tools/check-canonical.cjs` — one page, one URL, in the build. See the
