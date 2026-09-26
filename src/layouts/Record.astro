@@ -60,8 +60,10 @@ const { title, pageTitle, description, path, schema, label, heading, caption } =
   .rec .foot { margin-top: clamp(26px, 4vh, 46px); color: var(--text-muted); max-width: 62ch; }
   .rec .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
-  /* Tables scroll inside their own box, never widen the page. Keyboard-reachable regions with distinct names. */
-  .rec .tw { overflow-x: auto; margin-top: clamp(26px, 4vh, 46px); -webkit-overflow-scrolling: touch; }
+  /* Tables scroll inside their own box, never widen the page. Keyboard-reachable regions with distinct names.
+     Each is also a size container: whether a table fits is a question about
+     this box, not the viewport, and the ledgers below ask it. */
+  .rec .tw { overflow-x: auto; margin-top: clamp(26px, 4vh, 46px); -webkit-overflow-scrolling: touch; container-type: inline-size; }
   .rec table { width: 100%; border-collapse: collapse; font-size: var(--type-body-sm); }
   .rec caption { text-align: left; caption-side: top; margin-bottom: var(--space-2); }
   .rec th {
@@ -69,20 +71,40 @@ const { title, pageTitle, description, path, schema, label, heading, caption } =
     font-size: var(--type-label-sm); letter-spacing: var(--ls-key); text-transform: uppercase;
     padding: 11px 13px; border-bottom: var(--border-key) solid var(--border-hairline); vertical-align: bottom;
   }
-  .rec td { padding: 9px 13px; border-bottom: var(--border-hair) solid var(--border-hairline); vertical-align: top; }
+  .rec td { padding: 9px 13px; border-bottom: var(--border-hair) solid var(--border-hairline); vertical-align: baseline; }
   .rec tbody th { font-weight: var(--fw-label); border-bottom: var(--border-hair) solid var(--border-hairline); }
   .rec .nowrap { white-space: nowrap; }
   .rec .num { font-variant-numeric: tabular-nums; }
-  .rec .motion { min-width: 28rem; }
+  /* 22rem, not 28: it brings the divisions table's minimum from 1,111px to
+     1,015px, under the 66rem at which the ledgers below turn into blocks, so
+     the table holds every column from a 1,174px viewport rather than 1,235px.
+     The motion takes all the slack above that. */
+  .rec .motion { min-width: 22rem; }
   .rec .matrix { max-width: 40rem; }
+  .rec .matrix abbr { text-underline-offset: 3px; }
+  /* A row header and four columns of "26.4%" need 331px at 13px of padding
+     a side and 271px at 7; a 320px phone gives the matrix 280. */
+  @container (max-width: 24rem) { .rec .matrix th, .rec .matrix td { padding-inline: 7px; } }
   .rec .matrix td { font-variant-numeric: tabular-nums; }
   .rec .matrix td.self { background: var(--border-hairline); }
 
-  /* A link in a ledger is a control: 44px tall, however small the type. */
-  .rec td a { display: inline-flex; align-items: center; min-height: 44px; min-width: 44px; color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+  /* A link in a ledger is a control: 44px tall, however small the type. It
+     hands the cell's 9px of padding back above and below, so the 44px IS the
+     row rather than 18px on top of it, and the cells align on the baseline so
+     its text sits on the same line as the rest of the row. Aligned to the top,
+     a member's name sat 11px below their party and riding on every row. */
+  .rec td a { display: inline-flex; align-items: center; min-height: 44px; min-width: 44px; margin-block: -9px; color: inherit; text-decoration: underline; text-underline-offset: 3px; }
   .rec td a:hover { color: var(--nt-red); }
-  .rec .breaks a { margin-right: 6px; }
-  .rec .left { display: block; margin-top: 2px; font-size: var(--type-stamp); color: var(--text-muted); white-space: nowrap; }
+
+  /* The divisions a member broke on. Each is "No. 163", never a bare 163: in
+     a row of counts a bare number reads as one more count, and six of them
+     side by side read as one long number. A list, so a screen reader says how
+     many; 44px lines that touch without overlapping when they wrap. */
+  .rec .on ul { list-style: none; display: flex; flex-wrap: wrap; column-gap: 14px; margin-block: -9px; }
+  .rec .on a { margin-block: 0; white-space: nowrap; }
+  /* Free to wrap: held to one line, "Sat until September 15, 2026" set the
+     riding column's minimum and the members table's with it, 37px wider. */
+  .rec .left { display: block; margin-top: 2px; font-size: var(--type-stamp); color: var(--text-muted); }
 
   /* A break on the members ledger links to /record/divisions#vN. The row it
      lands on is marked, or a reader arriving mid-table cannot tell which of
@@ -90,6 +112,74 @@ const { title, pageTitle, description, path, schema, label, heading, caption } =
      tokens are calibrated for (a11y.css), so contrast holds on the marked row. */
   .rec tbody tr:target { background: var(--nt-n-880); box-shadow: inset 4px 0 0 var(--nt-red); }
   .rec .nt-light tbody tr:target { background: #F4F4F4; }
+
+  /* ---------- a ledger where its table does not fit ----------
+     The divisions table needs 1,015px and the members table 1,006px
+     (measured on the snapshot of 24 September 2026); a 390px phone gives
+     them 350. Scrolled sideways, a phone showed
+     No., Date and half a motion, and the result and every party's position
+     were off the edge: the ledger without its answer. Below 66rem of region
+     each row is a block instead, every value visible, nothing scrolled.
+     It is still a table. thead is hidden but kept for assistive tech, and a
+     cell whose column name the block needs carries it in data-label, shown
+     above the value. Older engines without container queries keep the
+     scrolling table, which is what shipped before. If a table's minimum
+     width grows past 66rem, raise this with it; until then the region's
+     sideways scroll is the fallback, not a failure. */
+  @container (max-width: 66rem) {
+    .rec .ledger, .rec .ledger tbody { display: block; }
+    .rec .ledger thead { display: block; position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+    /* 4px on top, not 16: the first line holds a 44px link whose own box
+       already stands 11px clear of its text. */
+    .rec .ledger tr {
+      --gx: 22px;
+      display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px var(--gx);
+      padding: 4px 0 16px; border-bottom: var(--border-hair) solid var(--border-hairline);
+    }
+    .rec .ledger td { display: block; padding: 0; border: 0; min-width: 0; overflow-wrap: anywhere; }
+    .rec .ledger td a { margin-block: 0; }
+    .rec .ledger td[data-label] { order: 2; }
+    .rec .ledger td[data-label]::before {
+      content: attr(data-label); display: block;
+      font-family: var(--font-display); font-weight: var(--fw-label); font-size: var(--type-label-sm);
+      letter-spacing: var(--ls-key); text-transform: uppercase; line-height: 1.9; color: var(--text-muted);
+      overflow-wrap: normal;
+    }
+    /* The marked row keeps its rule clear of the text it marks. */
+    .rec .ledger tr:target { padding-inline: 14px; }
+
+    /* A division: number, date and result on the first line; the motion; then the count and each party. */
+    .rec .divisions .no a::before { content: "No.\a0"; }
+    .rec .divisions .motion { min-width: 0; flex: 1 1 100%; order: 1; }
+
+    /* A member: the name, then party, province and riding (in that order so
+       the riding, last, takes the rest of the line and wraps inside it rather
+       than dropping to a line of its own); the counts; the divisions they
+       broke on. The dots are drawn, and hidden from a screen reader, which
+       has the cells to separate them. Each sits 8px from both neighbours at
+       any gap: it trails its cell, and the cell gives back the rest of the
+       gap on its right, where a line that wraps cannot push it off the edge. */
+    .rec .members .riding { order: 1; flex: 1 1 0%; }
+    .rec .members .party, .rec .members .prov { margin-right: calc(8px - var(--gx)); }
+    .rec .members .party::after, .rec .members .prov::after {
+      content: "\b7"; content: "\b7" / ""; margin-left: 8px; color: var(--text-muted);
+    }
+    .rec .members tr::after { content: ""; flex-basis: 100%; order: 1; }
+    .rec .members td.on { order: 3; flex-basis: 100%; }
+    .rec .members td.on:not(:has(a)) { display: none; }
+    .rec .members .on ul { margin-block: 0; }
+  }
+  /* On a phone the labelled values are spread across the line, 8px apart at
+     the least: five of them need 276px (members) and 284px (divisions), so
+     they hold one line from a 360px phone up, and because each is as wide as
+     its label they fall in the same place on every row, like the columns
+     they came from. Only on a phone: across a tablet they would scatter.
+     A member's name takes a line of its own here; wider, it shares one. */
+  @container (max-width: 30rem) {
+    .rec .ledger tr { --gx: 8px; justify-content: space-between; }
+    .rec .divisions .res { margin-left: auto; }
+    .rec .members td:first-child { flex-basis: 100%; }
+  }
 
   /* The two ledgers, offered from the front page as what they are: counts. */
   .rec .ledgers { display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: var(--space-3); margin-top: clamp(26px, 4vh, 46px); }

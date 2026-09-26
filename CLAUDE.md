@@ -1078,13 +1078,18 @@ record that goes stale the first week nobody does.
 
 **What ships.** `/record` is the front page: five counts, the party agreement
 matrix, the two ledgers offered as numbers, the method, a share band. It is
-the size of any other page here (49 kB, 14 kB gzipped) because share links
-land on it. `/record/divisions` (174 rows, 18 kB gzipped) and
-`/record/members` (349 rows, 26 kB gzipped) are the ledgers, split out so the
+the size of any other page here (53 kB, 15 kB gzipped) because share links
+land on it. `/record/divisions` (174 rows, 19 kB gzipped) and
+`/record/members` (349 rows, 28 kB gzipped) are the ledgers, split out so the
 front page stays light and so a reader searching a member's name searches a
 page that has only members on it. Every division number links to the official
-House page; every member links to OpenParliament; every break links to
-`/record/divisions#vN` and `check-internal-links` proves the id exists.
+House page; every member links to OpenParliament; every break is counted in
+its own column and linked, as "No. N", to `/record/divisions#vN`, and
+`check-internal-links` proves the id exists. **Where a ledger's table does not
+fit its box (under 66rem: every phone, most tablets, print) each row becomes a
+labelled block**: a container query in `Record.astro`, the table semantics
+kept, each label from the same list as its column header. Scrolled sideways, a
+phone had shown the motion and none of the positions.
 `/api/record.json` is the whole computed record, **prerendered** (the only
 static file under `/api/`; CORS from `vercel.json`), with Dataset markup and
 three rows on `/sources` under "Counted". No client script: it is all

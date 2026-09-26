@@ -28,6 +28,21 @@ export const SESSION = RECORD.session;
 /** Parties with a bench big enough to have a line. Greens (one seat) and independents are reported, not rated. */
 const MIN_BENCH = 3;
 
+/**
+ * The standard abbreviation of each party, for a column too narrow for its
+ * name, and the full name an <abbr title> expands it to. Keyed by the short
+ * name OpenParliament uses and every page prints. Not math, but the record's
+ * vocabulary, so it lives beside the math rather than in whichever page first
+ * needed it. A party missing here falls back to its short name, unabbreviated.
+ */
+export const PARTY_NAMES: Record<string, { abbr: string; name: string }> = {
+  Liberal: { abbr: 'LPC', name: 'Liberal Party of Canada' },
+  Conservative: { abbr: 'CPC', name: 'Conservative Party of Canada' },
+  Bloc: { abbr: 'BQ', name: 'Bloc Québécois' },
+  NDP: { abbr: 'NDP', name: 'New Democratic Party' },
+  Green: { abbr: 'GPC', name: 'Green Party of Canada' },
+};
+
 export interface PartyPosition { pos: 'Y' | 'N'; yes: number; no: number; dissent: number }
 export interface Division extends Vote {
   /** party short name -> how its members voted, where the bench cast >= MIN_BENCH ballots */
