@@ -93,6 +93,33 @@ const CSP = (() => {
   return rule?.headers?.find((h) => h.key.toLowerCase() === 'content-security-policy')?.value || '';
 })();
 
+/**
+ * Words run together where an inline element meets text with no space between.
+ * Astro's compressHTML drops whitespace that contains a newline next to a tag,
+ * so `lands at roughly⏎<strong>` rendered "roughly$50,047", and a reader saw
+ * "as published byOpenParliament.ca". It read fine in the source, and no
+ * checker looked at rendered word boundaries. This reads the page as laid out:
+ * only elements whose COMPUTED display is inline count, so a link styled as a
+ * block, or a flex item, is not a false alarm. <sup>/<sub> are exempt because a
+ * footnote marker is meant to touch its word.
+ */
+const GLUE_PROBE = `(() => {
+  const L = /[\\p{L}\\p{N}.,;:!?)\\]’”»]$/u, R = /^[\\p{L}\\p{N}$(\\[“‘«]/u;
+  const inline = (n) => n && n.nodeType === 1 && getComputedStyle(n).display === 'inline';
+  const textOf = (n) => (n && (n.nodeType === 3 || inline(n)) ? n.textContent : '');
+  const out = [];
+  for (const el of document.body.querySelectorAll('*')) {
+    if (/^(SCRIPT|STYLE|SUP|SUB|BR|WBR|svg)$/i.test(el.tagName) || !inline(el) || el.closest('svg,[aria-hidden="true"]')) continue;
+    if (!el.getClientRects().length) continue;   // inside a display:none parent, so not rendered at this width
+    const t = el.textContent;
+    if (!t.trim()) continue;
+    const before = textOf(el.previousSibling), after = textOf(el.nextSibling);
+    if (L.test(before) && R.test(t)) out.push(before.slice(-18) + '|' + t.slice(0, 18));
+    if (L.test(t) && R.test(after)) out.push(t.slice(-18) + '|' + after.slice(0, 18));
+  }
+  return [...new Set(out)];
+})()`;
+
 /** Runs in every document before any page script: records CSP violations. */
 const CSP_PROBE = `
   window.__csp = [];
@@ -174,6 +201,68 @@ const TAP_PROBE = () => {
  * the thing that can leave somebody looking at a stale figure on a site whose
  * whole claim is that the figures are current.
  */
+/**
+ * The phone menu and the sticky nav, at the sizes the width sweep never uses.
+ *
+ * Every viewport above is 900px tall and never opens the menu, which is how
+ * three faults shipped: on a 375x667 phone the open menu wrapped its last six
+ * links into a second column that overflow clipped, so touch could not reach
+ * The bill, The record, The reads, Receipts, Coalition or FR; the closed menu
+ * left all eleven links in the tab order at zero height; and a link to
+ * /record/divisions#v73 landed the row under the sticky bar. The nav is the
+ * same component on every page, so one page proves it.
+ */
+async function checkNavigation(browser) {
+  const problems = [];
+  for (const [w, h] of [[320, 568], [360, 640], [375, 667], [390, 664], [740, 360], [844, 390]]) {
+    const ctx = await browser.newContext({ viewport: { width: w, height: h }, serviceWorkers: 'block', hasTouch: true });
+    const page = await ctx.newPage();
+    await serve(page, () => {});
+    await page.goto('https://local.test/', { waitUntil: 'load' });
+    const exposed = await page.evaluate(() =>
+      [...document.querySelectorAll('#navmenu a')].filter((a) => getComputedStyle(a).visibility !== 'hidden').length);
+    if (exposed) problems.push(`${w}x${h}  closed menu leaves ${exposed} links in the tab order`);
+    await page.click('.toggle');
+    await page.waitForTimeout(450);   // the .3s collapse transition, and a margin
+    // A finger can only scroll the menu vertically; overflow-x is hidden. So
+    // bring each link into view by scrollTop alone, then hit-test its centre.
+    const unreachable = await page.evaluate(() => {
+      const m = document.getElementById('navmenu');
+      const out = [];
+      for (const a of m.querySelectorAll('a')) {
+        m.scrollLeft = 0;
+        m.scrollTop = Math.max(0, a.getBoundingClientRect().top - m.getBoundingClientRect().top + m.scrollTop - 8);
+        const r = a.getBoundingClientRect();
+        const x = r.left + Math.min(r.width / 2, 20), y = r.top + r.height / 2;
+        const hit = x >= 0 && x < innerWidth && y >= 0 && y < innerHeight ? document.elementFromPoint(x, y) : null;
+        if (!hit || !(hit === a || a.contains(hit))) out.push(a.textContent.trim().replace(/\s+/g, ' '));
+      }
+      return out;
+    });
+    if (unreachable.length) problems.push(`${w}x${h}  open menu: cannot reach ${unreachable.join(', ')}`);
+    // Tabbing out of the open menu must close it, not leave it drawn over the page.
+    await page.focus('#navmenu .aux li:last-child a');
+    await page.keyboard.press('Tab');
+    if ((await page.getAttribute('.toggle', 'aria-expanded')) !== 'false') problems.push(`${w}x${h}  menu stays open after focus leaves it`);
+    await ctx.close();
+  }
+  for (const [w, h] of [[390, 844], [1280, 900]]) {
+    const ctx = await browser.newContext({ viewport: { width: w, height: h }, serviceWorkers: 'block' });
+    const page = await ctx.newPage();
+    await serve(page, () => {});
+    await page.goto('https://local.test/record/divisions#v73', { waitUntil: 'load' });
+    await page.waitForTimeout(300);
+    const gap = await page.evaluate(() => {
+      const row = document.getElementById('v73');
+      return row ? row.getBoundingClientRect().top - document.querySelector('.nav').getBoundingClientRect().bottom : null;
+    });
+    if (gap === null) problems.push(`${w}x${h}  /record/divisions has no #v73 to land on`);
+    else if (gap < 0) problems.push(`${w}x${h}  /record/divisions#v73 lands ${Math.round(-gap)}px under the sticky nav`);
+    await ctx.close();
+  }
+  return problems;
+}
+
 function checkServiceWorker() {
   const sw = path.join(ROOT, 'sw.js');
   if (!fs.existsSync(sw)) return ['sw.js missing from the build'];
@@ -197,6 +286,7 @@ function checkServiceWorker() {
   const browser = await chromium.launch();
   let overflow = 0, jsErrors = 0, taps = 0, contrast = 0, missing = 0, altMissing = 0, broken = 0, axeFails = 0, cspFails = 0;
   const report = [];
+  const glued = new Set();
 
   for (const width of VIEWPORTS) {
     // Playwright does not put service-worker script fetches through page.route,
@@ -240,6 +330,12 @@ function checkServiceWorker() {
 
       for (const t of await page.evaluate(TAP_PROBE)) { taps++; report.push(`  TAP       ${width}px  ${p}  ${t.w}x${t.h}  "${t.text}"`); }
 
+      // Display can change with width (a link inline on desktop, a block on a
+      // phone), so this runs at every width; each glue is reported once.
+      for (const g of await page.evaluate(GLUE_PROBE)) {
+        if (!glued.has(`${p} ${g}`)) { glued.add(`${p} ${g}`); report.push(`  GLUED     ${width}px  ${p}  "${g}"`); }
+      }
+
       // Contrast and metadata do not change with width; check once, at 1280.
       if (width === 1280) {
         for (const c of await page.evaluate(CONTRAST_PROBE)) { contrast++; report.push(`  CONTRAST  ${p}  ${c.ratio}:1 (needs ${c.need}) ${c.px}px  "${c.text}"`); }
@@ -271,6 +367,8 @@ function checkServiceWorker() {
     await ctx.close();
     process.stdout.write(`  ${width}px ✓\n`);
   }
+  const navProblems = await checkNavigation(browser);
+  for (const m of navProblems) report.push(`  NAV       ${m}`);
   await browser.close();
 
   if (report.length) console.log('\n' + report.join('\n'));
@@ -285,7 +383,10 @@ function checkServiceWorker() {
   console.log(`  service-worker problems  ${swProblems.length}`);
   console.log(`  axe-core violations      ${axeFails}`);
   console.log(`  CSP violations           ${cspFails}`);
-  const bad = overflow + jsErrors + taps + contrast + missing + altMissing + broken + swProblems.length + axeFails + cspFails;
+  console.log(`  glued words              ${glued.size}`);
+  console.log(`  navigation problems      ${navProblems.length}`);
+  const bad = overflow + jsErrors + taps + contrast + missing + altMissing + broken + swProblems.length + axeFails + cspFails
+    + glued.size + navProblems.length;
   console.log(bad ? `\nverify: ${bad} issue(s)` : '\nverify: clean');
   process.exit(bad ? 1 : 0);
 })();

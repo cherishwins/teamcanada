@@ -124,7 +124,10 @@ one file serves both colourways. **Never reference them via `<img src>`:**
 - `src/styles/base.css` — imports the tokens, then reset, type scale, grain,
   reveal system. `a11y.css` must import last; it overrides four text roles.
 - `src/layouts/Base.astro` — head, meta, OG, JSON-LD, skip link, reveal fallback.
-- `src/components/` — `Stat`, `Meter`, `marks/{BearDual,BearHead,LeafSeal}`.
+- `src/components/` — `Stat`, `Meter`, `marks/{BearDual,BearHead,LeafSeal}`,
+  and `BarTable` — a figure that is a real table first (every value printed,
+  row and column headers) with a single-hue bar under each value; no script, no
+  image. `/read/the-vertical-squeeze` draws its three figures with it.
 - `src/lib/sources.ts` — live figures from StatCan WDS + Bank of Canada Valet.
 - `src/lib/figures.ts` — **the one place a hand-entered number is written.**
   `sources.ts` covers figures that come from an endpoint; this covers the ones
@@ -280,8 +283,13 @@ public and checkable" — it can afford neither a dash nor a silently stale numb
   `og:image:alt`, plus WCAG AA contrast and a full **axe-core** pass on all
   pages, and **serves the production CSP on every HTML response** so a policy
   that blocks the nav or the share button fails here, not in a reader's
-  browser. It exits non-zero. **Current state: clean on all ten counts.**
-  Keep it there.
+  browser. Since September 2026 it also counts **glued words** (an inline
+  element meeting text with no space, read from the laid-out page, so a
+  block-styled link is not a false alarm) and **navigation problems** (the
+  phone menu opened at six short phone sizes the width sweep never uses: every
+  link reachable by a finger, none focusable while closed, closed when focus
+  leaves it; and `/record/divisions#v73` landing below the sticky nav). It exits
+  non-zero. **Current state: clean on all twelve counts.** Keep it there.
   **`.github/workflows/verify.yml` runs all of it on every PR and every push to
   `main`**, so none of this depends on somebody remembering. The repo is public,
   so Actions minutes are free and unmetered — that is the only reason it is
@@ -608,6 +616,20 @@ public and checkable" — it can afford neither a dash nor a silently stale numb
   twice. They are a `<table>`, `<dl>`s, `.compare` cards and an `<hr>` now,
   styled in `Read.astro`, with the legacy HTML as the reference for what the
   author actually grouped. All six reads carry a page-specific share band.
+  **That sentence was untrue of `/read/the-vertical-squeeze` until September
+  2026**, and nothing could see it: its household cards printed "Total
+  paid$10,401", its section markers were loose paragraphs ("§ I — The Squeeze,
+  Specified01 / 06"), its footnote numbers ran into their sources, "Letter the
+  First" sat after the letter it introduces, and the walker's dedupe had
+  dropped the high earner's "Benefits received $0" and three of the five
+  Fit/Forward verdicts because each repeated an earlier line. Its three
+  figures had been PNG charts; the captions survived and the charts did not,
+  so the read described figures it never showed. They are `BarTable`s now,
+  drawn from Table 1 on the same page and the legacy chart's own labels, in
+  the design system's data colour rather than the dossier's copper. The glued
+  words check in the sweep is what keeps this class of fault visible.
+  **"0 words lost" was true of the walker's input and false of its output**:
+  diff the legacy text against the page, not against the walker.
 
 ## Discoverability — the point is that it travels
 Everything is CC0 and the site is built to be repeated, not protected.
