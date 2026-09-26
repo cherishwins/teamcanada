@@ -135,7 +135,11 @@ one file serves both colourways. **Never reference them via `<img src>`:**
 - `src/components/` — `Stat`, `Meter`, `marks/{BearDual,BearHead,LeafSeal}`,
   and `BarTable` — a figure that is a real table first (every value printed,
   row and column headers) with a single-hue bar under each value; no script, no
-  image. `/read/the-vertical-squeeze` draws its three figures with it.
+  image. `/read/the-vertical-squeeze` draws its three figures with it and
+  `/read/the-closed-loop` its one. Write a space after a heading's kicker and
+  between cells: layout hides a missing one, and anything that reads the text
+  rather than the layout (`llms-full.txt`, the word count) runs the words
+  together.
 - `src/lib/sources.ts` — live figures from StatCan WDS + Bank of Canada Valet.
 - `src/lib/figures.ts` — **the one place a hand-entered number is written.**
   `sources.ts` covers figures that come from an endpoint; this covers the ones
@@ -708,15 +712,16 @@ on a page built days earlier. What holds it now:
   **`/math` and `/build` carried the same debris until September 2026**, from
   the dossier in the `teamcanadawins` repo: a grid of six figures and a
   two-province comparison as thirty-nine loose `<p>`s, so no value could be
-  matched to its province; a timeline printing "Jan 2025Trump assumes office"; every
-  section kicker at the foot of the section before it; six pull quotes whose
+  matched to its province; a timeline printing "Jan 2025Trump assumes office"; eight
+  of the nine section kickers at the foot of the section before them; six pull quotes whose
   attributions read as paragraphs; the playbook's headline figure missing
   entirely, its label printing under nothing; and on `/build` the dossier's
   section rail as a sentence, with Royal Assent stated twice in a row. `/math`
   now follows the source section for section, including which sections sat on
   the dark ground, and a word diff of the source's visible text against the
-  page differs only by "Team Canada" (retired, Open item 8), the scroll cue
-  and a fleuron. A restructure changes no claim; the content questions it
+  page loses no prose. What it drops is furniture: "Team Canada" (retired,
+  Open item 8), the scroll cue, a fleuron, the fixed section rail, and a nav
+  line that repeats the colophon. A restructure changes no claim; the content questions it
   surfaced went to the owner instead of into the page.
 
 ## Discoverability — the point is that it travels

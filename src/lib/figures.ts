@@ -134,10 +134,10 @@ export const N_RESORPTION: StaticFigure = {
  * recognition between provinces. A published estimate, not a release: no next
  * edition, so no review date.
  *
- * /math prints it three times and /build twice. Four of those were typed as
- * `$5,100`, and the fifth, the figure Act III's playbook section builds to,
- * had been lost in migration: its label printed with no number above it. All
- * five now render `display` from here. /sources shows it with its unit, "per
+ * /math and /build print it, and so do their share cards. Most copies were
+ * typed as `$5,100`, and the one Act III's playbook section builds to had been
+ * lost in migration: its label printed with no number above it. Every copy
+ * now renders `display` from here. /sources shows it with its unit, "per
  * Canadian", composed below rather than typed a second time.
  */
 export const C5_RETAINED_GDP: StaticFigure = {

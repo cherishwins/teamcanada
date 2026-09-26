@@ -49,12 +49,12 @@ export const READS: ReadMeta[] = [
     slug: 'the-closed-loop', title: 'The Closed Loop', imprint: 'NPSI · Working Paper No. 6',
     blurb: 'How Canadian energy, minerals and two-ocean geography become one forty-year trade with Korea. The anchor case for the middle-power argument.',
     feed: 'How Canadian energy, minerals and two-ocean geography become one forty-year trade with Korea. Korea holds the silicon; Canada holds the power.',
-    published: '2026-05-31', words: 2647,
+    published: '2026-05-31', words: 2648,
   },
   {
     slug: 'the-vertical-squeeze', title: 'The Vertical Squeeze', imprint: 'Fit For Gov · Dossier',
     blurb: 'The order of government closest to you has the most responsibility and the least revenue. The imbalance, costed.',
-    published: '2026-05-29', words: 3718,
+    published: '2026-05-29', words: 3722,
   },
   {
     slug: 'changed-my-mind', title: 'I Campaigned Against This Man', imprint: 'An honest account',

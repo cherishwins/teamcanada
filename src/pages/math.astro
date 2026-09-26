@@ -4,7 +4,12 @@ import Nav from '../components/Nav.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import Share from '../components/Share.astro';
 import Stat from '../components/Stat.astro';
-import { FEDERAL_DEBT, C5_RETAINED_GDP } from '../lib/figures';
+import {
+  FEDERAL_DEBT, C5_RETAINED_GDP, BUILD_STATE_LOW_B, BUILD_STATE_HIGH_B, NATO_PCT, NATO_DIRECT_PCT,
+} from '../lib/figures';
+
+/** 0.035 → "3.5%", as /calculator prints its rates. */
+const pct = (x: number) => `${Number((x * 100).toFixed(1))}%`;
 
 const description =
   'Dossier No. 01 — the math of staying together, and the trap of being broken ' +
@@ -30,8 +35,10 @@ const compare: { k: string; ab: string; qc: string; hl?: boolean }[] = [
   { k: 'Population', ab: '5.0 M', qc: '9.1 M' },
   { k: 'GDP', ab: '~$500 B', qc: '~$580 B' },
   { k: 'Debt share (mid)', ab: '~$155 B', qc: '~$278 B', hl: true },
-  { k: 'Build-state cost', ab: '$98–107 B', qc: '~$60–80 B' },
-  { k: 'Defence at NATO 5%', ab: '$25 B', qc: '$27 B' },
+  // From figures.ts, which /calculator and /sources read: typed here it was
+  // "$98–107 B" beside the same figure spelled "$98–107B" there.
+  { k: 'Build-state cost', ab: `$${BUILD_STATE_LOW_B}–${BUILD_STATE_HIGH_B} B`, qc: '~$60–80 B' },
+  { k: `Defence at NATO ${pct(NATO_PCT)}`, ab: '$25 B', qc: '$27 B' },
   { k: 'Indigenous treaty exposure', ab: 'Treaties 6, 7, 8, 10', qc: 'JBNQA — hydro complex' },
   { k: 'Energy artery', ab: 'Line 5 through MI', qc: 'Line 5 through MI' },
   { k: 'Currency outcome', ab: 'Direct U.S. dollar', qc: 'Pegged to U.S. dollar' },
@@ -131,7 +138,7 @@ const receipts: [string, string][] = [
             <Stat value={"$63B"} label={"FY2025-26 defence — first time at NATO 2% since 1990s"} />
           </div>
           <div class="prose">
-            <p class="rv">NATO&#x27;s new pledge target adopted at the 2025 Hague summit: <strong>5% of GDP by 2035</strong> (3.5% direct military, 1.5% defence-related). For Canada, that&#x27;s a path to roughly $155 billion in annual defence and security spending by the end of the decade. That number is the floor under everything else in this briefing.</p>
+            <p class="rv">NATO&#x27;s new pledge target adopted at the 2025 Hague summit: <strong>{pct(NATO_PCT)} of GDP by 2035</strong> ({pct(NATO_DIRECT_PCT)} direct military, {pct(NATO_PCT - NATO_DIRECT_PCT)} defence-related). For Canada, that&#x27;s a path to roughly $155 billion in annual defence and security spending by the end of the decade. That number is the floor under everything else in this briefing.</p>
             <p class="rv">The other number worth memorizing: <strong>{C5} per Canadian, every year, in retained GDP, from a single statute that already passed</strong>. Bill C-5 — the One Canadian Economy Act — received Royal Assent on June 26, 2025, and came into full force on January 1, 2026. The 2022 Macdonald-Laurier Institute paper by Manucha and Tombe estimates full mutual recognition expands the economy by 4.4% to 7.9% in the long term — between $110 and $200 billion annually. The 7.9% upper bound is the prize. Even the lower bound is transformational. <em>And we got it without breaking up the country.</em></p>
           </div>
         </div>
@@ -189,7 +196,7 @@ const receipts: [string, string][] = [
           <hr class="nt-rule" />
           <h2 class="nt-display md">Dollarization is surrender. <em>The flag doesn&#x27;t change that.</em></h2>
           <p class="nt-lede rv">Take the two scenarios and lay them next to each other. The differences are real. The bottom line is identical.</p>
-          <section class="tw rv" tabindex="0" aria-label="Alberta and Quebec side by side, scrolls sideways">
+          <section class="tw rv" tabindex="0" aria-label="Alberta and Quebec side by side">
             <table class="compare">
               <thead>
                 <tr><td></td><th scope="col">Alberta · USD</th><th scope="col">Quebec · piastre/USD</th></tr>
@@ -392,7 +399,8 @@ const receipts: [string, string][] = [
     padding: 12px 13px; vertical-align: top; text-align: left;
   }
   .compare tbody th { font-weight: var(--fw-body-strong); width: 34%; }
-  .compare .hl td { color: var(--nt-red); font-weight: var(--fw-body-strong); }
+  /* The ground-aware accent: red on a light band, lifted red on a dark one. */
+  .compare .hl td { color: var(--text-accent); font-weight: var(--fw-body-strong); }
   @media (max-width: 520px) {
     .compare thead th, .compare thead td, .compare tbody th, .compare tbody td { padding: 10px 8px; }
   }

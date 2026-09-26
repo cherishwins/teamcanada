@@ -45,7 +45,10 @@ const path = require('path');
 const args = process.argv.slice(2);
 const aheadAt = args.indexOf('--ahead');
 const AHEAD = aheadAt >= 0 ? Number(args[aheadAt + 1]) || 0 : 0;
-const ROOT = args.find((a, i) => !a.startsWith('--') && i !== aheadAt + 1) || '.vercel/output/static';
+// The value after --ahead is its number, not the build folder. (This skipped
+// argument 0 whenever --ahead was absent, so `check-figures <dir>` quietly
+// checked the default build instead of the one it was given.)
+const ROOT = args.find((a, i) => !a.startsWith('--') && (aheadAt < 0 || i !== aheadAt + 1)) || '.vercel/output/static';
 const SRC = path.join('src', 'lib', 'figures.ts');
 
 for (const f of [SRC, ROOT]) {
