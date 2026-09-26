@@ -158,7 +158,12 @@ one file serves both colourways. **Never reference them via `<img src>`:**
   whose only asset is checkability. Each dataset carries a `short` blurb and
   **`/sources` renders its endpoint list from this array** — the list there
   was typed by hand and said "four endpoints" for as long as `water.json`
-  existed.
+  existed. **`isBasedOn` names each upstream table as a Dataset with its
+  publisher**, linked by the same `src/lib/upstream.ts` that links the IDs on
+  `/sources`, so the markup and the page cannot cite different things. It
+  used to be one bare URL per dataset, the agency's home page, which told a
+  crawler nothing a reader could check. The record's dataset lives on
+  `/record` (its `url`) and carries `sameAs` from `/sources`.
 - `src/pages/api/{figures,rivers,trade,provinces,water}.json.ts` — on-demand
   live data. `src/pages/api/record.json.ts` is **prerendered** from the
   committed snapshot, so it is a static file: its CORS header comes from
@@ -855,7 +860,7 @@ dossier and 4 of 5 reads. Two traps worth remembering:
    its source table, its reference period, and for live ones the endpoint
    serving it — **and every table ID is a link to the upstream table or
    series** (StatCan web table, Bank of Canada Valet JSON, World Bank
-   indicator JSON) via `upstream()` in `sources.astro`. Until September 2026
+   indicator JSON) via `upstream()` in `src/lib/upstream.ts`. Until September 2026
    the page named every table and linked none; the whole site hyperlinked
    seven external URLs. "Checkable" has to be one click. Where a figure has a known weakness the row says so, including
    the water vintage. Add a row whenever a new figure appears anywhere on the

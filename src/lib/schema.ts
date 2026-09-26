@@ -1,4 +1,7 @@
 import { SITE, abs } from '../config.mjs';
+import { upstream } from './upstream';
+import { SESSION } from './record';
+import OG_MANIFEST from './og-manifest.json';
 
 /**
  * Structured data.
@@ -44,7 +47,10 @@ export function articleSchema(a: ArticleMeta) {
     description: a.description,
     url: abs(a.path),
     mainEntityOfPage: { '@type': 'WebPage', '@id': abs(a.path) },
-    image: abs(a.image),
+    // The content-hashed card, the same URL og:image carries. The unhashed
+    // copy exists only so old links resolve; it is the one platforms cache
+    // stale, which is why the cards are hashed at all.
+    image: abs((OG_MANIFEST as Record<string, { src: string }>)[a.image]?.src ?? a.image),
     datePublished: a.published,
     dateModified: a.published,
     author: PERSON,
@@ -58,12 +64,34 @@ export function articleSchema(a: ArticleMeta) {
   };
 }
 
+/**
+ * The bodies whose tables the endpoints are built from. Each is a separate
+ * Organization; the old markup joined two into one name ("Statistics Canada;
+ * Bank of Canada") inside an Organization in isBasedOn, which schema.org does
+ * not allow there (validator.schema.org: 7 errors across /sources and /record).
+ */
+const AGENCY = {
+  statcan: { '@type': 'Organization', name: 'Statistics Canada', url: 'https://www.statcan.gc.ca/' },
+  boc: { '@type': 'Organization', name: 'Bank of Canada', url: 'https://www.bankofcanada.ca/' },
+  eccc: { '@type': 'Organization', name: 'Environment and Climate Change Canada', url: 'https://www.canada.ca/en/environment-climate-change.html' },
+  fao: { '@type': 'Organization', name: 'Food and Agriculture Organization of the United Nations (AQUASTAT)', url: 'https://www.fao.org/aquastat/' },
+  house: { '@type': 'Organization', name: 'House of Commons of Canada', url: 'https://www.ourcommons.ca/' },
+} as const;
+type Agency = keyof typeof AGENCY;
+
 export interface DatasetMeta {
   name: string;
   description: string;
   endpoint: string;
-  /** e.g. "Statistics Canada" */
-  provider: string;
+  /**
+   * The upstream tables and series, by the same IDs /sources prints and links.
+   * Each becomes a Dataset in isBasedOn with the agency as its creator: the
+   * site is the accurate creator of its own endpoint (the ratios, shares,
+   * totals and fallbacks are its arithmetic), and credits the originals here.
+   */
+  basedOn: { id: string; agency: Agency }[];
+  /** The page that describes this dataset, when it has its own. Omitted: /sources. */
+  landing?: string;
   /** ISO-8601 repeat interval, e.g. "PT1H" */
   frequency: string;
   keywords: string[];
@@ -95,13 +123,23 @@ export interface DatasetMeta {
   spatialCoverage: string;
 }
 
-export function datasetSchema(d: DatasetMeta) {
+/**
+ * `onPage` is the page this copy of the markup sits on. A dataset marked up on
+ * a page that is not its landing page points there with sameAs, as Google
+ * asks; the record's used to claim /sources as its url while sitting on
+ * /record, with nothing tying the two copies together.
+ */
+export function datasetSchema(d: DatasetMeta, onPage = '/sources') {
+  const landing = d.landing ?? '/sources';
+  const slug = d.endpoint.replace(/^\/api\//, '').replace(/\.json$/, '');
   return {
     '@context': 'https://schema.org',
     '@type': 'Dataset',
+    '@id': d.landing ? `${abs(landing)}#dataset` : `${abs('/sources')}#${slug}`,
     name: d.name,
     description: d.description,
-    url: abs('/sources'),
+    url: abs(landing),
+    ...(onPage !== landing ? { sameAs: abs(landing) } : {}),
     license: LICENCE,
     isAccessibleForFree: true,
     creator: PERSON,
@@ -114,9 +152,14 @@ export function datasetSchema(d: DatasetMeta) {
       encodingFormat: 'application/json',
       contentUrl: abs(d.endpoint),
     }],
-    // Where the underlying numbers actually come from. The site is a
-    // redistributor, not the source, and the markup should say that.
-    isBasedOn: { '@type': 'Organization', name: d.provider },
+    // Where the underlying numbers actually come from: each upstream table or
+    // series as a Dataset, at the URL /sources links, credited to its agency.
+    isBasedOn: d.basedOn.map((b) => ({
+      '@type': 'Dataset',
+      name: `${AGENCY[b.agency].name} ${b.id}`,
+      ...(upstream(b.id) ? { url: upstream(b.id) } : {}),
+      creator: AGENCY[b.agency],
+    })),
   };
 }
 
@@ -127,7 +170,8 @@ export const DATASETS: DatasetMeta[] = [
     endpoint: '/api/record.json',
     short: 'every recorded division and every ballot of the 45th Parliament, rebuilt after each sitting day',
     spatialCoverage: 'Canada',
-    provider: 'House of Commons of Canada; OpenParliament.ca',
+    basedOn: [{ id: `votes/${SESSION}`, agency: 'house' }],
+    landing: '/record',
     frequency: 'P1D',
     keywords: ['Canada', 'House of Commons', 'Parliament', 'recorded divisions', 'votes', 'members of Parliament', 'party discipline', 'open data'],
   },
@@ -137,7 +181,7 @@ export const DATASETS: DatasetMeta[] = [
     endpoint: '/api/water.json',
     short: 'renewable fresh water, Canada and the United States, one source and one year',
     spatialCoverage: 'Canada and the United States',
-    provider: 'FAO AQUASTAT; The World Bank',
+    basedOn: [{ id: 'ER.H2O.INTR.PC', agency: 'fao' }, { id: 'ER.H2O.INTR.K3', agency: 'fao' }],
     frequency: 'P1Y',
     keywords: ['Canada', 'United States', 'fresh water', 'renewable water resources', 'AQUASTAT', 'per capita', 'open data'],
   },
@@ -147,7 +191,10 @@ export const DATASETS: DatasetMeta[] = [
     endpoint: '/api/figures.json',
     short: 'GDP · population · CPI · policy rate · USD/CAD',
     spatialCoverage: 'Canada',
-    provider: 'Statistics Canada; Bank of Canada',
+    basedOn: [
+      { id: '36-10-0434', agency: 'statcan' }, { id: '17-10-0009', agency: 'statcan' }, { id: '18-10-0004', agency: 'statcan' },
+      { id: 'V39079', agency: 'boc' }, { id: 'FXUSDCAD', agency: 'boc' },
+    ],
     frequency: 'PT1H',
     keywords: ['Canada', 'GDP', 'population', 'inflation', 'CPI', 'exchange rate', 'open data'],
   },
@@ -157,7 +204,7 @@ export const DATASETS: DatasetMeta[] = [
     endpoint: '/api/rivers.json',
     short: 'river discharge, four gauges, every five minutes',
     spatialCoverage: 'Canada',
-    provider: 'Environment and Climate Change Canada',
+    basedOn: [{ id: 'hydrometric-realtime', agency: 'eccc' }],
     frequency: 'PT5M',
     keywords: ['Canada', 'hydrometric', 'river discharge', 'fresh water', 'open data'],
   },
@@ -167,7 +214,7 @@ export const DATASETS: DatasetMeta[] = [
     endpoint: '/api/trade.json',
     short: 'merchandise exports by trading partner, monthly',
     spatialCoverage: 'Canada',
-    provider: 'Statistics Canada',
+    basedOn: [{ id: '12-10-0011', agency: 'statcan' }],
     frequency: 'P1M',
     keywords: ['Canada', 'trade', 'exports', 'trading partners', 'open data'],
   },
@@ -177,7 +224,7 @@ export const DATASETS: DatasetMeta[] = [
     endpoint: '/api/provinces.json',
     short: 'provincial GDP and population',
     spatialCoverage: 'Canada',
-    provider: 'Statistics Canada',
+    basedOn: [{ id: '36-10-0222', agency: 'statcan' }, { id: '17-10-0009', agency: 'statcan' }],
     frequency: 'P1Y',
     keywords: ['Canada', 'provinces', 'GDP', 'population', 'open data'],
   },
