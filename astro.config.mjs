@@ -81,6 +81,9 @@ export default defineConfig({
   // alone, before counting the 730 ms that only the first load ever pays.
   // Re-measure before changing this back.
   build: { inlineStylesheets: 'always' },
+  // No page uses astro:assets; see src/lib/no-image-endpoint.ts for why the
+  // /_image route Astro adds anyway must not run Sharp for strangers.
+  image: { endpoint: { entrypoint: './src/lib/no-image-endpoint.ts' } },
   // MEASURED too, and for the same reason. 'viewport' fetched every internal
   // link a reader scrolled past: 200-310 kB on top of a page of 84-113 kB, on
   // Slow 4G at phone width, including /api/*.json (a serverless invocation

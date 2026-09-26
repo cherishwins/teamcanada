@@ -31,7 +31,13 @@
 const fs = require('fs');
 const path = require('path');
 
-const ROOT = process.argv[2] || '.vercel/output/static';
+// --ahead N: fail on a review date within the next N days, not only one that
+// has passed. The weekly job runs it with 30, so the owner hears about a figure
+// a month before the build starts failing on it, not the morning it does.
+const args = process.argv.slice(2);
+const aheadAt = args.indexOf('--ahead');
+const AHEAD = aheadAt >= 0 ? Number(args[aheadAt + 1]) || 0 : 0;
+const ROOT = args.find((a, i) => !a.startsWith('--') && i !== aheadAt + 1) || '.vercel/output/static';
 const SRC = path.join('src', 'lib', 'figures.ts');
 
 for (const f of [SRC, ROOT]) {
@@ -66,9 +72,15 @@ if (displays.length === 0) {
 }
 
 // ---- 1. Freshness.
-const today = new Date().toISOString().slice(0, 10);
+const today = new Date(Date.now() + AHEAD * 86_400_000).toISOString().slice(0, 10);
 for (const r of reviews) {
   if (r.date >= today) continue;
+  if (AHEAD && r.date >= new Date().toISOString().slice(0, 10)) {
+    const after = src.slice(r.at);
+    const note = after.match(/reviewNote:\s*\n?\s*'([^']+)'/);
+    fail.push(`a figure's reviewBy date (${r.date}) is within ${AHEAD} days; the build fails on it the day after.\n      ${note ? note[1] : ''}`);
+    continue;
+  }
   // The note lives just after its reviewBy; take the next one in the file.
   const after = src.slice(r.at);
   const note = after.match(/reviewNote:\s*\n?\s*'([^']+)'/);

@@ -21,6 +21,10 @@ on:
   # would never see a bot commit.
   workflow_dispatch:
 
+# Read-only. Nothing here writes to the repo, so nothing here should be able to.
+permissions:
+  contents: read
+
 # A new push supersedes the run in flight; no point verifying a stale commit.
 concurrency:
   group: verify-${{ github.ref }}
@@ -31,11 +35,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v4
+      # The Node version is written once, in .nvmrc (and as engines in
+      # package.json, which Vercel reads). The explicit cache stays: setup-node
+      # only caches on its own when package.json names a packageManager.
+      - uses: actions/setup-node@v7
         with:
-          node-version: 22
+          node-version-file: .nvmrc
           cache: npm
 
       - run: npm ci
@@ -49,9 +56,14 @@ jobs:
       # package.json plus X, which PRUNES anything else installed un-saved. A
       # second `--no-save` install in a later step deleted Playwright and the
       # sweep failed with "playwright not found". Install them together, once.
+      #
+      # PINNED. Unpinned, each run took whatever was newest that morning, and
+      # nothing in the repo recorded what had passed. typescript stays on 6:
+      # @astrojs/check's peer range stops there and astro check does not
+      # support 7. Bump these deliberately, in a PR, like any dependency.
       - name: Install CI-only tools
         run: |
-          npm i --no-save playwright @astrojs/check typescript html-validate
+          npm i --no-save playwright@1.63.0 @astrojs/check@0.9.10 typescript@6.0.3 html-validate@11.16.0
           npx playwright install --with-deps chromium
 
       # `npm run build` also runs check-french, check-llms, check-privacy and
@@ -95,7 +107,7 @@ jobs:
 
       - name: Upload report on failure
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: build-output
           path: .vercel/output/static
@@ -114,11 +126,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
-          node-version: 22
+          node-version-file: .nvmrc
           cache: npm
 
       - run: npm ci

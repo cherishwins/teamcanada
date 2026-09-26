@@ -1,0 +1,22 @@
+# Versions do not stay current by themselves. Every action here sat on a major
+# whose Node runtime GitHub retired, with nothing proposing the upgrade, and
+# the adapter trailed a release that fixed a cache bug vercel.json works
+# around. Dependabot opens the PR; verify.yml proves it; a person merges it.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      actions:
+        patterns: ['*']
+
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      # One PR a month for the routine bumps; a major arrives on its own.
+      minor-and-patch:
+        update-types: [minor, patch]

@@ -8,17 +8,36 @@ interface Props {
   separated?: boolean;
 }
 const { value, label, note, countTo, separated = false } = Astro.props;
+
+/**
+ * The numeral is set at up to 108px, and a grid of five stats gives each one
+ * about 210px at 1440 wide: "99.9%" ran 77px into its neighbour on /record,
+ * "$5,100" 65px on /math. So the size also follows the stat's own width (a
+ * container query), scaled to the widest unbroken run of characters in the
+ * value. Advance widths below are Oswald 700's at the numeral's own letter-
+ * spacing, measured in Chromium (the % is nearly a full em); a run never
+ * breaks, so it must fit.
+ */
+const EM: Record<string, number> = {
+  '0': 0.532, '1': 0.372, '2': 0.492, '3': 0.492, '4': 0.502, '5': 0.492, '6': 0.522, '7': 0.422, '8': 0.502, '9': 0.522,
+  '%': 0.992, '×': 0.472, '$': 0.472, ',': 0.222, '.': 0.222, '/': 0.402, '–': 0.542, '~': 0.462,
+  B: 0.572, G: 0.562, M: 0.682, W: 0.682, T: 0.432,
+};
+const em = (run: string) => [...run].reduce((w, c) => w + (EM[c] ?? 0.62), 0);
+const widest = Math.max(...String(value).split(/\s+/).map(em), 1);
 ---
-<div class="stat rv">
+<div class="stat rv" style={`--run:${widest.toFixed(2)}`}>
   <div class="n" data-count={countTo} data-sep={separated ? 'true' : undefined}>{value}</div>
   <div class="k">{label}</div>
   {note && <p class="note">{note}</p>}
 </div>
 
 <style>
+  .stat { container-type: inline-size; }
   .n {
     font-family: var(--font-display); font-weight: var(--fw-display);
     font-size: var(--type-number-xl); line-height: .84;
+    font-size: min(var(--type-number-xl), calc(96cqi / var(--run)));
     color: var(--data-strike); font-variant-numeric: tabular-nums;
     letter-spacing: var(--ls-number);
   }

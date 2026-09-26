@@ -40,10 +40,18 @@ const AXE = fs.readFileSync(require.resolve('axe-core/axe.min.js'), 'utf8');
 
 const ROOT = process.argv[2] || '.vercel/output/static';
 
-const PAGES = ['/', '/hand', '/math', '/bloc', '/build', '/calculator', '/record', '/record/divisions', '/record/members', '/sources',
-  '/read', '/read/the-closed-loop', '/read/the-vertical-squeeze', '/read/changed-my-mind',
-  '/read/two-leaders', '/read/honest-answer', '/join', '/support', '/privacy',
-  '/terms', '/fr', '/offline', '/404.html'];
+/**
+ * Every page the sitemap lists, read from the BUILT sitemap, plus the pages it
+ * deliberately leaves out. This list used to be typed, and it had silently
+ * skipped /read/the-red-is-the-work since the day that read shipped.
+ */
+const NOT_IN_SITEMAP = ['/fr', '/support', '/offline', '/404.html'];
+const PAGES = (() => {
+  const xml = fs.readdirSync(ROOT).filter((f) => /^sitemap-\d+\.xml$/.test(f)).map((f) => fs.readFileSync(path.join(ROOT, f), 'utf8')).join('');
+  const listed = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => new URL(m[1]).pathname);
+  if (!listed.length) { console.error(`verify: no sitemap pages found under ${ROOT} — build first`); process.exit(1); }
+  return [...new Set([...listed, ...NOT_IN_SITEMAP])];
+})();
 
 // 320 is the narrowest phone still in use; 2560 catches a layout that only
 // centres by accident. The middle values are the real traffic.
@@ -358,6 +366,13 @@ function checkServiceWorker() {
 
       const over = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
       if (over > 0) { overflow++; report.push(`  OVERFLOW  ${width}px  ${p}  +${over}px`); }
+      // A big numeral wider than its own stat runs into the next one without
+      // widening the page, so the check above cannot see it: "99.9%" ran 77px
+      // into its neighbour on /record at 1440 while this count read 0.
+      for (const n of await page.evaluate(() => [...document.querySelectorAll('.stat .n')]
+        .filter((n) => n.scrollWidth > n.clientWidth + 1).map((n) => `${n.textContent.trim()} +${n.scrollWidth - n.clientWidth}px`))) {
+        overflow++; report.push(`  OVERFLOW  ${width}px  ${p}  numeral "${n}"`);
+      }
 
       for (const t of await page.evaluate(TAP_PROBE)) { taps++; report.push(`  TAP       ${width}px  ${p}  ${t.w}x${t.h}  "${t.text}"`); }
 

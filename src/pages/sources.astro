@@ -130,9 +130,9 @@ const rec = compute();
 const pct = (x: number | null) => (x === null ? '—' : `${(x * 100).toFixed(1)}%`);
 const COUNTED: Row[] = [
   { figure: 'Recorded divisions, 45th Parliament', value: String(rec.summary.divisions),
-    source: 'House of Commons of Canada, via OpenParliament.ca', table: 'votes/45-1', period: `${rec.first} to ${rec.last}`, live: false },
+    source: 'House of Commons of Canada, via OpenParliament.ca', table: `votes/${rec.session}`, period: `${rec.first} to ${rec.last}`, live: false },
   { figure: 'Ballots on the record', value: fmt.format(rec.summary.ballots),
-    source: 'House of Commons of Canada, via OpenParliament.ca', table: 'votes/45-1', period: `${rec.first} to ${rec.last}`, live: false },
+    source: 'House of Commons of Canada, via OpenParliament.ca', table: `votes/${rec.session}`, period: `${rec.first} to ${rec.last}`, live: false },
   { figure: 'Party-line rate, all rated members', value: pct(rec.summary.partyLine),
     source: 'Counted from the ballots; method on /record', period: `${rec.first} to ${rec.last}`, live: false,
     note: 'A party\'s position on a division is the majority of the ballots its members cast; a member\'s rate is the share of their own that matched it. Paired and "didn\'t vote" are never a position.' },

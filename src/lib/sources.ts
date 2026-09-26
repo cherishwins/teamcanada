@@ -41,16 +41,34 @@ const OFFLINE = typeof process !== 'undefined' && process.env?.NT_OFFLINE === '1
 const BOC = 'https://www.bankofcanada.ca/valet/observations';
 const WDS = 'https://www150.statcan.gc.ca/t1/wds/rest';
 
+/**
+ * A build is a snapshot that lasts until the next deploy, so one slow answer
+ * from StatCan during a build used to leave /bloc and /calculator on their
+ * fallbacks (correctly noted, but for days): that happened to the deploy of
+ * 26 September 2026 while the same endpoints answered live minutes before and
+ * after. On a build (Vercel and GitHub Actions both set CI) each upstream gets
+ * three attempts and a longer wait. A request to /api/* gets one, so a reader
+ * never waits on retries; the edge cache covers the rest.
+ */
+const BUILD = typeof process !== 'undefined' && !!process.env?.CI;
+const ATTEMPTS = BUILD ? 3 : 1;
+const WAIT_MS = BUILD ? 12_000 : TIMEOUT_MS;
+
 async function getJSON(url: string, init?: RequestInit): Promise<unknown> {
   if (OFFLINE) throw new Error('NT_OFFLINE: upstreams disabled for this build');
-  const ctl = new AbortController();
-  const timer = setTimeout(() => ctl.abort(), TIMEOUT_MS);
-  try {
-    const res = await fetch(url, { ...init, signal: ctl.signal });
-    if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
-    return await res.json();
-  } finally {
-    clearTimeout(timer);
+  for (let attempt = 1; ; attempt++) {
+    const ctl = new AbortController();
+    const timer = setTimeout(() => ctl.abort(), WAIT_MS);
+    try {
+      const res = await fetch(url, { ...init, signal: ctl.signal });
+      if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+      return await res.json();
+    } catch (e) {
+      if (attempt >= ATTEMPTS) throw e;
+      await new Promise((r) => setTimeout(r, 1000 * 2 ** (attempt - 1)));
+    } finally {
+      clearTimeout(timer);
+    }
   }
 }
 

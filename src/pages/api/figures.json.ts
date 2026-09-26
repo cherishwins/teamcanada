@@ -1,21 +1,26 @@
 import type { APIRoute } from 'astro';
 import { getFigures } from '../../lib/sources';
+import { ALL, OPTIONS, CORS, caching, headOf, withoutQuery } from '../../lib/api';
 
 // On-demand rather than baked in at build: the whole point is that the numbers
-// are current without a redeploy. Cached at the edge for an hour, and served
-// stale for a day while revalidating, so an upstream outage is invisible.
+// are current without a redeploy. Browsers keep an answer five minutes, the
+// edge an hour, then serves it stale for a day while revalidating.
+// Public domain data, public endpoint, CORS-open: anyone may build on it. See
+// src/lib/api.ts for what every endpoint here does besides its data.
 export const prerender = false;
+export { ALL, OPTIONS };
 
-export const GET: APIRoute = async () => {
+export const GET: APIRoute = async (ctx) => {
+  const bounce = withoutQuery(ctx);
+  if (bounce) return bounce;
   const figures = await getFigures();
   return new Response(JSON.stringify(figures, null, 2), {
     headers: {
+      ...CORS,
       'Content-Type': 'application/json; charset=utf-8',
-      // A fallback answer is cached for a minute, not like a live one: an outage
-      // must not pin older published figures at the edge for the full window.
-      'Cache-Control': figures.allLive ? 'public, s-maxage=3600, stale-while-revalidate=86400' : 'public, s-maxage=60',
-      // Public domain data, public endpoint. Anyone may build on it.
-      'Access-Control-Allow-Origin': '*',
+      'Cache-Control': caching(figures.allLive, 300, 3600, 86400),
     },
   });
 };
+
+export const HEAD = headOf(GET);

@@ -273,6 +273,9 @@ const description =
   @media (max-width: 760px) {
     .bill, .bill tbody, .bill tr, .bill td, .bill th { display: block; width: auto; }
     .bill thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+    /* A table-caption inside a display:block table shrinks to its longest word:
+       64px wide and one word per line at 390px, measured. */
+    .bill caption { display: block; width: auto; }
     .bill tr { border-bottom: var(--border-key) solid var(--border-hairline); padding: var(--space-2) 0; }
     .bill th[scope='row'] { width: auto; border: 0; padding: 0 0 .5rem; font-size: 1.05rem; }
     .bill td { border: 0; padding: 0 0 .4rem; }

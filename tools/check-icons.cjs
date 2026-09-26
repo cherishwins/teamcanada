@@ -43,13 +43,18 @@ if (!fs.existsSync(SRC) || !fs.existsSync(ROOT)) {
       fail.push(`favicon-${size}.png is missing from the build`);
       continue;
     }
-    const expected = await sharp(svg, { density: 512 })
-      .resize(size, size, { fit: 'contain' })
-      .png({ compressionLevel: 9 })
-      .toBuffer();
-    if (!expected.equals(fs.readFileSync(file))) {
+    // PIXELS, not bytes. Two libvips versions encode the same pixels into
+    // different deflate streams (measured: sharp 0.34.5 against 0.35.4, 288
+    // bytes each, maximum pixel difference 0), and a byte comparison would
+    // fail the build on a dependency bump while claiming the art had changed.
+    const raw = (input) => sharp(input).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+    const want = await raw(await sharp(svg, { density: 512 }).resize(size, size, { fit: 'contain' }).png().toBuffer());
+    const got = await raw(fs.readFileSync(file));
+    let worst = want.info.width === got.info.width && want.info.height === got.info.height ? 0 : Infinity;
+    for (let i = 0; worst !== Infinity && i < want.data.length; i++) worst = Math.max(worst, Math.abs(want.data[i] - got.data[i]));
+    if (worst > 1) {
       fail.push(
-        `favicon-${size}.png no longer matches ${SRC} — run \`node tools/generate-favicons.cjs\``,
+        `favicon-${size}.png no longer matches ${SRC} (${worst === Infinity ? 'size differs' : `a channel differs by ${worst}`}) — run \`node tools/generate-favicons.cjs\``,
       );
     }
   }

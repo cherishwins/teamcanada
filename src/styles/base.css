@@ -64,6 +64,10 @@ body::after {
 .nt-display {
   font-family: var(--font-display); font-weight: var(--fw-display);
   text-transform: uppercase; line-height: var(--lh-display); letter-spacing: var(--ls-display);
+  /* Display lines set in capitals at 40-100px strand one word on the last line
+     at many widths. balance evens the lines; a browser without it wraps as
+     before. Hand-placed <br>s still break where the author put them. */
+  text-wrap: balance;
 }
 .nt-display.xl { font-size: var(--type-display-xl); }
 .nt-display.lg { font-size: var(--type-display-lg); }
