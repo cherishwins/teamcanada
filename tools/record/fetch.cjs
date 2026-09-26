@@ -21,8 +21,19 @@
  * a pause between requests, retries with backoff, and incremental — a run
  * with nothing new makes about three requests.
  *
- *   node tools/record/fetch.cjs 45-1                # incremental refresh
+ *   node tools/record/fetch.cjs                     # incremental refresh
+ *   node tools/record/fetch.cjs --count             # print the division count
+ *   node tools/record/fetch.cjs --digest            # sha256 of the snapshot, `fetched` aside
  *   node tools/record/fetch.cjs 45-1 --from-raw f   # convert a raw dump (spike)
+ *
+ * The session is named in ONE place: the snapshot src/lib/record.ts imports.
+ * It used to be typed six times, and when Parliament is prorogued or
+ * dissolved the next session's divisions go to a session nobody asks for:
+ * the daily run would report "0 new" and success for ever. So every run first
+ * asks OpenParliament for its newest division, and if that belongs to another
+ * session it FAILS, which is how the owner finds out. Starting the next
+ * session is a decision (what /record shows when a new session has three
+ * divisions), not something a bot should do on its own.
  *
  * Snapshot shape (kept flat so tools/record/analyse.cjs and src/lib/record.ts
  * can both read it without a library):
@@ -37,7 +48,8 @@
 const fs = require('fs');
 const path = require('path');
 
-const SESSION = process.argv[2] || '45-1';
+const { validate, currentSnapshotPath } = require('./validate.cjs');
+const SESSION = /^\d+-\d+$/.test(process.argv[2] || '') ? process.argv[2] : currentSnapshotPath().session;
 const FROM_RAW = (() => { const i = process.argv.indexOf('--from-raw'); return i > 0 ? process.argv[i + 1] : null; })();
 const OUT = path.join('src', 'data', 'record', `${SESSION}.json`);
 const BASE = 'https://api.openparliament.ca';
@@ -50,7 +62,9 @@ async function get(p, tries = 3) {
   const url = BASE + p + (p.includes('?') ? '&' : '?') + 'format=json';
   for (let i = 0; i < tries; i++) {
     try {
-      const r = await fetch(url, { headers: { 'User-Agent': UA, Accept: 'application/json', 'API-Version': 'v1' } });
+      // A hung connection must fail this attempt, not hold the job for undici's
+      // five-minute defaults (three attempts, per request, sequentially).
+      const r = await fetch(url, { headers: { 'User-Agent': UA, Accept: 'application/json', 'API-Version': 'v1' }, signal: AbortSignal.timeout(20_000) });
       if (r.status === 429 || r.status >= 500) throw new Error('HTTP ' + r.status);
       if (!r.ok) return null;
       await sleep(PAUSE);
@@ -121,6 +135,15 @@ function save(snap) {
 (async () => {
   const t0 = Date.now();
   const snap = load();
+  if (process.argv.includes('--count')) { console.log(snap.votes.length); return; }
+  // record.yml builds and sweeps in a job with no push rights, then fetches
+  // again in the job that has them. The two must be the same snapshot; the
+  // time it was fetched is the one field that may differ.
+  if (process.argv.includes('--digest')) {
+    const { fetched, ...rest } = snap;
+    console.log(require('crypto').createHash('sha256').update(JSON.stringify(rest)).digest('hex'));
+    return;
+  }
   const idx = indexer(snap);
   const known = new Set(snap.votes.map((v) => v.n));
 
@@ -137,6 +160,13 @@ function save(snap) {
     }
     snap.fetched = raw.fetched_at || new Date().toISOString();
   } else {
+    // 0. Is this still the session the House is sitting in?
+    const newest = (await get('/votes/?limit=1'))?.objects?.[0];
+    if (newest && newest.session !== SESSION) {
+      console.error(`record: OpenParliament's newest division is ${newest.session} no. ${newest.number} (${newest.date}); the snapshot is ${SESSION}.`);
+      console.error('A new session has begun. Decide how /record presents it, then point src/lib/record.ts at a new snapshot and run this with the new session.');
+      process.exit(1);
+    }
     // 1. Which divisions exist now? Fetch only the ones the snapshot lacks.
     const list = await all(`/votes/?session=${SESSION}`);
     const fresh = list.filter((v) => !known.has(v.number));
@@ -153,7 +183,11 @@ function save(snap) {
         const mu = x.politician_membership_url;
         if (!snap.memberships.some((m) => m.url === mu)) {
           const mem = await get(mu);
-          if (mem) {
+          // A membership that cannot be read leaves this ballot with no party
+          // to score against. Fail the run (nothing is written) and retry
+          // tomorrow, rather than save a hole that is never refetched.
+          if (!mem) throw new Error(`membership ${mu} for ${id} in division ${v.number} could not be read`);
+          {
             addMembership(snap, i, mem.party?.short_name?.en || null, mem.start_date, mem.end_date, mu);
             Object.assign(snap.members[i], { party: mem.party?.short_name?.en || snap.members[i].party, riding: mem.riding?.name?.en || snap.members[i].riding, province: mem.riding?.province || snap.members[i].province });
           }
@@ -183,6 +217,13 @@ function save(snap) {
     if (fresh.length) snap.fetched = new Date().toISOString();
   }
 
+  // Nothing is written unless the whole snapshot adds up (tools/record/validate.cjs).
+  const problems = validate(snap);
+  if (problems.length) {
+    console.error(`record ${SESSION}: not saved, ${problems.length} problem(s):`);
+    for (const p of problems.slice(0, 20)) console.error(`  ✗ ${p}`);
+    process.exit(1);
+  }
   const out = save(snap);
   const ballots = out.votes.reduce((a, v) => a + [...v.ballots].filter((c) => c !== '-').length, 0);
   console.log(`record ${SESSION}: ${out.votes.length} divisions, ${out.members.length} members, ${ballots} ballots → ${OUT} (${Math.round(fs.statSync(OUT).size / 1024)} KB) in ${Math.round((Date.now() - t0) / 1000)}s`);
