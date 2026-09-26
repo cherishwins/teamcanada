@@ -15,7 +15,7 @@ excellent one; when the excellent one costs money, see ZERO BUDGET below — it
 has to earn it first. Everything that follows in this file (seven build-time
 checkers, a ten-viewport sweep, figures written once, sources quoted from
 their abstracts) exists because of this bar. Do not lower it to finish faster.
-(That parenthesis said "seven" checkers when it was written; it is nine now,
+(That parenthesis said "seven" checkers when it was written; it is ten now,
 plus a generator that fails. Counts in prose drift; the tools do not.)
 
 ## What this is
@@ -163,7 +163,9 @@ one file serves both colourways. **Never reference them via `<img src>`:**
 - `.github/workflows/verify.yml` — build + `check-french` + `npm audit` + the
   full sweep, on every PR and every push to `main`. Free: the repo is public.
 - `tools/check-french.cjs` — Québec typography + banned-framing audit;
-  `tools/check-llms.cjs` — llms.txt shape + no-restated-figures; and
+  `tools/check-llms.cjs` — llms.txt shape + no-restated-figures, and
+  `ai.txt`'s `Data:` lines equal `src/pages/api` both ways (it said "four
+  endpoints" while six shipped, the third typed count to drift here); and
   `tools/check-docs.cjs` — **every path THIS file names must exist**; and
   `tools/check-privacy.cjs` — **`/privacy` must name exactly the analytics
   vendors the site actually ships**, and no third-party script origin may reach
@@ -175,7 +177,11 @@ one file serves both colourways. **Never reference them via `<img src>`:**
   the build ships**, in both directions, with no `'unsafe-inline'`; and
   `tools/check-internal-links.cjs` — **every same-origin `href` in the build
   must land on a page the build produced, and every `#fragment` must name an
-  id on that page.** All nine run in `npm run build` and fail it, and so does
+  id on that page**; and `tools/check-canonical.cjs` — **one page, one URL:
+  every canonical names its own page, every sitemap `<loc>` equals that
+  canonical byte for byte, every same-origin reference the build writes uses
+  it, and the other form permanently redirects.** All ten run in
+  `npm run build` and fail it, and so does
   `tools/generate-llms-full.cjs` if a sitemap page is in neither its reading
   order nor its exclusion list. Outside the build: `tools/check-links.cjs`
   (every external link the site cites, weekly, from
@@ -207,8 +213,16 @@ one file serves both colourways. **Never reference them via `<img src>`:**
   job is to prevent it.)
 - `tools/generate-favicons.cjs` — every small icon, drawn from
   `public/favicon.svg`; `tools/check-icons.cjs` — proves they still match.
-- `tools/check-sitemap.cjs` — the sitemap and the pages' robots meta must agree.
+- `tools/check-sitemap.cjs` — the sitemap and the pages' robots meta must
+  agree, and the `X-Robots-Tag` rules in `vercel.json` must reach exactly the
+  five machine text files, no more and no fewer.
 - `tools/check-csp.cjs` — the CSP in `vercel.json` matches the built scripts.
+- `tools/check-canonical.cjs` — one page, one URL, in the build. See the
+  convention "One page, one URL" below for why it exists.
+- `tools/check-urls-live.cjs` — the same claim on the real edge, weekly from
+  `links.yml`: canonical pages answer 200 with no noindex, the slash form
+  308s to them, `/llms-full.txt` carries `X-Robots-Tag: noindex`, and http,
+  www and `teamcanada.vercel.app` all land on the apex.
 - `tools/check-internal-links.cjs` — no link inside the site points at a page
   that does not exist, and no fragment points at an id that is not there
   (the members ledger links every break to `/record/divisions#vN`, and a
@@ -304,6 +318,61 @@ public and checkable" — it can afford neither a dash nor a silently stale numb
 - **Astro 7's compiler rejects unbalanced tags outright** (Astro 5 tolerated
   them). Any generated markup must balance its own anchors — an `<a href="#…">`
   that is skipped on open must not still emit its close.
+- **One page, one URL: no trailing slash, and the other form redirects.**
+  For the site's first months every page answered 200 at BOTH `/bloc` and
+  `/bloc/`. Every canonical, og:url, JSON-LD url and internal link said
+  `/bloc`; the sitemap said `/bloc/` (what `@astrojs/sitemap` writes when
+  `trailingSlash` is unset and `build.format` is `'directory'`), and so did
+  the share band on thirteen pages, because it falls back to
+  `Astro.url.pathname`. Google's own rule is "don't specify one URL in a
+  sitemap, but a different URL for that same page using rel=canonical", and
+  Search Console showed the cost in September 2026: twelve slash URLs from the
+  sitemap "Discovered, currently not indexed", and `/bloc/` and `/privacy/`
+  filed as "Alternate page with proper canonical tag". Nine checkers and a
+  ten-count sweep passed the whole time, because `check-internal-links`
+  resolves both forms to the same file and a share URL sits percent-encoded
+  inside a query string. Now `trailingSlash: 'never'` is set in
+  `astro.config.mjs` **and nowhere else**: the adapter turns it into a 308 from
+  `/x/` to `/x` ahead of the filesystem, the sitemap drops the slash, and
+  `Astro.url.pathname` loses it. Do not also set `trailingSlash` in
+  `vercel.json`; the adapter warns against having both. Two consequences:
+  `astro dev` answers `/bloc/` with a 404 (production redirects), and every
+  link written by hand must be the no-slash form, which `check-canonical`
+  enforces. **The retired default host follows the same rule:**
+  `teamcanada.vercel.app` served the whole site with no noindex, so the first
+  entry in `vercel.json` `redirects` sends it to the apex with a
+  host-conditioned 308. Its source is `/(.*)`, NOT the `/:path*` in Vercel's
+  own KB example: in the compiler Vercel uses, `/:path*` matches neither `/`
+  nor any path ending in a slash, so it would have redirected most of the site
+  and silently kept the homepage. A `has` condition cannot run on a preview
+  or under `vercel dev`, which is why `check-urls-live` exists.
+- **The five machine text files carry `X-Robots-Tag: noindex`; nothing else
+  does.** `/llms-full.txt` is 18 pages' prose in one file, 70 to 99% of
+  each one's words, and it was indexable: an extra search result that could
+  win a long-tail query as bare text/plain, with no share band, no live
+  figures and no fallback notice. It was also the only indexable copy of the
+  `/fr` BROUILLON, which the owner deliberately keeps `noindex`. `llms.txt`,
+  `ai.txt`, `humans.txt` and `LICENSE.txt` ride the same rule because none is a
+  page a searcher should land on. **This does NOT tighten access for AI
+  crawlers:** `noindex` never blocks a fetch, the named crawlers are governed
+  by `robots.txt`, and `robots.txt` still says `Allow: /` to every one of them.
+  Deliberately left alone: `/feed.xml` (its "Crawled, not indexed" status is
+  the correct resting state for a feed, and a noindexed feed has no documented
+  guarantee of still feeding discovery); `/robots.txt` and the IndexNow key;
+  `/api/*.json` (JSON is not an indexable type for Google, and Dataset Search
+  reads the markup on `/sources` and `/record`); and `/og/`, because Article
+  images must be crawlable and indexable. **The rule is one careless edit away
+  from deleting the site from Google** (a source widened to `/(.*)`), so
+  `check-sitemap` compiles every header rule with Vercel's own router, tests
+  it against every file the build wrote, every page in both spellings and
+  every `/api/` route, and fails unless the rules reach exactly these five
+  files. It counts `none` and `unavailable_after` as well as `noindex`: its
+  first version matched only the word, and a rule sending `none` to `/(.*)`,
+  which Google defines as "Equivalent to noindex, nofollow", passed with every
+  page deindexed. It fails on a missing `vercel.json` rather than skipping.
+  Proven by swapping the rule's source: `/(.*)` sending `none` fails with
+  138 violations (the first version passed it with 0), `/og/(.*)` with 41,
+  `/api/(.*)` 11, `/(.*)\.xml` 8, `/(.*)\.txt` 3, a single read 6.
 - Develop on a branch → draft PR → merge to `main`. The one exception is
   `record[bot]`, which commits a new snapshot straight to `main` after the
   build passes — see "The record".
@@ -313,7 +382,7 @@ public and checkable" — it can afford neither a dash nor a silently stale numb
   see a bot commit. `workflow_dispatch` is the one event that IS allowed to
   chain, so `verify.yml` carries it and `record.yml` dispatches it by hand
   after the push (`actions: write`). Vercel deploys from the push regardless
-  and runs the nine build checkers again on its side.
+  and runs the ten build checkers again on its side.
 - **A scoped `<style>` stamps `data-astro-cid-…` onto every element it could
   match, and on a ledger that is the page.** The first record page carried
   5,935 of them, 154 kB of a 391 kB file, on cells whose only styling was a
@@ -362,8 +431,9 @@ public and checkable" — it can afford neither a dash nor a silently stale numb
   (`<strong>Vercel</strong> Web Analytics`) would have read fine to a human and
   failed `includes()` silently. Its own negative test passed while asserting
   nothing. Every checker in `tools/` should be run once against a deliberately
-  broken input before it is trusted — all ten have been, `check-csp`,
-  `check-links` and `check-internal-links` included.
+  broken input before it is trusted — every one has been. `check-canonical`
+  failed the unmodified main build with 33 problems before it passed the
+  fix, and `check-urls-live` failed production with 6 before the fix shipped.
   **A checker can also fail for the WRONG reason, which costs just as much
   trust.** `check-privacy` stripped block comments before line comments, so a
   `//` line elsewhere in `astro.config.mjs` that happened to contain the two
@@ -522,7 +592,10 @@ Everything is CC0 and the site is built to be repeated, not protected.
 - **`/llms-full.txt`** is the entire site as one plain-text file — 18 pages,
   ~21,300 words — generated by `tools/generate-llms-full.cjs` as a **post-build
   step from the BUILT HTML**, so it can never drift from what is published. It
-  is wired into `npm run build`, so Vercel produces it too. **Every sitemap URL
+  is wired into `npm run build`, so Vercel produces it too. It is served with
+  `X-Robots-Tag: noindex` so it is read by machines and never ranked in place
+  of the pages it copies (see the convention on the machine text files).
+  **Every sitemap URL
   must be in its `ORDER` or in its `EXCLUDE` with a reason, or the build
   fails.** The first run of that check found `/privacy` and `/terms` had never
   been in the file. The two record ledgers are excluded on purpose: they are
@@ -558,7 +631,8 @@ Everything is CC0 and the site is built to be repeated, not protected.
   regenerated, the filename and its contents must match. Google ignores
   IndexNow; submit the sitemap once in Search Console instead.
 - Sitemaps are validated XML against the sitemaps.org 0.9 schema, all URLs
-  absolute on the canonical host. **`/fr` is excluded while it is `noindex`.**
+  absolute on the canonical host and in the canonical form, byte for byte
+  (`check-canonical`). **`/fr` is excluded while it is `noindex`.**
 - Structured data: WebSite on every page, Article on each read, **Dataset on the
   six public endpoints** so the figures are findable as data.
 
@@ -803,6 +877,25 @@ dossier and 4 of 5 reads. Two traps worth remembering:
      already set Umami up.
    Until the owner decides, both ship and `/privacy` names both. Whichever way
    it goes, `tools/check-privacy.cjs` makes the page follow the config.
+10. **Search Console after the one-URL fix (PR #45, September 2026).** The
+    owner's reports on 20 Sept showed 12 slash URLs "Discovered, not indexed"
+    and `/bloc/` and `/privacy/` as alternates; the cause and fix are under
+    the convention "One page, one URL". After the merge deploys: run the
+    `weekly` workflow by hand and require its `urls-live` job green (the only
+    proof of the host redirect and the text-file header on the real edge);
+    resubmit `https://northerntemper.ca/sitemap-index.xml` (expect 20 pages,
+    only the root ending in a slash); URL-inspect and Request indexing the
+    no-slash URLs, never-crawled ones first, once each, stopping at the daily
+    quota. **Expected, not errors:** "Page with redirect" grows to about 19
+    slash URLs; "Alternate page" drops to 0; the noindex row gains the five
+    machine text files; `/feed.xml` stays "Crawled, not indexed". **Never** use
+    Removals for this. Still the owner's: the old dossier on
+    `teamcanadawins.netlify.app` and `teamcanadawins.vercel.app` is live,
+    indexable, self-canonical and about 95% the same text as `/math`; a
+    permanent redirect to `/math` is written but uncommitted in that repo
+    (a push there was refused by permissions), and it should land before
+    `/math` is requested. The GitHub "Website" fields on both repos still
+    point at the old vercel.app hosts.
 
 ## The record — approved 24 September 2026, v1 shipped the same day
 **Owner decisions (24 Sept 2026):** reference first, the "closest to you" tool
@@ -865,7 +958,7 @@ diff gate mean something.**
 
 **Freshness.** `.github/workflows/record.yml`, 06:23 UTC Monday to Saturday
 and on demand: fetch, `git diff --quiet` gate, **`npm run build` with the new
-snapshot so all nine checkers pass before anything is committed**, commit as
+snapshot so all ten checkers pass before anything is committed**, commit as
 `record[bot]`, push to `main`, then dispatch `verify.yml` by hand (a
 `GITHUB_TOKEN` push triggers nothing on its own — see Conventions). `main` is
 unprotected, which is what lets the push land; if that ever changes, the bot

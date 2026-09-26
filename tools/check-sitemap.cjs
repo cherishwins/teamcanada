@@ -18,6 +18,15 @@
  * So: read the built sitemap, read the robots meta on every page it lists, and
  * fail on any disagreement. Also fail the other way — a sitemap that has gone
  * empty, or lost pages that are perfectly indexable, is its own bug.
+ *
+ * A page can also be noindexed by a HEADER. vercel.json sends
+ * `X-Robots-Tag: noindex` on the five machine text files (llms-full.txt is
+ * 18 pages' prose in one file, and the only indexable copy of the /fr
+ * draft). That rule is one careless edit from noindexing the site: widen its
+ * source to "/(.*)" and every page disappears from Google while every page
+ * still reads "index, follow". So the header rules are compiled with Vercel's
+ * own router, tested against every path the deploy can answer, and must reach
+ * exactly those five files.
  */
 const fs = require('fs');
 const path = require('path');
@@ -66,6 +75,20 @@ function fileFor(url) {
   return null;
 }
 
+/**
+ * Does a robots value keep the URL out of the index? Google's own list:
+ * `noindex`; `none`, "Equivalent to noindex, nofollow"; and `unavailable_after`,
+ * which is `noindex` on a timer. Matching the word `noindex` alone let a rule
+ * sending `none` to every page pass. Parsed by directive, not by word, because
+ * `max-image-preview:none` is an image setting and must not trip it.
+ */
+function blocksIndex(value) {
+  return String(value).toLowerCase().split(',').some((t) => {
+    const d = t.trim().replace(/^(?!max-|unavailable_after)[a-z0-9_-]+\s*:\s*/, ''); // drop a "googlebot:" prefix
+    return d === 'noindex' || d === 'none' || d.startsWith('unavailable_after');
+  });
+}
+
 function robotsOf(html) {
   const m = html.match(/<meta[^>]+name=["']robots["'][^>]*>/i);
   if (!m) return '';
@@ -82,7 +105,7 @@ for (const url of [...locs].sort()) {
     continue;
   }
   const robots = robotsOf(fs.readFileSync(file, 'utf8'));
-  if (/\bnoindex\b/.test(robots)) {
+  if (blocksIndex(robots)) {
     fail.push(
       `${url} is in the sitemap but the page says "${robots}". ` +
         `Submitting a URL while telling crawlers not to index it is a contradictory signal — ` +
@@ -96,7 +119,10 @@ for (const url of [...locs].sort()) {
 // ---- 2. Nothing indexable may be MISSING from the sitemap.
 // The opposite failure, and just as quiet: a page ships, nothing links to it
 // from the sitemap, and it waits forever to be discovered.
-const inSitemap = new Set([...locs].map((u) => new URL(u).pathname));
+// Compare paths, not spellings: /bloc and /bloc/ name the same built page.
+// Whether the sitemap uses the canonical spelling is check-canonical's claim.
+const norm = (p) => p.replace(/(.)\/$/, '$1');
+const inSitemap = new Set([...locs].map((u) => norm(new URL(u).pathname)));
 const orphans = [];
 (function walk(dir) {
   for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -104,15 +130,74 @@ const orphans = [];
     if (e.isDirectory()) { walk(p); continue; }
     if (e.name !== 'index.html') continue;
     const rel = path.relative(ROOT, p).replace(/index\.html$/, '');
-    const pathname = '/' + rel.replace(/\\/g, '/');
+    const pathname = norm('/' + rel.replace(/\\/g, '/'));
     if (inSitemap.has(pathname)) continue;
-    if (/\bnoindex\b/.test(robotsOf(fs.readFileSync(p, 'utf8')))) continue; // correctly excluded
+    if (blocksIndex(robotsOf(fs.readFileSync(p, 'utf8')))) continue; // correctly excluded
     orphans.push(pathname);
   }
 })(ROOT);
 
 for (const o of orphans) {
   fail.push(`${o} is indexable but is NOT in the sitemap — nothing will point Google at it`);
+}
+
+// ---- 3. X-Robots-Tag reaches EXACTLY the five machine text files.
+// Exact in both directions, the way check-csp is. Testing only the pages let a
+// rule on /og/ (Article images must be indexable), /feed.xml, robots.txt or
+// /api/ pass, and a missing vercel.json skipped the whole check. So every
+// path the deploy can answer is tested: each file the build wrote, each page
+// in both spellings, and each on-demand endpoint.
+const NOINDEX_BY_HEADER = ['/LICENSE.txt', '/ai.txt', '/humans.txt', '/llms-full.txt', '/llms.txt'];
+const VERCEL_JSON = process.argv[3] || 'vercel.json';
+if (!fs.existsSync(VERCEL_JSON)) {
+  console.error(`check-sitemap: ${VERCEL_JSON} not found — the X-Robots-Tag rules cannot be checked`);
+  process.exit(1);
+}
+let getTransformedRoutes;
+try {
+  ({ getTransformedRoutes } = require('@vercel/routing-utils')); // ships with @astrojs/vercel
+} catch {
+  console.error('check-sitemap: @vercel/routing-utils not found — it ships with @astrojs/vercel; run npm ci');
+  process.exit(1);
+}
+const vercel = JSON.parse(fs.readFileSync(VERCEL_JSON, 'utf8'));
+if (vercel.routes) fail.push(`${VERCEL_JSON} uses "routes", which this check does not read — write headers under "headers"`);
+const { routes, error } = getTransformedRoutes({ headers: vercel.headers || [] });
+let headerRules = 0;
+if (error) {
+  fail.push(`${VERCEL_JSON} headers do not compile: ${error.message || error}`);
+} else {
+  const noindexRoutes = routes.filter((r) => r.headers && Object.entries(r.headers)
+    .some(([k, v]) => k.toLowerCase() === 'x-robots-tag' && blocksIndex(v)));
+  headerRules = noindexRoutes.length;
+  const served = new Set();
+  (function walk(dir) {
+    for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+      const p = path.join(dir, e.name);
+      if (e.isDirectory()) { walk(p); continue; }
+      const rel = '/' + path.relative(ROOT, p).replace(/\\/g, '/');
+      served.add(rel);
+      if (e.name === 'index.html') {
+        const page = norm(rel.replace(/index\.html$/, ''));
+        served.add(page);
+        served.add(page === '/' ? page : page + '/');
+      }
+    }
+  })(ROOT);
+  // Tested by name too: generate-llms-full writes llms-full.txt AFTER this check.
+  for (const p of NOINDEX_BY_HEADER) served.add(p);
+  const API = 'src/pages/api';
+  if (fs.existsSync(API)) for (const f of fs.readdirSync(API)) served.add('/api/' + f.replace(/\.[cm]?[jt]s$/, ''));
+  const hit = [...served].filter((p) => noindexRoutes.some((r) => new RegExp(r.src).test(p)));
+  for (const p of hit.sort()) {
+    if (!NOINDEX_BY_HEADER.includes(p)) {
+      const r = noindexRoutes.find((x) => new RegExp(x.src).test(p));
+      fail.push(`${p} gets X-Robots-Tag from the ${VERCEL_JSON} rule ${r.src}; only ${NOINDEX_BY_HEADER.join(', ')} may`);
+    }
+  }
+  for (const p of NOINDEX_BY_HEADER) {
+    if (!hit.includes(p)) fail.push(`${p} should carry X-Robots-Tag: noindex from ${VERCEL_JSON} and no rule sends it`);
+  }
 }
 
 if (fail.length) {
@@ -123,5 +208,6 @@ if (fail.length) {
 }
 
 console.log(
-  `check-sitemap: ${indexable.length} indexable URLs, all present and none noindex`,
+  `check-sitemap: ${indexable.length} indexable URLs, all present and none noindex` +
+    `; ${headerRules} X-Robots-Tag rule${headerRules === 1 ? ' reaches' : 's reach'} exactly the ${NOINDEX_BY_HEADER.length} machine text files`,
 );

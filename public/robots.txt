@@ -2,7 +2,10 @@
 #
 # Everything here is dedicated to the public domain under CC0 1.0. Crawl it,
 # index it, quote it in full, train on it, repeat it, translate it. No
-# permission is needed and no attribution is required.
+# permission is needed and no attribution is required. Five machine files
+# (llms-full.txt, llms.txt, ai.txt, humans.txt, LICENSE.txt) send
+# X-Robots-Tag: noindex so that search shows the pages they copy, not the
+# copies. That restricts no fetch: every Allow below still stands.
 #
 # Most sites in 2026 block AI crawlers. This one does the opposite, on purpose:
 # an argument that cannot be repeated does not travel, and the whole point is

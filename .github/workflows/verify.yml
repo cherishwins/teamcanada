@@ -87,9 +87,9 @@ jobs:
       - name: Audit dependencies
         run: npm audit --audit-level=high
 
-      # 20 pages x 10 viewports: overflow, console errors, tap targets,
-      # contrast, broken references, og:image:alt, the service worker, and
-      # axe-core. Exits non-zero on any of the nine.
+      # Every page x 10 viewports: overflow, console errors, tap targets,
+      # contrast, pages served, broken references, og:image:alt, the service
+      # worker, axe-core and CSP violations. Exits non-zero on any of the ten.
       - name: Sweep
         run: node tools/verify.cjs
 

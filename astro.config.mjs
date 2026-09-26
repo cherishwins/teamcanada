@@ -8,6 +8,14 @@ import { SITE } from './src/config.mjs';
 export default defineConfig({
   site: SITE.origin,
   output: 'static',
+  // One page, one URL: /bloc, never /bloc/. Every canonical, og:url and
+  // internal link already said /bloc while the sitemap and the share band said
+  // /bloc/, and Search Console filed the slash URLs as alternates and left the
+  // rest undiscovered. 'never' makes the Vercel adapter 308 /x/ to /x ahead of
+  // the filesystem and makes the sitemap drop the slash. Set it HERE ONLY: the
+  // adapter warns if vercel.json sets trailingSlash too. tools/check-canonical
+  // fails the build if any form but the canonical one is ever written again.
+  trailingSlash: 'never',
   // TWO analytics vendors now ship on every page, and that is a live decision
   // rather than a settled one — see CLAUDE.md. Umami has always been here.
   // Vercel Web Analytics was removed once as redundant, then re-enabled
