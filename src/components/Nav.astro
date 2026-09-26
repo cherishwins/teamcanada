@@ -123,7 +123,15 @@ const here = (h: string) => {
      the last six links into a second column that overflow clipped, and touch
      could not reach them. Without JavaScript none of this applies (see the
      <noscript> rule in Base.astro): the toggle is hidden and the menu stays open. */
-  @media (max-width: 920px) {
+  /* The menu collapses wherever the full row cannot sit on one line. It
+     fits from 1219px; below that it wrapped under the brand or onto two
+     lines, and from 921 to 1239px the sticky nav stood 124 to 184px tall,
+     up to a quarter of a laptop screen, with a division link landing
+     beneath it. 1280 leaves room for fonts to render a little wider on
+     another platform. Base.astro's noscript rule and the matchMedia below
+     name the same width; tools/verify.cjs fails if the row wraps anywhere
+     it is shown. */
+  @media (max-width: 1279px) {
     .toggle { display: flex; }
     .menu {
       flex-basis: 100%; margin-left: 0; flex-direction: column; align-items: flex-start; flex-wrap: nowrap;
@@ -137,6 +145,9 @@ const here = (h: string) => {
     ul { flex-direction: column; flex-wrap: nowrap; gap: 0; width: 100%; }
     .aux { padding-left: 0; border-left: 0; border-top: var(--border-hair) solid var(--border-hairline); width: 100%; }
     .menu a { padding: 13px 0; font-size: 13px; width: 100%; }
+    /* The desktop rule centres "FR" in its 24px minimum; given the whole row
+       here, it sat centred under a column of left-aligned links. */
+    .menu a.lang { justify-content: flex-start; padding-left: 0; }
     .nav[data-open='true'] .bars { transform: rotate(45deg); }
     .nav[data-open='true'] .bars::before { opacity: 0; }
     .nav[data-open='true'] .bars::after { transform: rotate(-90deg) translateX(-5px); }
@@ -168,5 +179,5 @@ const here = (h: string) => {
     if (nav.dataset.open === 'true' && !nav.contains(e.relatedTarget as Node | null)) set(false);
   });
   // Widening past the breakpoint closes it, so it does not come back open.
-  matchMedia('(min-width: 921px)').addEventListener('change', (e) => { if (e.matches) set(false); });
+  matchMedia('(min-width: 1280px)').addEventListener('change', (e) => { if (e.matches) set(false); });
 </script>

@@ -227,6 +227,28 @@ const TAP_PROBE = () => {
  */
 async function checkNavigation(browser) {
   const problems = [];
+  // Wherever the full row is shown (no toggle), it must be ONE row, beside
+  // the brand. From 921 to 1239px it was not: the links dropped under the
+  // brand or wrapped onto two lines, the sticky nav stood up to 184px tall,
+  // and the sweep's widths (1024, 1280) never landed where it showed. So
+  // every 16px from 900 to 1600, not only the sweep's ten widths.
+  {
+    const ctx = await browser.newContext({ viewport: { width: 1600, height: 900 }, serviceWorkers: 'block' });
+    const page = await ctx.newPage();
+    await serve(page, () => {});
+    await page.goto('https://local.test/', { waitUntil: 'load' });
+    for (let w = 900; w <= 1600; w += 16) {
+      await page.setViewportSize({ width: w, height: 900 });
+      const r = await page.evaluate(() => {
+        if (getComputedStyle(document.querySelector('.nav .toggle')).display !== 'none') return null;
+        const brand = document.querySelector('.nav .brand').getBoundingClientRect();
+        const tops = [...document.querySelectorAll('#navmenu a')].map((a) => a.getBoundingClientRect().top);
+        return { rows: new Set(tops.map((t) => Math.round(t / 4))).size, under: tops.some((t) => t >= brand.bottom) };
+      });
+      if (r && (r.rows > 1 || r.under)) problems.push(`${w}px  the desktop nav is not one row beside the brand (${r.rows} row${r.rows > 1 ? 's' : ''}${r.under ? ', under the brand' : ''}); raise the breakpoint in Nav.astro`);
+    }
+    await ctx.close();
+  }
   for (const [w, h] of [[320, 568], [360, 640], [375, 667], [390, 664], [740, 360], [844, 390]]) {
     const ctx = await browser.newContext({ viewport: { width: w, height: h }, serviceWorkers: 'block', hasTouch: true });
     const page = await ctx.newPage();

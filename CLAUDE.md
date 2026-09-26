@@ -357,9 +357,13 @@ on a page built days earlier. What holds it now:
   block-styled link is not a false alarm) and **navigation problems** (the
   phone menu opened at six short phone sizes the width sweep never uses: every
   link reachable by a finger, none focusable while closed, closed when focus
-  leaves it; `/record/divisions#v73` landing below the sticky nav; and the menu
+  leaves it; `/record/divisions#v73` landing below the sticky nav; the menu
   working while a third-party script is stalled for eight seconds, which it
-  did not while Umami loaded with `defer`), and **broken table grids** (a row
+  did not while Umami loaded with `defer`; and the desktop row sitting on one
+  line beside the brand at every 16px from 900 to 1600, which it did not from
+  921 to 1239px, where the sticky nav stood up to 184px tall. The menu now
+  collapses below 1280: `Nav.astro`, its `matchMedia` and Base's noscript
+  rule name that width), and **broken table grids** (a row
   that is shown with one of its cells not rendered: the ledgers' phone layout
   hid an empty cell with `display:none`, and 312 member rows then read every
   later value to a screen reader under the wrong header; axe builds its grid
