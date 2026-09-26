@@ -162,9 +162,18 @@ one file serves both colourways. **Never reference them via `<img src>`:**
   styles, global under `.rec` on purpose), `src/pages/record/index.astro`
   (the front page), `src/pages/record/divisions.astro` and
   `src/pages/record/members.astro` (the ledgers), `tools/record/fetch.cjs`
-  (incremental snapshot writer), `tools/record/load.cjs` (bundles `record.ts`
-  for CommonJS tools), `tools/record/analyse.cjs` (the report),
-  `.github/workflows/record.yml` (the daily refresh). See "The record" below.
+  (incremental snapshot writer), `tools/record/validate.cjs` (the snapshot
+  must add up; run before every write and in every build),
+  `tools/record/load.cjs` (bundles `record.ts` for CommonJS tools),
+  `tools/record/analyse.cjs` (the report), `.github/workflows/record.yml`
+  (the daily refresh). See "The record" below.
+- `.github/dependabot.yml` — monthly PRs for GitHub Actions and npm, grouped.
+  Every action sat on a major whose Node runtime GitHub had retired, and the
+  adapter trailed a release that fixed a bug `vercel.json` works around, with
+  nothing proposing either upgrade.
+- `.nvmrc` and `engines` in `package.json` — **the Node version, written
+  once.** CI reads `.nvmrc`; Vercel reads `engines` for the build and the
+  functions. It was declared nowhere, and three machines each chose.
 - `legacy/` — the previous primestrength.ca static site. **Not deployed.**
   Content still to migrate: `legacy/read/*.html` (5 long-form pieces),
   `legacy/fr/index.html`, `legacy/join.html`.
@@ -628,7 +637,9 @@ on a page built days earlier. What holds it now:
   repeat visit revalidated a file whose name is its content hash. It is now an
   explicit rule in `vercel.json`, as are the content-hashed OG cards. Check a
   header on the deploy, not in the config: the config said one thing and the
-  edge did another.
+  edge did another. (The cause was the adapter writing that route after
+  `handle: filesystem`; `@astrojs/vercel` 11.0.11 fixed the order. The
+  `vercel.json` rule stays as the belt to that brace.)
 - **Valid HTML, by the spec.** `html-validate` runs in CI on every built page
   (`.htmlvalidate.json`; `no-inline-style` off because the stylesheet is
   inlined by design). Its first run found twelve `<th>` without `scope` in one
@@ -1046,12 +1057,41 @@ report. **`fetched` moving only on real change is what makes the workflow's
 diff gate mean something.**
 
 **Freshness.** `.github/workflows/record.yml`, 06:23 UTC Monday to Saturday
-and on demand: fetch, `git diff --quiet` gate, **`npm run build` with the new
-snapshot so every build checker passes before anything is committed**, commit as
-`record[bot]`, push to `main`, then dispatch `verify.yml` by hand (a
-`GITHUB_TOKEN` push triggers nothing on its own — see Conventions). `main` is
-unprotected, which is what lets the push land; if that ever changes, the bot
-needs a bypass or the workflow needs to open PRs instead.
+and on demand, in **two jobs**. `fetch` holds a read-only token and no git
+credential: `npm ci`, fetch, `git diff --quiet` gate, **`npm run build` with
+the new snapshot, then html-validate and the full sweep, all before anything
+reaches `main`** (the sweep used to run only after the bot had pushed and
+Vercel had deployed). `publish` can push and runs no npm code at all:
+`fetch.cjs` needs only Node's built-ins, so it fetches again, must reach the
+same snapshot by digest (`--digest`, the `fetched` stamp aside), commits as
+`record[bot]`, rebases onto `main` if a human merged meanwhile, pushes, and
+dispatches `verify.yml` by hand (a `GITHUB_TOKEN` push triggers nothing on its
+own; see Conventions). `main` is unprotected, which is what lets the push land;
+if that ever changes, the bot needs a bypass or the workflow needs to open PRs
+instead.
+
+**The session is named once**, in the snapshot `src/lib/record.ts` imports;
+`fetch.cjs`, `validate.cjs`, the workflow and `/sources` all read it from
+there (it used to be typed six times). **Every run first asks OpenParliament
+for its newest division, and if it belongs to another session the run FAILS.**
+Before this, a prorogation or an election would have left the bot reporting
+"0 new" and success every morning while the House voted in a session nobody
+fetched. Starting the next session is the owner's decision (what `/record`
+shows when a session has three divisions), so the bot stops and asks.
+**Nothing is written unless the snapshot validates**: Yea/Nay/Paired count to
+each division's totals, one ballot slot per member, every cast ballot inside a
+membership, divisions 1..N with no gap. A known division is never refetched,
+so a half-fetched one used to be permanent. OpenParliament lists Bill Blair as
+"didn't vote" in seven divisions after his membership ended on 2 February
+2026; a non-vote is never scored against a party, so that is left as recorded.
+
+**Scheduled workflows switch themselves off after 60 quiet days**, and the
+House rises for about 90 each summer. When nothing has touched `main` for 45
+days, `publish` commits one dated line to `.github/heartbeat`. **Daily rebuild
+is one secret away**: with a Vercel Deploy Hook stored as
+`VERCEL_DEPLOY_HOOK`, `publish` requests a rebuild on every morning with no new
+division, so build-time figures are never more than a day old. Until the owner
+creates it, the step says so in the run log.
 
 **The share card's figure is counted and dated, never typed.** `generate-og`
 reads `compute()` at generation time and prints "99.9% · party-line, 174

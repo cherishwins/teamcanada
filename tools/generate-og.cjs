@@ -1,4 +1,12 @@
-const { chromium } = require('/opt/node22/lib/node_modules/playwright');
+// Playwright is not in package.json (see verify.cjs); resolve whichever copy is
+// installed. This used to require one sandbox's absolute path and nothing else,
+// so the cards could only be redrawn on that one machine.
+const { chromium } = (() => {
+  for (const id of ['playwright', '@playwright/test', '/opt/node22/lib/node_modules/playwright']) {
+    try { return require(id); } catch {}
+  }
+  throw new Error('generate-og: Playwright not found. Install it without saving: npm i --no-save playwright');
+})();
 const fs=require('fs'),path=require('path'),crypto=require('crypto');
 const ROOT=process.argv[2] || 'public', OUT=process.argv[3] || 'public/og';
 
