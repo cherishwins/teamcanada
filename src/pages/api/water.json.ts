@@ -11,7 +11,9 @@ export const GET: APIRoute = async () => {
   return new Response(JSON.stringify(water, null, 2), {
     headers: {
       'Content-Type': 'application/json; charset=utf-8',
-      'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=604800',
+      // A fallback answer is cached for a minute, not like a live one: an outage
+      // must not pin older published figures at the edge for the full window.
+      'Cache-Control': water.live ? 'public, s-maxage=86400, stale-while-revalidate=604800' : 'public, s-maxage=60',
       // Public domain data, public endpoint. Anyone may build on it.
       'Access-Control-Allow-Origin': '*',
     },
