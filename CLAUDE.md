@@ -260,9 +260,12 @@ one file serves both colourways. **Never reference them via `<img src>`:**
   file was renamed — the same drift this repo keeps catching, in the file whose
   job is to prevent it.)
 - `tools/generate-favicons.cjs` — every small icon, drawn from
-  `public/favicon.svg`; `tools/check-icons.cjs` — proves they still match.
+  `public/favicon.svg`, and the maskable manifest icons, drawn from
+  `LeafSeal.astro`; `tools/check-icons.cjs` — proves they still match, and
+  measures each maskable icon's safe zone.
 - `tools/check-sitemap.cjs` — the sitemap and the pages' robots meta must
-  agree, and the `X-Robots-Tag` rules in `vercel.json` must reach exactly the
+  agree (every `.html` the build writes, not only `index.html`: `404.html`
+  answers 200 at its own filename and was indexable there), and the `X-Robots-Tag` rules in `vercel.json` must reach exactly the
   five machine text files, no more and no fewer.
 - `tools/check-csp.cjs` — the CSP in `vercel.json` matches the built scripts.
 - `tools/check-canonical.cjs` — one page, one URL, in the build. See the
