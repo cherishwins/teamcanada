@@ -1,25 +1,11 @@
 ---
 import Read from '../../layouts/Read.astro';
 import Share from '../../components/Share.astro';
-import { articleSchema } from '../../lib/schema';
-const schema = [articleSchema({
-  title: "One Question. Seven Leaders. An Honest Answer.",
-  description: "The viral G7 recession quiz, answered with every official GDP figure from all seven statistics offices.",
-  path: '/read/honest-answer',
-  image: '/og/honest-answer.png',
-  published: '2026-05-04',
-  section: "The record, set straight",
-  words: 755,
-})];
 ---
 <Read
-  title={"One Question. Seven Leaders. An Honest Answer."}
+  slug="honest-answer"
   description={"The viral G7 recession quiz, answered with every official GDP figure from all seven statistics offices."}
-  imprint={"The record, set straight"}
   standfirst={"The viral \"who is in recession\" quiz, answered with every official G7 GDP figure. The trick is in the question."}
-  path="/read/honest-answer"
-  ogImage="/og/honest-answer.png"
-  schema={schema}
 >
       <p class="lead">A post going around asks which G7 country is &quot;now in recession.&quot; It wants you to point at one man and laugh. So let&#x27;s actually look at the numbers — all of them.</p>
       <h2>What the post claims</h2>

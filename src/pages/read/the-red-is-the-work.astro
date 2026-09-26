@@ -1,7 +1,6 @@
 ---
 import Read from '../../layouts/Read.astro';
 import Share from '../../components/Share.astro';
-import { articleSchema } from '../../lib/schema';
 import { N_RESORPTION } from '../../lib/figures';
 
 /**
@@ -31,25 +30,11 @@ import { N_RESORPTION } from '../../lib/figures';
  * have character, which is both untrue and exactly the taunt this site
  * exists not to make.
  */
-const schema = [articleSchema({
-  title: "The Red Is the Work",
-  description: "The red on a maple leaf is not the leaf dying. The tree makes it, on purpose, to cover the work of taking back what it needs before winter. A reading of the flag.",
-  path: '/read/the-red-is-the-work',
-  image: '/og/the-red-is-the-work.png',
-  published: '2026-09-24',
-  section: "A reading of the leaf",
-  words: 1154,
-})];
 ---
 <Read
-  title={"The Red Is the Work"}
+  slug="the-red-is-the-work"
   description={"The red on a maple leaf is not the leaf dying. The tree makes it, on purpose, to cover the work of taking back what it needs before winter. A reading of the flag."}
-  imprint={"A reading of the leaf"}
   standfirst={"The colour on the flag is not a leaf giving up. It is a tree getting ready for a long winter, on purpose. Here is what it actually does."}
-  path="/read/the-red-is-the-work"
-  dateline="24 September 2026"
-  ogImage="/og/the-red-is-the-work.png"
-  schema={schema}
 >
       <p class="lead">The red on a maple leaf is not the leaf dying. It is the tree working.</p>
 

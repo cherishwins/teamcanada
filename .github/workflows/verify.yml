@@ -101,7 +101,8 @@ jobs:
 
       # Every page x 10 viewports: overflow, console errors, tap targets,
       # contrast, pages served, broken references, og:image:alt, the service
-      # worker, axe-core and CSP violations. Exits non-zero on any of the ten.
+      # worker, axe-core, CSP violations, glued words, navigation and table
+      # grids. Exits non-zero on any of them.
       - name: Sweep
         run: node tools/verify.cjs
 

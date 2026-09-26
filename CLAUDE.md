@@ -135,21 +135,37 @@ one file serves both colourways. **Never reference them via `<img src>`:**
 - `src/components/` — `Stat`, `Meter`, `marks/{BearDual,BearHead,LeafSeal}`,
   and `BarTable` — a figure that is a real table first (every value printed,
   row and column headers) with a single-hue bar under each value; no script, no
-  image. `/read/the-vertical-squeeze` draws its three figures with it.
+  image. `/read/the-vertical-squeeze` draws its three figures with it and
+  `/read/the-closed-loop` its one. Write a space after a heading's kicker and
+  between cells: layout hides a missing one, and anything that reads the text
+  rather than the layout (`llms-full.txt`, the word count) runs the words
+  together.
 - `src/lib/sources.ts` — live figures from StatCan WDS + Bank of Canada Valet.
 - `src/lib/figures.ts` — **the one place a hand-entered number is written.**
   `sources.ts` covers figures that come from an endpoint; this covers the ones
   that come from a document and therefore have to be typed by a person. It
   carries each figure's machine value, its exact `display` string, its source
   and period, and — where the publisher runs on a cycle — a `reviewBy` date
-  that fails the build once it passes. `/calculator`, `/math` and `/sources`
-  all render from it.
+  that fails the build once it passes. `/calculator`, `/math`, `/build`,
+  `/sources` and `/read/the-red-is-the-work` all render from it.
+- `src/lib/reads.ts` — **each read's title, imprint, date and length, once.**
+  The read page, `/read`, `feed.xml`, the Article markup, the OG article tags
+  and the `/read` share card all read it. They used to be typed in up to four
+  places, and three reads carried May dates their own text contradicts ("current
+  to June 1, 2026" under a 4 May date); every read now prints its date. The
+  length is COUNTED: `check-figures` counts each built article and fails the
+  build unless `words` is exactly that, printing the number to write. The typed
+  lengths had drifted up to 6%.
+- `src/lib/calculator.ts` — the separation bill's arithmetic, once;
+  `/calculator` and the calculator share card both run it.
+- `tools/load-ts.cjs` — bundles a `src/lib` module with esbuild so a CommonJS
+  tool calls the page's own code rather than a copy of it.
 - `src/components/Nav.astro`, `SiteFooter.astro`, `BlocChart.astro`.
 - `src/layouts/Read.astro` — the long-form layout (single 68ch column), plus a
   named `after` slot for anything that belongs OUTSIDE the column on the black
-  ground — the share band, in practice. `the-red-is-the-work` uses it; the five
-  migrated reads do not yet, and each needs its own page-specific quote before
-  it should.
+  ground — the share band, in practice; all six reads use it, each with its
+  own quote. A read passes only its `slug` (the rest is in `src/lib/reads.ts`),
+  its description and its standfirst; the layout prints the date.
 - `src/lib/support.ts` — the processor-free support rail (see below).
 - `src/lib/schema.ts` — Article markup for the reads, **Dataset markup for the
   six public endpoints**. The site redistributes government figures under CC0;
@@ -177,7 +193,7 @@ one file serves both colourways. **Never reference them via `<img src>`:**
   `src/pages/record/members.astro` (the ledgers), `tools/record/fetch.cjs`
   (incremental snapshot writer), `tools/record/validate.cjs` (the snapshot
   must add up; run before every write and in every build),
-  `tools/record/load.cjs` (bundles `record.ts` for CommonJS tools),
+  `tools/record/load.cjs` (`record.ts`'s `compute()` for CommonJS tools),
   `tools/record/analyse.cjs` (the report), `.github/workflows/record.yml`
   (the daily refresh). See "The record" below.
 - `.github/dependabot.yml` — monthly PRs for GitHub Actions and npm, grouped.
@@ -202,7 +218,7 @@ one file serves both colourways. **Never reference them via `<img src>`:**
   `tools/check-privacy.cjs` — **`/privacy` must name exactly the analytics
   vendors the site actually ships**, and no third-party script origin may reach
   a page undisclosed; and `tools/check-figures.cjs` — **no hand-entered figure
-  may go stale or be typed twice**; and `tools/check-sitemap.cjs` — **nothing
+  may go stale or be typed twice, and every read's length is its count**; and `tools/check-sitemap.cjs` — **nothing
   in the sitemap may be `noindex`, and nothing indexable may be missing from
   it**; and `tools/check-csp.cjs` — **the Content-Security-Policy in
   `vercel.json` must list exactly the inline-script hashes and script origins
@@ -248,9 +264,14 @@ one file serves both colourways. **Never reference them via `<img src>`:**
   file was renamed — the same drift this repo keeps catching, in the file whose
   job is to prevent it.)
 - `tools/generate-favicons.cjs` — every small icon, drawn from
-  `public/favicon.svg`; `tools/check-icons.cjs` — proves they still match.
+  `public/favicon.svg`, and the maskable manifest icons, drawn from
+  `LeafSeal.astro`; `tools/check-icons.cjs` — proves they still match, and
+  measures each maskable icon's safe zone.
 - `tools/check-sitemap.cjs` — the sitemap and the pages' robots meta must
-  agree, and the `X-Robots-Tag` rules in `vercel.json` must reach exactly the
+  agree (every `.html` the build writes, not only `index.html`: `404.html`
+  answered 200 at its own filename, indexable, until the generic `.html`
+  redirect in `vercel.json` began sending it to `/404`; it carries `noindex`
+  now so the rule does not depend on that redirect), and the `X-Robots-Tag` rules in `vercel.json` must reach exactly the
   five machine text files, no more and no fewer.
 - `tools/check-csp.cjs` — the CSP in `vercel.json` matches the built scripts.
 - `tools/check-canonical.cjs` — one page, one URL, in the build. See the
@@ -336,10 +357,22 @@ on a page built days earlier. What holds it now:
   block-styled link is not a false alarm) and **navigation problems** (the
   phone menu opened at six short phone sizes the width sweep never uses: every
   link reachable by a finger, none focusable while closed, closed when focus
-  leaves it; `/record/divisions#v73` landing below the sticky nav; and the menu
+  leaves it; `/record/divisions#v73` landing below the sticky nav; the menu
   working while a third-party script is stalled for eight seconds, which it
-  did not while Umami loaded with `defer`). It exits non-zero. **Current state:
-  clean on all twelve counts.** Keep it there.
+  did not while Umami loaded with `defer`; and the desktop row sitting on one
+  line beside the brand at every 16px from 900 to 1600, which it did not from
+  921 to 1239px, where the sticky nav stood up to 184px tall. The menu now
+  collapses below 1280: `Nav.astro`, its `matchMedia` and Base's noscript
+  rule name that width), and **broken table grids** (a row
+  that is shown with one of its cells not rendered: the ledgers' phone layout
+  hid an empty cell with `display:none`, and 312 member rows then read every
+  later value to a screen reader under the wrong header; axe builds its grid
+  from the DOM and passed). **Contrast and axe run at 390 and 1280, with
+  reduced motion on**, so the scroll reveal shows every block: before, they ran
+  at 1280 alone, where every block below the fold sat at opacity 0 and axe
+  skipped it as hidden, and a phone-only layout was never audited at all. It
+  exits non-zero. **Current state: clean on all thirteen counts.** Keep it
+  there.
   **`.github/workflows/verify.yml` runs all of it on every PR and every push to
   `main`**, so none of this depends on somebody remembering. The repo is public,
   so Actions minutes are free and unmetered — that is the only reason it is
@@ -565,7 +598,12 @@ on a page built days earlier. What holds it now:
   text, and as a mark it is a washed pink. The black field is deliberate — it
   is the site's ground, it matches `theme_color`, and it keeps the family with
   `apple-touch-icon` and the 192/512 icons, which still carry the full seal
-  because they are big enough to hold it.
+  because they are big enough to hold it. **The maskable icons are separate
+  files** (`icon-maskable-192.png`, `icon-maskable-512.png`): the seal at 72% on
+  black, so its ring sits inside the W3C safe zone (radius 0.4 of the width).
+  The manifest used to reuse `icon-512.png`, whose ring runs to the edge, so a
+  launcher's circle mask cut the seal to a bare leaf and a squircle left red
+  wedges in the corners. `check-icons` measures it.
 - **`mask-icon` needs a MONOCHROME, TRANSPARENT file.** Safari fills a mask
   icon with the colour on the `<link>`, so it was handed `favicon.svg` — which
   has an opaque `<rect>` across the whole canvas — and filled the rectangle:
@@ -685,6 +723,20 @@ on a page built days earlier. What holds it now:
   words check in the sweep is what keeps this class of fault visible.
   **"0 words lost" was true of the walker's input and false of its output**:
   diff the legacy text against the page, not against the walker.
+  **`/math` and `/build` carried the same debris until September 2026**, from
+  the dossier in the `teamcanadawins` repo: a grid of six figures and a
+  two-province comparison as thirty-nine loose `<p>`s, so no value could be
+  matched to its province; a timeline printing "Jan 2025Trump assumes office"; eight
+  of the nine section kickers at the foot of the section before them; six pull quotes whose
+  attributions read as paragraphs; the playbook's headline figure missing
+  entirely, its label printing under nothing; and on `/build` the dossier's
+  section rail as a sentence, with Royal Assent stated twice in a row. `/math`
+  now follows the source section for section, including which sections sat on
+  the dark ground, and a word diff of the source's visible text against the
+  page loses no prose. What it drops is furniture: "Team Canada" (retired,
+  Open item 8), the scroll cue, a fleuron, the fixed section rail, and a nav
+  line that repeats the colophon. A restructure changes no claim; the content questions it
+  surfaced went to the owner instead of into the page.
 
 ## Discoverability — the point is that it travels
 Everything is CC0 and the site is built to be repeated, not protected.
@@ -692,9 +744,14 @@ Everything is CC0 and the site is built to be repeated, not protected.
   PerplexityBot, CCBot, Google-Extended, Applebot-Extended and the rest. Most
   sites block these; this one does the opposite on purpose. Do not "tighten" it.
 - **`/llms-full.txt`** is the entire site as one plain-text file — 18 pages,
-  ~21,300 words — generated by `tools/generate-llms-full.cjs` as a **post-build
+  ~21,900 words — generated by `tools/generate-llms-full.cjs` as a **post-build
   step from the BUILT HTML**, so it can never drift from what is published. It
-  is wired into `npm run build`, so Vercel produces it too. It is served with
+  is wired into `npm run build`, so Vercel produces it too. **It had glued
+  words of its own**: table cells, `<dt>`/`<dd>` and any `<br>` carrying a
+  scoped `data-astro-cid-…` attribute ran into each other ("The math
+  ofstaying together.", "Total paid$10,401"), which the sweep cannot see
+  because it reads pages, not this file. Cells now join with ` | `, terms and
+  descriptions take a line each, and every `<br>` is a line break. It is served with
   `X-Robots-Tag: noindex` so it is read by machines and never ranked in place
   of the pages it copies (see the convention on the machine text files).
   **Every sitemap URL
@@ -786,7 +843,7 @@ V   · THE BUILD /build    Refine · Compute · Corridor + C-5.     from teamcan
 /read + 6 long-form pieces   5 migrated from the old site (9,162 words)
                              + The Red Is the Work, written here (1,154)
 /join  /privacy  /terms  /404          /support is HIDDEN (noindex, unlinked)
-/feed.xml    RSS for the five reads
+/feed.xml    RSS for the six reads
 robots.txt · llms.txt · humans.txt · site.webmanifest · sw.js · security.txt
 
 Every act and the calculator carry a share band: native share sheet where the
@@ -813,9 +870,11 @@ load-bearing:** birch makes no red and recovers nitrogen just as well, and
 without that paragraph the piece claims red is the only way to have character,
 which is the taunt this site exists not to make. Cold-public register from
 `compulsion-engineering`: zero em-dashes, four-sentence paragraph ceiling,
-grade ~4–7. **Adding a read touches six places** — the page, `read/index.astro`,
-`feed.xml.ts`, `llms.txt`, `generate-llms-full.cjs` ORDER, and the CARDS list
-in `generate-og.cjs` including the typed word total on the `read` card.
+grade ~4–7. **Adding a read touches five places** — the page (which passes
+only its `slug`, description and standfirst to `Read.astro`), its entry in
+`src/lib/reads.ts` (the build prints its word count), `llms.txt`,
+`generate-llms-full.cjs` ORDER, and the CARDS list in `generate-og.cjs`. `/read`,
+the feed and the `read` card's total follow from `reads.ts`.
 
 ## Migrating legacy content
 `/tmp` scripts are gone between sessions; the approach is what matters.
@@ -855,7 +914,12 @@ dossier and 4 of 5 reads. Two traps worth remembering:
 3. **Middle-power bloc map** — static TopoJSON + inline SVG. Never Mapbox: keys,
    cost, and a tracking surface on an otherwise privacy-clean site.
 4. **Coalition** — `/join` is a `mailto:`, which costs nothing and needs no
-   backend. Only replace it if volume actually demands it.
+   backend. Only replace it if volume actually demands it. The form needs
+   scripting to open a mail app; without it the form is hidden and the address
+   is shown instead (`method="dialog"`, so a stray submit goes nowhere). It
+   used to submit to `/join` as a GET, putting the reader's email and message
+   in the address bar while the page and `/privacy` said nothing leaves the
+   browser.
    **`/sources` is the site's central claim made inspectable** — every figure,
    its source table, its reference period, and for live ones the endpoint
    serving it — **and every table ID is a link to the upstream table or
@@ -961,9 +1025,18 @@ dossier and 4 of 5 reads. Two traps worth remembering:
      and much of what reaches the US arrives from Canada — the wrong measure
      for a claim about what Canada makes.
    - **The `home` and `fr` OG cards print the ratio and a PNG cannot update
-     itself.** If AQUASTAT's reference year moves and the ratio shifts, rerun
-     `tools/generate-og.cjs`. A card disagreeing with the page it links to is
-     worse than no card.
+     itself.** The generator computes it with the page's own `getWater()` and
+     prints its year, so a card that lags the page is still true. If
+     AQUASTAT's reference year moves, rerun `tools/generate-og.cjs`. (It used
+     to type `8.7×`, so a rerun redrew the old number.) The words on `/` are
+     computed from the ratio too: "nearly nine times" was typed in the
+     description and the prose while the figure beside them was live.
+   - **Every card figure that has a source is computed from it** (the
+     record, water, trade, the calculator's `bill()`, `figures.ts`,
+     `reads.ts`) and dated where the source moves. When a source is down, the
+     generator keeps that card's last version rather than draw one from a
+     fallback. The calculator card said $253B beside a page printing $254B
+     while both were typed.
    - Live at `/api/water.json`, on `/sources` as four live rows, and carrying
      Dataset markup.
 8. **Legal:** "Team Canada" is a Canadian Olympic Committee mark. The rebrand
@@ -1017,13 +1090,18 @@ record that goes stale the first week nobody does.
 
 **What ships.** `/record` is the front page: five counts, the party agreement
 matrix, the two ledgers offered as numbers, the method, a share band. It is
-the size of any other page here (49 kB, 14 kB gzipped) because share links
-land on it. `/record/divisions` (174 rows, 18 kB gzipped) and
-`/record/members` (349 rows, 26 kB gzipped) are the ledgers, split out so the
+the size of any other page here (53 kB, 15 kB gzipped) because share links
+land on it. `/record/divisions` (174 rows, 19 kB gzipped) and
+`/record/members` (349 rows, 28 kB gzipped) are the ledgers, split out so the
 front page stays light and so a reader searching a member's name searches a
 page that has only members on it. Every division number links to the official
-House page; every member links to OpenParliament; every break links to
-`/record/divisions#vN` and `check-internal-links` proves the id exists.
+House page; every member links to OpenParliament; every break is counted in
+its own column and linked, as "No. N", to `/record/divisions#vN`, and
+`check-internal-links` proves the id exists. **Where a ledger's table does not
+fit its box (under 66rem: every phone, most tablets, print) each row becomes a
+labelled block**: a container query in `Record.astro`, the table semantics
+kept, each label from the same list as its column header. Scrolled sideways, a
+phone had shown the motion and none of the positions.
 `/api/record.json` is the whole computed record, **prerendered** (the only
 static file under `/api/`; CORS from `vercel.json`), with Dataset markup and
 three rows on `/sources` under "Counted". No client script: it is all
@@ -1052,8 +1130,8 @@ membership record. **All divisions, never a curated "key votes" list** —
 curation is where bias enters. Yea/Nay count; Paired and Didn't vote are
 shown as what they are and are never a position. **The math exists in one
 copy, `src/lib/record.ts`:** the three pages and the endpoint import it, and
-`tools/record/load.cjs` bundles it with esbuild so `analyse.cjs` and
-`generate-og.cjs` call the same `compute()`.
+`tools/record/load.cjs` hands it (through `tools/load-ts.cjs`) to
+`analyse.cjs` and `generate-og.cjs`, so they call the same `compute()`.
 
 **The snapshot format** is one character per ballot: `members[]`,
 `memberships[]` (with the OpenParliament URL, so an incremental run never

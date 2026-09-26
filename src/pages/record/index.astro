@@ -2,7 +2,7 @@
 import Record from '../../layouts/Record.astro';
 import Share from '../../components/Share.astro';
 import Stat from '../../components/Stat.astro';
-import { compute } from '../../lib/record';
+import { compute, PARTY_NAMES } from '../../lib/record';
 import { datasetSchema, DATASETS } from '../../lib/schema';
 
 /**
@@ -35,6 +35,13 @@ const description =
   'No adjectives. Every number links to the official record.';
 
 const schema = [datasetSchema(DATASETS.find((d) => d.endpoint === '/api/record.json')!, '/record')];
+
+/* The matrix is labelled by abbreviation on both axes: "Conservative" alone
+   is 92px of label, and five columns of it cannot fit a 360px phone. An
+   <abbr title> expands each on hover, which no touchscreen has, so the
+   caption carries the key in full. */
+const party = (p: string) => PARTY_NAMES[p];
+const key = r.parties.map((p) => (party(p) ? `${party(p).name} (${party(p).abbr})` : p)).join(', ');
 ---
 <Record
   title="The Record" description={description} path="/record" schema={schema}
@@ -75,14 +82,14 @@ const schema = [datasetSchema(DATASETS.find((d) => d.endpoint === '/api/record.j
       <div class="nt-label">Who agrees with whom</div>
       <hr class="nt-rule" />
       <h2 class="nt-display md" style="max-width:22ch;">The share of divisions where two parties' majorities voted the same way.</h2>
-      <section class="tw" tabindex="0" aria-label="Party agreement matrix, scrolls sideways">
+      <section class="tw" tabindex="0" aria-label="Party agreement matrix">
         <table class="matrix">
-          <caption class="nt-caption">Parties with at least three members casting ballots. Greens and independents are on the members ledger but have no line to be rated against.</caption>
-          <thead><tr><th scope="col"><span class="sr">Party</span></th>{r.parties.map((p) => <th scope="col">{p}</th>)}</tr></thead>
+          <caption class="nt-caption">The parties with at least three members casting ballots: {key}. Greens and independents are on the members ledger but have no line to be rated against.</caption>
+          <thead><tr><th scope="col"><span class="sr">Party</span></th>{r.parties.map((p) => <th scope="col">{party(p) ? <abbr title={party(p).name}>{party(p).abbr}</abbr> : p}</th>)}</tr></thead>
           <tbody>
             {r.parties.map((a) => (
               <tr>
-                <th scope="row">{a}</th>
+                <th scope="row">{party(a) ? <abbr title={party(a).name}>{party(a).abbr}</abbr> : a}</th>
                 {r.parties.map((b) => <td class={a === b ? 'self' : undefined}>{a === b ? '' : pct(r.agreement[a][b])}</td>)}
               </tr>
             ))}

@@ -410,6 +410,21 @@ export async function getTrade(): Promise<Trade> {
   };
 }
 
+/**
+ * The fastest-growing partner other than the United States, year over year,
+ * or null when none is growing. /bloc's share quote and its share card both
+ * quote it, dated, so neither can name a different partner from the other.
+ */
+export function tradeLead(t: Trade): Partner | null {
+  return t.partners
+    .filter((p) => p.name !== 'United States' && (p.changePct ?? 0) > 0)
+    .sort((a, b) => (b.changePct ?? 0) - (a.changePct ?? 0))[0] ?? null;
+}
+
+/** How a partner is named in running text: "the UK", "the EU", "Japan". */
+export const tradeName = (n: string) =>
+  ({ 'United Kingdom': 'the UK', 'European Union': 'the EU' } as Record<string, string>)[n] ?? n;
+
 /* ==========================================================================
    Provinces — StatCan population (17-10-0009) and GDP (36-10-0222).
 

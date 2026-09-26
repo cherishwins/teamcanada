@@ -6,7 +6,7 @@ import Share from '../components/Share.astro';
 import Stat from '../components/Stat.astro';
 import BlocChart from '../components/BlocChart.astro';
 import BlocMap from '../components/BlocMap.astro';
-import { getTrade } from '../lib/sources';
+import { getTrade, tradeLead, tradeName } from '../lib/sources';
 
 const trade = await getTrade();
 const fmt = new Intl.NumberFormat('en-CA');
@@ -22,10 +22,9 @@ const growing = nonUs.filter((p) => p.changePct != null && p.changePct > usChang
 const month = new Date(`${trade.asOf}T12:00:00Z`).toLocaleDateString('en-CA', { month: 'long', year: 'numeric', timeZone: 'UTC' });
 // The share quote used to type "up 112%", which went stale at StatCan's next
 // release. It quotes the fastest-growing partner, from the same series, dated.
-const called = (n: string) => ({ 'United Kingdom': 'the UK', 'European Union': 'the EU' } as Record<string, string>)[n] ?? n;
-const lead = [...nonUs].filter((p) => (p.changePct ?? 0) > 0).sort((a, b) => (b.changePct ?? 0) - (a.changePct ?? 0))[0];
+const lead = tradeLead(trade);
 const quote = 'Canada is not leaving its largest customer. It is widening the base — and Statistics Canada proves it monthly.' +
-  (lead ? ` Exports to ${called(lead.name)} are up ${Math.round(lead.changePct!)}% year over year, as of ${month}.` : '');
+  (lead ? ` Exports to ${tradeName(lead.name)} are up ${Math.round(lead.changePct!)}% year over year, as of ${month}.` : '');
 
 const description =
   'Canada is not leaving its largest customer. It is widening the base — and the ' +

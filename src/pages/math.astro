@@ -4,11 +4,55 @@ import Nav from '../components/Nav.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import Share from '../components/Share.astro';
 import Stat from '../components/Stat.astro';
-import { FEDERAL_DEBT } from '../lib/figures';
+import {
+  FEDERAL_DEBT, C5_RETAINED_GDP, BUILD_STATE_LOW_B, BUILD_STATE_HIGH_B, NATO_PCT, NATO_DIRECT_PCT,
+} from '../lib/figures';
+
+/** 0.035 → "3.5%", as /calculator prints its rates. */
+const pct = (x: number) => `${Number((x * 100).toFixed(1))}%`;
 
 const description =
   'Dossier No. 01 — the math of staying together, and the trap of being broken ' +
   'apart. Both separation scenarios costed against official figures.';
+
+const C5 = C5_RETAINED_GDP.display;
+
+/*
+ * The dossier below is Dossier No. 01 as its author laid it out: a cover, nine
+ * sections, a colophon. Its first migration captured every word but flattened
+ * the grouping, so a stat grid, a two-province comparison, a dated timeline and
+ * six pull quotes all arrived as loose paragraphs, each section's kicker sat
+ * at the foot of the section before it, and the playbook's headline figure
+ * printed its label with no number. The structure here follows the source
+ * dossier section for section, including which sections sat on the dark ground.
+ *
+ * The comparison is a table because it is one: eight measures, two provinces,
+ * and a reader has to be able to tell which number belongs to which. Where the
+ * source gives one value for both provinces (the energy artery, monetary
+ * policy), both cells print it.
+ */
+const compare: { k: string; ab: string; qc: string; hl?: boolean }[] = [
+  { k: 'Population', ab: '5.0 M', qc: '9.1 M' },
+  { k: 'GDP', ab: '~$500 B', qc: '~$580 B' },
+  { k: 'Debt share (mid)', ab: '~$155 B', qc: '~$278 B', hl: true },
+  // From figures.ts, which /calculator and /sources read: typed here it was
+  // "$98–107 B" beside the same figure spelled "$98–107B" there.
+  { k: 'Build-state cost', ab: `$${BUILD_STATE_LOW_B}–${BUILD_STATE_HIGH_B} B`, qc: '~$60–80 B' },
+  { k: `Defence at NATO ${pct(NATO_PCT)}`, ab: '$25 B', qc: '$27 B' },
+  { k: 'Indigenous treaty exposure', ab: 'Treaties 6, 7, 8, 10', qc: 'JBNQA — hydro complex' },
+  { k: 'Energy artery', ab: 'Line 5 through MI', qc: 'Line 5 through MI' },
+  { k: 'Currency outcome', ab: 'Direct U.S. dollar', qc: 'Pegged to U.S. dollar' },
+  { k: 'Effective monetary policy', ab: 'Set by Federal Reserve', qc: 'Set by Federal Reserve', hl: true },
+];
+
+const receipts: [string, string][] = [
+  ['Jan 2025', 'Trump assumes office; "51st state" rhetoric becomes daily.'],
+  ['Feb 2025', '25% tariffs threatened on Canadian goods; 10% on energy.'],
+  ['Apr 2025', 'First State Department meeting with APP leadership (FT reporting).'],
+  ['Summer 2025', '"Make Alberta Great Again" hats at Calgary rallies; Highway 2 billboards.'],
+  ['Jan 22, 2026', 'Bessent on RAV: Alberta "a natural partner for the U.S."'],
+  ['Feb 2026', 'NBC News confirms three meetings; State Dept disputes content of conversations.'],
+];
 ---
 <Base title="The Math" description={description} path="/math" ogImage="/og/math.png">
   <Nav />
@@ -25,169 +69,264 @@ const description =
       </div>
     </section>
 
-    <section class="nt-light">
-      <div class="nt-wrap doc">
-<div class="nt-label">🍁 A Briefing for Canadians Who Can Read a Balance Sheet</div>
-<hr class="nt-rule" />
-      <p class="nt-lede rv">The math of staying together — and the trap of being broken apart.</p>
-      <div class="trio">
-        <Stat value={"$5,100"} label={"Per Canadian, annual GDP gain from one statute already passed"} />
-        <Stat value={"$155B"} label={"Federal debt an independent Alberta inherits day one"} />
-        <Stat value={"37 GW"} label={"Hydro-Québec capacity the U.S. AI buildout cannot match"} />
-      </div>
-      <p class="rv"><strong>Jesse James</strong> Victoria, British Columbia · May MMXXVI <strong>fitforgov.com</strong></p>
-      <p class="rv">§ I · The Thesis</p>
-      <h2 class="nt-display md rv">A man walks into your shop.</h2>
-      <p class="rv">He praises your daughter, insults your wife, says your store is part of his strip mall now, and offers your business partner a private loan to walk out the back door. Then he asks whether you&#x27;ve thought about taking dollars instead of loonies. <em>That&#x27;s the news of the last eighteen months, told straight.</em></p>
-      <p class="rv">This is not an argument that grievance is fake. Western alienation is real. Quebec&#x27;s culture and language deserve protection. But grievance is not a plan, and a referendum is not an exit — it is the start of a negotiation in which the seceding province has the weakest hand at the table and the United States has its boots up on the desk.</p>
-      <p class="rv">Each province alone is a vassal. Together, we are a peer.</p>
-      <p class="rv">Working thesis · 2026</p>
-      <p class="rv">§ II · The Trap</p>
-      <h2 class="nt-display md rv">It&#x27;s set. <em>Here&#x27;s how to see it.</em></h2>
-      <p class="rv">The State Department has held — by NBC News and Financial Times reporting, confirmed by Premier David Eby and Prime Minister Mark Carney — at least three meetings with leaders of the Alberta Prosperity Project. Separatist organizers say the meetings included discussion of a <strong>$500 million transition loan</strong> and a <strong>one-for-one Canadian-to-U.S.-dollar swap</strong>. State Department officials, on background to NBC, denied senior officials were present and said no commitments were made. No documentary evidence has surfaced. The claims remain separatist allegations, not established U.S. policy. The rhetorical pattern around them is undeniable.</p>
-      <p class="rv">&quot;I think we should let them come down into the U.S., and Alberta&#x27;s a natural partner for the U.S. They have great resources. The Albertans are very independent people.&quot;</p>
-      <p class="rv">Treasury Secretary Scott Bessent · Real America&#x27;s Voice · 22 January 2026</p>
-      <p class="rv">The Prime Minister has read the room. In his special address at the World Economic Forum in Davos on January 20, 2026, Mark Carney warned that <strong>&quot;if great powers abandon even the pretense of rules and values for the unhindered pursuit of their power and interests, the gains from &#x27;transactionalism&#x27; will become harder to replicate.&quot;</strong> He called the moment &quot;a rupture, not a transition&quot; in the international order. The day after that speech, Trump rescinded Canada&#x27;s invitation to his Board of Peace. Two days after that, Bessent went on Real America&#x27;s Voice.</p>
-      <p class="rv">And as of April 13, 2026, the federal government has the runway to act. Carney&#x27;s Liberals secured a majority that night when Danielle Martin won University–Rosedale, Doly Begum took Scarborough Southwest, and Tatiana Auguste took Terrebonne — bringing the Liberal seat count to 174. The path to that majority ran through five floor-crossings since November 2025 plus the three byelection wins. Whatever you make of the math, the result is the same: <strong>a government with a mandate through 2029 to build the spine</strong>.</p>
-      <p class="rv">The American interest is to deal with Canada one province at a time. A fragmented Canada is a price-taker on every commodity. A unified Canada is a price-maker. That is the entire game.</p>
-      <p class="rv">The thesis, restated</p>
-      <p class="rv">§ III · The Numbers</p>
-      <h2 class="nt-display md rv">The country, <em>on one page.</em></h2>
-      <p class="nt-lede rv">All figures most-recent available, early 2026. <em>Official sources. No estimates dressed up as facts.</em></p>
-      <p class="rv">41.7M</p>
-      <p class="rv">Population — Statistics Canada, July 2025</p>
-      <p class="rv">$3.1T</p>
-      <p class="rv">Canada nominal GDP, 2024</p>
-      <p class="rv">{FEDERAL_DEBT.display}</p>
-      <p class="rv">Federal accumulated deficit, {FEDERAL_DEBT.period}</p>
-      <p class="rv">5.0M bpd</p>
-      <p class="rv">Canadian oil production · 4th globally</p>
-      <p class="rv">All 34</p>
-      <p class="rv">Critical minerals on the federal list</p>
-      <p class="rv">$63B</p>
-      <p class="rv">FY2025-26 defence — first time at NATO 2% since 1990s</p>
-      <p class="rv">NATO&#x27;s new pledge target adopted at the 2025 Hague summit: <strong>5% of GDP by 2035</strong> (3.5% direct military, 1.5% defence-related). For Canada, that&#x27;s a path to roughly $155 billion in annual defence and security spending by the end of the decade. That number is the floor under everything else in this briefing.</p>
-      <p class="rv">The other number worth memorizing: <strong>$5,100 per Canadian, every year, in retained GDP, from a single statute that already passed</strong>. Bill C-5 — the One Canadian Economy Act — received Royal Assent on June 26, 2025, and came into full force on January 1, 2026. The 2022 Macdonald-Laurier Institute paper by Manucha and Tombe estimates full mutual recognition expands the economy by 4.4% to 7.9% in the long term — between $110 and $200 billion annually. The 7.9% upper bound is the prize. Even the lower bound is transformational. <em>And we got it without breaking up the country.</em></p>
-      <p class="rv">§ IV · Scenario One</p>
-      <h2 class="nt-display md rv">Alberta walks. Dollarized. <em>The bill comes due.</em></h2>
-      <p class="nt-lede rv">Premise: Alberta passes a referendum, negotiates secession under the framework of the 1998 Supreme Court <em>Reference re Secession of Quebec</em>, and adopts the U.S. dollar.</p>
-      <p class="rv">Trevor Tombe at the University of Calgary — the most cited economist on Canadian fiscal federalism, and a member of the Alberta government&#x27;s own AlbertaNext panel — has modelled this. Even a modest 5% increase in trade frictions with the rest of Canada lops <strong>roughly 4% off Alberta&#x27;s GDP</strong>, about <strong>$20 billion a year</strong>, or <strong>$3,900 per Albertan, every year, forever</strong>. At an 8% non-tariff barrier — entirely realistic given how interprovincial trade actually works — the loss climbs to $30 billion a year, 6% of GDP.</p>
-      <div class="trio">
-        <Stat value={"$30,000"} label={"New sovereign debt per Albertan, day one"} />
-      </div>
-      <p class="rv">Alberta has no army, no navy, no air force, no coast guard, no intelligence service, no diplomatic corps, no central bank, no passport system, no border posts, no customs service, and no FX reserves. The Alberta Prosperity Project&#x27;s own &quot;fully costed plan&quot; estimates <strong>$98 to $107 billion in startup costs</strong>. To meet NATO&#x27;s new 5% Hague pledge: <strong>$25 billion a year — roughly the entire current Alberta provincial budget</strong>.</p>
-      <p class="rv">And then there&#x27;s the cleanup. Alberta&#x27;s official oil and gas closure liability runs anywhere from <strong>$36.6 billion</strong> on the AER&#x27;s own books to as much as <strong>$260 billion</strong> in the regulator&#x27;s leaked worst-case slide deck. Industry security currently held against this liability: under $295 million.</p>
-      <p class="rv">A $500 billion economy that loses 4 to 6% of GDP up front, takes on $150 billion in debt, $200 billion in environmental obligations, and builds a state from zero for $100 billion. Then it adopts the currency of the country negotiating against it. That is not independence. That is the 51st state without the senators.</p>
-      <p class="rv">Scenario One · the math, finished</p>
-      <p class="rv">One more bill that does not appear in any APP slide. Almost every productive acre of Alberta is covered by Treaty 6, Treaty 7, and Treaty 8 — agreements signed with the Imperial Crown, not with Alberta. On December 5, 2025, Court of King&#x27;s Bench Justice Colin Feasby ruled that <strong>&quot;the Numbered Treaties are legally binding on First Nations, Canada, and Alberta&quot;</strong> and that converting provincial borders into international borders would significantly impair treaty rights. Feasby&#x27;s ruling expressly disclaims giving First Nations a veto. The Smith government has since amended the Citizen Initiative Act via Bill 14. The litigation continues. The constitutional gravity is not in doubt.</p>
-      <p class="rv">§ V · Scenario Two</p>
-      <h2 class="nt-display md rv">Quebec walks. French currency, pegged to USD. <em>Same trap.</em></h2>
-      <p class="nt-lede rv">The standard Quebec separatist counter: <em>&quot;Quebec is different. We have language. We have culture. We have Hydro-Québec. We are not Alberta.&quot;</em> All true. None of it changes the monetary math.</p>
-      <p class="rv">A peg to the U.S. dollar means the Banque du Québec must hold enough USD reserves to defend it under any speculative attack, must raise interest rates whenever the Federal Reserve raises them (or watch capital flee), and must accept that the price of every imported good is set in Washington. <strong>Print all the piastres you want; the moment you peg, you are dollarized in everything but the artwork.</strong></p>
-      <p class="rv">Argentina pegged to the dollar from 1991 to 2002. The peg held until it didn&#x27;t, and when it broke, the country lost 28% of GDP in two years and 57% of households fell into poverty.</p>
-      <div class="trio">
-        <Stat value={"96.3%"} label={"Cree referendum result · 24 October 1995 · \"We will remain in Canada\""} />
-      </div>
-      <p class="rv">The James Bay and Northern Quebec Agreement of 1975 is a treaty protected by Section 35 of the Constitution Act, 1982. It cannot be altered without Cree and Inuit consent. The Cree position, articulated then by Grand Chief Matthew Coon Come and reiterated since, is that they would remain in Canada — taking the territory of <em>Eeyou Istchee</em>, including most of the Hydro-Québec generating fleet, with them. <strong>Independent Quebec might lose access — partially or entirely — to the very assets that supposedly make the project economically viable.</strong></p>
-      <p class="rv">Polling is reading the same map. Pallas Data and <em>The Walrus</em>, January 2026: <strong>62% of Quebecers oppose holding a referendum at all in a PQ first mandate; only 32% favour</strong>. The April 2026 Pallas follow-up showed unfavourability hardening to <strong>71%</strong>. Even Lucien Bouchard — the man who came within 54,288 votes of winning in 1995 — has publicly urged Plamondon to back off.</p>
-      <p class="rv">§ VI · The Shared Truth</p>
-      <h2 class="nt-display md rv">Dollarization is surrender. <em>The flag doesn&#x27;t change that.</em></h2>
-      <p class="nt-lede rv">Take the two scenarios and lay them next to each other. The differences are real. The bottom line is identical.</p>
-      <p class="rv">Alberta · USD</p>
-      <p class="rv">Quebec · piastre/USD</p>
-      <p class="rv">Population</p>
-      <p class="rv">5.0 M</p>
-      <p class="rv">9.1 M</p>
-      <p class="rv">GDP</p>
-      <p class="rv">~$500 B</p>
-      <p class="rv">~$580 B</p>
-      <p class="rv">Debt share (mid)</p>
-      <p class="rv">~$155 B</p>
-      <p class="rv">~$278 B</p>
-      <p class="rv">Build-state cost</p>
-      <p class="rv">$98–107 B</p>
-      <p class="rv">~$60–80 B</p>
-      <p class="rv">Defence at NATO 5%</p>
-      <p class="rv">$25 B</p>
-      <p class="rv">$27 B</p>
-      <p class="rv">Indigenous treaty exposure</p>
-      <p class="rv">Treaties 6, 7, 8, 10</p>
-      <p class="rv">JBNQA — hydro complex</p>
-      <p class="rv">Energy artery</p>
-      <p class="rv">Line 5 through MI</p>
-      <p class="rv">Currency outcome</p>
-      <p class="rv">Direct U.S. dollar</p>
-      <p class="rv">Pegged to U.S. dollar</p>
-      <p class="rv">Effective monetary policy</p>
-      <p class="rv">Set by Federal Reserve</p>
-      <p class="rv">Once your money is American, the negotiations are American. Language sovereignty doesn&#x27;t save you from monetary capture. Cultural sovereignty doesn&#x27;t save you from a Houston refinery turnaround.</p>
-      <p class="rv">The shared truth, plain</p>
-      <h2 class="nt-display md rv">The receipts.</h2>
-      <ul>
-      <li>Jan 2025Trump assumes office; &quot;51st state&quot; rhetoric becomes daily.</li>
-      <li>Feb 202525% tariffs threatened on Canadian goods; 10% on energy.</li>
-      <li>Apr 2025First State Department meeting with APP leadership (FT reporting).</li>
-      <li>Summer 2025&quot;Make Alberta Great Again&quot; hats at Calgary rallies; Highway 2 billboards.</li>
-      <li>Jan 22, 2026Bessent on RAV: Alberta &quot;a natural partner for the U.S.&quot;</li>
-      <li>Feb 2026NBC News confirms three meetings; State Dept disputes content of conversations.</li>
-      </ul>
-      <p class="rv">§ VII · The Affirmative Thesis</p>
-      <h2 class="nt-display md rv">What staying together <em>and building</em> looks like.</h2>
-      <p class="nt-lede rv">Now the part too few unity briefings ever get to. <em>Staying in Canada is not a defensive crouch.</em> It is the necessary condition for a build-out that, on the other side, makes Canada richer than at any point in our history.</p>
-      <p class="rv">Pillar I</p>
-      <p class="rv">Refine our own crude.</p>
-      <p class="rv">Canada produces ~5 million bpd and refines about 1.93 million. The other 3-plus million we ship raw to the U.S. Gulf Coast, where it&#x27;s refined and the value-added is captured by Houston. We are surrendering an estimated 30% value gap.</p>
-      <p class="rv">Build target · <strong>800,000 bpd new refining capacity</strong> · capex ~$40–60B · captures $20–35/barrel value-add · <strong>$6–10B/yr retained GDP</strong>.</p>
-      <p class="rv">Pillar II</p>
-      <p class="rv">Power our own compute.</p>
-      <p class="rv">Hydro-Québec at 37,370 MW. BC Hydro at 13,200 MW with Site C fully commissioned August 2025. The largest, cleanest, dispatchable power fleet in the Western Hemisphere. The U.S. is running out of grid: BloombergNEF Dec 1, 2025 raised its 2035 forecast to 106 GW.</p>
-      <p class="rv">Build target · <strong>10 GW of Canadian AI compute by 2030</strong> · $80–120B capex on Canadian soil · <strong>$8–10B/yr in electricity revenue</strong> to provincial Crowns.</p>
-      <p class="rv">Pillar III</p>
-      <p class="rv">The Fort McMurray to Prince Rupert spine.</p>
-      <p class="rv">Premier Smith publicly asked PM Carney for Northern Gateway 2.0 in May 2025. Trans Mountain operating since May 2024 has proven Asian buyers — including GS Caltex (Chevron JV) and SK Energy — pay full international price. Shipping times to Asia 60% shorter than from the Gulf Coast.</p>
-      <p class="rv">Build target · <strong>$60–100B multimodal corridor</strong> · pipeline + HVDC transmission + rail upgrade · First Nations equity via doubled <strong>$10B Indigenous Loan Guarantee Program</strong>.</p>
-      <p class="rv">In a Canada that has refined its own crude, runs the AI compute layer for half a continent, and ships heavy oil and lithium out of Prince Rupert to Korea and Japan and India — an American tariff threat is a problem the U.S. industrial Midwest is going to lobby its own government against, because Houston refineries and Ohio data centres need what we sell.</p>
-      <p class="rv">From price-takers to price-makers</p>
-      <p class="rv">§ VIII · The Practical Playbook</p>
-      <h2 class="nt-display md rv">Bill C-5 is <em>already doing the work.</em></h2>
-      <p class="rv">Prime Minister Mark Carney, the moment he took office, tabled the One Canadian Economy Act. It received Royal Assent on June 26, 2025, and came into force on January 1, 2026. It does two big things and one small huge thing.</p>
-      <p class="rv"><strong>One.</strong> Federal law now treats any good produced or service delivered to provincial standards as automatically meeting comparable federal standards for interprovincial movement. A nurse licensed in Saskatchewan can practise in Ontario without re-credentialing.</p>
-      <p class="rv"><strong>Two.</strong> The federal Cabinet can designate &quot;national interest projects&quot; and fast-track them through what used to be ten years of overlapping regulatory review.</p>
-      <p class="rv"><strong>Three.</strong> All 53 federal exceptions in the CFTA, gone, as of June 30, 2025.</p>
-      <p class="rv">Per Canadian, every year, from a single statute that already passed</p>
-      <p class="rv">That is bigger than every federal cheque most families have ever received. It is bigger than the entire Alberta–Ottawa fiscal dispute. It is bigger than the equalization fight. <strong>And we got it without breaking up the country.</strong></p>
-      <p class="rv">Anyone who says &quot;Canada doesn&#x27;t work&quot; needs to be handed the C-5 number.</p>
-      <div class="nt-label">§ IX · In Plain Language</div>
-<hr class="nt-rule" />
-      <h2 class="nt-display md rv">Two truths fit on one card.</h2>
-      <p class="rv">Every honest piece of arithmetic in this briefing — debt share, military startup, environmental overhang, GDP loss from trade frictions, monetary policy surrender, Indigenous treaty exposure, energy artery vulnerability — points the same direction. Whether you live in Lethbridge or in Sept-Îles, secession with U.S. dollarization makes you and your kids <strong>poorer, weaker, and more dependent on Washington</strong> than you have ever been. Trump knows this. That is why the offer is on the table.</p>
-      <p class="rv">Every honest piece of arithmetic on the build-out points to a Canada that, by 2032, has <strong>structural leverage over the United States</strong> rather than the other way around.</p>
-      <p class="rv">Trump set a trap.</p>
-      <p class="rv">The bait is dollars.</p>
-      <p class="rv">The cage is dependency.</p>
-      <p class="rv">The way out is up.</p>
-      <p class="rv"><em>Go Canada. Build the spine. Refine the crude. Power the compute. Pay the debt as one country. Negotiate as a peer.</em></p>
-      <p class="rv">The math says we can do this. The map says we are already most of the way there. The only question is whether we have the nerve to finish.</p>
-      <p class="rv">Jesse James · Victoria, BC</p>
-      <p class="rv"><a href="https://fitforgov.com">fitforgov.com</a> · <a href="https://linkedin.com/in/jessecares">linkedin.com/in/jessecares</a></p>
-      <p class="rv">Dossier № 01 · v1.1 · May MMXXVI</p>
-      <p class="rv">A briefing for Canadians who can read a balance sheet.</p>
-      <p class="rv">Cite freely. Print it out. Hand it to the cousin quoting MAGA hats since the inauguration.</p>
-      <p class="rv">Sources</p>
-      <p class="rv">Statistics Canada</p>
-      <p class="rv">Court of King&#x27;s Bench, Alberta</p>
-      <p class="rv">Tombe (U Calgary) / MLI / IMF</p>
-      <p class="rv">NBC News · FT · Globe and Mail</p>
-      <p class="rv">BloombergNEF · Goldman Sachs Research</p>
-      <p class="rv">NATO Hague Summit Declaration 2025</p>
-      <p class="rv">Imprint</p>
-      <p class="rv">Jesse James, Principal</p>
-      <p class="rv">Victoria, British Columbia</p>
-      <p class="rv"><a href="https://fitforgov.com">Built by Fit For Gov</a></p>
-      <p class="rv"><a href="tel:+12504155678">+1&nbsp;250&nbsp;415&nbsp;5678</a></p>
-      <p class="rv">🍁 Built to last.</p>
-      </div>
-    </section>
+    <article class="dossier">
+      <section class="band nt-light">
+        <div class="nt-wrap">
+          <div class="nt-label"><span aria-hidden="true">🍁</span> A Briefing for Canadians Who Can Read a Balance Sheet</div>
+          <hr class="nt-rule" />
+          <p class="nt-lede rv">The math of staying together — and the trap of being broken apart.</p>
+          <div class="grid">
+            <Stat value={C5} label={"Per Canadian, annual GDP gain from one statute already passed"} />
+            <Stat value={"$155B"} label={"Federal debt an independent Alberta inherits day one"} />
+            <Stat value={"37 GW"} label={"Hydro-Québec capacity the U.S. AI buildout cannot match"} />
+          </div>
+          <p class="byline rv"><strong>Jesse James</strong><br />Victoria, British Columbia · May MMXXVI<br /><strong>fitforgov.com</strong></p>
+        </div>
+      </section>
+
+      <section class="band nt-light" id="thesis">
+        <div class="nt-wrap">
+          <div class="nt-label">§ I · The Thesis</div>
+          <hr class="nt-rule" />
+          <h2 class="nt-display md">A man walks into your shop.</h2>
+          <div class="prose">
+            <p class="rv">He praises your daughter, insults your wife, says your store is part of his strip mall now, and offers your business partner a private loan to walk out the back door. Then he asks whether you&#x27;ve thought about taking dollars instead of loonies. <em>That&#x27;s the news of the last eighteen months, told straight.</em></p>
+            <p class="rv">This is not an argument that grievance is fake. Western alienation is real. Quebec&#x27;s culture and language deserve protection. But grievance is not a plan, and a referendum is not an exit — it is the start of a negotiation in which the seceding province has the weakest hand at the table and the United States has its boots up on the desk.</p>
+          </div>
+          <figure class="pull rv">
+            <blockquote><p>Each province alone is a vassal. Together, we are a peer.</p></blockquote>
+            <figcaption class="nt-caption">Working thesis · 2026</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="band" id="trap">
+        <div class="nt-wrap">
+          <div class="nt-label">§ II · The Trap</div>
+          <hr class="nt-rule" />
+          <h2 class="nt-display md">It&#x27;s set. <em>Here&#x27;s how to see it.</em></h2>
+          <div class="prose">
+            <p class="rv">The State Department has held — by NBC News and Financial Times reporting, confirmed by Premier David Eby and Prime Minister Mark Carney — at least three meetings with leaders of the Alberta Prosperity Project. Separatist organizers say the meetings included discussion of a <strong>$500 million transition loan</strong> and a <strong>one-for-one Canadian-to-U.S.-dollar swap</strong>. State Department officials, on background to NBC, denied senior officials were present and said no commitments were made. No documentary evidence has surfaced. The claims remain separatist allegations, not established U.S. policy. The rhetorical pattern around them is undeniable.</p>
+          </div>
+          <figure class="pull rv">
+            <blockquote><p>&quot;I think we should let them come down into the U.S., and Alberta&#x27;s a natural partner for the U.S. They have great resources. The Albertans are very independent people.&quot;</p></blockquote>
+            <figcaption class="nt-caption">Treasury Secretary Scott Bessent · Real America&#x27;s Voice · 22 January 2026</figcaption>
+          </figure>
+          <div class="prose">
+            <p class="rv">The Prime Minister has read the room. In his special address at the World Economic Forum in Davos on January 20, 2026, Mark Carney warned that <strong>&quot;if great powers abandon even the pretense of rules and values for the unhindered pursuit of their power and interests, the gains from &#x27;transactionalism&#x27; will become harder to replicate.&quot;</strong> He called the moment &quot;a rupture, not a transition&quot; in the international order. The day after that speech, Trump rescinded Canada&#x27;s invitation to his Board of Peace. Two days after that, Bessent went on Real America&#x27;s Voice.</p>
+            <p class="rv">And as of April 13, 2026, the federal government has the runway to act. Carney&#x27;s Liberals secured a majority that night when Danielle Martin won University–Rosedale, Doly Begum took Scarborough Southwest, and Tatiana Auguste took Terrebonne — bringing the Liberal seat count to 174. The path to that majority ran through five floor-crossings since November 2025 plus the three byelection wins. Whatever you make of the math, the result is the same: <strong>a government with a mandate through 2029 to build the spine</strong>.</p>
+          </div>
+          <figure class="pull rv">
+            <blockquote><p>The American interest is to deal with Canada one province at a time. A fragmented Canada is a price-taker on every commodity. A unified Canada is a price-maker. That is the entire game.</p></blockquote>
+            <figcaption class="nt-caption">The thesis, restated</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="band nt-light" id="numbers">
+        <div class="nt-wrap">
+          <div class="nt-label">§ III · The Numbers</div>
+          <hr class="nt-rule" />
+          <h2 class="nt-display md">The country, <em>on one page.</em></h2>
+          <p class="nt-lede rv">All figures most-recent available, early 2026. <em>Official sources. No estimates dressed up as facts.</em></p>
+          <div class="grid">
+            <Stat value={"41.7M"} label={"Population — Statistics Canada, July 2025"} />
+            <Stat value={"$3.1T"} label={"Canada nominal GDP, 2024"} />
+            <Stat value={FEDERAL_DEBT.display} label={`Federal accumulated deficit, ${FEDERAL_DEBT.period}`} />
+            <Stat value={"5.0M bpd"} label={"Canadian oil production · 4th globally"} />
+            <Stat value={"All 34"} label={"Critical minerals on the federal list"} />
+            <Stat value={"$63B"} label={"FY2025-26 defence — first time at NATO 2% since 1990s"} />
+          </div>
+          <div class="prose">
+            <p class="rv">NATO&#x27;s new pledge target adopted at the 2025 Hague summit: <strong>{pct(NATO_PCT)} of GDP by 2035</strong> ({pct(NATO_DIRECT_PCT)} direct military, {pct(NATO_PCT - NATO_DIRECT_PCT)} defence-related). For Canada, that&#x27;s a path to roughly $155 billion in annual defence and security spending by the end of the decade. That number is the floor under everything else in this briefing.</p>
+            <p class="rv">The other number worth memorizing: <strong>{C5} per Canadian, every year, in retained GDP, from a single statute that already passed</strong>. Bill C-5 — the One Canadian Economy Act — received Royal Assent on June 26, 2025, and came into full force on January 1, 2026. The 2022 Macdonald-Laurier Institute paper by Manucha and Tombe estimates full mutual recognition expands the economy by 4.4% to 7.9% in the long term — between $110 and $200 billion annually. The 7.9% upper bound is the prize. Even the lower bound is transformational. <em>And we got it without breaking up the country.</em></p>
+          </div>
+        </div>
+      </section>
+
+      <section class="band nt-light" id="alberta">
+        <div class="nt-wrap">
+          <div class="nt-label">§ IV · Scenario One</div>
+          <hr class="nt-rule" />
+          <h2 class="nt-display md">Alberta walks. Dollarized. <em>The bill comes due.</em></h2>
+          <p class="nt-lede rv">Premise: Alberta passes a referendum, negotiates secession under the framework of the 1998 Supreme Court <em>Reference re Secession of Quebec</em>, and adopts the U.S. dollar.</p>
+          <div class="prose">
+            <p class="rv">Trevor Tombe at the University of Calgary — the most cited economist on Canadian fiscal federalism, and a member of the Alberta government&#x27;s own AlbertaNext panel — has modelled this. Even a modest 5% increase in trade frictions with the rest of Canada lops <strong>roughly 4% off Alberta&#x27;s GDP</strong>, about <strong>$20 billion a year</strong>, or <strong>$3,900 per Albertan, every year, forever</strong>. At an 8% non-tariff barrier — entirely realistic given how interprovincial trade actually works — the loss climbs to $30 billion a year, 6% of GDP.</p>
+          </div>
+          <div class="solo">
+            <Stat value={"$30,000"} label={"New sovereign debt per Albertan, day one"} />
+          </div>
+          <div class="prose">
+            <p class="rv">Alberta has no army, no navy, no air force, no coast guard, no intelligence service, no diplomatic corps, no central bank, no passport system, no border posts, no customs service, and no FX reserves. The Alberta Prosperity Project&#x27;s own &quot;fully costed plan&quot; estimates <strong>$98 to $107 billion in startup costs</strong>. To meet NATO&#x27;s new 5% Hague pledge: <strong>$25 billion a year — roughly the entire current Alberta provincial budget</strong>.</p>
+            <p class="rv">And then there&#x27;s the cleanup. Alberta&#x27;s official oil and gas closure liability runs anywhere from <strong>$36.6 billion</strong> on the AER&#x27;s own books to as much as <strong>$260 billion</strong> in the regulator&#x27;s leaked worst-case slide deck. Industry security currently held against this liability: under $295 million.</p>
+          </div>
+          <figure class="pull rv">
+            <blockquote><p>A $500 billion economy that loses 4 to 6% of GDP up front, takes on $150 billion in debt, $200 billion in environmental obligations, and builds a state from zero for $100 billion. Then it adopts the currency of the country negotiating against it. That is not independence. That is the 51st state without the senators.</p></blockquote>
+            <figcaption class="nt-caption">Scenario One · the math, finished</figcaption>
+          </figure>
+          <div class="prose">
+            <p class="rv">One more bill that does not appear in any APP slide. Almost every productive acre of Alberta is covered by Treaty 6, Treaty 7, and Treaty 8 — agreements signed with the Imperial Crown, not with Alberta. On December 5, 2025, Court of King&#x27;s Bench Justice Colin Feasby ruled that <strong>&quot;the Numbered Treaties are legally binding on First Nations, Canada, and Alberta&quot;</strong> and that converting provincial borders into international borders would significantly impair treaty rights. Feasby&#x27;s ruling expressly disclaims giving First Nations a veto. The Smith government has since amended the Citizen Initiative Act via Bill 14. The litigation continues. The constitutional gravity is not in doubt.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="band" id="quebec">
+        <div class="nt-wrap">
+          <div class="nt-label">§ V · Scenario Two</div>
+          <hr class="nt-rule" />
+          <h2 class="nt-display md">Quebec walks. French currency, pegged to USD. <em>Same trap.</em></h2>
+          <p class="nt-lede rv">The standard Quebec separatist counter: <em>&quot;Quebec is different. We have language. We have culture. We have Hydro-Québec. We are not Alberta.&quot;</em> All true. None of it changes the monetary math.</p>
+          <div class="prose">
+            <p class="rv">A peg to the U.S. dollar means the Banque du Québec must hold enough USD reserves to defend it under any speculative attack, must raise interest rates whenever the Federal Reserve raises them (or watch capital flee), and must accept that the price of every imported good is set in Washington. <strong>Print all the piastres you want; the moment you peg, you are dollarized in everything but the artwork.</strong></p>
+            <p class="rv">Argentina pegged to the dollar from 1991 to 2002. The peg held until it didn&#x27;t, and when it broke, the country lost 28% of GDP in two years and 57% of households fell into poverty.</p>
+          </div>
+          <div class="solo">
+            <Stat value={"96.3%"} label={"Cree referendum result · 24 October 1995 · \"We will remain in Canada\""} />
+          </div>
+          <div class="prose">
+            <p class="rv">The James Bay and Northern Quebec Agreement of 1975 is a treaty protected by Section 35 of the Constitution Act, 1982. It cannot be altered without Cree and Inuit consent. The Cree position, articulated then by Grand Chief Matthew Coon Come and reiterated since, is that they would remain in Canada — taking the territory of <em>Eeyou Istchee</em>, including most of the Hydro-Québec generating fleet, with them. <strong>Independent Quebec might lose access — partially or entirely — to the very assets that supposedly make the project economically viable.</strong></p>
+            <p class="rv">Polling is reading the same map. Pallas Data and <em>The Walrus</em>, January 2026: <strong>62% of Quebecers oppose holding a referendum at all in a PQ first mandate; only 32% favour</strong>. The April 2026 Pallas follow-up showed unfavourability hardening to <strong>71%</strong>. Even Lucien Bouchard — the man who came within 54,288 votes of winning in 1995 — has publicly urged Plamondon to back off.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="band nt-light" id="truth">
+        <div class="nt-wrap">
+          <div class="nt-label">§ VI · The Shared Truth</div>
+          <hr class="nt-rule" />
+          <h2 class="nt-display md">Dollarization is surrender. <em>The flag doesn&#x27;t change that.</em></h2>
+          <p class="nt-lede rv">Take the two scenarios and lay them next to each other. The differences are real. The bottom line is identical.</p>
+          <section class="tw rv" tabindex="0" aria-label="Alberta and Quebec side by side">
+            <table class="compare">
+              <thead>
+                <tr><td></td><th scope="col">Alberta · USD</th><th scope="col">Quebec · piastre/USD</th></tr>
+              </thead>
+              <tbody>
+                {compare.map((r) => (
+                  <tr class={r.hl ? 'hl' : undefined}><th scope="row">{r.k}</th><td>{r.ab}</td><td>{r.qc}</td></tr>
+                ))}
+              </tbody>
+            </table>
+          </section>
+          <figure class="pull rv">
+            <blockquote><p>Once your money is American, the negotiations are American. Language sovereignty doesn&#x27;t save you from monetary capture. Cultural sovereignty doesn&#x27;t save you from a Houston refinery turnaround.</p></blockquote>
+            <figcaption class="nt-caption">The shared truth, plain</figcaption>
+          </figure>
+          <h3 class="nt-display sm sub rv">The receipts.</h3>
+          <dl class="receipts rv">
+            {receipts.map(([when, what]) => (
+              <div><dt>{when}</dt><dd>{what}</dd></div>
+            ))}
+          </dl>
+        </div>
+      </section>
+
+      <section class="band nt-light" id="buildout">
+        <div class="nt-wrap">
+          <div class="nt-label">§ VII · The Affirmative Thesis</div>
+          <hr class="nt-rule" />
+          <h2 class="nt-display md">What staying together <em>and building</em> looks like.</h2>
+          <p class="nt-lede rv">Now the part too few unity briefings ever get to. <em>Staying in Canada is not a defensive crouch.</em> It is the necessary condition for a build-out that, on the other side, makes Canada richer than at any point in our history.</p>
+          <div class="pillars">
+            <article class="pillar rv">
+              <div class="nt-label">Pillar I</div>
+              <h3 class="nt-display">Refine our own crude.</h3>
+              <p>Canada produces ~5 million bpd and refines about 1.93 million. The other 3-plus million we ship raw to the U.S. Gulf Coast, where it&#x27;s refined and the value-added is captured by Houston. We are surrendering an estimated 30% value gap.</p>
+              <p class="key">Build target · <strong>800,000 bpd new refining capacity</strong> · capex ~$40–60B · captures $20–35/barrel value-add · <strong>$6–10B/yr retained GDP</strong>.</p>
+            </article>
+            <article class="pillar rv">
+              <div class="nt-label">Pillar II</div>
+              <h3 class="nt-display">Power our own compute.</h3>
+              <p>Hydro-Québec at 37,370 MW. BC Hydro at 13,200 MW with Site C fully commissioned August 2025. The largest, cleanest, dispatchable power fleet in the Western Hemisphere. The U.S. is running out of grid: BloombergNEF Dec 1, 2025 raised its 2035 forecast to 106 GW.</p>
+              <p class="key">Build target · <strong>10 GW of Canadian AI compute by 2030</strong> · $80–120B capex on Canadian soil · <strong>$8–10B/yr in electricity revenue</strong> to provincial Crowns.</p>
+            </article>
+            <article class="pillar rv">
+              <div class="nt-label">Pillar III</div>
+              <h3 class="nt-display">The Fort McMurray to Prince Rupert spine.</h3>
+              <p>Premier Smith publicly asked PM Carney for Northern Gateway 2.0 in May 2025. Trans Mountain operating since May 2024 has proven Asian buyers — including GS Caltex (Chevron JV) and SK Energy — pay full international price. Shipping times to Asia 60% shorter than from the Gulf Coast.</p>
+              <p class="key">Build target · <strong>$60–100B multimodal corridor</strong> · pipeline + HVDC transmission + rail upgrade · First Nations equity via doubled <strong>$10B Indigenous Loan Guarantee Program</strong>.</p>
+            </article>
+          </div>
+          <figure class="pull rv">
+            <blockquote><p>In a Canada that has refined its own crude, runs the AI compute layer for half a continent, and ships heavy oil and lithium out of Prince Rupert to Korea and Japan and India — an American tariff threat is a problem the U.S. industrial Midwest is going to lobby its own government against, because Houston refineries and Ohio data centres need what we sell.</p></blockquote>
+            <figcaption class="nt-caption">From price-takers to price-makers</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="band" id="playbook">
+        <div class="nt-wrap">
+          <div class="nt-label">§ VIII · The Practical Playbook</div>
+          <hr class="nt-rule" />
+          <h2 class="nt-display md">Bill C-5 is <em>already doing the work.</em></h2>
+          <div class="prose">
+            <p class="rv">Prime Minister Mark Carney, the moment he took office, tabled the One Canadian Economy Act. It received Royal Assent on June 26, 2025, and came into force on January 1, 2026. It does two big things and one small huge thing.</p>
+            <p class="rv"><strong>One.</strong> Federal law now treats any good produced or service delivered to provincial standards as automatically meeting comparable federal standards for interprovincial movement. A nurse licensed in Saskatchewan can practise in Ontario without re-credentialing.</p>
+            <p class="rv"><strong>Two.</strong> The federal Cabinet can designate &quot;national interest projects&quot; and fast-track them through what used to be ten years of overlapping regulatory review.</p>
+            <p class="rv"><strong>Three.</strong> All 53 federal exceptions in the CFTA, gone, as of June 30, 2025.</p>
+          </div>
+          <div class="solo">
+            <Stat value={C5} label={"Per Canadian, every year, from a single statute that already passed"} />
+          </div>
+          <div class="prose">
+            <p class="rv">That is bigger than every federal cheque most families have ever received. It is bigger than the entire Alberta–Ottawa fiscal dispute. It is bigger than the equalization fight. <strong>And we got it without breaking up the country.</strong></p>
+            <p class="rv">Anyone who says &quot;Canada doesn&#x27;t work&quot; needs to be handed the C-5 number.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="band nt-light" id="close">
+        <div class="nt-wrap">
+          <div class="nt-label">§ IX · In Plain Language</div>
+          <hr class="nt-rule" />
+          <h2 class="nt-display md">Two truths fit on one card.</h2>
+          <div class="prose">
+            <p class="rv">Every honest piece of arithmetic in this briefing — debt share, military startup, environmental overhang, GDP loss from trade frictions, monetary policy surrender, Indigenous treaty exposure, energy artery vulnerability — points the same direction. Whether you live in Lethbridge or in Sept-Îles, secession with U.S. dollarization makes you and your kids <strong>poorer, weaker, and more dependent on Washington</strong> than you have ever been. Trump knows this. That is why the offer is on the table.</p>
+            <p class="rv">Every honest piece of arithmetic on the build-out points to a Canada that, by 2032, has <strong>structural leverage over the United States</strong> rather than the other way around.</p>
+          </div>
+          <div class="manifesto rv">
+            <p>Trump set a trap.</p>
+            <p>The bait is dollars.</p>
+            <p>The cage is dependency.</p>
+            <p class="last">The way out is up.</p>
+          </div>
+          <p class="cta rv"><em>Go Canada. Build the spine.<br />Refine the crude. Power the compute.<br />Pay the debt as one country.<br />Negotiate as a peer.</em></p>
+          <p class="coda rv">The math says we can do this. The map says we are already most of the way there. The only question is whether we have the nerve to finish.</p>
+          <p class="sign rv">Jesse James · Victoria, BC<br /><a href="https://fitforgov.com">fitforgov.com</a> · <a href="https://linkedin.com/in/jessecares">linkedin.com/in/jessecares</a></p>
+        </div>
+      </section>
+
+      <footer class="colophon nt-light">
+        <div class="nt-wrap cols">
+          <div>
+            <p class="nt-caption">Dossier № 01 · v1.1 · May MMXXVI</p>
+            <p>A briefing for Canadians who can read a balance sheet.</p>
+            <p>Cite freely. Print it out. Hand it to the cousin quoting MAGA hats since the inauguration.</p>
+          </div>
+          <div>
+            <p class="nt-caption" id="colophon-sources">Sources</p>
+            <ul aria-labelledby="colophon-sources">
+              <li>Statistics Canada</li>
+              <li>Court of King&#x27;s Bench, Alberta</li>
+              <li>Tombe (U Calgary) / MLI / IMF</li>
+              <li>NBC News · FT · Globe and Mail</li>
+              <li>BloombergNEF · Goldman Sachs Research</li>
+              <li>NATO Hague Summit Declaration 2025</li>
+            </ul>
+          </div>
+          <div>
+            <p class="nt-caption" id="colophon-imprint">Imprint</p>
+            <ul aria-labelledby="colophon-imprint">
+              <li>Jesse James, Principal</li>
+              <li>Victoria, British Columbia</li>
+              <li><a href="https://fitforgov.com">Built by Fit For Gov</a></li>
+              <li><a href="tel:+12504155678">+1&nbsp;250&nbsp;415&nbsp;5678</a></li>
+              <li><span aria-hidden="true">🍁</span> Built to last.</li>
+            </ul>
+          </div>
+        </div>
+      </footer>
+    </article>
 
     <Share quote={"Breaking up Canada is a math problem, and the answer is: poorer. Both separation scenarios, costed against official figures."} />
   </main>
@@ -204,30 +343,121 @@ const description =
     font-size: var(--type-label); letter-spacing: var(--ls-key);
     text-transform: uppercase; color: var(--nt-red-lift); text-underline-offset: 5px;
   }
-  .doc { max-width: 72ch; }
-  .doc :global(h2) {
-    margin: clamp(46px, 7vh, 90px) 0 var(--space-3);
-    padding-top: var(--space-4);
-    border-top: var(--border-key) solid var(--nt-red);
-    max-width: 20ch;
+
+  /* Two light sections in a row would stack two chapters of padding into one
+     white gap; the label and rule already mark the break. */
+  .band.nt-light + .band.nt-light { padding-top: 0; }
+
+  .dossier h2 { max-width: 20ch; margin-bottom: var(--space-4); }
+  .dossier .nt-lede { max-width: 44ch; margin-bottom: var(--space-4); }
+  .prose { max-width: 66ch; }
+  .prose p { margin-bottom: var(--space-2); }
+  .prose + .prose { margin-top: var(--space-2); }
+  a { color: var(--text-accent); text-underline-offset: 3px; }
+
+  /* Ledger figures. Three across where a figure has room to sit at full size,
+     fewer where it does not: the first cut of this page packed three into a
+     72ch column and "$5,100" ran into "$155B". */
+  .grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+    gap: var(--gap-grid); margin: clamp(34px, 5vh, 66px) 0;
   }
-  .doc :global(p) { margin-bottom: var(--space-2); max-width: none; }
-  .doc :global(.nt-lede) { margin: var(--space-4) 0; max-width: none; }
-  .doc :global(.nt-caption) { margin: var(--space-2) 0 var(--space-4); }
-  .doc :global(.trio) {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-    gap: var(--gap-grid); margin: clamp(32px, 5vh, 62px) 0;
+  .solo { max-width: 34rem; margin: clamp(34px, 5vh, 66px) 0; }
+  .byline { color: var(--text-muted); font-size: var(--type-body-sm); }
+  .byline strong { color: var(--text-body); }
+
+  /* A pull statement: the display face at the system's pull size, on the red
+     rule, with its attribution underneath as a caption rather than as a
+     paragraph of its own. */
+  .pull {
+    margin: clamp(38px, 6vh, 76px) 0; max-width: 52rem;
+    padding-left: clamp(18px, 2.4vw, 30px);
+    border-left: var(--rule-weight) solid var(--rule-accent);
   }
-  .doc :global(ul) { margin: var(--space-3) 0 var(--space-3) 1.1rem; }
-  .doc :global(li) { margin-bottom: .6rem; }
-  .doc :global(a) { color: var(--nt-red); }
-  .doc :global(.tw) { overflow-x: auto; margin: clamp(28px, 4vh, 52px) 0; -webkit-overflow-scrolling: touch; }
-  .doc :global(table) { width: 100%; border-collapse: collapse; font-size: var(--type-body-sm); min-width: 32rem; }
-  .doc :global(th) {
+  .pull blockquote p {
+    font-family: var(--font-display); font-weight: var(--fw-display);
+    text-transform: uppercase; line-height: 1.12;
+    font-size: clamp(20px, 2.5vw, 32px); max-width: none; margin: 0;
+  }
+  .pull figcaption { margin-top: var(--space-2); }
+
+  /* The comparison: the site's table, with the measure as the row header. */
+  .tw { overflow-x: auto; margin: clamp(28px, 4vh, 52px) 0; -webkit-overflow-scrolling: touch; }
+  /* Short cells, so on a phone the table narrows to fit rather than scrolling
+     the Quebec column out of sight: the comparison is the point, and a reader
+     has to see both provinces at once to make it. It still sits in the scroll
+     region, which takes over only if a cell ever cannot wrap. */
+  .compare { width: 100%; max-width: 58rem; border-collapse: collapse; font-size: var(--type-body-sm); }
+  .compare thead th, .compare thead td {
     background: var(--nt-black); color: var(--nt-white); text-align: left;
     font-family: var(--font-display); font-weight: var(--fw-label);
-    font-size: var(--type-label-sm); letter-spacing: var(--ls-key);
-    text-transform: uppercase; padding: 11px 13px;
+    font-size: var(--type-label-sm); letter-spacing: var(--ls-key); text-transform: uppercase;
+    padding: 11px 13px;
   }
-  .doc :global(td) { border-bottom: var(--border-hair) solid var(--border-hairline); padding: 11px 13px; vertical-align: top; }
+  .compare tbody th, .compare tbody td {
+    border-bottom: var(--border-hair) solid var(--border-hairline);
+    padding: 12px 13px; vertical-align: top; text-align: left;
+  }
+  .compare tbody th { font-weight: var(--fw-body-strong); width: 34%; }
+  /* The ground-aware accent: red on a light band, lifted red on a dark one. */
+  .compare .hl td { color: var(--text-accent); font-weight: var(--fw-body-strong); }
+  @media (max-width: 520px) {
+    .compare thead th, .compare thead td, .compare tbody th, .compare tbody td { padding: 10px 8px; }
+  }
+
+  /* The receipts: a date and what happened, never run together. */
+  .sub { margin: clamp(40px, 6vh, 72px) 0 var(--space-3); }
+  .receipts { max-width: 58rem; border-top: var(--border-hair) solid var(--border-hairline); }
+  .receipts div {
+    display: grid; grid-template-columns: 11rem 1fr; gap: var(--space-2);
+    padding: 16px 0; border-bottom: var(--border-hair) solid var(--border-hairline);
+  }
+  .receipts dt {
+    font-family: var(--font-display); font-weight: var(--fw-label);
+    font-size: var(--type-label); letter-spacing: var(--ls-key); text-transform: uppercase;
+    color: var(--text-accent); padding-top: .2rem;
+  }
+  @media (max-width: 620px) { .receipts div { grid-template-columns: 1fr; gap: .35rem; } }
+
+  /* The three pillars, as Act V sets them. */
+  .pillars {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+    gap: var(--gap-grid); margin-top: clamp(34px, 5vh, 66px);
+  }
+  .pillar { border-top: var(--border-key) solid var(--nt-red); padding-top: var(--space-3); }
+  .pillar h3 { font-size: clamp(22px, 2.4vw, 32px); margin: var(--space-2) 0 var(--space-3); }
+  .pillar p { margin-bottom: var(--space-2); }
+  .pillar .key {
+    font-size: var(--type-body-sm); color: var(--text-muted);
+    border-top: var(--border-hair) solid var(--border-hairline); padding-top: var(--space-2);
+  }
+  .pillar .key strong { color: var(--text-body); }
+
+  /* The close. */
+  .manifesto {
+    margin: clamp(40px, 6vh, 76px) 0; padding: clamp(26px, 4vh, 46px) 0;
+    border-block: var(--border-key) solid var(--nt-red); max-width: 44rem;
+  }
+  .manifesto p {
+    font-family: var(--font-display); font-weight: var(--fw-display);
+    text-transform: uppercase; line-height: 1.08;
+    font-size: var(--type-display-sm); margin: 0;
+  }
+  .manifesto .last { color: var(--nt-red); margin-top: .5rem; }
+  .cta { font-size: var(--type-lede); line-height: var(--lh-lede); font-weight: var(--fw-body-medium); max-width: 36ch; }
+  .coda { margin-top: var(--space-4); color: var(--text-muted); max-width: 52ch; }
+  .sign { margin-top: var(--space-3); font-size: var(--type-body-sm); color: var(--text-muted); }
+
+  /* The dossier's colophon, as the source set it: three short columns. */
+  .colophon { padding: 0 var(--gutter) var(--section-y); }
+  .cols {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+    gap: var(--gap-footer); padding-top: var(--space-4);
+    border-top: var(--border-hair) solid var(--border-hairline);
+    font-size: var(--type-body-sm); color: var(--text-muted);
+  }
+  .cols p { margin-bottom: .6rem; }
+  .cols .nt-caption { margin-bottom: var(--space-1); }
+  .cols ul { list-style: none; }
+  .cols li { margin-bottom: .35rem; }
 </style>

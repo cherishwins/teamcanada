@@ -8,64 +8,22 @@ import {
   FEDERAL_DEBT, FRICTION_LOW, FRICTION_HIGH,
   BUILD_STATE_LOW_B, BUILD_STATE_HIGH_B, NATO_PCT, NATO_DIRECT_PCT,
 } from '../lib/figures';
+import { bill, big, DEBT_HIGH_MARKUP } from '../lib/calculator';
 
 const { provinces, canadaPopulation, popAsOf, allLive } = await getProvinces();
 
 /**
- * The Alberta Prosperity Project costed an Alberta state at $98-107B. Other
- * provinces are scaled per person from that, and the person count is Alberta's
- * in the SAME dataset the page uses, so Alberta reproduces the published range
- * exactly. It used to divide by a typed 5,057,077 (an old quarter's estimate)
- * and printed $99-108B beside the words "the APP's own $98-107B estimate".
+ * Alberta's count in the SAME dataset the page uses (see Basis in
+ * src/lib/calculator.ts). It used to be a typed 5,057,077, an old quarter's
+ * estimate, and printed $99-108B beside the words "the APP's own $98-107B
+ * estimate".
  */
 const buildBasePop = provinces.find((p) => p.code === 'AB')!.population;
 const quarter = (iso: string) => `Q${Math.floor((+iso.slice(5, 7) - 1) / 3) + 1} ${iso.slice(0, 4)}`;
 
-/**
- * Every constant here is published and cited on the page itself. The
- * calculator's only claim is arithmetic: it does not estimate anything it
- * cannot show the source for, and each line states its own method. Every
- * sourced value comes from src/lib/figures.ts, the one place a hand-entered
- * number on this site is written; the one assumption of this page's own, the
- * markup for a negotiation going badly, is named below and printed from here.
- */
-const DEBT_HIGH_MARKUP = 0.15;
-
 const sorted = [...provinces].sort((a, b) => b.gdp - a.gdp);
 const gdpYear = provinces[0]?.gdpYear ?? '2024';
 
-/**
- * The arithmetic exists once, here, and runs at build time for EVERY province.
- *
- * It used to run twice: once here for the default province, and again in an
- * inline script that carried the live StatCan population in its source via
- * define:vars. Two copies of the math could drift, and worse, the script's CSP
- * hash moved whenever StatCan published a new quarter or timed out during a
- * build, so the next deploy after either failed check-csp. Now each <option>
- * carries its province's finished lines as text and the script only swaps it
- * in. No figure is in the script, so its hash cannot move with the data, and
- * the page reads the same with scripting off: the default province is rendered
- * from the same function.
- */
-function bill(pop: number, gdpM: number) {
-  const lossLow = gdpM * FRICTION_LOW;
-  const lossHigh = gdpM * FRICTION_HIGH;
-  const debtLow = FEDERAL_DEBT.value * 1000 * (pop / canadaPopulation);
-  const debtHigh = debtLow * (1 + DEBT_HIGH_MARKUP);
-  const buildLow = ((BUILD_STATE_LOW_B * 1000) / buildBasePop) * pop;
-  const buildHigh = ((BUILD_STATE_HIGH_B * 1000) / buildBasePop) * pop;
-  const natoLow = gdpM * NATO_DIRECT_PCT;
-  const natoHigh = gdpM * NATO_PCT;
-  const totLow = debtLow + buildLow;
-  const totHigh = debtHigh + buildHigh;
-  const recurring = lossLow + natoHigh;
-  return { lossLow, lossHigh, debtLow, debtHigh, buildLow, buildHigh,
-           natoLow, natoHigh, totLow, totHigh, recurring };
-}
-const big = (m: number) => {
-  const b = m / 1000;
-  return b >= 1 ? `$${b.toFixed(b < 10 ? 1 : 0)}B` : `$${Math.round(m)}M`;
-};
 const cad = new Intl.NumberFormat('en-CA', { style: 'currency', currency: 'CAD', maximumFractionDigits: 0 });
 const pct = (x: number) => `${Number((x * 100).toFixed(1))}%`;
 
@@ -75,7 +33,7 @@ const IDS = ['totalFirstYear', 'perPerson', 'annualLoss', 'lossLow', 'lossHigh',
 type Lines = Record<(typeof IDS)[number], string>;
 
 function lines(p: { population: number; gdp: number }): Lines {
-  const b = bill(p.population, p.gdp);
+  const b = bill(p.population, p.gdp, { canadaPopulation, buildBasePop });
   return {
     totalFirstYear: big(b.totLow),
     perPerson: cad.format((b.recurring * 1e6) / p.population),

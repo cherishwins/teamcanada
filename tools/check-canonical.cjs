@@ -86,7 +86,11 @@ function canonicalOf(file) {
 // ---- 1. Every page's canonical names that same page, on this origin.
 let pages = 0;
 for (const f of htmlFiles) {
-  if (/^(404|500)\.html$/.test(rel(f))) continue; // served with an error status; never indexed
+  // The error page is served with a 404 at every missing path, where robots
+  // meta and canonicals are ignored. Its own filename redirects to /404 (the
+  // generic .html rule in vercel.json); it carries noindex regardless, and
+  // check-sitemap holds it to that.
+  if (/^(404|500)\.html$/.test(rel(f))) continue;
   pages++;
   const c = canonicalOf(f);
   if (!c) { fail.push(`${rel(f)} has no <link rel="canonical">`); continue; }
@@ -126,7 +130,7 @@ function note(where, found, want) {
 function checkPath(where, raw) {
   const p = (raw || '/').split(/[?#&]/)[0].replace(/[.,;:!]+$/, '') || '/';
   const f = fileFor(p);
-  if (!f || /^(404|500)\.html$/.test(rel(f))) return; // not a page; another checker's business
+  if (!f || /^(404|500)\.html$/.test(rel(f))) return; // the error page: see above
   refs++;
   const c = canonicalOf(f);
   if (!c) return; // reported in step 1

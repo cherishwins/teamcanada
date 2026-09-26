@@ -2,7 +2,7 @@
 import Record from '../../layouts/Record.astro';
 import { compute } from '../../lib/record';
 
-/** The ledger of members. One row per member who cast a ballot, with their party-line rate and every break. See /record for the method. */
+/** The ledger of members. One row per member who sat this session, with their party-line rate and every break. See /record for the method. */
 const r = compute();
 const S = r.summary;
 const pct = (x: number | null) => (x === null ? '—' : `${(x * 100).toFixed(1)}%`);
@@ -10,43 +10,50 @@ const day = (iso: string) => new Date(`${iso}T12:00:00Z`).toLocaleDateString('en
 const ordinal = (n: number) => `${n}${['th', 'st', 'nd', 'rd'][(n % 100 > 10 && n % 100 < 14) ? 0 : Math.min(n % 10, 4) % 4] ?? 'th'}`;
 const parl = `${ordinal(r.parliament)} Parliament`;
 
+/* Each column's name, once. The header row prints it, and so does the
+   data-label a cell carries into the phone layout, where the header row is
+   hidden and each value is labelled on its own; typed twice, the two would
+   drift apart the first time either was edited. */
+const COL = {
+  name: 'Member', party: 'Party', riding: 'Riding', prov: 'Prov.', cast: 'Cast', rate: 'With party',
+  breaks: 'Breaks', on: 'On divisions', paired: 'Paired', absent: "Didn't vote",
+};
+
 const description =
-  `Every member of the ${parl} of Canada who cast a ballot in a recorded division: party, riding, ballots cast, ` +
+  `Every member who sat in the ${parl} of Canada this session: party, riding, ballots cast, ` +
   'party-line rate, and every division where they broke with their party. Each name links to their record on OpenParliament.ca.';
 ---
 <Record
   title="The Record: every member" description={description} path="/record/members"
-  label="The record · every member" heading={`All ${r.members.length}<br>who cast a ballot.`}
+  label="The record · every member" heading={`All ${r.members.length}<br>who sat.`}
   caption={`${S.divisions} divisions, ${day(r.first)} to ${day(r.last)} · snapshot ${r.fetched.slice(0, 10)} · House of Commons of Canada, via OpenParliament.ca`}
 >
   <p slot="lede" class="nt-lede">
     "With party" is the share of a member's cast ballots that matched their party's majority, for members
-    with at least twenty comparable votes. "Breaks" links to each division where they did not. Paired and
-    "didn't vote" are the House's own categories.
+    with at least twenty comparable votes. "Breaks" counts the divisions where they did not, and each one
+    is linked by its number. Paired and "didn't vote" are the House's own categories.
   </p>
 
   <section class="nt-light">
     <div class="nt-wrap">
-      <section class="tw" tabindex="0" aria-label="Every member's voting record, scrolls sideways">
-        <table class="ledger">
+      <section class="tw" tabindex="0" aria-label="Every member's voting record">
+        <table class="ledger members">
           <thead>
-            <tr>
-              <th scope="col">Member</th><th scope="col">Party</th><th scope="col">Riding</th><th scope="col">Prov.</th>
-              <th scope="col">Cast</th><th scope="col">With party</th><th scope="col">Breaks</th><th scope="col">Paired</th><th scope="col">Didn't vote</th>
-            </tr>
+            <tr>{Object.values(COL).map((c) => <th scope="col">{c}</th>)}</tr>
           </thead>
           <tbody>
             {r.members.map((m) => (
               <tr id={`mp-${m.id}`}>
                 <td class="nowrap"><a href={m.openparliament}>{m.name}</a></td>
-                <td class="nowrap">{m.parties.length > 1 ? m.parties.join(' → ') : (m.party ?? '—')}</td>
-                <td>{m.riding ?? '—'}{m.left && <span class="left">Sat until {day(m.left)}</span>}</td>
-                <td class="nowrap">{m.province ?? '—'}</td>
-                <td class="num">{m.cast}</td>
-                <td class="num">{pct(m.rate)}</td>
-                <td class="breaks">{m.breaks.length === 0 ? '0' : m.breaks.map((n) => <a href={`/record/divisions#v${n}`}>{n}</a>)}</td>
-                <td class="num">{m.paired}</td>
-                <td class="num">{m.absent}</td>
+                <td class="party">{m.parties.length > 1 ? m.parties.join('\u00a0→ ') : (m.party ?? '—')}</td>
+                <td class="riding">{m.riding ?? '—'}{m.left && <span class="left">Sat until {day(m.left)}</span>}</td>
+                <td class="nowrap prov">{m.province ?? '—'}</td>
+                <td class="num" data-label={COL.cast}>{m.cast}</td>
+                <td class="num" data-label={COL.rate}>{pct(m.rate)}</td>
+                <td class="num" data-label={COL.breaks}>{m.comparable === 0 ? '—' : m.breaks.length}</td>
+                <td class="on" data-label={COL.on}>{m.breaks.length === 0 ? '—' : <ul>{m.breaks.map((n) => <li><a href={`/record/divisions#v${n}`}>{`No.\u00a0${n}`}</a></li>)}</ul>}</td>
+                <td class="num" data-label={COL.paired}>{m.paired}</td>
+                <td class="num" data-label={COL.absent}>{m.absent}</td>
               </tr>
             ))}
           </tbody>
@@ -57,7 +64,8 @@ const description =
         changed party during the session is listed with every party in order, and one whose seat has ended
         with the day it did. A member with
         fewer than twenty comparable votes, or whose party had fewer than three members casting, is listed
-        without a rate. Every division is on <a href="/record/divisions">the divisions ledger</a>; the method,
+        without a rate, and one with no ballot to set against a party line has no count of breaks either.
+        Every division is on <a href="/record/divisions">the divisions ledger</a>; the method,
         the party agreement matrix and the sources are on <a href="/record">the record's front page</a>.
         The whole record is at <a href="/api/record.json" data-astro-prefetch="false"><code>/api/record.json</code></a>.
       </p>

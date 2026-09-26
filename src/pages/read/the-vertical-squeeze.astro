@@ -1,31 +1,17 @@
 ---
 import Read from '../../layouts/Read.astro';
 import Share from '../../components/Share.astro';
-import { articleSchema } from '../../lib/schema';
 import BarTable from '../../components/BarTable.astro';
-const schema = [articleSchema({
-  title: "The Vertical Squeeze",
-  description: "Municipalities carry the most responsibility and the least revenue. The vertical fiscal imbalance, costed.",
-  path: '/read/the-vertical-squeeze',
-  image: '/og/the-vertical-squeeze.png',
-  published: '2026-05-29',
-  section: "Fit For Gov \u00b7 Dossier",
-  words: 3612,
-})];
 ---
 <Read
-  title={"The Vertical Squeeze"}
+  slug="the-vertical-squeeze"
   description={"Municipalities carry the most responsibility and the least revenue. The vertical fiscal imbalance, costed."}
-  imprint={"Fit For Gov \u00b7 Dossier"}
   standfirst={"Why the order of government closest to you has the least power to pay for what you need \u2014 and what a fix actually looks like."}
-  path="/read/the-vertical-squeeze"
-  ogImage="/og/the-vertical-squeeze.png"
-  schema={schema}
 >
       <p>Why the order of government closest to the citizen has the least power to pay for it.</p>
       <p class="lead">A per-citizen accounting of the Canadian tax stack across Calgary, Vancouver, and Toronto — four households, every layer, both directions.</p>
       <p class="byline">Jesse James, Principal<br><strong>Fit For Gov · A Civic-Technology Practice</strong><br>Calgary · Vancouver · Toronto<br>UNCLASSIFIED · PUBLIC</p>
-      <h2><span class="eyebrow">Letter the First</span>On a Country That Hid Its Own Bill</h2>
+      <h2><span class="eyebrow">Letter the First</span> On a Country That Hid Its Own Bill</h2>
       <p>Reported home, at a great distance, concerning the curious arithmetic of a northern confederation that taxes its citizens in three places at once and has arranged for none of them to be visible from any of the others.</p>
       <p>I have been some time among them now, and I can report that the species in the cold country has perfected a thing the warmer nations only attempt. It has built a government in three storeys, assigned the heaviest work to the floor nearest the street, and arranged for the rent to be collected — quietly, and in the largest part — from the floors above, where the tenant cannot see the meter.</p>
       <p>They are very proud of the arrangement. They call it federalism, and they teach it to their young as a triumph of balance.</p>
@@ -156,7 +142,7 @@ const schema = [articleSchema({
       <p>The level of government you would phone to complain about your taxes is the one with the least power to change them.</p>
       <h2 class="sec">§ V — Two Tiers of Repair<span class="count" aria-hidden="true">05 / 06</span></h2>
       <p>A diagnosis that stops at the problem is a complaint. The brand&#x27;s discipline is binary: every instrument is either Fit — keep it, fund it, deploy it — or Forward — escalate it, replace it, move. There is no &quot;monitor&quot; and no &quot;convene a working group.&quot; Those are the language of the system this dossier is built to critique.</p>
-      <h3><span class="eyebrow">Tier I — Within current constitutional capacity</span>What can be done now, by ordinary legislation</h3>
+      <h3><span class="eyebrow">Tier I — Within current constitutional capacity</span> What can be done now, by ordinary legislation</h3>
       <h4>Provincial enabling of a municipal sales point</h4>
       <p class="verdict">Fit</p>
       <p>A province grants its large cities authority to levy a 1% sales tax piggybacked on existing GST/HST collection. It diversifies cities off the regressive property base onto one that grows with the economy. Toronto has already modelled it; the lever exists the moment the province writes the law.</p>
@@ -179,7 +165,7 @@ const schema = [articleSchema({
       <p class="verdict">Fit</p>
       <p>The clearest lesson in the data: a regressive consumption tax becomes progressive when paired with an income-tested rebate paid automatically through the tax system. Ottawa already does this with the GST credit. Any new sales or fuel levy, at any level, should be bound to a paired rebate from the first day.</p>
       <p><strong>Who must consent:</strong> the level introducing the tax. <strong>What breaks:</strong> nothing structural — this is design discipline, not a transfer of power. The barrier is will, not jurisdiction.</p>
-      <h3><span class="eyebrow">Tier II — Requires a constitutional fight</span>What would end the squeeze, and what it would cost to try</h3>
+      <h3><span class="eyebrow">Tier II — Requires a constitutional fight</span> What would end the squeeze, and what it would cost to try</h3>
       <h4>Constitutional standing for cities</h4>
       <p class="verdict">Forward</p>
       <p>End the &quot;creatures of the province&quot; doctrine. Give cities a defined constitutional status and a guaranteed own-source revenue field. It is the cleanest cure for the vertical squeeze — and the least achievable, because it reopens the division of powers.</p>
@@ -188,7 +174,7 @@ const schema = [articleSchema({
       <p class="verdict">Forward</p>
       <p>Re-engineer the formula to reduce the growth disincentive — shorten the lag, revisit resource inclusion, cap the clawback on provinces that expand their base. The s.36(2) principle stays untouched; only the arithmetic changes. But the arithmetic is where every province&#x27;s self-interest lives.</p>
       <p><strong>Who must consent:</strong> Parliament can legislate the formula, but durable change needs the recipient provinces — who would receive less — to accept it, and they will not give it freely. <strong>What breaks:</strong> any formula that eases Alberta&#x27;s grievance reduces Quebec&#x27;s and Atlantic Canada&#x27;s receipts. Zero-sum by construction, which is why it has resisted reform for decades.</p>
-      <h2><span class="eyebrow">Letter the Last</span>On Reading Back the Clerks&#x27; Figures</h2>
+      <h2><span class="eyebrow">Letter the Last</span> On Reading Back the Clerks&#x27; Figures</h2>
       <p>In which the observer, having seen the receipts, finds the arrangement worse than astonishment first suggested, and declines — as is his custom — to recommend a remedy.</p>
       <p>The clerks were as good as their word. The figures are worse than I made them sound, and I had made them sound quite bad.</p>
       <p>I had thought the cruelty was in the size of the bill. It is not. The same citizen, with the same wage and the same habits, pays a quarter of his income in one city and forty-two hundredths in another, and the difference is decided not by anything he did but by the line on the map he happened to be standing behind. The system does not sort by what a man can bear. It sorts by where he sleeps.</p>

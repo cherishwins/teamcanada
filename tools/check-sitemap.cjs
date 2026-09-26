@@ -128,9 +128,14 @@ const orphans = [];
   for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
     const p = path.join(dir, e.name);
     if (e.isDirectory()) { walk(p); continue; }
-    if (e.name !== 'index.html') continue;
-    const rel = path.relative(ROOT, p).replace(/index\.html$/, '');
-    const pathname = norm('/' + rel.replace(/\\/g, '/'));
+    // Every HTML file, not only index.html. 404.html answered 200 at its own
+    // filename, indexable, for months while this walk skipped it on the
+    // premise that it is only served with an error status. The generic .html
+    // redirect in vercel.json now sends that URL to /404, but a file the
+    // build writes must be safe on its own, not only behind a redirect.
+    if (!e.name.endsWith('.html')) continue;
+    const rel = path.relative(ROOT, p).replace(/\\/g, '/').replace(/(^|\/)index\.html$/, '$1');
+    const pathname = norm('/' + rel);
     if (inSitemap.has(pathname)) continue;
     if (blocksIndex(robotsOf(fs.readFileSync(p, 'utf8')))) continue; // correctly excluded
     orphans.push(pathname);
