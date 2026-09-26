@@ -166,14 +166,19 @@ const { title, pageTitle, description, path, schema, label, heading, caption } =
     }
     .rec .members tr::after { content: ""; flex-basis: 100%; order: 1; }
     .rec .members td.on { order: 3; flex-basis: 100%; }
-    .rec .members td.on:not(:has(a)) { display: none; }
+    /* Hidden from sight, NOT from the accessibility tree: display:none took
+       the cell out of the row, and on the 312 rows with no break a screen
+       reader then read every later value under the wrong column header. */
+    .rec .members td.on:not(:has(a)) { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
     .rec .members .on ul { margin-block: 0; }
   }
   /* On a phone the labelled values are spread across the line, 8px apart at
      the least: five of them need 276px (members) and 284px (divisions), so
      they hold one line from a 360px phone up, and because each is as wide as
-     its label they fall in the same place on every row, like the columns
-     they came from. Only on a phone: across a tablet they would scatter.
+     its label the members' values fall in the same place on every row, like
+     the columns they came from. The divisions' drift by up to 13px where a
+     tally ("166–164") or a position ("Nay (15)") is wider than its label.
+     Only on a phone: across a tablet they would scatter.
      A member's name takes a line of its own here; wider, it shares one. */
   @container (max-width: 30rem) {
     .rec .ledger tr { --gx: 8px; justify-content: space-between; }

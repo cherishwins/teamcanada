@@ -2,7 +2,7 @@
 import Record from '../../layouts/Record.astro';
 import { compute } from '../../lib/record';
 
-/** The ledger of members. One row per member who cast a ballot, with their party-line rate and every break. See /record for the method. */
+/** The ledger of members. One row per member who sat this session, with their party-line rate and every break. See /record for the method. */
 const r = compute();
 const S = r.summary;
 const pct = (x: number | null) => (x === null ? '—' : `${(x * 100).toFixed(1)}%`);
@@ -20,12 +20,12 @@ const COL = {
 };
 
 const description =
-  `Every member of the ${parl} of Canada who cast a ballot in a recorded division: party, riding, ballots cast, ` +
+  `Every member who sat in the ${parl} of Canada this session: party, riding, ballots cast, ` +
   'party-line rate, and every division where they broke with their party. Each name links to their record on OpenParliament.ca.';
 ---
 <Record
   title="The Record: every member" description={description} path="/record/members"
-  label="The record · every member" heading={`All ${r.members.length}<br>who cast a ballot.`}
+  label="The record · every member" heading={`All ${r.members.length}<br>who sat.`}
   caption={`${S.divisions} divisions, ${day(r.first)} to ${day(r.last)} · snapshot ${r.fetched.slice(0, 10)} · House of Commons of Canada, via OpenParliament.ca`}
 >
   <p slot="lede" class="nt-lede">
@@ -64,7 +64,7 @@ const description =
         changed party during the session is listed with every party in order, and one whose seat has ended
         with the day it did. A member with
         fewer than twenty comparable votes, or whose party had fewer than three members casting, is listed
-        without a rate, and one who never had a party line to vote against has no count of breaks either.
+        without a rate, and one with no ballot to set against a party line has no count of breaks either.
         Every division is on <a href="/record/divisions">the divisions ledger</a>; the method,
         the party agreement matrix and the sources are on <a href="/record">the record's front page</a>.
         The whole record is at <a href="/api/record.json" data-astro-prefetch="false"><code>/api/record.json</code></a>.
