@@ -2,22 +2,23 @@
 import Base from './Base.astro';
 import Nav from '../components/Nav.astro';
 import SiteFooter from '../components/SiteFooter.astro';
+import { read, longDate } from '../lib/reads';
+import { articleSchema } from '../lib/schema';
 
 interface Props {
-  title: string;
+  /** The read's entry in src/lib/reads.ts: title, imprint, date and length live there. */
+  slug: string;
   /** Shorter <title> only, for a headline that would overrun a tab. See Base. */
   pageTitle?: string;
   description: string;
-  /** Caps label above the headline, e.g. "NPSI · Working Paper No. 6". */
-  imprint: string;
   /** Standfirst under the headline. */
   standfirst: string;
-  path: string;
-  dateline?: string;
-  ogImage?: string;
-  schema?: unknown[];
 }
-const { title, pageTitle, description, imprint, standfirst, path, dateline, ogImage, schema } = Astro.props;
+const { slug, pageTitle, description, standfirst } = Astro.props;
+const { title, imprint, published, words } = read(slug);
+const path = `/read/${slug}`;
+const ogImage = `/og/${slug}.png`;
+const schema = [articleSchema({ title, description, path, image: ogImage, published, section: imprint, words })];
 ---
 <Base title={title} pageTitle={pageTitle} description={description} path={path} ogImage={ogImage} schema={schema}>
   <Nav />
@@ -28,7 +29,9 @@ const { title, pageTitle, description, imprint, standfirst, path, dateline, ogIm
         <hr class="nt-rule" />
         <h1 class="nt-display lg">{title}</h1>
         <p class="nt-lede stand">{standfirst}</p>
-        {dateline && <p class="nt-caption dl">{dateline}</p>}
+        {/* Every read shows its date. Five of six showed none, which is how
+            three of them came to carry dates their own text contradicts. */}
+        <p class="nt-caption dl"><time datetime={published}>{longDate(published)}</time></p>
       </div>
     </header>
 

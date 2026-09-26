@@ -1,26 +1,12 @@
 ---
 import Read from '../../layouts/Read.astro';
 import Share from '../../components/Share.astro';
-import { articleSchema } from '../../lib/schema';
 import BarTable from '../../components/BarTable.astro';
-const schema = [articleSchema({
-  title: "The Vertical Squeeze",
-  description: "Municipalities carry the most responsibility and the least revenue. The vertical fiscal imbalance, costed.",
-  path: '/read/the-vertical-squeeze',
-  image: '/og/the-vertical-squeeze.png',
-  published: '2026-05-29',
-  section: "Fit For Gov \u00b7 Dossier",
-  words: 3612,
-})];
 ---
 <Read
-  title={"The Vertical Squeeze"}
+  slug="the-vertical-squeeze"
   description={"Municipalities carry the most responsibility and the least revenue. The vertical fiscal imbalance, costed."}
-  imprint={"Fit For Gov \u00b7 Dossier"}
   standfirst={"Why the order of government closest to you has the least power to pay for what you need \u2014 and what a fix actually looks like."}
-  path="/read/the-vertical-squeeze"
-  ogImage="/og/the-vertical-squeeze.png"
-  schema={schema}
 >
       <p>Why the order of government closest to the citizen has the least power to pay for it.</p>
       <p class="lead">A per-citizen accounting of the Canadian tax stack across Calgary, Vancouver, and Toronto — four households, every layer, both directions.</p>

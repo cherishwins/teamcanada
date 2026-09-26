@@ -45,6 +45,14 @@ const og = abs(ogEntry?.src ?? ogImage);
 // the card itself, because alt text maintained by hand drifts the moment a card
 // is re-worded and nothing catches it.
 const ogAlt = ogImageAlt ?? ogEntry?.alt ?? OG_MANIFEST['/og.png'].alt;
+
+// A read passes its Article markup in `schema`, and the Open Graph layer reads
+// the same object, so a read is an article to Facebook and friends as well as
+// to search, with its date and section written once. (Every page said
+// og:type "website", reads included.) No article:author: Open Graph defines it
+// as links to profile pages, and the site has none; the author meta below
+// carries the name.
+const article = (extraSchema as Array<Record<string, any>>).find((s) => s?.['@type'] === 'Article');
 const fullTitle = path === '/' ? `${SITE.name} — ${SITE.tagline}` : `${pageTitle ?? title} — ${SITE.name}`;
 
 const schema = {
@@ -75,7 +83,10 @@ const schema = {
   <link rel="preload" href="/fonts/Oswald-700.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="/fonts/Inter-400.woff2" as="font" type="font/woff2" crossorigin />
 
-  <meta property="og:type" content="website" />
+  <meta property="og:type" content={article ? 'article' : 'website'} />
+  {article && <meta property="article:published_time" content={article.datePublished} />}
+  {article?.dateModified && article.dateModified !== article.datePublished && <meta property="article:modified_time" content={article.dateModified} />}
+  {article?.articleSection && <meta property="article:section" content={article.articleSection} />}
   <meta property="og:site_name" content={SITE.name} />
   <meta property="og:locale" content={lang.replace('-', '_')} />
   <meta property="og:url" content={canonical} />

@@ -10,51 +10,70 @@ const { chromium } = (() => {
 const fs=require('fs'),path=require('path'),crypto=require('crypto');
 const ROOT=process.argv[2] || 'public', OUT=process.argv[3] || 'public/og';
 
-// The record's headline figure, from the same compute() the pages use.
+// Every figure a card prints comes from the module the page prints it from:
+// the record's compute(), getWater(), getTrade(), getProvinces(), the
+// calculator's bill(), figures.ts and reads.ts. Cards used to type them, so
+// rerunning this redrew the old numbers: the calculator card said $253B beside
+// a page printing $254B, and the home card's 8.7x could never move with
+// AQUASTAT. A figure from a moving source is DATED on the card, because a PNG
+// cannot update itself and a dated figure stays true after the page moves on.
+const loadTs = require('./load-ts.cjs');
 const record = require('./record/load.cjs')();
+const { getWater, getTrade, getProvinces, tradeLead, tradeName } = loadTs('sources');
+const { bill, big } = loadTs('calculator');
+const { C5_RETAINED_GDP, N_RESORPTION } = loadTs('figures');
+const { READS } = loadTs('reads');
+
 const CP_MONTHS=['Jan','Feb','Mar','Apr','May','June','July','Aug','Sept','Oct','Nov','Dec'];
 const cpDate = iso => { const [y,m,d]=iso.split('-').map(Number); return `${d} ${CP_MONTHS[m-1]} ${y}`; };
-const recordStat = () => `${(record.summary.partyLine*100).toFixed(1)}%`;
-const recordStatk = () => `party-line, ${record.summary.divisions} divisions to ${cpDate(record.last)}`;
+const cpMonth = iso => { const [y,m]=iso.split('-').map(Number); return `${CP_MONTHS[m-1]} ${y}`; };
+const quarter = iso => `Q${Math.floor((+iso.slice(5, 7) - 1) / 3) + 1} ${iso.slice(0, 4)}`;
+const one = loc => new Intl.NumberFormat(loc, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 
-const CARDS=[
- // NOTE: home and fr carry a figure derived from live AQUASTAT data. If the
- // reference year moves and the ratio shifts, RERUN this generator — a PNG
- // cannot update itself, and a card disagreeing with the page it links to is
- // worse than no card. /api/water.json is the number of record.
- {slug:'home',      label:'A statement of Canadian character', title:'Northern\nTemper',
-  line:'What we hold, and what we have never once used against a neighbour.', stat:'8.7×', statk:'the fresh water, per person'},
+/**
+ * `live: false` marks a card whose source did not answer. Its last card is
+ * kept rather than redrawn from a fallback, which could put an older figure on
+ * the card than the one the page has shown since.
+ */
+async function buildCards(){
+  const [water, trade, prov] = await Promise.all([getWater(), getTrade(), getProvinces()]);
+  const ratio = one('en-CA').format(water.ratio), ratioFr = one('fr-CA').format(water.ratio);
+  const lead = tradeLead(trade);
+  const ab = prov.provinces.find(p => p.code === 'AB');
+  const abDayOne = big(bill(ab.population, ab.gdp, { canadaPopulation: prov.canadaPopulation, buildBasePop: ab.population }).totLow);
+  const words = READS.reduce((sum, r) => sum + r.words, 0).toLocaleString('en-CA');
+  const frLine = 'Ce que nous détenons, et ce dont nous ne nous sommes jamais servis contre un voisin.';
+  const frStatk = `l’eau douce, par personne, ${water.year}`;
+
+  return [
+ {slug:'home',      label:'A statement of Canadian character', title:'Northern\nTemper', live:water.live,
+  line:'What we hold, and what we have never once used against a neighbour.', stat:`${ratio}×`, statk:`the fresh water, per person, ${water.year}`},
  {slug:'hand',      label:'Two · The Hand', title:'Look at\nthe hand',
   line:'170 billion barrels. 360 TWh. A hundred times the world uranium grade.', stat:'100×', statk:'uranium grade, Athabasca'},
  {slug:'math',      label:'Three · The Math', title:'The math of\nstaying together',
-  line:'Both separation scenarios, costed against official figures.', stat:'$5,100', statk:'per Canadian, per year'},
- {slug:'bloc',      label:'Four · The Bloc', title:'We are not\nleaving.',
-  line:'We are widening. And Statistics Canada can prove it, monthly.', stat:'+112%', statk:'exports to the UK, y/y'},
+  line:'Both separation scenarios, costed against official figures.', stat:C5_RETAINED_GDP.display, statk:'per Canadian, per year'},
+ {slug:'bloc',      label:'Four · The Bloc', title:'We are not\nleaving.', live:trade.allLive,
+  line:'We are widening. And Statistics Canada can prove it, monthly.',
+  stat: lead ? `+${Math.round(lead.changePct)}%` : `${Math.round(trade.usSharePct)}%`,
+  statk: lead ? `exports to ${tradeName(lead.name)}, y/y, ${cpMonth(trade.asOf)}` : `to the US, ${cpMonth(trade.asOf)}`},
  {slug:'build',     label:'Five · The Build', title:'Not a\ndefensive crouch',
-  line:'Refine our own crude. Power our own compute. Open the corridor.', stat:'$5,100', statk:'per Canadian, already law'},
- {slug:'calculator',label:'Run the numbers yourself', title:'Pick a province.\nSee the bill.',
-  line:'Arithmetic on published figures. Every line shows its working.', stat:'$253B', statk:'Alberta, day one'},
- // The stat is the party-line rate computed by src/lib/record.ts. Typed here
- // like the water ratio on the home card: a PNG cannot update itself. Rerun
- // this generator if it moves — at 99.9% it will not move soon.
- // The record card's figure is COUNTED from the committed snapshot at the moment
- // this runs, and DATED, because the snapshot moves after every sitting day and
- // a PNG cannot. A dated figure is true forever; an undated one is true until
- // the next division. Rerun this generator when the card should catch up.
+  line:'Refine our own crude. Power our own compute. Open the corridor.', stat:C5_RETAINED_GDP.display, statk:'per Canadian, already law'},
+ {slug:'calculator',label:'Run the numbers yourself', title:'Pick a province.\nSee the bill.', live:prov.allLive,
+  line:'Arithmetic on published figures. Every line shows its working.', stat:abDayOne, statk:`Alberta, day one, ${quarter(prov.popAsOf)}`},
+ // Counted from the committed snapshot and dated: the snapshot moves after
+ // every sitting day. Rerun this generator when the card should catch up.
  {slug:'record',    label:'The record', title:'How they\nactually voted',
   line:'Every division. Every ballot. Counted, not characterised.',
-  stat:recordStat(), statk:recordStatk()},
- // The stat is the sum of `words` in src/pages/read/index.astro. Typed here
- // because this generator is standalone CJS and the index is Astro; update it
- // when a read is added.
+  stat:`${(record.summary.partyLine*100).toFixed(1)}%`, statk:`party-line, ${record.summary.divisions} divisions to ${cpDate(record.last)}`},
+ // The sum of every read's counted length (check-figures holds each to its article).
  {slug:'read',      label:'The reads', title:"Read the\nhomework",
-  line:'Every claim, laid out in full, with sources.', stat:'10,316', statk:'words, sourced'},
+  line:'Every claim, laid out in full, with sources.', stat:words, statk:'words, sourced'},
  {slug:'support',   label:'The colophon', title:'What this cost.\nWhat it is for.',
   line:'Public domain. Nothing here is behind a payment.', stat:'CC0', statk:'no permission needed'},
  {slug:'join',      label:'The coalition', title:'Put your name\nbehind one country',
   line:'No account. No fee. Free to leave whenever you like.', stat:'∅', statk:'nothing to sign'},
  {slug:'the-red-is-the-work', label:'A reading of the leaf', title:'The red\nis the work',
-  line:'Not a leaf giving up. A tree getting ready for a long winter, on purpose.', stat:'62%', statk:'of the nitrogen, taken back first'},
+  line:'Not a leaf giving up. A tree getting ready for a long winter, on purpose.', stat:N_RESORPTION.display, statk:'of the nitrogen, taken back first'},
  {slug:'the-closed-loop', label:'NPSI · Working Paper No. 6', title:'The Closed\nLoop',
   line:'Korea holds the silicon. Canada holds the power.', stat:'37 GW', statk:'Hydro-Québec capacity'},
  {slug:'the-vertical-squeeze', label:'Fit For Gov · Dossier', title:'The Vertical\nSqueeze',
@@ -70,13 +89,12 @@ const CARDS=[
   stat:'0', statk:'keys or logins needed'},
  // The French page is not a translation, so it does not get the English card.
  // Typographic apostrophes throughout — a straight quote is the fastest tell.
- {slug:'fr',        label:'Une affirmation du caractère canadien', title:'La trempe\ndu Nord',
-  line:'Ce que nous détenons, et ce dont nous ne nous sommes jamais servis contre un voisin.',
-  stat:'8,7\u00d7', statk:'l\u2019eau douce, par personne',
-  alt:'Carte de partage Northern Temper, sur fond noir, avec la marque aux deux ours\u202f: '
-    + '\u00ab\u202fLa trempe du Nord\u202f\u00bb. Ce que nous détenons, et ce dont nous ne nous '
-    + 'sommes jamais servis contre un voisin. 8,7\u00d7 l\u2019eau douce, par personne.'},
-];
+ {slug:'fr',        label:'Une affirmation du caractère canadien', title:'La trempe\ndu Nord', live:water.live,
+  line:frLine, stat:`${ratioFr}×`, statk:frStatk,
+  alt:'Carte de partage Northern Temper, sur fond noir, avec la marque aux deux ours : '
+    + `« La trempe du Nord ». ${frLine} ${ratioFr}× ${frStatk}.`},
+  ];
+}
 
 const bear = fs.readFileSync(path.join(ROOT,'marks/nt-bear-dual.svg'),'utf8');
 const fontCss = ['Oswald-700','Oswald-600','Inter-400','Inter-500'].map(f=>{
@@ -142,6 +160,10 @@ function altFor(c){
 
 /** slug -> hashed public path, filled in as each card is written. */
 const hashed = {};
+/** slug -> alt text of a card kept from the last run because its source was down. */
+const kept = {};
+const MANIFEST = path.join(__dirname, '..', 'src', 'lib', 'og-manifest.json');
+const previous = fs.existsSync(MANIFEST) ? JSON.parse(fs.readFileSync(MANIFEST, 'utf8')) : {};
 
 /**
  * One manifest carrying both the hashed URL and the alt text, keyed by the
@@ -149,24 +171,31 @@ const hashed = {};
  * never learn about the hash; Base.astro resolves it. Generated, so neither
  * half can drift from the card it describes.
  */
-function writeManifest(){
+function writeManifest(CARDS){
   const manifest = { '/og.png': {
     src: '/og.png',
     alt: 'Northern Temper share card, black with the two-bear mark, beneath the words Northern Temper.',
   } };
   for (const c of CARDS) {
-    manifest['/og/' + c.slug + '.png'] = { src: hashed[c.slug] || ('/og/' + c.slug + '.png'), alt: altFor(c) };
+    manifest['/og/' + c.slug + '.png'] = { src: hashed[c.slug] || ('/og/' + c.slug + '.png'), alt: kept[c.slug] ?? altFor(c) };
   }
-  const dest = path.join(__dirname, '..', 'src', 'lib', 'og-manifest.json');
-  fs.writeFileSync(dest, JSON.stringify(manifest, null, 2) + '\n');
+  fs.writeFileSync(MANIFEST, JSON.stringify(manifest, null, 2) + '\n');
   console.log('  src/lib/og-manifest.json'.padEnd(34) + Object.keys(manifest).length + ' entries');
 }
 
 (async()=>{
+  const CARDS=await buildCards();
   const b=await chromium.launch();
   const ctx=await b.newContext({viewport:{width:1200,height:630},deviceScaleFactor:1});
   const p=await ctx.newPage();
   for(const c of CARDS){
+    const last = previous['/og/' + c.slug + '.png'];
+    if (c.live === false && last && last.src !== '/og/' + c.slug + '.png' && fs.existsSync(path.join(ROOT, last.src))) {
+      hashed[c.slug] = last.src;
+      kept[c.slug] = last.alt;
+      console.log(`  ${last.src.slice(1)}`.padEnd(34) + 'kept: its source is not responding');
+      continue;
+    }
     await p.setContent(page(c),{waitUntil:'load'});
     await p.evaluate(()=>document.fonts.ready);
     await p.waitForTimeout(120);
@@ -193,7 +222,7 @@ function writeManifest(){
   }
   await b.close();
   pruneStaleHashes();
-  writeManifest();
+  writeManifest(CARDS);
 })();
 
 /** Drop hashed cards from earlier runs so the folder does not accumulate. */

@@ -144,12 +144,24 @@ one file serves both colourways. **Never reference them via `<img src>`:**
   and period, and — where the publisher runs on a cycle — a `reviewBy` date
   that fails the build once it passes. `/calculator`, `/math`, `/build`,
   `/sources` and `/read/the-red-is-the-work` all render from it.
+- `src/lib/reads.ts` — **each read's title, imprint, date and length, once.**
+  The read page, `/read`, `feed.xml`, the Article markup, the OG article tags
+  and the `/read` share card all read it. They used to be typed in up to four
+  places, and three reads carried May dates their own text contradicts ("current
+  to June 1, 2026" under a 4 May date); every read now prints its date. The
+  length is COUNTED: `check-figures` counts each built article and fails the
+  build unless `words` is exactly that, printing the number to write. The typed
+  lengths had drifted up to 6%.
+- `src/lib/calculator.ts` — the separation bill's arithmetic, once;
+  `/calculator` and the calculator share card both run it.
+- `tools/load-ts.cjs` — bundles a `src/lib` module with esbuild so a CommonJS
+  tool calls the page's own code rather than a copy of it.
 - `src/components/Nav.astro`, `SiteFooter.astro`, `BlocChart.astro`.
 - `src/layouts/Read.astro` — the long-form layout (single 68ch column), plus a
   named `after` slot for anything that belongs OUTSIDE the column on the black
-  ground — the share band, in practice. `the-red-is-the-work` uses it; the five
-  migrated reads do not yet, and each needs its own page-specific quote before
-  it should.
+  ground — the share band, in practice; all six reads use it, each with its
+  own quote. A read passes only its `slug` (the rest is in `src/lib/reads.ts`),
+  its description and its standfirst; the layout prints the date.
 - `src/lib/support.ts` — the processor-free support rail (see below).
 - `src/lib/schema.ts` — Article markup for the reads, **Dataset markup for the
   six public endpoints**. The site redistributes government figures under CC0;
@@ -177,7 +189,7 @@ one file serves both colourways. **Never reference them via `<img src>`:**
   `src/pages/record/members.astro` (the ledgers), `tools/record/fetch.cjs`
   (incremental snapshot writer), `tools/record/validate.cjs` (the snapshot
   must add up; run before every write and in every build),
-  `tools/record/load.cjs` (bundles `record.ts` for CommonJS tools),
+  `tools/record/load.cjs` (`record.ts`'s `compute()` for CommonJS tools),
   `tools/record/analyse.cjs` (the report), `.github/workflows/record.yml`
   (the daily refresh). See "The record" below.
 - `.github/dependabot.yml` — monthly PRs for GitHub Actions and npm, grouped.
@@ -202,7 +214,7 @@ one file serves both colourways. **Never reference them via `<img src>`:**
   `tools/check-privacy.cjs` — **`/privacy` must name exactly the analytics
   vendors the site actually ships**, and no third-party script origin may reach
   a page undisclosed; and `tools/check-figures.cjs` — **no hand-entered figure
-  may go stale or be typed twice**; and `tools/check-sitemap.cjs` — **nothing
+  may go stale or be typed twice, and every read's length is its count**; and `tools/check-sitemap.cjs` — **nothing
   in the sitemap may be `noindex`, and nothing indexable may be missing from
   it**; and `tools/check-csp.cjs` — **the Content-Security-Policy in
   `vercel.json` must list exactly the inline-script hashes and script origins
@@ -804,7 +816,7 @@ V   · THE BUILD /build    Refine · Compute · Corridor + C-5.     from teamcan
 /read + 6 long-form pieces   5 migrated from the old site (9,162 words)
                              + The Red Is the Work, written here (1,154)
 /join  /privacy  /terms  /404          /support is HIDDEN (noindex, unlinked)
-/feed.xml    RSS for the five reads
+/feed.xml    RSS for the six reads
 robots.txt · llms.txt · humans.txt · site.webmanifest · sw.js · security.txt
 
 Every act and the calculator carry a share band: native share sheet where the
@@ -831,9 +843,11 @@ load-bearing:** birch makes no red and recovers nitrogen just as well, and
 without that paragraph the piece claims red is the only way to have character,
 which is the taunt this site exists not to make. Cold-public register from
 `compulsion-engineering`: zero em-dashes, four-sentence paragraph ceiling,
-grade ~4–7. **Adding a read touches six places** — the page, `read/index.astro`,
-`feed.xml.ts`, `llms.txt`, `generate-llms-full.cjs` ORDER, and the CARDS list
-in `generate-og.cjs` including the typed word total on the `read` card.
+grade ~4–7. **Adding a read touches five places** — the page (which passes
+only its `slug`, description and standfirst to `Read.astro`), its entry in
+`src/lib/reads.ts` (the build prints its word count), `llms.txt`,
+`generate-llms-full.cjs` ORDER, and the CARDS list in `generate-og.cjs`. `/read`,
+the feed and the `read` card's total follow from `reads.ts`.
 
 ## Migrating legacy content
 `/tmp` scripts are gone between sessions; the approach is what matters.
@@ -979,9 +993,18 @@ dossier and 4 of 5 reads. Two traps worth remembering:
      and much of what reaches the US arrives from Canada — the wrong measure
      for a claim about what Canada makes.
    - **The `home` and `fr` OG cards print the ratio and a PNG cannot update
-     itself.** If AQUASTAT's reference year moves and the ratio shifts, rerun
-     `tools/generate-og.cjs`. A card disagreeing with the page it links to is
-     worse than no card.
+     itself.** The generator computes it with the page's own `getWater()` and
+     prints its year, so a card that lags the page is still true. If
+     AQUASTAT's reference year moves, rerun `tools/generate-og.cjs`. (It used
+     to type `8.7×`, so a rerun redrew the old number.) The words on `/` are
+     computed from the ratio too: "nearly nine times" was typed in the
+     description and the prose while the figure beside them was live.
+   - **Every card figure that has a source is computed from it** (the
+     record, water, trade, the calculator's `bill()`, `figures.ts`,
+     `reads.ts`) and dated where the source moves. When a source is down, the
+     generator keeps that card's last version rather than draw one from a
+     fallback. The calculator card said $253B beside a page printing $254B
+     while both were typed.
    - Live at `/api/water.json`, on `/sources` as four live rows, and carrying
      Dataset markup.
 8. **Legal:** "Team Canada" is a Canadian Olympic Committee mark. The rebrand
@@ -1070,8 +1093,8 @@ membership record. **All divisions, never a curated "key votes" list** —
 curation is where bias enters. Yea/Nay count; Paired and Didn't vote are
 shown as what they are and are never a position. **The math exists in one
 copy, `src/lib/record.ts`:** the three pages and the endpoint import it, and
-`tools/record/load.cjs` bundles it with esbuild so `analyse.cjs` and
-`generate-og.cjs` call the same `compute()`.
+`tools/record/load.cjs` hands it (through `tools/load-ts.cjs`) to
+`analyse.cjs` and `generate-og.cjs`, so they call the same `compute()`.
 
 **The snapshot format** is one character per ballot: `members[]`,
 `memberships[]` (with the OpenParliament URL, so an incremental run never

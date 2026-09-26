@@ -1,26 +1,12 @@
 ---
 import Read from '../../layouts/Read.astro';
 import Share from '../../components/Share.astro';
-import { articleSchema } from '../../lib/schema';
 import BarTable from '../../components/BarTable.astro';
-const schema = [articleSchema({
-  title: "The Closed Loop",
-  description: "The full strategic case: how Canadian energy and Korean silicon become a single forty-year industrial trade.",
-  path: '/read/the-closed-loop',
-  image: '/og/the-closed-loop.png',
-  published: '2026-06-01',
-  section: "NPSI \u00b7 Working Paper No. 6",
-  words: 2717,
-})];
 ---
 <Read
-  title={"The Closed Loop"}
+  slug="the-closed-loop"
   description={"The full strategic case: how Canadian energy and Korean silicon become a single forty-year industrial trade."}
-  imprint={"NPSI \u00b7 Working Paper No. 6"}
   standfirst={"How Canada\u2019s energy, minerals and two-ocean geography become one forty-year trade with Korea. The hand, in detail."}
-  path="/read/the-closed-loop"
-  ogImage="/og/the-closed-loop.png"
-  schema={schema}
 >
       <p class="lead">The three rails become one circuit. How the financial, energy-and-compute, and defence-industrial architectures of Working Papers Nos. 1 through 3 resolve into a single forty-year Canada–Korea trade — and where it physically closes.</p>
       <p class="nt-caption">FINANCIAL · ENERGY &amp; COMPUTE · DEFENCE-INDUSTRIAL →&nbsp;ONE LOOP</p>

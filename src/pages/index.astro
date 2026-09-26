@@ -34,12 +34,19 @@ const fmt = new Intl.NumberFormat('en-CA');
  * rather than typed, so it cannot drift from them when the data updates.
  */
 const ratio = aquastat.ratio;
+// The same ratio in words, for the prose and the description. They typed
+// "nearly nine times" while the figure beside them was computed, and the
+// series falls every year as Canada's population grows faster (9.3 in 2000,
+// 8.7 in 2022), so the words would have outlived the number.
+const WORDS = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve'];
+const whole = Math.floor(ratio), frac = ratio - whole;
+const ratioWords = frac < 0.05 ? `${WORDS[whole]} times` : frac >= 0.5 ? `nearly ${WORDS[whole + 1]} times` : `more than ${WORDS[whole]} times`;
 const km3 = (m3: number) => fmt.format(Math.round(m3 / 1e9));
 const volumeGapPct = Math.abs(aquastat.canada.volume / aquastat.usa.volume - 1) * 100;
 
 const description =
   'What we are. What we hold. And what we have never once used against a neighbour, ' +
-  'though we have always been able to. Nearly nine times the fresh water per person. Never once a threat.';
+  `though we have always been able to. ${ratioWords[0].toUpperCase()}${ratioWords.slice(1)} the fresh water per person. Never once a threat.`;
 ---
 <Base title="Northern Temper" description={description} path="/" ogImage="/og/home.png">
   <div class="progress" aria-hidden="true"></div>
@@ -221,7 +228,7 @@ const description =
         <div class="nt-prose rv">
           <p>Steel is tempered by heat and then by cold. What comes out is not softer. It is harder to break, and it holds an edge.</p>
           <p>That is the word we chose and it is the word we mean. Temper is the metal. Temper is also the thing we do not lose.</p>
-          <p>We have sat on nearly nine times the water per person, a quarter of the world's wetlands, and the largest shared lakes on the planet, for the entire history of the relationship.</p>
+          <p>We sit on {ratioWords} the water per person, a quarter of the world's wetlands, and the largest shared lakes on the planet, and we always have.</p>
           <p>We have never once threatened the tap. It has never seriously been proposed. It will not be, because a country that would do that is a different country than this one, and we are not interested in becoming it to win an argument.</p>
           <p>Anger is loud and anger burns out. What we have instead is colder and lasts longer. It is the thing that gets a concession road plowed at four in the morning and a stranger's car pushed out of a snowbank by people who never introduce themselves.</p>
           <p><strong>We are patient because winter taught us. The season always turns.</strong></p>

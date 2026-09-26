@@ -1,25 +1,11 @@
 ---
 import Read from '../../layouts/Read.astro';
 import Share from '../../components/Share.astro';
-import { articleSchema } from '../../lib/schema';
-const schema = [articleSchema({
-  title: "I Campaigned Against This Man",
-  description: "A Conservative campaigner did the homework and changed his mind. Written for the people who felt the way he did.",
-  path: '/read/changed-my-mind',
-  image: '/og/changed-my-mind.png',
-  published: '2026-05-20',
-  section: "An honest account",
-  words: 1293,
-})];
 ---
 <Read
-  title={"I Campaigned Against This Man"}
+  slug="changed-my-mind"
   description={"A Conservative campaigner did the homework and changed his mind. Written for the people who felt the way he did."}
-  imprint={"An honest account"}
   standfirst={"A Conservative campaigner did the homework and changed his mind. Not a conversion \u2014 an argument for looking instead of yelling."}
-  path="/read/changed-my-mind"
-  ogImage="/og/changed-my-mind.png"
-  schema={schema}
 >
       <p class="lead">Then I did the homework. Here is what I found, and why I think the people who felt the way I did deserve to hear it from one of their own.</p>
       <p class="fig">By Jesse James · View Royal, British Columbia · 2026</p>

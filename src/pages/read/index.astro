@@ -2,21 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import Nav from '../../components/Nav.astro';
 import SiteFooter from '../../components/SiteFooter.astro';
-
-const reads = [
-  { slug: 'the-red-is-the-work', imprint: 'A reading of the leaf', title: 'The Red Is the Work',
-    blurb: 'The red on a maple leaf is not the leaf dying. The tree makes it, on purpose, to cover the work of taking back what it needs before winter. A reading of the flag.', words: 1154 },
-  { slug: 'the-closed-loop', imprint: 'NPSI · Working Paper No. 6', title: 'The Closed Loop',
-    blurb: 'How Canadian energy, minerals and two-ocean geography become one forty-year trade with Korea. The anchor case for the middle-power argument.', words: 2717 },
-  { slug: 'the-vertical-squeeze', imprint: 'Fit For Gov · Dossier', title: 'The Vertical Squeeze',
-    blurb: 'The order of government closest to you has the most responsibility and the least revenue. The imbalance, costed.', words: 3612 },
-  { slug: 'changed-my-mind', imprint: 'An honest account', title: 'I Campaigned Against This Man',
-    blurb: 'A Conservative campaigner did the homework and changed his mind. Not a conversion — an argument for looking instead of yelling.', words: 1293 },
-  { slug: 'two-leaders', imprint: 'A governance reading', title: 'The Wave Hit Every G7 Democracy. Two Leaders Beat It.',
-    blurb: 'Anti-incumbent anger flattened the West. Two leaders are the exceptions, and the reason is a method, not a party.', words: 785 },
-  { slug: 'honest-answer', imprint: 'The record, set straight', title: 'One Question. Seven Leaders. An Honest Answer.',
-    blurb: 'The viral "who is in recession" quiz, answered with every official G7 GDP figure. The trick is in the question.', words: 755 },
-];
+import { READS as reads, longDate } from '../../lib/reads';
 ---
 <Base title="The Reads" description="The long-form homework behind Northern Temper — sourced in full, free to copy." path="/read" ogImage="/og/read.png">
   <Nav />
@@ -36,7 +22,7 @@ const reads = [
               <a href={`/read/${r.slug}`}>
                 <div class="meta">
                   <span class="imp">{r.imprint}</span>
-                  <span class="wc">{r.words.toLocaleString('en-CA')} words</span>
+                  <span class="wc"><time datetime={r.published}>{longDate(r.published)}</time> · {r.words.toLocaleString('en-CA')} words</span>
                 </div>
                 <h2 class="nt-display">{r.title}</h2>
                 <p class="blurb">{r.blurb}</p>

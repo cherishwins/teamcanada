@@ -24,7 +24,15 @@
  *      page's prose. Re-typing the raw number anywhere puts it back, and the
  *      build says so.
  *
- * Both checks read the built HTML as TEXT, not markup — `data-pop="1266092"`
+ *   3. COUNTED, NOT ESTIMATED. Each read's length is written once, in
+ *      src/lib/reads.ts, and /read, the Article markup and the /read share card
+ *      all print it. Typed by hand, the lengths drifted up to 6% from the
+ *      articles they described. This counts each built article (the text of
+ *      `article.body`, less anything aria-hidden, every whitespace-separated
+ *      token with a letter or digit in it) and fails unless `words` is exactly
+ *      that count, printing the number to write.
+ *
+ * The first two read the built HTML as TEXT, not markup — `data-pop="1266092"`
  * and the calculator's inline JSON both legitimately contain raw digits, and a
  * check that tripped on those would be turned off within a week.
  */
@@ -131,15 +139,52 @@ for (const file of pages) {
   }
 }
 
-if (fail.length) {
-  console.error('check-figures: a hand-entered figure needs attention\n');
-  for (const f of fail) console.error(`  ✗ ${f}`);
-  console.error('');
-  process.exit(1);
+// ---- 3. Each read's length is its count.
+const BLOCK = new Set(['address', 'article', 'aside', 'blockquote', 'br', 'caption', 'dd', 'div', 'dl', 'dt',
+  'figcaption', 'figure', 'footer', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header', 'hr', 'li', 'ol', 'p',
+  'section', 'table', 'tbody', 'td', 'tfoot', 'th', 'thead', 'tr', 'ul']);
+
+async function countReads() {
+  const { parse, ELEMENT_NODE, TEXT_NODE } = await import('ultrahtml');
+  const { READS } = require('./load-ts.cjs')('reads');
+  const say = (n) => {
+    if (n.type === TEXT_NODE) return n.value.replace(/&nbsp;|&#160;/g, ' ');
+    if (n.type !== ELEMENT_NODE && n.type !== 0) return '';
+    if (n.type === ELEMENT_NODE) {
+      if (n.name === 'script' || n.name === 'style' || n.attributes?.['aria-hidden'] === 'true') return '';
+      const inner = (n.children || []).map(say).join('');
+      return BLOCK.has(n.name) ? ` ${inner} ` : inner;
+    }
+    return (n.children || []).map(say).join('');
+  };
+  const find = (n) => {
+    if (n.type === ELEMENT_NODE && n.name === 'article' && /(^|\s)body(\s|$)/.test(n.attributes?.class || '')) return n;
+    for (const c of n.children || []) { const f = find(c); if (f) return f; }
+    return null;
+  };
+  if (!READS.length) fail.push('src/lib/reads.ts exported no reads — this check went blind. Fix the load, do not delete the check.');
+  for (const r of READS) {
+    const file = path.join(ROOT, 'read', r.slug, 'index.html');
+    if (!fs.existsSync(file)) { fail.push(`read/${r.slug} is in src/lib/reads.ts but the build has no page for it`); continue; }
+    const body = find(parse(fs.readFileSync(file, 'utf8')));
+    if (!body) { fail.push(`read/${r.slug} has no <article class="body">; the count cannot be taken`); continue; }
+    const n = say(body).split(/\s+/).filter((w) => /[\p{L}\p{N}]/u.test(w)).length;
+    if (n !== r.words) fail.push(`read/${r.slug} says ${r.words.toLocaleString('en-CA')} words and its article counts ${n.toLocaleString('en-CA')}. Set words: ${n} in src/lib/reads.ts.`);
+  }
+  return READS.length;
 }
 
-const next = reviews.map((r) => r.date).sort()[0];
-console.log(
-  `check-figures: ${displays.length} fixed figures, ${reviews.length} with a review date` +
-    `${next ? ` (next ${next})` : ''}, no re-typed copies in ${pages.length} pages`,
-);
+countReads().then((reads) => {
+  if (fail.length) {
+    console.error('check-figures: a hand-entered figure needs attention\n');
+    for (const f of fail) console.error(`  ✗ ${f}`);
+    console.error('');
+    process.exit(1);
+  }
+
+  const next = reviews.map((r) => r.date).sort()[0];
+  console.log(
+    `check-figures: ${displays.length} fixed figures, ${reviews.length} with a review date` +
+      `${next ? ` (next ${next})` : ''}, no re-typed copies in ${pages.length} pages, ${reads} reads counted`,
+  );
+});
