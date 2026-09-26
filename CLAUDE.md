@@ -115,6 +115,11 @@ one file serves both colourways. **Never reference them via `<img src>`:**
 ## File map
 - `src/config.mjs` — **the only place the public origin is written.** Canonicals,
   OG, sitemap and schema all read it. Moving domains is a one-line change.
+- `src/pages/.well-known/security.txt.ts` — RFC 9116 `security.txt`, written
+  at build from `SITE.email` with an `Expires` 180 days after the deploy. It
+  shipped for months as a static file WITHOUT `Expires`, which the RFC makes
+  required; a typed date is one somebody must remember to move, so it moves
+  itself on every deploy.
 - `src/styles/tokens/*.css` — **verbatim from the design system** + `a11y.css`.
 - `src/styles/base.css` — imports the tokens, then reset, type scale, grain,
   reveal system. `a11y.css` must import last; it overrides four text roles.
@@ -161,7 +166,9 @@ one file serves both colourways. **Never reference them via `<img src>`:**
   Content still to migrate: `legacy/read/*.html` (5 long-form pieces),
   `legacy/fr/index.html`, `legacy/join.html`.
 - `.github/workflows/verify.yml` — build + `check-french` + `npm audit` + the
-  full sweep, on every PR and every push to `main`. Free: the repo is public.
+  full sweep, on every PR and every push to `main`, **plus a second build with
+  every upstream down** (`NT_OFFLINE=1`, see the CSP convention for why). Free:
+  the repo is public.
 - `tools/check-french.cjs` — Québec typography + banned-framing audit;
   `tools/check-llms.cjs` — llms.txt shape + no-restated-figures, and
   `ai.txt`'s `Data:` lines equal `src/pages/api` both ways (it said "four
@@ -221,8 +228,10 @@ one file serves both colourways. **Never reference them via `<img src>`:**
   convention "One page, one URL" below for why it exists.
 - `tools/check-urls-live.cjs` — the same claim on the real edge, weekly from
   `links.yml`: canonical pages answer 200 with no noindex, the slash form
-  308s to them, `/llms-full.txt` carries `X-Robots-Tag: noindex`, and http,
-  www and `teamcanada.vercel.app` all land on the apex.
+  308s to them, `/llms-full.txt` carries `X-Robots-Tag: noindex`, http,
+  www and `teamcanada.vercel.app` all land on the apex, and the published
+  `security.txt` has at least 30 days left on its `Expires` (it renews on
+  every deploy, so a failure means the site has stopped deploying).
 - `tools/check-internal-links.cjs` — no link inside the site points at a page
   that does not exist, and no fragment points at an id that is not there
   (the members ledger links every break to `/record/divisions#vN`, and a
@@ -538,7 +547,23 @@ public and checkable" — it can afford neither a dash nor a silently stale numb
   worker registration, share band, calculator, reveal fallback, join form) and
   their sha256 tokens are listed in `vercel.json`. Editing any of them, or
   upgrading the Vercel adapter, changes a hash; `check-csp` fails the build and
-  prints the token to paste. `style-src` keeps `'unsafe-inline'` because the
+  prints the token to paste.
+  **No inline script may carry a figure.** A hash pins bytes, so a script whose
+  bytes include data fails the build the day the data moves. `/calculator` did
+  exactly that: `define:vars` put the live StatCan population into its script,
+  so the hash in `vercel.json` matched only one quarter's population, and a
+  build with StatCan down (the fallback value) failed `check-csp`. It was found
+  in September 2026 only because this sandbox cannot reach StatCan; the
+  December release would have blocked every deploy, the record bot's
+  included. The calculator now computes every province in its frontmatter and
+  hangs the finished text on each `<option>`; the script only swaps text.
+  Data goes in the markup, never in a script. **`verify.yml`'s
+  `offline-build` job enforces it:** `NT_OFFLINE=1` makes every upstream in
+  `src/lib/sources.ts` fail at once, and the full build must still pass, so a
+  shipped byte that depends on the data fails on the PR, not on a deploy
+  months later. `define:vars` is fine for a constant from `src/config.mjs`
+  (`/join` uses it for the address) and nothing else.
+  `style-src` keeps `'unsafe-inline'` because the
   stylesheet is inlined by design (`inlineStylesheets: 'always'`, measured) —
   the security value of a CSP is almost entirely in `script-src`.
   `frame-ancestors 'none'`, `object-src 'none'`, `base-uri 'self'`,
