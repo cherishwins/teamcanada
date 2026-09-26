@@ -288,8 +288,10 @@ public and checkable" — it can afford neither a dash nor a silently stale numb
   block-styled link is not a false alarm) and **navigation problems** (the
   phone menu opened at six short phone sizes the width sweep never uses: every
   link reachable by a finger, none focusable while closed, closed when focus
-  leaves it; and `/record/divisions#v73` landing below the sticky nav). It exits
-  non-zero. **Current state: clean on all twelve counts.** Keep it there.
+  leaves it; `/record/divisions#v73` landing below the sticky nav; and the menu
+  working while a third-party script is stalled for eight seconds, which it
+  did not while Umami loaded with `defer`). It exits non-zero. **Current state:
+  clean on all twelve counts.** Keep it there.
   **`.github/workflows/verify.yml` runs all of it on every PR and every push to
   `main`**, so none of this depends on somebody remembering. The repo is public,
   so Actions minutes are free and unmetered — that is the only reason it is
@@ -685,7 +687,13 @@ Everything is CC0 and the site is built to be repeated, not protected.
 
 ## Performance — measured, not assumed
 A phone-width cold load, per page: **7–11 requests, 81–120 kB gzipped, ~2 kB of
-JavaScript**. Roughly **67 kB of that is fonts** — five Latin-subset WOFF2 faces
+JavaScript**. **That figure did not count what the page fetched AFTER load**,
+and until September 2026 that was most of it: viewport prefetch pulled
+200–310 kB of pages (and `/api/*.json`, a serverless invocation each) that a
+one-page reader never opened, and the service worker precached the whole home
+page (~23 kB br) on every first visit wherever it landed. Prefetch is `'tap'`
+now and data links opt out; the precache no longer includes `/`. Measure a page
+with its prefetch and service-worker traffic, not without. Roughly **67 kB of that is fonts** — five Latin-subset WOFF2 faces
 at about 13 kB each, all genuinely used. That is where the weight is, and it is
 already near the floor without dropping a weight from the design system.
 

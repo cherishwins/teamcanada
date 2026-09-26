@@ -128,10 +128,13 @@ const CSP_PROBE = `
   });
 `;
 
-function serve(page, onBroken) {
+function serve(page, onBroken, { stallOthersMs = 0 } = {}) {
   return page.route('**/*', (route) => {
     const u = new URL(route.request().url());
-    if (u.host !== 'local.test') return route.fulfill({ status: 204, body: '' });
+    if (u.host !== 'local.test') {
+      if (!stallOthersMs) return route.fulfill({ status: 204, body: '' });
+      return new Promise((done) => setTimeout(() => done(route.fulfill({ status: 204, body: '' }).catch(() => {})), stallOthersMs));
+    }
     if (u.pathname.startsWith('/api/')) {
       return route.fulfill({ status: 503, contentType: 'application/json', body: '{"error":"stubbed by tools/verify.cjs"}' });
     }
@@ -246,18 +249,44 @@ async function checkNavigation(browser) {
     if ((await page.getAttribute('.toggle', 'aria-expanded')) !== 'false') problems.push(`${w}x${h}  menu stays open after focus leaves it`);
     await ctx.close();
   }
+  // A slow third party must not hold the page's own scripts hostage. Umami was
+  // loaded with defer, and deferred and module scripts run in document order,
+  // so while cloud.umami.is stalled the menu (and the share band, and the
+  // count-up) did nothing: an 8 s stall, an 8.5 s dead menu. Every other check
+  // here answers other origins instantly, which is exactly why none saw it.
+  {
+    const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, serviceWorkers: 'block' });
+    const page = await ctx.newPage();
+    await serve(page, () => {}, { stallOthersMs: 8000 });
+    const t0 = Date.now();
+    await page.goto('https://local.test/', { waitUntil: 'commit' });
+    let works = false;
+    while (!works && Date.now() - t0 < 3000) {
+      await page.click('.toggle', { timeout: 500 }).catch(() => {});
+      works = (await page.getAttribute('.toggle', 'aria-expanded').catch(() => null)) === 'true';
+      if (!works) await page.waitForTimeout(150);
+    }
+    if (!works) problems.push('390x844  the menu does not work while a third-party script is still loading');
+    await ctx.close();
+  }
   for (const [w, h] of [[390, 844], [1280, 900]]) {
-    const ctx = await browser.newContext({ viewport: { width: w, height: h }, serviceWorkers: 'block' });
+    // Reduced motion makes the jump instant. With smooth scrolling the first
+    // version of this check measured before the scroll arrived, saw the row
+    // far below the nav, and passed a build where it lands underneath.
+    const ctx = await browser.newContext({ viewport: { width: w, height: h }, serviceWorkers: 'block', reducedMotion: 'reduce' });
     const page = await ctx.newPage();
     await serve(page, () => {});
     await page.goto('https://local.test/record/divisions#v73', { waitUntil: 'load' });
     await page.waitForTimeout(300);
-    const gap = await page.evaluate(() => {
+    const at = await page.evaluate(() => {
       const row = document.getElementById('v73');
-      return row ? row.getBoundingClientRect().top - document.querySelector('.nav').getBoundingClientRect().bottom : null;
+      if (!row) return null;
+      const r = row.getBoundingClientRect();
+      return { gap: r.top - document.querySelector('.nav').getBoundingClientRect().bottom, top: r.top };
     });
-    if (gap === null) problems.push(`${w}x${h}  /record/divisions has no #v73 to land on`);
-    else if (gap < 0) problems.push(`${w}x${h}  /record/divisions#v73 lands ${Math.round(-gap)}px under the sticky nav`);
+    if (at === null) problems.push(`${w}x${h}  /record/divisions has no #v73 to land on`);
+    else if (at.top > h) problems.push(`${w}x${h}  /record/divisions#v73 did not scroll to the row`);
+    else if (at.gap < 0) problems.push(`${w}x${h}  /record/divisions#v73 lands ${Math.round(-at.gap)}px under the sticky nav`);
     await ctx.close();
   }
   return problems;

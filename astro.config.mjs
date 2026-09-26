@@ -81,5 +81,13 @@ export default defineConfig({
   // alone, before counting the 730 ms that only the first load ever pays.
   // Re-measure before changing this back.
   build: { inlineStylesheets: 'always' },
-  prefetch: { prefetchAll: true, defaultStrategy: 'viewport' },
+  // MEASURED too, and for the same reason. 'viewport' fetched every internal
+  // link a reader scrolled past: 200-310 kB on top of a page of 84-113 kB, on
+  // Slow 4G at phone width, including /api/*.json (a serverless invocation
+  // each, on a free tier) and /feed.xml. On a one-page share-link session
+  // that is two to three times the page's own weight spent on pages the
+  // reader never opens. 'tap' starts the fetch on touchstart/mousedown, which
+  // still wins the time to the click, and only for the link actually chosen.
+  // Links to data and the feed opt out with data-astro-prefetch="false".
+  prefetch: { prefetchAll: true, defaultStrategy: 'tap' },
 });

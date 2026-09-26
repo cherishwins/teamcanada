@@ -169,7 +169,7 @@ const description =
 
         <ul class="endpoints">
           {DATASETS.map((d) => (
-            <li><a href={d.endpoint}><code>{d.endpoint}</code><span>{d.short}</span></a></li>
+            <li><a href={d.endpoint} data-astro-prefetch="false"><code>{d.endpoint}</code><span>{d.short}</span></a></li>
           ))}
         </ul>
 

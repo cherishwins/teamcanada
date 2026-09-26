@@ -112,7 +112,7 @@ const description =
               C’est un chiffre plus petit que celui que nous imprimions. C’est
               aussi un chiffre que n’importe qui peut vérifier en une seule
               requête, ce qui vaut davantage.
-              {' '}<a href="/api/water.json">Voici le point d’accès.</a>
+              {' '}<a href="/api/water.json" data-astro-prefetch="false">Voici le point d’accès.</a>
             </p>
             <p>
               Cela ne touche pas les affirmations qui n’ont aucun diviseur :
@@ -209,7 +209,7 @@ const description =
         <div class="scols">
           <div>
             <h3 class="sh">L’eau</h3>
-            <p>AQUASTAT (FAO), année de référence {aquastat.year}, servi par la Banque mondiale : {fmt.format(aquastat.canada.perCapita)} m³ d’eau douce renouvelable interne par personne par année au Canada contre {fmt.format(aquastat.usa.perCapita)} m³ aux États-Unis, sur des volumes totaux de {km3(aquastat.canada.volume)} et {km3(aquastat.usa.volume)} kilomètres cubes. En direct à <a href="/api/water.json">/api/water.json</a>. Statistique Canada : troisième réserve renouvelable au monde; 563 lacs de plus de 100 km². Les Grands Lacs contiennent environ 18 % du stock mondial d’eau douce de surface. Environ 25 % des milieux humides de la planète. Environ 40 % de la frontière canado-américaine est constituée d’eau. Le débit du fleuve est mesuré en continu par Environnement et Changement climatique Canada.</p>
+            <p>AQUASTAT (FAO), année de référence {aquastat.year}, servi par la Banque mondiale : {fmt.format(aquastat.canada.perCapita)} m³ d’eau douce renouvelable interne par personne par année au Canada contre {fmt.format(aquastat.usa.perCapita)} m³ aux États-Unis, sur des volumes totaux de {km3(aquastat.canada.volume)} et {km3(aquastat.usa.volume)} kilomètres cubes. En direct à <a href="/api/water.json" data-astro-prefetch="false">/api/water.json</a>. Statistique Canada : troisième réserve renouvelable au monde; 563 lacs de plus de 100 km². Les Grands Lacs contiennent environ 18 % du stock mondial d’eau douce de surface. Environ 25 % des milieux humides de la planète. Environ 40 % de la frontière canado-américaine est constituée d’eau. Le débit du fleuve est mesuré en continu par Environnement et Changement climatique Canada.</p>
           </div>
           <div>
             <h3 class="sh">Le registre</h3>

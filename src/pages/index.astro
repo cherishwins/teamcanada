@@ -144,7 +144,7 @@ const description =
             <p>
               It is a smaller number than the one we used to print. It is also
               one anybody can check in a single request, which is worth more.
-              {' '}<a href="/api/water.json">Here is the endpoint.</a>
+              {' '}<a href="/api/water.json" data-astro-prefetch="false">Here is the endpoint.</a>
             </p>
             <p>
               “Internal renewable” means water generated inside the country.
@@ -282,7 +282,7 @@ const description =
         <div class="scols">
           <div>
             <h3 class="sh">The water</h3>
-            <p>FAO AQUASTAT, reference year {aquastat.year}, served through the World Bank: renewable internal fresh water of {fmt.format(aquastat.canada.perCapita)} m³ per person per year in Canada against {fmt.format(aquastat.usa.perCapita)} m³ in the United States, on total volumes of {km3(aquastat.canada.volume)} and {km3(aquastat.usa.volume)} cubic kilometres. Live at <a href="/api/water.json">/api/water.json</a>. Statistics Canada: third-largest renewable supply in the world; 563 lakes larger than 100 km², more than any other country. The Great Lakes hold roughly 18% of the global stock of fresh surface water. About 25% of the world's wetlands. Approximately 40% of the Canada–United States boundary is water.</p>
+            <p>FAO AQUASTAT, reference year {aquastat.year}, served through the World Bank: renewable internal fresh water of {fmt.format(aquastat.canada.perCapita)} m³ per person per year in Canada against {fmt.format(aquastat.usa.perCapita)} m³ in the United States, on total volumes of {km3(aquastat.canada.volume)} and {km3(aquastat.usa.volume)} cubic kilometres. Live at <a href="/api/water.json" data-astro-prefetch="false">/api/water.json</a>. Statistics Canada: third-largest renewable supply in the world; 563 lakes larger than 100 km², more than any other country. The Great Lakes hold roughly 18% of the global stock of fresh surface water. About 25% of the world's wetlands. Approximately 40% of the Canada–United States boundary is water.</p>
           </div>
           <div>
             <h3 class="sh">The record</h3>
