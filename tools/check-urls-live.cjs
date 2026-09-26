@@ -19,7 +19,14 @@
  * So, against a deployment (production by default):
  *   1. the root and canonical pages answer 200 with no redirect;
  *   2. the slash form of a page answers 301/308 to the canonical form;
- *   3. on production only, http:// and www. reach the apex, and the retired
+ *   3. on production only, the pages carry no X-Robots-Tag noindex and
+ *      /llms-full.txt, every page's prose in one file, does. Production only
+ *      because Vercel stamps noindex on EVERY preview response, which is right
+ *      for a preview and would make both assertions meaningless there. The
+ *      header rule matters enough to prove on the edge: a source pattern
+ *      in this repo has already been miswritten once in a way Vercel accepted
+ *      and silently ignored;
+ *   4. on production only, http:// and www. reach the apex, and the retired
  *      default host, teamcanada.vercel.app, redirects permanently to it.
  *
  *   node tools/check-urls-live.cjs                        # production
@@ -46,17 +53,23 @@ async function head(url) {
       const r = await fetch(url, { redirect: 'manual', headers: { 'user-agent': 'northerntemper.ca/check-urls-live' } });
       await r.body?.cancel();
       const loc = r.headers.get('location');
-      return { status: r.status, location: loc ? new URL(loc, url).href : null };
+      return { status: r.status, location: loc ? new URL(loc, url).href : null, robots: r.headers.get('x-robots-tag') || '' };
     } catch (e) {
-      if (attempt === 3) return { status: 'ERR', location: null, error: e.cause?.code || e.message };
+      if (attempt === 3) return { status: 'ERR', location: null, robots: '', error: e.cause?.code || e.message };
     }
   }
 }
 
-async function expect200(url) {
+async function expect200(url, { noindex = false } = {}) {
   const r = await head(url);
-  rows.push(`${String(r.status).padEnd(4)} ${url}`);
+  rows.push(`${String(r.status).padEnd(4)} ${url}${r.robots ? `  [x-robots-tag: ${r.robots}]` : ''}`);
   if (r.status !== 200) fail.push(`${url} should answer 200 with no redirect, got ${r.status}${r.location ? ` → ${r.location}` : ''}${r.error ? ` (${r.error})` : ''}`);
+  const says = /\bnoindex\b/i.test(r.robots);
+  if (IS_PROD && r.status === 200 && says !== noindex) {
+    fail.push(noindex
+      ? `${url} should carry X-Robots-Tag: noindex and does not — the vercel.json header rule is not reaching the edge`
+      : `${url} is a page meant to be indexed, and the edge sends X-Robots-Tag: ${r.robots}`);
+  }
 }
 
 async function expectPermanent(url, want) {
@@ -75,6 +88,7 @@ async function expectPermanent(url, want) {
     await expect200(BASE + p);
     await expectPermanent(BASE + p + '/', BASE + p);
   }
+  if (IS_PROD) await expect200(BASE + '/llms-full.txt', { noindex: true });
 
   if (IS_PROD) {
     const host = new URL(APEX).host;
@@ -93,5 +107,5 @@ async function expectPermanent(url, want) {
     console.error('');
     process.exit(1);
   }
-  console.log(`\ncheck-urls-live: one URL per page on ${BASE}${IS_PROD ? ', and every other host lands on it' : ' (host redirects are production-only and were not checked)'}`);
+  console.log(`\ncheck-urls-live: one URL per page on ${BASE}${IS_PROD ? ', the right X-Robots-Tag on each, and every other host lands on it' : ' (headers and host redirects are production-only and were not checked)'}`);
 })();

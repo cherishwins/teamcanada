@@ -18,6 +18,14 @@
  * So: read the built sitemap, read the robots meta on every page it lists, and
  * fail on any disagreement. Also fail the other way — a sitemap that has gone
  * empty, or lost pages that are perfectly indexable, is its own bug.
+ *
+ * A page can also be noindexed by a HEADER. vercel.json sends
+ * `X-Robots-Tag: noindex` on the five machine text files (llms-full.txt is
+ * every page's prose in one file, and the only indexable copy of the /fr
+ * draft). That rule is one careless edit from noindexing the site: widen its
+ * source to "/(.*)" and every page disappears from Google while every page
+ * still reads "index, follow". So the header rules are compiled with Vercel's
+ * own router and tested against every sitemap URL and every indexable page.
  */
 const fs = require('fs');
 const path = require('path');
@@ -118,6 +126,38 @@ for (const o of orphans) {
   fail.push(`${o} is indexable but is NOT in the sitemap — nothing will point Google at it`);
 }
 
+// ---- 3. No header may noindex a page the sitemap or the robots meta says is indexable.
+const VERCEL_JSON = process.argv[3] || 'vercel.json';
+let headerRules = 0;
+if (fs.existsSync(VERCEL_JSON)) {
+  let getTransformedRoutes;
+  try {
+    ({ getTransformedRoutes } = require('@vercel/routing-utils')); // ships with @astrojs/vercel
+  } catch {
+    console.error('check-sitemap: @vercel/routing-utils not found — it ships with @astrojs/vercel; run npm ci');
+    process.exit(1);
+  }
+  const { headers = [] } = JSON.parse(fs.readFileSync(VERCEL_JSON, 'utf8'));
+  const { routes, error } = getTransformedRoutes({ headers });
+  if (error) {
+    fail.push(`${VERCEL_JSON} headers do not compile: ${error.message || error}`);
+  } else {
+    const noindexRoutes = routes.filter((r) => r.headers && Object.entries(r.headers)
+      .some(([k, v]) => k.toLowerCase() === 'x-robots-tag' && /\bnoindex\b/i.test(v)));
+    headerRules = noindexRoutes.length;
+    const indexablePaths = new Set([
+      ...indexable.map((u) => new URL(u).pathname),
+      ...[...inSitemap], // every page the sitemap names, in both spellings below
+    ]);
+    for (const p of indexablePaths) {
+      for (const variant of new Set([p, norm(p), p === '/' ? p : norm(p) + '/'])) {
+        const hit = noindexRoutes.find((r) => new RegExp(r.src).test(variant));
+        if (hit) fail.push(`${variant} is meant to be indexed, but the ${VERCEL_JSON} header rule ${hit.src} sends X-Robots-Tag: noindex to it`);
+      }
+    }
+  }
+}
+
 if (fail.length) {
   console.error('check-sitemap: the sitemap and the pages disagree\n');
   for (const f of fail) console.error(`  ✗ ${f}`);
@@ -126,5 +166,6 @@ if (fail.length) {
 }
 
 console.log(
-  `check-sitemap: ${indexable.length} indexable URLs, all present and none noindex`,
+  `check-sitemap: ${indexable.length} indexable URLs, all present and none noindex` +
+    `, by meta or by any of ${headerRules} X-Robots-Tag header rule${headerRules === 1 ? '' : 's'}`,
 );
