@@ -83,6 +83,13 @@ const { title, pageTitle, description, path, schema, label, heading, caption } =
   .rec td a:hover { color: var(--nt-red); }
   .rec .breaks a { margin-right: 6px; }
 
+  /* A break on the members ledger links to /record/divisions#vN. The row it
+     lands on is marked, or a reader arriving mid-table cannot tell which of
+     174 rows they were sent to. #1C1C1C is the lightest dark ground the text
+     tokens are calibrated for (a11y.css), so contrast holds on the marked row. */
+  .rec tbody tr:target { background: var(--nt-n-880); box-shadow: inset 4px 0 0 var(--nt-red); }
+  .rec .nt-light tbody tr:target { background: #F4F4F4; }
+
   /* The two ledgers, offered from the front page as what they are: counts. */
   .rec .ledgers { display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: var(--space-3); margin-top: clamp(26px, 4vh, 46px); }
   .rec .ledgers a {

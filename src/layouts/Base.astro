@@ -142,6 +142,16 @@ const schema = {
     data-website-id="96729609-f123-4554-a885-d614faded225"
   ></script>
 
+  <!-- Without JavaScript the phone menu cannot be toggled, so it stays open and
+       the toggle is hidden. A style block needs no CSP hash (style-src allows
+       inline); the selectors outrank Nav.astro's scoped rules on purpose. -->
+  <noscript><style>
+    @media (max-width: 920px) {
+      nav.nav #navmenu { max-height: none; visibility: visible; overflow: visible; }
+      nav.nav button.toggle { display: none; }
+    }
+  </style></noscript>
+
   <script type="application/ld+json" set:html={JSON.stringify(schema)} />
   {extraSchema.map((s) => (
     <script type="application/ld+json" set:html={JSON.stringify(s)} />

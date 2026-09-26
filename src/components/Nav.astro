@@ -8,7 +8,13 @@ const acts = [
   { href: '/bloc',    label: 'The Bloc', num: 'IV' },
   { href: '/build',   label: 'The Build', num: 'V' },
 ];
-const here = (h: string) => (h === '/' ? pathname === '/' : pathname.startsWith(h));
+// 'page' only on the page itself. A parent section (The record, while reading
+// /record/members) is 'true': it is where the reader is, not what they are on.
+const here = (h: string) => {
+  if (h === '/') return pathname === '/' ? 'page' : undefined;
+  if (pathname === h) return 'page';
+  return pathname.startsWith(h + '/') ? 'true' : undefined;
+};
 ---
 <nav class="nav" aria-label="Primary">
   <a class="brand" href="/" aria-label="Northern Temper — home">
@@ -25,19 +31,19 @@ const here = (h: string) => (h === '/' ? pathname === '/' : pathname.startsWith(
     <ul class="acts">
       {acts.map((a) => (
         <li>
-          <a href={a.href} aria-current={here(a.href) ? 'page' : undefined}>
+          <a href={a.href} aria-current={here(a.href)}>
             <span class="num">{a.num}</span>{a.label}
           </a>
         </li>
       ))}
     </ul>
     <ul class="aux">
-      <li><a href="/calculator" aria-current={here('/calculator') ? 'page' : undefined}>The bill</a></li>
-      <li><a href="/record" aria-current={here('/record') ? 'page' : undefined}>The record</a></li>
-      <li><a href="/read" aria-current={here('/read') ? 'page' : undefined}>The reads</a></li>
-      <li><a href="/sources" aria-current={here('/sources') ? 'page' : undefined}>Receipts</a></li>
-      <li><a href="/join" aria-current={here('/join') ? 'page' : undefined}>Coalition</a></li>
-      <li><a class="lang" href="/fr" hreflang="fr-CA" lang="fr-CA" aria-current={here('/fr') ? 'page' : undefined}>FR</a></li>
+      <li><a href="/calculator" aria-current={here('/calculator')}>The bill</a></li>
+      <li><a href="/record" aria-current={here('/record')}>The record</a></li>
+      <li><a href="/read" aria-current={here('/read')}>The reads</a></li>
+      <li><a href="/sources" aria-current={here('/sources')}>Receipts</a></li>
+      <li><a href="/join" aria-current={here('/join')}>Coalition</a></li>
+      <li><a class="lang" href="/fr" hreflang="fr-CA" lang="fr-CA" aria-current={here('/fr')}>FR</a></li>
     </ul>
   </div>
 </nav>
@@ -107,14 +113,26 @@ const here = (h: string) => (h === '/' ? pathname === '/' : pathname.startsWith(
   .menu a.lang:hover { color: var(--nt-white); }
   .menu a[aria-current] .num { color: var(--nt-red-lift); }
 
+  /* Collapsed, the menu is also visibility:hidden, which takes its eleven links
+     out of the tab order and the accessibility tree; max-height alone left them
+     focusable at zero height, between the toggle and the page. The visibility
+     change waits for the collapse to finish, so it still animates. The column
+     must not wrap: capped at 70svh on a short phone, a wrapping column pushed
+     the last six links into a second column that overflow clipped, and touch
+     could not reach them. Without JavaScript none of this applies (see the
+     <noscript> rule in Base.astro): the toggle is hidden and the menu stays open. */
   @media (max-width: 920px) {
     .toggle { display: flex; }
     .menu {
-      flex-basis: 100%; margin-left: 0; flex-direction: column; align-items: flex-start;
-      gap: 0; overflow: hidden; max-height: 0; transition: max-height .3s var(--ease);
+      flex-basis: 100%; margin-left: 0; flex-direction: column; align-items: flex-start; flex-wrap: nowrap;
+      gap: 0; overflow: hidden; max-height: 0; visibility: hidden;
+      transition: max-height .3s var(--ease), visibility 0s linear .3s;
     }
-    .nav[data-open='true'] .menu { max-height: 70svh; overflow-y: auto; }
-    ul { flex-direction: column; gap: 0; width: 100%; }
+    .nav[data-open='true'] .menu {
+      max-height: 70svh; overflow-y: auto; visibility: visible;
+      transition: max-height .3s var(--ease), visibility 0s;
+    }
+    ul { flex-direction: column; flex-wrap: nowrap; gap: 0; width: 100%; }
     .aux { padding-left: 0; border-left: 0; border-top: var(--border-hair) solid var(--border-hairline); width: 100%; }
     .menu a { padding: 13px 0; font-size: 13px; width: 100%; }
     .nav[data-open='true'] .bars { transform: rotate(45deg); }
@@ -125,21 +143,28 @@ const here = (h: string) => (h === '/' ? pathname === '/' : pathname.startsWith(
 </style>
 
 <script>
-  // Progressive enhancement: without JS the menu is simply always visible,
-  // because max-height only collapses it once the button exists to reopen it.
+  // Progressive enhancement: without JS a <noscript> rule in Base.astro hides
+  // the toggle and leaves the menu open, so the links never depend on this.
   const nav = document.querySelector<HTMLElement>('.nav');
   const btn = nav?.querySelector<HTMLButtonElement>('.toggle');
-  btn?.addEventListener('click', () => {
-    const open = nav!.dataset.open === 'true';
-    nav!.dataset.open = String(!open);
-    btn.setAttribute('aria-expanded', String(!open));
-  });
-  // Close on escape, and on resize back to the wide layout.
+  const set = (open: boolean) => {
+    if (!nav || !btn) return;
+    nav.dataset.open = String(open);
+    btn.setAttribute('aria-expanded', String(open));
+  };
+  btn?.addEventListener('click', () => set(nav!.dataset.open !== 'true'));
+  // Escape closes and hands focus back to the toggle.
   addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && nav?.dataset.open === 'true') {
-      nav.dataset.open = 'false';
-      btn?.setAttribute('aria-expanded', 'false');
+      set(false);
       btn?.focus();
     }
   });
+  // Tabbing out of the open menu closes it; otherwise focus moves on to links
+  // the open menu is still drawn over.
+  nav?.addEventListener('focusout', (e) => {
+    if (nav.dataset.open === 'true' && !nav.contains(e.relatedTarget as Node | null)) set(false);
+  });
+  // Widening past the breakpoint closes it, so it does not come back open.
+  matchMedia('(min-width: 921px)').addEventListener('change', (e) => { if (e.matches) set(false); });
 </script>
