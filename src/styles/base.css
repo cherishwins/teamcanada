@@ -16,6 +16,11 @@ html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
   color-scheme: dark;
+  /* The nav is sticky, so anything scrolled to (a #fragment, or a control
+     reached by Shift+Tab) must stop below it, not under it. Without this a
+     link from the members ledger to /record/divisions#v73 landed the row's
+     number under the bar. Taller than the nav at every width it keeps one row. */
+  scroll-padding-top: 6rem;
 }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 
@@ -100,6 +105,11 @@ p { max-width: var(--measure-body); margin-bottom: var(--space-2); }
 p:last-child { margin-bottom: 0; }
 
 section { padding: var(--section-y) var(--gutter); position: relative; }
+/* A table's scroll region is a <section> too (html-validate prefers it to a
+   div with role=region), but it is not a page band. Without this every table
+   on the site sat inside 101px of padding above and below and lost 20px each
+   side on a phone: measured on /sources, all three /record pages and the reads. */
+section.tw { padding: 0; }
 .nt-wrap { max-width: var(--wrap-max); margin-inline: auto; }
 
 .nt-prose {

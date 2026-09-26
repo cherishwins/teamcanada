@@ -4,10 +4,14 @@ import Nav from '../components/Nav.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import Share from '../components/Share.astro';
 import Stat from '../components/Stat.astro';
+import LiveRefresh from '../components/LiveRefresh.astro';
 import { getFigures } from '../lib/sources';
 
 const figures = await getFigures();
 const fmt = new Intl.NumberFormat('en-CA');
+const shown = [figures.population, figures.gdp, figures.usdcad];
+const NOTE_OK = 'Statistics Canada · Bank of Canada';
+const NOTE_FALLBACK = 'Statistics Canada · Bank of Canada · a source is not responding; its last published figure is shown with its date';
 
 const description =
   'Strip away the bickering and look at what Canada actually holds: oil, clean ' +
@@ -53,12 +57,14 @@ const description =
         <div class="nt-label">The country, this morning</div>
         <hr class="nt-rule" />
         <h2 class="nt-display md" style="max-width:17ch;">And the part that changes while you read.</h2>
-        <div class="live">
-          <div class="lrow"><span class="lk">Population</span><span class="lv">{fmt.format(figures.population.value)}</span><span class="la">{figures.population.asOf}</span></div>
-          <div class="lrow"><span class="lk">Real GDP · monthly, chained 2017 $</span><span class="lv">${fmt.format(Math.round(figures.gdp.value / 1000))}B</span><span class="la">{figures.gdp.asOf}</span></div>
-          <div class="lrow"><span class="lk">One US dollar, in Canadian dollars</span><span class="lv">{figures.usdcad.value.toFixed(4)}</span><span class="la">{figures.usdcad.asOf}</span></div>
+        <div class="live" data-live-figures>
+          <div class="lrow" data-live={String(figures.population.live)}><span class="lk">Population</span><span class="lv" data-k="population">{fmt.format(figures.population.value)}</span><span class="la">{figures.population.asOf}</span></div>
+          <div class="lrow" data-live={String(figures.gdp.live)}><span class="lk">Real GDP · monthly, chained 2017 $</span><span class="lv" data-k="gdp">${fmt.format(Math.round(figures.gdp.value / 1000))}B</span><span class="la">{figures.gdp.asOf}</span></div>
+          <div class="lrow" data-live={String(figures.usdcad.live)}><span class="lk">One US dollar, in Canadian dollars</span><span class="lv" data-k="usdcad">{figures.usdcad.value.toFixed(4)}</span><span class="la">{figures.usdcad.asOf}</span></div>
         </div>
-        <p class="nt-caption">Statistics Canada · Bank of Canada</p>
+        <p class="nt-caption" data-live-note data-ok={NOTE_OK} data-fallback={NOTE_FALLBACK}>
+          {shown.every((f) => f.live) ? NOTE_OK : NOTE_FALLBACK}
+        </p>
         <p class="more"><a href="/bloc">Where it all goes · The Bloc →</a></p>
       </div>
     </section>
@@ -66,6 +72,7 @@ const description =
     <Share quote={"170 billion barrels of proven oil. 360 TWh of hydro. Uranium running a hundred times the world average grade. Two oceans. The only thing missing is the decision to use it as one country."} />
   </main>
   <SiteFooter />
+  <LiveRefresh />
 </Base>
 
 <style>

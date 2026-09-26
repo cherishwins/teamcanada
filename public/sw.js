@@ -10,11 +10,16 @@
  * Bump VERSION whenever a cached asset changes. The activate handler deletes
  * every cache that is not the current one, so a bump is a clean slate.
  */
-const VERSION = 'nt-v2';
+const VERSION = 'nt-v3';
 
-/** Enough to render something useful with no network at all. */
+/**
+ * Enough to render something useful with no network at all. NOT the home
+ * page: this site travels by share link, so most first visits land elsewhere,
+ * and precaching / cost every one of them ~23 kB br for a page they rarely
+ * open. Pages are cached as they are visited (network first, below), so a
+ * reader who has seen / still gets it offline.
+ */
 const CORE = [
-  '/',
   '/offline',
   '/fonts/Oswald-700.woff2',
   '/fonts/Inter-400.woff2',

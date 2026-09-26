@@ -134,13 +134,27 @@ const schema = {
   <link rel="author" href="/humans.txt" />
 
   <!-- Umami: cookieless, no personal data, no cross-site identifiers, so no
-       consent banner is required. Deferred, and the page is fully functional
-       without it. Disclosed on /privacy. -->
+       consent banner is required. Disclosed on /privacy. ASYNC, not defer:
+       deferred and module scripts run in document order once parsing ends, so
+       a slow cloud.umami.is held back every first-party script behind it (the
+       nav toggle, the share band, the count-up) for as long as it took;
+       measured, an 8 s stall left the menu dead for 8.5 s. Async runs it
+       whenever it arrives and blocks nothing. Same single pageview either way. -->
   <script
-    defer
+    async
     src="https://cloud.umami.is/script.js"
     data-website-id="96729609-f123-4554-a885-d614faded225"
   ></script>
+
+  <!-- Without JavaScript the phone menu cannot be toggled, so it stays open and
+       the toggle is hidden. A style block needs no CSP hash (style-src allows
+       inline); the selectors outrank Nav.astro's scoped rules on purpose. -->
+  <noscript><style>
+    @media (max-width: 920px) {
+      nav.nav #navmenu { max-height: none; visibility: visible; overflow: visible; }
+      nav.nav button.toggle { display: none; }
+    }
+  </style></noscript>
 
   <script type="application/ld+json" set:html={JSON.stringify(schema)} />
   {extraSchema.map((s) => (

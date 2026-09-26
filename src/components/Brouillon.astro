@@ -8,6 +8,8 @@
  * the message refutes itself. The banner stays until someone qualified
  * removes it — and the page carries `noindex` for as long as it is here.
  */
+import { SITE } from '../config.mjs';
+const mailto = `mailto:${SITE.email}?subject=${encodeURIComponent('Révision du français')}`;
 ---
 <aside class="brouillon" aria-label="Avis de brouillon">
   <p class="tag">Brouillon</p>
@@ -15,7 +17,7 @@
     Cette page attend la révision d’une personne dont le français est la langue
     maternelle, ici, au Québec. Rien n’a été traduit à la machine, mais rien
     n’a encore été relu non plus. Vous voyez un texte en chantier.
-    <a href="mailto:jesse@northerntemper.ca?subject=R%C3%A9vision%20du%20fran%C3%A7ais">Écrivez-nous</a>
+    {' '}<a href={mailto}>Écrivez-nous</a>{' '}
     si une phrase sonne faux.
   </p>
 </aside>

@@ -27,10 +27,22 @@ export interface Figure {
 }
 
 const TIMEOUT_MS = 6000;
+
+/**
+ * NT_OFFLINE=1 fails every upstream at once, as if StatCan, the Bank, the World
+ * Bank and ECCC all had a bad morning during the same build. CI builds this way
+ * as well as normally, and both must pass: every page falls back and says so,
+ * and nothing a page SHIPS may change because of it. /calculator once carried
+ * the live population inside an inline script whose sha256 vercel.json pins, so
+ * the next deploy failed whenever StatCan published a quarter or timed out;
+ * the offline build is what catches that class on the PR instead.
+ */
+const OFFLINE = typeof process !== 'undefined' && process.env?.NT_OFFLINE === '1';
 const BOC = 'https://www.bankofcanada.ca/valet/observations';
 const WDS = 'https://www150.statcan.gc.ca/t1/wds/rest';
 
 async function getJSON(url: string, init?: RequestInit): Promise<unknown> {
+  if (OFFLINE) throw new Error('NT_OFFLINE: upstreams disabled for this build');
   const ctl = new AbortController();
   const timer = setTimeout(() => ctl.abort(), TIMEOUT_MS);
   try {
@@ -177,8 +189,20 @@ export interface River {
   discharge: number;
   /** Observation timestamp (ISO, UTC). */
   at: string;
+  /** False on a fallback AND on a stale reading. */
   live: boolean;
+  /** The gauge answered, but its latest reading is older than STALE_MS. */
+  stale?: boolean;
 }
+
+/**
+ * A gauge reports every five minutes. One that has not reported for three
+ * hours is not "flowing past a gauge, right now", whatever the endpoint says:
+ * in September 2026 the Fraser at Hope went 51 hours without a reading and was
+ * served as live under that heading. Its reading is kept, with its real time,
+ * and it is marked stale so the page says so.
+ */
+const STALE_MS = 3 * 3600_000;
 
 /**
  * Four rivers, one per drainage basin, chosen so the row reads as the country
@@ -205,7 +229,10 @@ async function river(spec: (typeof RIVERS)[number]): Promise<River> {
     if (!props || typeof props.DISCHARGE !== 'number' || !Number.isFinite(props.DISCHARGE)) {
       throw new Error('no discharge in latest observation');
     }
-    return { ...base, discharge: props.DISCHARGE, at: props.DATETIME ?? '', live: true };
+    const at = props.DATETIME ?? '';
+    const age = Date.now() - Date.parse(at);
+    if (!(age <= STALE_MS)) return { ...base, discharge: props.DISCHARGE, at, live: false, stale: true };
+    return { ...base, discharge: props.DISCHARGE, at, live: true };
   } catch {
     return { ...base, discharge: spec.fallback, at: spec.fallbackAt, live: false };
   }
@@ -290,7 +317,9 @@ export async function getTrade(): Promise<Trade> {
   const values = new Map<number, { exports: number; changePct: number | null; live: boolean }>(
     PARTNERS.map((p) => [p.vector, { exports: p.fallback, changePct: p.fallbackChange, live: false }]),
   );
-  let asOf = '2026-07-01';
+  const FALLBACK_AS_OF = '2026-07-01';
+  let asOf = FALLBACK_AS_OF;
+  const periods = new Set<string>();
 
   try {
     const body = PARTNERS.map((p) => ({ vectorId: p.vector, latestN: 13 }));
@@ -322,10 +351,22 @@ export async function getTrade(): Promise<Trade> {
             : null,
         live: true,
       });
+      periods.add(last.refPer);
       asOf = last.refPer;
     }
   } catch {
     /* fallbacks stand, and `live` stays false on every row */
+  }
+
+  // Shares are computed ACROSS partners, so every row must describe the same
+  // month. A partial answer (one vector failing, or one partner a month behind)
+  // would mix a live month with the fallback month and label the whole table
+  // with whichever came last. Same rule getWater applies to AQUASTAT years:
+  // all live and one period, or the published fallback set, all of it.
+  const complete = [...values.values()].every((v) => v.live) && periods.size === 1;
+  if (!complete) {
+    for (const p of PARTNERS) values.set(p.vector, { exports: p.fallback, changePct: p.fallbackChange, live: false });
+    asOf = FALLBACK_AS_OF;
   }
 
   const total = PARTNERS.reduce((sum, p) => sum + (values.get(p.vector)?.exports ?? 0), 0);
@@ -386,18 +427,30 @@ const PROV: Array<{ code: string; name: string; popVec: number; gdpVec: number; 
 
 export interface Provinces {
   provinces: Province[];
-  /** National population, for the federal debt-share calculation. */
+  /**
+   * National population, for the federal debt-share calculation: Canada,
+   * territories included (vector 1). It used to be the sum of the ten
+   * provinces, which left out 139,351 people and overstated every province's
+   * share of the debt by a third of a per cent.
+   */
   canadaPopulation: number;
+  /** Reference quarter of every population figure here (YYYY-MM-DD). */
+  popAsOf: string;
   fetchedAt: string;
   allLive: boolean;
 }
 
+/** Canada, vector 1, for the same quarter as the provincial fallbacks above. */
+const CANADA_POP = { vector: 1, fallback: 41417056 };
+const PROV_FALLBACK_AS_OF = '2026-04-01';
+
 export async function getProvinces(): Promise<Provinces> {
-  const pop = new Map<number, number>();
+  const pop = new Map<number, { v: number; per: string }>();
   const gdp = new Map<number, { v: number; per: string }>();
 
   try {
     const body = [
+      { vectorId: CANADA_POP.vector, latestN: 1 },
       ...PROV.map((p) => ({ vectorId: p.popVec, latestN: 1 })),
       ...PROV.map((p) => ({ vectorId: p.gdpVec, latestN: 1 })),
     ];
@@ -416,31 +469,35 @@ export async function getProvinces(): Promise<Provinces> {
       if (row.status !== 'SUCCESS' || vec == null || !pts?.length) continue;
       const last = pts[pts.length - 1];
       if (!Number.isFinite(last.value)) continue;
-      if (PROV.some((p) => p.popVec === vec)) pop.set(vec, last.value);
-      else gdp.set(vec, { v: last.value, per: last.refPer });
+      if (vec === CANADA_POP.vector || PROV.some((p) => p.popVec === vec)) pop.set(vec, { v: last.value, per: last.refPer });
+      else if (PROV.some((p) => p.gdpVec === vec)) gdp.set(vec, { v: last.value, per: last.refPer });
     }
   } catch {
     /* fallbacks below */
   }
 
-  const provinces: Province[] = PROV.map((p) => {
-    const pv = pop.get(p.popVec);
-    const gv = gdp.get(p.gdpVec);
-    return {
-      code: p.code,
-      name: p.name,
-      population: pv ?? p.pop,
-      gdp: gv?.v ?? p.gdp,
-      gdpYear: (gv?.per ?? '2024-01-01').slice(0, 4),
-      live: pv != null && gv != null,
-    };
-  });
+  // Every province's share is computed against the others, so the set must be
+  // one population quarter and one GDP year, all of it live, or the published
+  // fallback set, all of it. A partial answer used to mix quarters silently.
+  const popPers = new Set([...pop.values()].map((x) => x.per));
+  const gdpPers = new Set([...gdp.values()].map((x) => x.per));
+  const complete = pop.size === PROV.length + 1 && gdp.size === PROV.length && popPers.size === 1 && gdpPers.size === 1;
+
+  const provinces: Province[] = PROV.map((p) => ({
+    code: p.code,
+    name: p.name,
+    population: complete ? pop.get(p.popVec)!.v : p.pop,
+    gdp: complete ? gdp.get(p.gdpVec)!.v : p.gdp,
+    gdpYear: complete ? [...gdpPers][0].slice(0, 4) : '2024',
+    live: complete,
+  }));
 
   return {
     provinces,
-    canadaPopulation: provinces.reduce((s, p) => s + p.population, 0),
+    canadaPopulation: complete ? pop.get(CANADA_POP.vector)!.v : CANADA_POP.fallback,
+    popAsOf: complete ? [...popPers][0] : PROV_FALLBACK_AS_OF,
     fetchedAt: new Date().toISOString(),
-    allLive: provinces.every((p) => p.live),
+    allLive: complete,
   };
 }
 

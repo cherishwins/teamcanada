@@ -122,7 +122,7 @@ const schema = [datasetSchema(DATASETS.find((d) => d.endpoint === '/api/record.j
       <div class="nt-prose">
         <p>
           The divisions and every ballot come from the House of Commons of Canada as published by
-          <a href="https://openparliament.ca/">OpenParliament.ca</a>, an open, keyless API. The party a member
+          {' '}<a href="https://openparliament.ca/">OpenParliament.ca</a>, an open, keyless API. The party a member
           is scored against is the party they sat for on the day of the vote, from the membership record, so
           a member who crossed the floor is measured against the right bench on both sides of the crossing.
         </p>
@@ -133,7 +133,7 @@ const schema = [datasetSchema(DATASETS.find((d) => d.endpoint === '/api/record.j
           procedural and substantive alike; nothing is selected, because selection is where an opinion would enter.
         </p>
         <p>
-          The whole record is at <a href="/api/record.json"><code>/api/record.json</code></a>, public domain like
+          The whole record is at <a href="/api/record.json" data-astro-prefetch="false"><code>/api/record.json</code></a>, public domain like
           everything else here, and rebuilt from the House's record after each sitting day. Every other figure on
           this site is on <a href="/sources">the receipts page</a>.
         </p>

@@ -115,11 +115,19 @@ one file serves both colourways. **Never reference them via `<img src>`:**
 ## File map
 - `src/config.mjs` — **the only place the public origin is written.** Canonicals,
   OG, sitemap and schema all read it. Moving domains is a one-line change.
+- `src/pages/.well-known/security.txt.ts` — RFC 9116 `security.txt`, written
+  at build from `SITE.email` with an `Expires` 180 days after the deploy. It
+  shipped for months as a static file WITHOUT `Expires`, which the RFC makes
+  required; a typed date is one somebody must remember to move, so it moves
+  itself on every deploy.
 - `src/styles/tokens/*.css` — **verbatim from the design system** + `a11y.css`.
 - `src/styles/base.css` — imports the tokens, then reset, type scale, grain,
   reveal system. `a11y.css` must import last; it overrides four text roles.
 - `src/layouts/Base.astro` — head, meta, OG, JSON-LD, skip link, reveal fallback.
-- `src/components/` — `Stat`, `Meter`, `marks/{BearDual,BearHead,LeafSeal}`.
+- `src/components/` — `Stat`, `Meter`, `marks/{BearDual,BearHead,LeafSeal}`,
+  and `BarTable` — a figure that is a real table first (every value printed,
+  row and column headers) with a single-hue bar under each value; no script, no
+  image. `/read/the-vertical-squeeze` draws its three figures with it.
 - `src/lib/sources.ts` — live figures from StatCan WDS + Bank of Canada Valet.
 - `src/lib/figures.ts` — **the one place a hand-entered number is written.**
   `sources.ts` covers figures that come from an endpoint; this covers the ones
@@ -161,7 +169,9 @@ one file serves both colourways. **Never reference them via `<img src>`:**
   Content still to migrate: `legacy/read/*.html` (5 long-form pieces),
   `legacy/fr/index.html`, `legacy/join.html`.
 - `.github/workflows/verify.yml` — build + `check-french` + `npm audit` + the
-  full sweep, on every PR and every push to `main`. Free: the repo is public.
+  full sweep, on every PR and every push to `main`, **plus a second build with
+  every upstream down** (`NT_OFFLINE=1`, see the CSP convention for why). Free:
+  the repo is public.
 - `tools/check-french.cjs` — Québec typography + banned-framing audit;
   `tools/check-llms.cjs` — llms.txt shape + no-restated-figures, and
   `ai.txt`'s `Data:` lines equal `src/pages/api` both ways (it said "four
@@ -180,8 +190,12 @@ one file serves both colourways. **Never reference them via `<img src>`:**
   id on that page**; and `tools/check-canonical.cjs` — **one page, one URL:
   every canonical names its own page, every sitemap `<loc>` equals that
   canonical byte for byte, every same-origin reference the build writes uses
-  it, and the other form permanently redirects.** All ten run in
-  `npm run build` and fail it, and so does
+  it, and the other form permanently redirects**; and `tools/check-live.cjs` —
+  **every figure marked `data-live="false"` has a note in its block saying a
+  source is not responding, no block whose figures are all live says so, and
+  under `NT_OFFLINE=1` every live figure on the site is on fallback** (see
+  "A figure never renders blank" below). Every one of them runs in
+  `npm run build` and fails it, and so does
   `tools/generate-llms-full.cjs` if a sitemap page is in neither its reading
   order nor its exclusion list. Outside the build: `tools/check-links.cjs`
   (every external link the site cites, weekly, from
@@ -221,8 +235,10 @@ one file serves both colourways. **Never reference them via `<img src>`:**
   convention "One page, one URL" below for why it exists.
 - `tools/check-urls-live.cjs` — the same claim on the real edge, weekly from
   `links.yml`: canonical pages answer 200 with no noindex, the slash form
-  308s to them, `/llms-full.txt` carries `X-Robots-Tag: noindex`, and http,
-  www and `teamcanada.vercel.app` all land on the apex.
+  308s to them, `/llms-full.txt` carries `X-Robots-Tag: noindex`, http,
+  www and `teamcanada.vercel.app` all land on the apex, and the published
+  `security.txt` has at least 30 days left on its `Expires` (it renews on
+  every deploy, so a failure means the site has stopped deploying).
 - `tools/check-internal-links.cjs` — no link inside the site points at a page
   that does not exist, and no fragment points at an id that is not there
   (the members ledger links every break to `/record/divisions#vN`, and a
@@ -263,6 +279,28 @@ with the date it was true. On failure the page shows the fallback *and says a
 source is not responding*. The site's whole authority is "every figure here is
 public and checkable" — it can afford neither a dash nor a silently stale number.
 
+**That rule was written here and not kept, and nothing could tell.** Until
+September 2026 `/hand`, `/bloc` and `/calculator` printed fallbacks with no
+notice, `/` said so only from a client script, a gauge silent for 51 hours was
+served as live under "right now", and `/sources` said "responding right now"
+on a page built days earlier. What holds it now:
+- `src/lib/sources.ts` marks a gauge older than three hours stale, and trade
+  and provincial figures fall back **all or nothing** (one month, one quarter,
+  every row live), the discipline `getWater()` always had. A fallback API
+  answer is edge-cached for a minute, not an hour.
+- Pages print their notice from the SERVER (`data-live` on each figure,
+  `data-live-note` on its block), and `tools/check-live.cjs` fails the build
+  when a fallback has no notice or a live block claims one. `verify.yml`'s
+  offline build renders every fallback on every PR, so the notices are proven,
+  not assumed.
+- `src/components/LiveRefresh.astro` refreshes `/`, `/hand` and `/fr` from the
+  site's own endpoints once loaded, so "a reading, taken this morning" is true
+  of what a reader sees. **Only a live answer replaces a printed value**; a
+  fallback never does, or an outage would swap the build's newer number for
+  an older one. No figure lives in the script, so its CSP hash never moves.
+- Where a page cannot refresh, its words carry the date: `/bloc` names the
+  month the series describes, `/sources` the time it was built.
+
 ## Conventions
 - **Verify before pushing: `node tools/verify.cjs`.** It serves
   `.vercel/output/static` through Playwright request interception and sweeps
@@ -271,8 +309,15 @@ public and checkable" — it can afford neither a dash nor a silently stale numb
   `og:image:alt`, plus WCAG AA contrast and a full **axe-core** pass on all
   pages, and **serves the production CSP on every HTML response** so a policy
   that blocks the nav or the share button fails here, not in a reader's
-  browser. It exits non-zero. **Current state: clean on all ten counts.**
-  Keep it there.
+  browser. Since September 2026 it also counts **glued words** (an inline
+  element meeting text with no space, read from the laid-out page, so a
+  block-styled link is not a false alarm) and **navigation problems** (the
+  phone menu opened at six short phone sizes the width sweep never uses: every
+  link reachable by a finger, none focusable while closed, closed when focus
+  leaves it; `/record/divisions#v73` landing below the sticky nav; and the menu
+  working while a third-party script is stalled for eight seconds, which it
+  did not while Umami loaded with `defer`). It exits non-zero. **Current state:
+  clean on all twelve counts.** Keep it there.
   **`.github/workflows/verify.yml` runs all of it on every PR and every push to
   `main`**, so none of this depends on somebody remembering. The repo is public,
   so Actions minutes are free and unmetered — that is the only reason it is
@@ -382,7 +427,7 @@ public and checkable" — it can afford neither a dash nor a silently stale numb
   see a bot commit. `workflow_dispatch` is the one event that IS allowed to
   chain, so `verify.yml` carries it and `record.yml` dispatches it by hand
   after the push (`actions: write`). Vercel deploys from the push regardless
-  and runs the ten build checkers again on its side.
+  and runs every build checker again on its side.
 - **A scoped `<style>` stamps `data-astro-cid-…` onto every element it could
   match, and on a ledger that is the page.** The first record page carried
   5,935 of them, 154 kB of a 391 kB file, on cells whose only styling was a
@@ -538,7 +583,23 @@ public and checkable" — it can afford neither a dash nor a silently stale numb
   worker registration, share band, calculator, reveal fallback, join form) and
   their sha256 tokens are listed in `vercel.json`. Editing any of them, or
   upgrading the Vercel adapter, changes a hash; `check-csp` fails the build and
-  prints the token to paste. `style-src` keeps `'unsafe-inline'` because the
+  prints the token to paste.
+  **No inline script may carry a figure.** A hash pins bytes, so a script whose
+  bytes include data fails the build the day the data moves. `/calculator` did
+  exactly that: `define:vars` put the live StatCan population into its script,
+  so the hash in `vercel.json` matched only one quarter's population, and a
+  build with StatCan down (the fallback value) failed `check-csp`. It was found
+  in September 2026 only because this sandbox cannot reach StatCan; the
+  December release would have blocked every deploy, the record bot's
+  included. The calculator now computes every province in its frontmatter and
+  hangs the finished text on each `<option>`; the script only swaps text.
+  Data goes in the markup, never in a script. **`verify.yml`'s
+  `offline-build` job enforces it:** `NT_OFFLINE=1` makes every upstream in
+  `src/lib/sources.ts` fail at once, and the full build must still pass, so a
+  shipped byte that depends on the data fails on the PR, not on a deploy
+  months later. `define:vars` is fine for a constant from `src/config.mjs`
+  (`/join` uses it for the address) and nothing else.
+  `style-src` keeps `'unsafe-inline'` because the
   stylesheet is inlined by design (`inlineStylesheets: 'always'`, measured) —
   the security value of a CSP is almost entirely in `script-src`.
   `frame-ancestors 'none'`, `object-src 'none'`, `base-uri 'self'`,
@@ -583,6 +644,20 @@ public and checkable" — it can afford neither a dash nor a silently stale numb
   twice. They are a `<table>`, `<dl>`s, `.compare` cards and an `<hr>` now,
   styled in `Read.astro`, with the legacy HTML as the reference for what the
   author actually grouped. All six reads carry a page-specific share band.
+  **That sentence was untrue of `/read/the-vertical-squeeze` until September
+  2026**, and nothing could see it: its household cards printed "Total
+  paid$10,401", its section markers were loose paragraphs ("§ I — The Squeeze,
+  Specified01 / 06"), its footnote numbers ran into their sources, "Letter the
+  First" sat after the letter it introduces, and the walker's dedupe had
+  dropped the high earner's "Benefits received $0" and three of the five
+  Fit/Forward verdicts because each repeated an earlier line. Its three
+  figures had been PNG charts; the captions survived and the charts did not,
+  so the read described figures it never showed. They are `BarTable`s now,
+  drawn from Table 1 on the same page and the legacy chart's own labels, in
+  the design system's data colour rather than the dossier's copper. The glued
+  words check in the sweep is what keeps this class of fault visible.
+  **"0 words lost" was true of the walker's input and false of its output**:
+  diff the legacy text against the page, not against the walker.
 
 ## Discoverability — the point is that it travels
 Everything is CC0 and the site is built to be repeated, not protected.
@@ -638,7 +713,13 @@ Everything is CC0 and the site is built to be repeated, not protected.
 
 ## Performance — measured, not assumed
 A phone-width cold load, per page: **7–11 requests, 81–120 kB gzipped, ~2 kB of
-JavaScript**. Roughly **67 kB of that is fonts** — five Latin-subset WOFF2 faces
+JavaScript**. **That figure did not count what the page fetched AFTER load**,
+and until September 2026 that was most of it: viewport prefetch pulled
+200–310 kB of pages (and `/api/*.json`, a serverless invocation each) that a
+one-page reader never opened, and the service worker precached the whole home
+page (~23 kB br) on every first visit wherever it landed. Prefetch is `'tap'`
+now and data links opt out; the precache no longer includes `/`. Measure a page
+with its prefetch and service-worker traffic, not without. Roughly **67 kB of that is fonts** — five Latin-subset WOFF2 faces
 at about 13 kB each, all genuinely used. That is where the weight is, and it is
 already near the floor without dropping a weight from the design system.
 
@@ -950,6 +1031,14 @@ copy, `src/lib/record.ts`:** the three pages and the endpoint import it, and
 `memberships[]` (with the OpenParliament URL, so an incremental run never
 refetches one), and `votes[]` each carrying a `ballots` string of `Y/N/P/A/-`
 indexed by member position. 59,579 ballots in 174 kB, committed, diffable.
+**A member who has left the House has no current party or riding on
+OpenParliament**, and the snapshot's first import took both from the
+politician record, so twelve members showed a dash in every column of the
+ledger, including the most dissenting one the front page names. `fetch.cjs`
+now fills them from the member's last membership, once. The ledger also
+lists every party a member sat for this session in order (six crossed the
+floor or left their caucus: five to the Liberals, one to sit as an
+independent), and the day a seat ended; `party` alone is only the last one.
 `node tools/record/fetch.cjs 45-1` fetches only the divisions the snapshot
 lacks (a run with nothing new is about three requests) and only bumps
 `fetched` when something was; `node tools/record/analyse.cjs` prints the
@@ -958,7 +1047,7 @@ diff gate mean something.**
 
 **Freshness.** `.github/workflows/record.yml`, 06:23 UTC Monday to Saturday
 and on demand: fetch, `git diff --quiet` gate, **`npm run build` with the new
-snapshot so all ten checkers pass before anything is committed**, commit as
+snapshot so every build checker passes before anything is committed**, commit as
 `record[bot]`, push to `main`, then dispatch `verify.yml` by hand (a
 `GITHUB_TOKEN` push triggers nothing on its own — see Conventions). `main` is
 unprotected, which is what lets the push land; if that ever changes, the bot

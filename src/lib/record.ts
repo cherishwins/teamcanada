@@ -49,6 +49,11 @@ export interface MemberRecord extends Member {
   rate: number | null;
   /** division numbers where the member voted against their party's majority */
   breaks: number[];
+  /** Every party they sat for during the session, in order. More than one means
+   *  they crossed the floor or left their caucus; `party` alone is only the last. */
+  parties: string[];
+  /** The day their seat ended, if it has; null while they sit. */
+  left: string | null;
   openparliament: string;
 }
 export interface TheRecord {
@@ -105,7 +110,14 @@ export function compute(s: Snapshot = RECORD): TheRecord {
     return { ...v, positions, cast, split: cast ? Math.min(yes, cast - yes) / cast : 0, dissent: Object.values(positions).some((p) => p.dissent > 0), official: official(v.n), openparliament: op(v.n) };
   });
 
+  const dates = s.votes.map((v) => v.date).sort();
+  const [firstDay, lastDay] = [dates[0] ?? '', dates[dates.length - 1] ?? ''];
   const members: MemberRecord[] = s.members.map((m, i) => {
+    const sat = s.memberships
+      .filter((x) => x.m === i && x.from <= lastDay && (!x.to || x.to >= firstDay))
+      .sort((a, b) => (a.from < b.from ? -1 : 1));
+    const parties = [...new Set(sat.map((x) => x.party ?? 'Independent'))];
+    const left = sat.length && sat.every((x) => x.to) ? sat.map((x) => x.to as string).sort().pop() ?? null : null;
     let cast = 0, paired = 0, absent = 0, comparable = 0, withParty = 0;
     const breaks: number[] = [];
     for (const d of divisions) {
@@ -119,7 +131,7 @@ export function compute(s: Snapshot = RECORD): TheRecord {
       comparable++;
       if (c === line.pos) withParty++; else breaks.push(d.n);
     }
-    return { ...m, cast, paired, absent, comparable, withParty, rate: comparable >= 20 ? withParty / comparable : null, breaks, openparliament: `https://openparliament.ca/politicians/${m.id}/` };
+    return { ...m, cast, paired, absent, comparable, withParty, rate: comparable >= 20 ? withParty / comparable : null, breaks, parties, left, openparliament: `https://openparliament.ca/politicians/${m.id}/` };
   });
 
   const parties = [...new Set(divisions.flatMap((d) => Object.keys(d.positions)))].sort((a, b) => members.filter((m) => m.party === b).length - members.filter((m) => m.party === a).length);

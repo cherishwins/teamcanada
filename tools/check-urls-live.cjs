@@ -27,7 +27,11 @@
  *      in this repo has already been miswritten once in a way Vercel accepted
  *      and silently ignored;
  *   4. on production only, http:// and www. reach the apex, and the retired
- *      default host, teamcanada.vercel.app, redirects permanently to it.
+ *      default host, teamcanada.vercel.app, redirects permanently to it;
+ *   5. on production only, /.well-known/security.txt carries an Expires at
+ *      least 30 days ahead. It is written at build with 180 days, so a
+ *      failure here means the site has not deployed in five months, which
+ *      is worth knowing before the file expires and says so to the world.
  *
  *   node tools/check-urls-live.cjs                        # production
  *   node tools/check-urls-live.cjs https://<preview-host> # parts 1 and 2 only
@@ -108,6 +112,25 @@ async function expectPermanent(url, want) {
     // apex's own second hop. Google follows ten.
     await expectPermanent('https://teamcanada.vercel.app/', `${APEX}/`);
     await expectPermanent('https://teamcanada.vercel.app/bloc', `${APEX}/bloc`);
+  }
+
+  if (IS_PROD) {
+    const url = `${APEX}/.well-known/security.txt`;
+    let expires = null;
+    try {
+      const r = await fetch(url, { headers: { 'user-agent': 'northerntemper.ca/check-urls-live' } });
+      const m = r.ok ? (await r.text()).match(/^Expires:\s*(\S+)\s*$/m) : null;
+      expires = m ? new Date(m[1]) : null;
+      rows.push(`${String(r.status).padEnd(4)} ${url}${m ? `  [Expires: ${m[1]}]` : ''}`);
+    } catch (e) {
+      rows.push(`ERR  ${url}`);
+    }
+    const days = expires && !Number.isNaN(+expires) ? (expires - Date.now()) / 86_400_000 : NaN;
+    if (!(days >= 30)) {
+      fail.push(Number.isNaN(days)
+        ? `${url} has no readable Expires field (RFC 9116 requires one)`
+        : `${url} expires in ${Math.floor(days)} days; it renews on every deploy, so the site has not deployed in months`);
+    }
   }
 
   for (const r of rows) console.log(`  ${r}`);

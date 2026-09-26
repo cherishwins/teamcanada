@@ -1,0 +1,78 @@
+---
+/**
+ * A figure that is a table first and a chart second.
+ *
+ * Every value is printed as text in a real table cell, with its row and column
+ * headers, and a bar under it scaled to the largest value in the figure. A
+ * screen reader gets the table; a sighted reader gets the bars and the
+ * numbers; nobody needs JavaScript or an image. One hue (the design system's
+ * data colour), because the identity of each bar is its row and column label,
+ * never its colour.
+ *
+ * Written for /read/the-vertical-squeeze, whose three figures were PNG charts
+ * in the legacy page and were dropped in migration while their captions
+ * stayed, so the read described figures it did not show.
+ */
+interface Row { label: string; values: number[]; bars?: boolean }
+interface Props {
+  /** Names the scrolling region and the table, e.g. "Figure 1". */
+  name: string;
+  /** Header for the row labels, e.g. "Layer". */
+  rowHead: string;
+  columns: string[];
+  rows: Row[];
+  /** How a value is printed, e.g. dollars or a percentage. */
+  unit: 'dollars' | 'percent';
+}
+const { name, rowHead, columns, rows, unit } = Astro.props;
+const max = Math.max(...rows.filter((r) => r.bars !== false).flatMap((r) => r.values), 1);
+const nf = new Intl.NumberFormat('en-CA');
+const fmt = (v: number) => (unit === 'percent' ? `${nf.format(v)}%` : `$${nf.format(v)}`);
+---
+<figure class="bt">
+  <section class="tw" tabindex="0" aria-label={`${name}, as a table`}>
+    <table class:list={['narrow bars', { single: columns.length === 1 }]}>
+      <thead>
+        <tr><th scope="col">{rowHead}</th>{columns.map((c) => <th scope="col">{c}</th>)}</tr>
+      </thead>
+      <tbody>
+        {rows.map((r) => (
+          <tr class={r.bars === false ? 'sum' : undefined}>
+            <th scope="row">{r.label}</th>
+            {r.values.map((v) => (
+              <td>
+                <span class="v">{fmt(v)}</span>
+                {r.bars !== false && <span class="b" style={`width:${((v / max) * 100).toFixed(1)}%`}></span>}
+              </td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </section>
+  <figcaption><slot /></figcaption>
+</figure>
+
+<style>
+  .bt { margin: clamp(28px, 4vh, 52px) 0; }
+  .bt .tw { margin: 0; }
+  /* Read.astro paints every th black and bolds a table's first row; in a
+     figure the row labels are labels and no row is a headline. */
+  .bars tbody th {
+    background: none; color: inherit; font-family: var(--font-body); font-weight: var(--fw-body-medium);
+    text-transform: none; letter-spacing: 0; font-size: var(--type-body-sm);
+  }
+  .bars tbody tr:first-child td { font-weight: inherit; }
+  /* Four columns must fit a 320px phone without scrolling sideways. */
+  .bars th, .bars td { padding: 10px 6px; }
+  .bars thead th { letter-spacing: .08em; }
+  @media (max-width: 340px) { .bars th, .bars td { padding-inline: 4px; } }
+  .bars td { white-space: nowrap; }
+  /* One value column: give the bar the width, not the label. */
+  .single td { width: 58%; }
+  .v { font-variant-numeric: tabular-nums; font-weight: var(--fw-body-medium); }
+  .b { display: block; height: 8px; min-width: 0; margin-top: 6px; background: var(--data-primary); }
+  .sum th, .sum td { border-top: var(--border-key) solid var(--nt-black); }
+  .sum .v { font-weight: var(--fw-body-strong); }
+  @media (forced-colors: active) { .b { background: CanvasText; } }
+</style>

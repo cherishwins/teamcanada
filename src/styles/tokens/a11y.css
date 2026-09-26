@@ -70,3 +70,10 @@
   --text-cue:rgba(255,255,255,.85);
   --text-colophon:rgba(255,255,255,.85);
 }
+
+/* FOCUS ON THE RED FIELD. The system's focus ring is --nt-red, which on the red
+   field is red on red: 1.00:1, measured, on /bloc's "Read the full case" link
+   and the /fr draft notice. Custom properties inherit, so redefining the ring
+   on the field is enough; base.css's :focus-visible picks it up. White on
+   #C8102E is 5.88:1. */
+.nt-redfield, .brouillon { --focus-ring: 2px solid var(--nt-white); }

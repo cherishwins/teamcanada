@@ -1,7 +1,7 @@
 ---
 import type { Partner } from '../lib/sources';
-interface Props { partners: Partner[]; asOf: string; }
-const { partners, asOf } = Astro.props;
+interface Props { partners: Partner[]; asOf: string; live: boolean; }
+const { partners, asOf, live } = Astro.props;
 
 // Growth is the story, not size. Scale the bars to the largest absolute change
 // so both directions read at the same visual weight.
@@ -30,9 +30,10 @@ const fmt = new Intl.NumberFormat('en-CA');
       </div>
     );
   })}
-  <p class="nt-caption src">
+  <p class="nt-caption src" data-live={String(live)}>
     Statistics Canada table 12-10-0011 · merchandise exports, customs basis,
     seasonally adjusted · {asOf}
+    {!live && <span data-live-note>{' '}· Statistics Canada is not responding; the last published month is shown</span>}
   </p>
 </div>
 

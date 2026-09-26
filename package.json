@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && node tools/check-french.cjs && node tools/check-llms.cjs && node tools/check-privacy.cjs && node tools/check-figures.cjs && node tools/check-icons.cjs && node tools/check-sitemap.cjs && node tools/check-csp.cjs && node tools/check-docs.cjs && node tools/generate-llms-full.cjs && node tools/check-internal-links.cjs && node tools/check-canonical.cjs",
+    "build": "astro build && node tools/check-french.cjs && node tools/check-llms.cjs && node tools/check-privacy.cjs && node tools/check-figures.cjs && node tools/check-icons.cjs && node tools/check-sitemap.cjs && node tools/check-csp.cjs && node tools/check-docs.cjs && node tools/generate-llms-full.cjs && node tools/check-internal-links.cjs && node tools/check-canonical.cjs && node tools/check-live.cjs",
     "preview": "astro preview",
     "check": "npm i --no-save @astrojs/check typescript && astro check",
     "check:fr": "node tools/check-french.cjs",
@@ -15,7 +15,8 @@
     "check:figures": "node tools/check-figures.cjs",
     "icons": "node tools/generate-favicons.cjs",
     "check:sitemap": "node tools/check-sitemap.cjs",
-    "check:canonical": "node tools/check-canonical.cjs"
+    "check:canonical": "node tools/check-canonical.cjs",
+    "check:live": "node tools/check-live.cjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.6.0",
@@ -27,6 +28,7 @@
     "@types/qrcode": "^1.5.6",
     "axe-core": "^4.13.0",
     "topojson-client": "^3.1.0",
+    "ultrahtml": "^1.7.0",
     "world-atlas": "^2.0.2"
   },
   "overrides": {

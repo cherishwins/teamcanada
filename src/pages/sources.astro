@@ -29,6 +29,8 @@ interface Row {
   table?: string;
   period: string;
   live: boolean;
+  /** A real reading, but older than a live one can be (a gauge gone quiet). */
+  stale?: boolean;
   note?: string;
 }
 
@@ -71,7 +73,7 @@ const LIVE: Row[] = [
   ...water.rivers.map((r) => ({
     figure: `River discharge · ${r.name}`, value: `${fmt.format(r.discharge)} m³/s`,
     source: 'Environment and Climate Change Canada', table: r.station,
-    period: r.at.slice(0, 16).replace('T', ' ') + ' UTC', live: r.live,
+    period: r.at.slice(0, 16).replace('T', ' ') + ' UTC', live: r.live, stale: r.stale,
   })),
   ...trade.partners.slice(0, 4).map((p) => ({
     figure: `Merchandise exports · ${p.name}`, value: `$${fmt.format(Math.round(p.exports))}M / month`,
@@ -115,6 +117,10 @@ const FIXED: Row[] = FIXED_FIGURES.map((f) => ({
 }));
 
 const liveCount = LIVE.filter((r) => r.live).length;
+// This page is built, not served per request. "Responding right now" and "as
+// of this page load" were true only at the build; say when that was. The
+// endpoints above are the always-current copy.
+const builtAt = new Date().toISOString().slice(0, 16).replace('T', ' ') + ' UTC';
 
 // The record's headline figures are counts over the committed snapshot, not
 // fetched and not typed: /record, /record/divisions and /record/members render
@@ -158,7 +164,7 @@ const description =
 
     <section class="nt-light">
       <div class="nt-wrap">
-        <div class="nt-label">Live · {liveCount} of {LIVE.length} responding right now</div>
+        <div class="nt-label">Live · {liveCount} of {LIVE.length} responding when this page was built, {builtAt}</div>
         <hr class="nt-rule" />
         <h2 class="nt-display md" style="max-width:20ch;">These are read on request, not typed in.</h2>
         <p class="intro">
@@ -169,13 +175,13 @@ const description =
 
         <ul class="endpoints">
           {DATASETS.map((d) => (
-            <li><a href={d.endpoint}><code>{d.endpoint}</code><span>{d.short}</span></a></li>
+            <li><a href={d.endpoint} data-astro-prefetch="false"><code>{d.endpoint}</code><span>{d.short}</span></a></li>
           ))}
         </ul>
 
         <section class="tw" tabindex="0" aria-label="Live figures, scrolls sideways">
           <table>
-            <caption class="nt-caption">Live figures, as of this page load</caption>
+            <caption class="nt-caption">Live figures as read at {builtAt}. Each endpoint above serves them current on every request.</caption>
             <thead><tr><th scope="col">Figure</th><th scope="col">Value</th><th scope="col">Source</th><th scope="col">Reference</th></tr></thead>
             <tbody>
               {LIVE.map((r) => (
@@ -185,7 +191,7 @@ const description =
                   <td>{r.source}{r.table && ids(r.table).map((id) => upstream(id)
                     ? <a class="tbl" href={upstream(id)!}>{id}</a>
                     : <span class="tbl">{id}</span>)}</td>
-                  <td class="per">{r.period}<span class={`dot ${r.live ? 'on' : 'off'}`}>{r.live ? 'live' : 'fallback'}</span></td>
+                  <td class="per">{r.period}{' '}<span class={`dot ${r.live ? 'on' : 'off'}`}>{r.live ? 'live' : r.stale ? 'no recent reading' : 'fallback'}</span></td>
                 </tr>
               ))}
             </tbody>
@@ -244,7 +250,7 @@ const description =
             hand-checked fallback with the date it was true, and if a source
             stops responding the page shows that fallback <strong>and says
             so</strong> — the right-hand column above will read
-            <em>fallback</em> rather than <em>live</em>.
+            {' '}<em>fallback</em> rather than <em>live</em>.
           </p>
           <p>
             A dash would hide the problem. A silently stale number would be

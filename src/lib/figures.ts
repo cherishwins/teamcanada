@@ -93,14 +93,17 @@ export const FRICTION_HIGH = 0.06;
  * Cost of standing up a state, taken from the separation campaign's own
  * costing so the argument runs on their numbers rather than ours. Scaled per
  * person for other provinces, which is generous to their case: smaller states
- * do not get proportionally cheaper departments.
+ * do not get proportionally cheaper departments. The per-person base is
+ * Alberta's population in the calculator's own dataset (see calculator.astro),
+ * so Alberta reproduces $98-107B exactly; it is not a figure typed here.
  */
 export const BUILD_STATE_LOW_B = 98;
 export const BUILD_STATE_HIGH_B = 107;
-export const BUILD_STATE_BASE_POP = 5057077;
 
 /** NATO's Hague pledge, 2025: 5% of GDP by 2035. */
 export const NATO_PCT = 0.05;
+/** The direct-military part of that pledge; the other 1.5% is defence-related. */
+export const NATO_DIRECT_PCT = 0.035;
 
 /**
  * Nitrogen a plant recovers from a leaf before dropping it.

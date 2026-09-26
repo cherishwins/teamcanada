@@ -1,3 +1,0 @@
-Contact: mailto:jesse@northerntemper.ca
-Preferred-Languages: en, fr
-Canonical: https://northerntemper.ca/.well-known/security.txt
