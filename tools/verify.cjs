@@ -62,10 +62,12 @@ const MIME = { html: 'text/html', css: 'text/css', js: 'text/javascript',
  *     The page is required to work without them, so they answer 204 and the
  *     sweep proves the page does not depend on either.
  *   - /api/*. Those are serverless routes; a static build has no such file.
- *     They answer 503 ON PURPOSE, which turns the sweep into a test of the
- *     rule CLAUDE.md actually cares about — "a figure never renders blank; on
- *     failure the page shows the fallback and says a source is not responding."
- *     Stubbing them with plausible success would test nothing.
+ *     They answer 503 ON PURPOSE, so every page is swept in the state an
+ *     outage leaves it: the client refresh fails and the build's figures
+ *     stand. This comment used to claim that tested "on failure the page says
+ *     a source is not responding"; nothing here asserted it, and the build it
+ *     swept had live data, so no notice was ever due. tools/check-live.cjs is
+ *     what asserts it now, on every build and on the offline one in CI.
  *   - /_vercel/*. SAME-ORIGIN, but served by the platform's edge and never
  *     written into the build. `webAnalytics: { enabled: true }` puts
  *     `/_vercel/insights/script.js` on every page at BUILD time — the tag is

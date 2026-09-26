@@ -190,8 +190,12 @@ one file serves both colourways. **Never reference them via `<img src>`:**
   id on that page**; and `tools/check-canonical.cjs` — **one page, one URL:
   every canonical names its own page, every sitemap `<loc>` equals that
   canonical byte for byte, every same-origin reference the build writes uses
-  it, and the other form permanently redirects.** All ten run in
-  `npm run build` and fail it, and so does
+  it, and the other form permanently redirects**; and `tools/check-live.cjs` —
+  **every figure marked `data-live="false"` has a note in its block saying a
+  source is not responding, no block whose figures are all live says so, and
+  under `NT_OFFLINE=1` every live figure on the site is on fallback** (see
+  "A figure never renders blank" below). Every one of them runs in
+  `npm run build` and fails it, and so does
   `tools/generate-llms-full.cjs` if a sitemap page is in neither its reading
   order nor its exclusion list. Outside the build: `tools/check-links.cjs`
   (every external link the site cites, weekly, from
@@ -274,6 +278,28 @@ that the figures are checkable.
 with the date it was true. On failure the page shows the fallback *and says a
 source is not responding*. The site's whole authority is "every figure here is
 public and checkable" — it can afford neither a dash nor a silently stale number.
+
+**That rule was written here and not kept, and nothing could tell.** Until
+September 2026 `/hand`, `/bloc` and `/calculator` printed fallbacks with no
+notice, `/` said so only from a client script, a gauge silent for 51 hours was
+served as live under "right now", and `/sources` said "responding right now"
+on a page built days earlier. What holds it now:
+- `src/lib/sources.ts` marks a gauge older than three hours stale, and trade
+  and provincial figures fall back **all or nothing** (one month, one quarter,
+  every row live), the discipline `getWater()` always had. A fallback API
+  answer is edge-cached for a minute, not an hour.
+- Pages print their notice from the SERVER (`data-live` on each figure,
+  `data-live-note` on its block), and `tools/check-live.cjs` fails the build
+  when a fallback has no notice or a live block claims one. `verify.yml`'s
+  offline build renders every fallback on every PR, so the notices are proven,
+  not assumed.
+- `src/components/LiveRefresh.astro` refreshes `/`, `/hand` and `/fr` from the
+  site's own endpoints once loaded, so "a reading, taken this morning" is true
+  of what a reader sees. **Only a live answer replaces a printed value**; a
+  fallback never does, or an outage would swap the build's newer number for
+  an older one. No figure lives in the script, so its CSP hash never moves.
+- Where a page cannot refresh, its words carry the date: `/bloc` names the
+  month the series describes, `/sources` the time it was built.
 
 ## Conventions
 - **Verify before pushing: `node tools/verify.cjs`.** It serves
@@ -401,7 +427,7 @@ public and checkable" — it can afford neither a dash nor a silently stale numb
   see a bot commit. `workflow_dispatch` is the one event that IS allowed to
   chain, so `verify.yml` carries it and `record.yml` dispatches it by hand
   after the push (`actions: write`). Vercel deploys from the push regardless
-  and runs the ten build checkers again on its side.
+  and runs every build checker again on its side.
 - **A scoped `<style>` stamps `data-astro-cid-…` onto every element it could
   match, and on a ledger that is the page.** The first record page carried
   5,935 of them, 154 kB of a 391 kB file, on cells whose only styling was a
@@ -1021,7 +1047,7 @@ diff gate mean something.**
 
 **Freshness.** `.github/workflows/record.yml`, 06:23 UTC Monday to Saturday
 and on demand: fetch, `git diff --quiet` gate, **`npm run build` with the new
-snapshot so all ten checkers pass before anything is committed**, commit as
+snapshot so every build checker passes before anything is committed**, commit as
 `record[bot]`, push to `main`, then dispatch `verify.yml` by hand (a
 `GITHUB_TOKEN` push triggers nothing on its own — see Conventions). `main` is
 unprotected, which is what lets the push land; if that ever changes, the bot
