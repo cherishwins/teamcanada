@@ -877,6 +877,25 @@ dossier and 4 of 5 reads. Two traps worth remembering:
      already set Umami up.
    Until the owner decides, both ship and `/privacy` names both. Whichever way
    it goes, `tools/check-privacy.cjs` makes the page follow the config.
+10. **Search Console after the one-URL fix (PR #45, September 2026).** The
+    owner's reports on 20 Sept showed 12 slash URLs "Discovered, not indexed"
+    and `/bloc/` and `/privacy/` as alternates; the cause and fix are under
+    the convention "One page, one URL". After the merge deploys: run the
+    `weekly` workflow by hand and require its `urls-live` job green (the only
+    proof of the host redirect and the text-file header on the real edge);
+    resubmit `https://northerntemper.ca/sitemap-index.xml` (expect 20 pages,
+    only the root ending in a slash); URL-inspect and Request indexing the
+    no-slash URLs, never-crawled ones first, once each, stopping at the daily
+    quota. **Expected, not errors:** "Page with redirect" grows to about 19
+    slash URLs; "Alternate page" drops to 0; the noindex row gains the five
+    machine text files; `/feed.xml` stays "Crawled, not indexed". **Never** use
+    Removals for this. Still the owner's: the old dossier on
+    `teamcanadawins.netlify.app` and `teamcanadawins.vercel.app` is live,
+    indexable, self-canonical and about 95% the same text as `/math`; a
+    permanent redirect to `/math` is written but uncommitted in that repo
+    (a push there was refused by permissions), and it should land before
+    `/math` is requested. The GitHub "Website" fields on both repos still
+    point at the old vercel.app hosts.
 
 ## The record — approved 24 September 2026, v1 shipped the same day
 **Owner decisions (24 Sept 2026):** reference first, the "closest to you" tool
