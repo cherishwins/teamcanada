@@ -22,6 +22,8 @@ export interface Vote { n: number; date: string; desc: string; bill: string | nu
 export interface Snapshot { session: string; parliament: number; sessionNumber: number; fetched: string; source: string; members: Member[]; memberships: Membership[]; votes: Vote[] }
 
 export const RECORD = snapshot as Snapshot;
+/** The session this record counts, named once: the snapshot imported above. */
+export const SESSION = RECORD.session;
 
 /** Parties with a bench big enough to have a line. Greens (one seat) and independents are reported, not rated. */
 const MIN_BENCH = 3;

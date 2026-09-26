@@ -5,8 +5,10 @@
  * them. An audit of the live site found that promise half kept:
  *   - a cross-origin fetch that sent any header (Content-Type, Cache-Control)
  *     needs a preflight, and OPTIONS answered 404, so the fetch failed;
- *   - POST and the rest answered 404 or 403, where RFC 9110 says 405 with an
- *     Allow header;
+ *   - POST and the rest answered 404, where RFC 9110 says 405 with an Allow
+ *     header. (A CROSS-SITE write still gets 403: Astro's origin check refuses
+ *     it before it reaches ALL, which is the right answer to a forged form.
+ *     Measured on the preview: same-origin POST 405, cross-site PUT 403.);
  *   - any query string made a request a cache miss at the edge, so
  *     ?cb=<random> ran the function and hit StatCan on every call: a
  *     serverless invocation per request on a free tier, for anyone to spend;

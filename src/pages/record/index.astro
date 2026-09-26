@@ -34,7 +34,7 @@ const description =
   `${S.divisions} divisions, ${fmt.format(S.ballots)} ballots, a party-line rate of ${pct(S.partyLine)}. ` +
   'No adjectives. Every number links to the official record.';
 
-const schema = [datasetSchema(DATASETS.find((d) => d.endpoint === '/api/record.json')!)];
+const schema = [datasetSchema(DATASETS.find((d) => d.endpoint === '/api/record.json')!, '/record')];
 ---
 <Record
   title="The Record" description={description} path="/record" schema={schema}
