@@ -10,8 +10,22 @@ import { getTrade } from '../lib/sources';
 
 const trade = await getTrade();
 const fmt = new Intl.NumberFormat('en-CA');
-const growing = trade.partners.filter((p) => p.name !== 'United States' && (p.changePct ?? 0) > 0).length;
 const nonUs = trade.partners.filter((p) => p.name !== 'United States');
+// "Growing faster than the American line" means faster than the American
+// line, not merely growing: it used to count every partner above zero, which
+// agreed with the prose only because every positive partner happened to beat
+// a US figure of +7.7%.
+const usChange = trade.partners.find((p) => p.name === 'United States')?.changePct ?? 0;
+const growing = nonUs.filter((p) => p.changePct != null && p.changePct > usChange).length;
+// The series is monthly. "Read this morning" was true of the build, never of
+// the number, which describes a month StatCan published weeks earlier.
+const month = new Date(`${trade.asOf}T12:00:00Z`).toLocaleDateString('en-CA', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+// The share quote used to type "up 112%", which went stale at StatCan's next
+// release. It quotes the fastest-growing partner, from the same series, dated.
+const called = (n: string) => ({ 'United Kingdom': 'the UK', 'European Union': 'the EU' } as Record<string, string>)[n] ?? n;
+const lead = [...nonUs].filter((p) => (p.changePct ?? 0) > 0).sort((a, b) => (b.changePct ?? 0) - (a.changePct ?? 0))[0];
+const quote = 'Canada is not leaving its largest customer. It is widening the base — and Statistics Canada proves it monthly.' +
+  (lead ? ` Exports to ${called(lead.name)} are up ${Math.round(lead.changePct!)}% year over year, as of ${month}.` : '');
 
 const description =
   'Canada is not leaving its largest customer. It is widening the base — and the ' +
@@ -57,13 +71,13 @@ const description =
         <h2 class="nt-display md" style="max-width:20ch;">Look at which direction each line is moving.</h2>
         <p style="color:var(--text-muted);margin-top:var(--space-3);max-width:56ch;">
           This is not a proposal. It is Statistics Canada's monthly merchandise
-          trade series, read this morning. {growing} of the {nonUs.length} non-American
+          trade series, as published for {month}. {growing} of the {nonUs.length} non-American
           partners below are growing faster than the American line.
         </p>
 
         <BlocMap />
 
-        <BlocChart partners={trade.partners} asOf={trade.asOf} />
+        <BlocChart partners={trade.partners} asOf={trade.asOf} live={trade.allLive} />
 
         <div class="trio">
           <Stat value={`$${fmt.format(Math.round(trade.restOfWorld))}M`} label="Everyone but the U.S."
@@ -108,7 +122,7 @@ const description =
       </div>
     </section>
 
-    <Share quote={"Canada is not leaving its largest customer. It is widening the base — and Statistics Canada proves it monthly. Exports to the UK are up 112% year over year."} />
+    <Share quote={quote} />
   </main>
   <SiteFooter />
 </Base>

@@ -6,10 +6,20 @@ import Share from '../components/Share.astro';
 import { getProvinces } from '../lib/sources';
 import {
   FEDERAL_DEBT, FRICTION_LOW, FRICTION_HIGH,
-  BUILD_STATE_LOW_B, BUILD_STATE_HIGH_B, BUILD_STATE_BASE_POP, NATO_PCT, NATO_DIRECT_PCT,
+  BUILD_STATE_LOW_B, BUILD_STATE_HIGH_B, NATO_PCT, NATO_DIRECT_PCT,
 } from '../lib/figures';
 
-const { provinces, canadaPopulation } = await getProvinces();
+const { provinces, canadaPopulation, popAsOf, allLive } = await getProvinces();
+
+/**
+ * The Alberta Prosperity Project costed an Alberta state at $98-107B. Other
+ * provinces are scaled per person from that, and the person count is Alberta's
+ * in the SAME dataset the page uses, so Alberta reproduces the published range
+ * exactly. It used to divide by a typed 5,057,077 (an old quarter's estimate)
+ * and printed $99-108B beside the words "the APP's own $98-107B estimate".
+ */
+const buildBasePop = provinces.find((p) => p.code === 'AB')!.population;
+const quarter = (iso: string) => `Q${Math.floor((+iso.slice(5, 7) - 1) / 3) + 1} ${iso.slice(0, 4)}`;
 
 /**
  * Every constant here is published and cited on the page itself. The
@@ -42,8 +52,8 @@ function bill(pop: number, gdpM: number) {
   const lossHigh = gdpM * FRICTION_HIGH;
   const debtLow = FEDERAL_DEBT.value * 1000 * (pop / canadaPopulation);
   const debtHigh = debtLow * (1 + DEBT_HIGH_MARKUP);
-  const buildLow = ((BUILD_STATE_LOW_B * 1000) / BUILD_STATE_BASE_POP) * pop;
-  const buildHigh = ((BUILD_STATE_HIGH_B * 1000) / BUILD_STATE_BASE_POP) * pop;
+  const buildLow = ((BUILD_STATE_LOW_B * 1000) / buildBasePop) * pop;
+  const buildHigh = ((BUILD_STATE_HIGH_B * 1000) / buildBasePop) * pop;
   const natoLow = gdpM * NATO_DIRECT_PCT;
   const natoHigh = gdpM * NATO_PCT;
   const totLow = debtLow + buildLow;
@@ -191,9 +201,11 @@ const description =
           <p>Treaty obligations, environmental closure liabilities, currency reserves, and the cost of the negotiation itself. Alberta's oil and gas closure liability alone runs from $36.6B on the regulator's books to $260B in its own worst-case slide. <strong>Every omission here makes separation look cheaper than it is.</strong></p>
         </div>
 
-        <p class="nt-caption src">
-          Population · Statistics Canada 17-10-0009, most recent quarter ·
+        <p class="nt-caption src" data-live={String(allLive)}>
+          Population · Statistics Canada 17-10-0009, {quarter(popAsOf)}; each province's share of the
+          debt is of Canada's population, territories included ·
           GDP · Statistics Canada 36-10-0222, {gdpYear}, current prices
+          {!allLive && <span data-live-note>{' '}· Statistics Canada is not responding; the last published figures are shown</span>}
         </p>
       </div>
     </section>

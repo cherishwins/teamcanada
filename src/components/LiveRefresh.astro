@@ -1,0 +1,75 @@
+---
+/**
+ * Brings a prerendered page's live figures up to the minute once it loads.
+ *
+ * Pages are built, not served per request, so a figure printed at build is as
+ * old as the last deploy. Headings on / ("a reading, taken this morning"), on
+ * /hand ("the part that changes while you read") and on /fr ("Présentement")
+ * promise more than that, and before this only the strip on / kept the promise.
+ * This reads the site's own endpoints and replaces what the build printed.
+ *
+ * Two rules, both about never making a page LESS true than it was:
+ *  - Only a live answer replaces a printed value. A fallback never does, or an
+ *    outage would swap the build's newer number for an older published one.
+ *  - The note under each block is decided by what is actually on screen: the
+ *    notice ("a source is not responding") stays until every row is live.
+ *
+ * Markup contract (no figure lives in this script, so its CSP hash never moves
+ * with the data):
+ *   [data-live-figures]            a strip; each value is [data-k="population"]
+ *                                  etc., its date is the next sibling, and the
+ *                                  row element carries data-live="true|false"
+ *   [data-river="<station>"]       a discharge value; optional [data-river-at]
+ *                                  inside the same [data-live] river block
+ *   [data-live-note]               data-ok / data-fallback texts for its block
+ * Text formats follow the page's lang, so /fr gets French digits.
+ */
+---
+<script is:inline>
+(() => {
+  const fmt = new Intl.NumberFormat(document.documentElement.lang || 'en-CA');
+  const get = (u) => fetch(u).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+  const settle = (block) => {
+    const note = block && block.querySelector('[data-live-note]');
+    if (!note) return;
+    const ok = [...block.querySelectorAll('[data-live]')].every((e) => e.dataset.live === 'true');
+    note.textContent = ok ? note.dataset.ok : note.dataset.fallback;
+  };
+
+  const strip = document.querySelector('[data-live-figures]');
+  if (strip) get('/api/figures.json').then((f) => {
+    if (!f) return;
+    const show = {
+      population: (x) => fmt.format(x.value),
+      gdp: (x) => '$' + fmt.format(Math.round(x.value / 1000)) + 'B',
+      cpi: (x) => (x.changePct == null ? '—' : x.changePct.toFixed(1)) + '%',
+      policyRate: (x) => x.value.toFixed(2) + '%',
+      usdcad: (x) => x.value.toFixed(4),
+    };
+    for (const cell of strip.querySelectorAll('[data-k]')) {
+      const x = f[cell.dataset.k];
+      if (!x || !x.live || !show[cell.dataset.k]) continue;
+      cell.textContent = show[cell.dataset.k](x);
+      if (cell.nextElementSibling) cell.nextElementSibling.textContent = x.asOf;
+      cell.closest('[data-live]')?.setAttribute('data-live', 'true');
+    }
+    settle(strip.closest('[data-live-block]') || strip.parentElement);
+  });
+
+  const gauges = document.querySelectorAll('[data-river]');
+  if (gauges.length) get('/api/rivers.json').then((w) => {
+    if (!w) return;
+    for (const r of w.rivers || []) {
+      if (!r.live) continue;
+      for (const el of document.querySelectorAll(`[data-river="${r.station}"]`)) {
+        el.textContent = fmt.format(Math.round(r.discharge));
+        const box = el.closest('[data-live]');
+        const at = box && box.querySelector('[data-river-at]');
+        if (at) at.textContent = r.at.slice(0, 16).replace('T', ' ') + ' UTC';
+        box?.setAttribute('data-live', 'true');
+      }
+    }
+    settle(document.querySelector('[data-rivers]'));
+  });
+})();
+</script>

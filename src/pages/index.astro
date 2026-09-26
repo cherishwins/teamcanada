@@ -6,11 +6,20 @@ import SiteFooter from '../components/SiteFooter.astro';
 import Share from '../components/Share.astro';
 import Stat from '../components/Stat.astro';
 import Meter from '../components/Meter.astro';
+import LiveRefresh from '../components/LiveRefresh.astro';
 import { getFigures, getRivers, getWater } from '../lib/sources';
 
 // Fetched at build; the figures strip refreshes itself from /api/figures.json
 // on load, so a deploy is never required for the numbers to be current.
 const [figures, water, aquastat] = await Promise.all([getFigures(), getRivers(), getWater()]);
+
+// What each live block says under its figures. The fallback wording is printed
+// by the SERVER whenever a block is not all live, and LiveRefresh swaps it once
+// the page has fresh values: a figure never passes off an old number as live.
+const FIGURES_OK = 'Statistics Canada · Bank of Canada';
+const FIGURES_FALLBACK = 'Statistics Canada · Bank of Canada · a source is not responding; its last published figure is shown with its date';
+const RIVERS_OK = 'Environment and Climate Change Canada · real-time hydrometric gauges, reporting every five minutes';
+const RIVERS_FALLBACK = 'Environment and Climate Change Canada · a gauge is not reporting; its last reading is shown with its time';
 const fmt = new Intl.NumberFormat('en-CA');
 
 /**
@@ -116,9 +125,9 @@ const description =
           </div>
         </div>
         <p class="pull rv">Almost the same water.<br />{ratio.toFixed(1)}× the share, per person.</p>
-        <p class="nt-caption">
+        <p class="nt-caption" data-live={String(aquastat.live)}>
           Cubic metres per person, per year · Source · {aquastat.source}, {aquastat.year}
-          {!aquastat.live && ' · a source is not responding; the last verified figures are shown'}
+          {!aquastat.live && <span data-live-note>{' '}· a source is not responding; the last verified figures are shown</span>}
         </p>
 
         <details class="vintage rv">
@@ -166,21 +175,21 @@ const description =
         </details>
 
         <!-- The same claim, measured rather than cited. -->
-        <div class="rivers rv" id="rivers">
+        <div class="rivers rv" id="rivers" data-rivers>
           <div class="nt-label">Flowing past a gauge, right now</div>
           <hr class="nt-rule" />
           <div class="rgrid">
             {water.rivers.map((r) => (
-              <div class="river">
-                <div class="rv-n" data-river={r.station}>{fmt.format(r.discharge)}</div>
+              <div class="river" data-live={String(r.live)}>
+                <div class="rv-n" data-river={r.station}>{fmt.format(Math.round(r.discharge))}</div>
                 <div class="rv-u">m³/s</div>
                 <div class="rv-k">{r.name}<span class="rv-p">{r.province}</span></div>
+                <div class="rv-t" data-river-at>{r.live ? '' : r.stale ? 'No reading since ' : 'Last verified '}{r.at.slice(0, 16).replace('T', ' ')} UTC</div>
               </div>
             ))}
           </div>
-          <p class="nt-caption" id="rivers-note">
-            Environment and Climate Change Canada · real-time hydrometric gauges ·
-            <span data-river-at>{water.rivers[0]?.at?.slice(0, 16).replace('T', ' ')} UTC</span>
+          <p class="nt-caption" data-live-note data-ok={RIVERS_OK} data-fallback={RIVERS_FALLBACK}>
+            {water.allLive ? RIVERS_OK : RIVERS_FALLBACK}
           </p>
         </div>
 
@@ -230,14 +239,16 @@ const description =
           Pulled live from Statistics Canada and the Bank of Canada. Nothing here
           is typed in by hand, and nothing here waits for someone to update a page.
         </p>
-        <div class="live rv" id="live" data-live={String(figures.allLive)}>
-          <div class="lrow"><span class="lk">Population</span><span class="lv" data-k="population">{fmt.format(figures.population.value)}</span><span class="la">{figures.population.asOf}</span></div>
-          <div class="lrow"><span class="lk">Real GDP · monthly, chained 2017 $</span><span class="lv" data-k="gdp">${fmt.format(Math.round(figures.gdp.value / 1000))}B</span><span class="la">{figures.gdp.asOf}</span></div>
-          <div class="lrow"><span class="lk">Inflation · CPI, year over year</span><span class="lv" data-k="cpi">{figures.cpi.changePct?.toFixed(1) ?? '—'}%</span><span class="la">{figures.cpi.asOf}</span></div>
-          <div class="lrow"><span class="lk">Policy interest rate</span><span class="lv" data-k="policyRate">{figures.policyRate.value.toFixed(2)}%</span><span class="la">{figures.policyRate.asOf}</span></div>
-          <div class="lrow"><span class="lk">One US dollar, in Canadian dollars</span><span class="lv" data-k="usdcad">{figures.usdcad.value.toFixed(4)}</span><span class="la">{figures.usdcad.asOf}</span></div>
+        <div class="live rv" id="live" data-live-figures>
+          <div class="lrow" data-live={String(figures.population.live)}><span class="lk">Population</span><span class="lv" data-k="population">{fmt.format(figures.population.value)}</span><span class="la">{figures.population.asOf}</span></div>
+          <div class="lrow" data-live={String(figures.gdp.live)}><span class="lk">Real GDP · monthly, chained 2017 $</span><span class="lv" data-k="gdp">${fmt.format(Math.round(figures.gdp.value / 1000))}B</span><span class="la">{figures.gdp.asOf}</span></div>
+          <div class="lrow" data-live={String(figures.cpi.live)}><span class="lk">Inflation · CPI, year over year</span><span class="lv" data-k="cpi">{figures.cpi.changePct?.toFixed(1) ?? '—'}%</span><span class="la">{figures.cpi.asOf}</span></div>
+          <div class="lrow" data-live={String(figures.policyRate.live)}><span class="lk">Policy interest rate</span><span class="lv" data-k="policyRate">{figures.policyRate.value.toFixed(2)}%</span><span class="la">{figures.policyRate.asOf}</span></div>
+          <div class="lrow" data-live={String(figures.usdcad.live)}><span class="lk">One US dollar, in Canadian dollars</span><span class="lv" data-k="usdcad">{figures.usdcad.value.toFixed(4)}</span><span class="la">{figures.usdcad.asOf}</span></div>
         </div>
-        <p class="nt-caption" id="live-note">Statistics Canada · Bank of Canada</p>
+        <p class="nt-caption" id="live-note" data-live-note data-ok={FIGURES_OK} data-fallback={FIGURES_FALLBACK}>
+          {figures.allLive ? FIGURES_OK : FIGURES_FALLBACK}
+        </p>
       </div>
     </section>
 
@@ -302,6 +313,7 @@ const description =
 
   </main>
   <SiteFooter />
+  <LiveRefresh />
 </Base>
 
 <style>
@@ -451,6 +463,15 @@ const description =
     font-family: var(--font-display); font-weight: var(--fw-label);
     font-size: 10px; letter-spacing: var(--ls-key); color: var(--text-caption);
   }
+  /* Each gauge carries its own reading time: they report independently, and
+     the caption used to stamp all four with the first one's. A gauge that has
+     gone quiet says so and its number steps back. */
+  .rv-t {
+    font-family: var(--font-display); font-weight: var(--fw-label);
+    font-size: var(--type-stamp); letter-spacing: var(--ls-caption);
+    text-transform: uppercase; color: var(--text-caption); margin-top: .35rem;
+  }
+  .river[data-live='false'] .rv-n { color: var(--text-muted); }
 
   /* ---------- live figures ---------- */
   .live { margin-top: clamp(30px,4.5vh,60px); border-top: 1px solid var(--border-hairline); }
@@ -529,37 +550,4 @@ const description =
     nums.forEach((n) => io.observe(n));
   }
 
-  // Refresh the live strip from the edge endpoint. The server-rendered values
-  // are already correct as of build; this only closes the gap since deploy.
-  (async () => {
-    const strip = document.getElementById('live');
-    const note = document.getElementById('live-note');
-    if (!strip) return;
-    try {
-      const res = await fetch('/api/figures.json');
-      if (!res.ok) return;
-      const f = await res.json();
-      const fmt = new Intl.NumberFormat('en-CA');
-      const render: Record<string, (v: any) => string> = {
-        population: (x) => fmt.format(x.value),
-        gdp: (x) => '$' + fmt.format(Math.round(x.value / 1000)) + 'B',
-        cpi: (x) => (x.changePct != null ? x.changePct.toFixed(1) : '—') + '%',
-        policyRate: (x) => x.value.toFixed(2) + '%',
-        usdcad: (x) => x.value.toFixed(4),
-      };
-      for (const [key, fn] of Object.entries(render)) {
-        const cell = strip.querySelector(`[data-k="${key}"]`);
-        const stamp = cell?.nextElementSibling;
-        if (cell && f[key]) cell.textContent = fn(f[key]);
-        if (stamp && f[key]?.asOf) stamp.textContent = f[key].asOf;
-      }
-      // Say so when a source is unreachable rather than passing off a stale
-      // number as a live one.
-      if (note && f.allLive === false) {
-        note.textContent = 'Statistics Canada · Bank of Canada — last published figures; a source is not responding';
-      }
-    } catch {
-      /* server-rendered values stand */
-    }
-  })();
 </script>

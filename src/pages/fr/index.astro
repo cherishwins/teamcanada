@@ -3,6 +3,7 @@ import Base from '../../layouts/Base.astro';
 import Brouillon from '../../components/Brouillon.astro';
 import BearDual from '../../components/marks/BearDual.astro';
 import Stat from '../../components/Stat.astro';
+import LiveRefresh from '../../components/LiveRefresh.astro';
 import { getRivers, getWater } from '../../lib/sources';
 
 /**
@@ -39,6 +40,8 @@ const dec1 = new Intl.NumberFormat('fr-CA', { minimumFractionDigits: 1, maximumF
 const km3 = (m3: number) => fmt.format(Math.round(m3 / 1e9));
 const ecartPct = Math.abs(aquastat.canada.volume / aquastat.usa.volume - 1) * 100;
 const laSalle = water.rivers.find((r) => r.station === '02OA016');
+// « Présentement » n’est vrai que si la station transmet. Sinon, la page le dit.
+const STATION_MUETTE = ' La station ne transmet pas en ce moment; voici sa dernière lecture.';
 
 const description =
   'Ce que nous sommes. Ce que nous détenons. Et ce dont nous ne nous sommes ' +
@@ -82,8 +85,9 @@ const description =
         <h2 class="nt-display lg">La même<br />eau.</h2>
 
         <div class="nt-prose">
-          <p><strong>Présentement, à LaSalle, le fleuve passe à {fmt.format(Math.round(laSalle?.discharge ?? 8960))} mètres cubes par seconde.</strong> Une station de jaugeage le mesure aux cinq minutes. Ce n’est pas une image. C’est une lecture.</p>
+          <p data-rivers><strong data-live={String(laSalle!.live)}>Présentement, à LaSalle, le fleuve passe à <span data-river="02OA016">{fmt.format(Math.round(laSalle!.discharge))}</span> mètres cubes par seconde.</strong> Une station de jaugeage le mesure aux cinq minutes. Ce n’est pas une image. C’est une lecture.<span data-live-note data-ok="" data-fallback={STATION_MUETTE}>{laSalle!.live ? '' : STATION_MUETTE}</span></p>
           <p>Le Canada et les États-Unis produisent presque exactement la même quantité d’eau douce renouvelable chaque année : {km3(aquastat.canada.volume)} kilomètres cubes contre {km3(aquastat.usa.volume)}, un écart de {ecartPct.toFixed(0)} %. Par personne, le rapport est de {dec1.format(aquastat.ratio)} contre un — parce que nous sommes bien moins nombreux à nous la partager.</p>
+          {!aquastat.live && <p class="nt-caption" data-live="false"><span data-live-note>Une source ne répond pas; les derniers chiffres vérifiés sont affichés.</span></p>}
           <p>Nous partageons les plus grands lacs de la planète avec les gens de l’autre rive depuis deux cents ans. Pas une fois nous n’avons laissé entendre qu’il y avait un robinet.</p>
           <p>Personne ne l’a proposé sérieusement. Personne ne le proposera, parce qu’un pays qui ferait cela serait un autre pays que celui-ci, et nous n’avons pas envie de le devenir pour gagner une discussion.</p>
           <p><strong>Ce n’est pas de la faiblesse. C’est exactement l’affaire.</strong></p>
@@ -225,6 +229,7 @@ const description =
       </div>
     </section>
   </main>
+  <LiveRefresh />
 </Base>
 
 <style>
