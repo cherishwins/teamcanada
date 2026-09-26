@@ -580,7 +580,12 @@ on a page built days earlier. What holds it now:
   text, and as a mark it is a washed pink. The black field is deliberate — it
   is the site's ground, it matches `theme_color`, and it keeps the family with
   `apple-touch-icon` and the 192/512 icons, which still carry the full seal
-  because they are big enough to hold it.
+  because they are big enough to hold it. **The maskable icons are separate
+  files** (`icon-maskable-192.png`, `icon-maskable-512.png`): the seal at 72% on
+  black, so its ring sits inside the W3C safe zone (radius 0.4 of the width).
+  The manifest used to reuse `icon-512.png`, whose ring runs to the edge, so a
+  launcher's circle mask cut the seal to a bare leaf and a squircle left red
+  wedges in the corners. `check-icons` measures it.
 - **`mask-icon` needs a MONOCHROME, TRANSPARENT file.** Safari fills a mask
   icon with the colour on the `<link>`, so it was handed `favicon.svg` — which
   has an opaque `<rect>` across the whole canvas — and filled the rectangle:

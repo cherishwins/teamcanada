@@ -19,6 +19,8 @@
  * <rect> — which is what this site did — hands Safari a rectangle to fill, and
  * the pinned tab renders as a solid block.
  *
+ * It also draws the maskable manifest icons, from the seal (see below).
+ *
  * Run: node tools/generate-favicons.cjs
  * Not in the build. Icons change about once a year, and the build should not
  * rasterise images on every deploy to produce bytes that never change. There
@@ -34,8 +36,11 @@ const SRC = path.join(PUBLIC, 'favicon.svg');
 
 // 16 and 32 are the tab. 48 is the Windows taskbar and the Chrome bookmark
 // bar's retina step. Nothing larger belongs in an .ico: apple-touch-icon and
-// the 192/512 manifest icons carry the full seal and are drawn separately.
+// the 192/512 'any' manifest icons carry the full seal at full size, and the
+// maskable pair is drawn below from the seal itself.
 const ICO_SIZES = [16, 32, 48];
+const MASKABLE_SIZES = [192, 512];
+const MASKABLE_SCALE = 0.72;
 
 /**
  * ICO is a 6-byte header, then one 16-byte directory entry per image, then the
@@ -108,8 +113,33 @@ function buildIco(frames) {
       `</svg>\n`,
   );
 
+  // Maskable icons, for launchers that crop an installed site's icon to a
+  // circle, squircle or rounded square. The manifest used to hand them
+  // icon-512.png, whose ring runs to the edge: the W3C safe zone is a circle
+  // of radius 0.4 x the width, and the ring sat wholly outside it (measured
+  // 0.44-0.50), so a circle mask cut the seal down to a bare leaf and a
+  // squircle left red wedges in its corners. Drawn from the mark's one
+  // source, LeafSeal.astro, at 72% of the tile on the site's black ground, so
+  // the ring's outer edge lands at about 0.36 x the width, inside every mask.
+  // tools/check-icons.cjs measures it.
+  const seal = fs.readFileSync(path.join('src', 'components', 'marks', 'LeafSeal.astro'), 'utf8');
+  const g = seal.slice(seal.indexOf('><g') + 1, seal.lastIndexOf('</svg>')).replace(/currentColor/g, '#C8102E');
+  const sealSvg = Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2154 2138">${g}</svg>`);
+  for (const W of MASKABLE_SIZES) {
+    const inner = Math.round(W * MASKABLE_SCALE);
+    // Default density: this viewBox at 512dpi exceeds sharp's pixel limit.
+    const mark = await sharp(sealSvg).resize(inner, inner, { fit: 'contain', background: '#00000000' }).png().toBuffer();
+    const out = await sharp({ create: { width: W, height: W, channels: 4, background: '#000000ff' } })
+      .composite([{ input: mark, gravity: 'center' }])
+      .flatten({ background: '#000000' })
+      .png({ compressionLevel: 9 })
+      .toBuffer();
+    fs.writeFileSync(path.join(PUBLIC, `icon-maskable-${W}.png`), out);
+  }
+
   const sizes = ICO_SIZES.join('/');
   console.log(
-    `generate-favicons: favicon.ico (${sizes}), favicon-16.png, favicon-32.png, mask-icon.svg — all from ${SRC}`,
+    `generate-favicons: favicon.ico (${sizes}), favicon-16.png, favicon-32.png, mask-icon.svg from ${SRC}; ` +
+      `icon-maskable-${MASKABLE_SIZES.join('/')}.png from LeafSeal.astro`,
   );
 })();
