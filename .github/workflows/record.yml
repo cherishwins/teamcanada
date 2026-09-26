@@ -3,20 +3,28 @@
 # The site is static and the House sits on weekdays. Every morning this fetches
 # only the divisions the committed snapshot does not have yet (a run with
 # nothing new makes about three requests to OpenParliament), BUILDS THE SITE
-# with the new data so every build checker proves it renders, and commits the
-# snapshot to main. Vercel deploys from that push like any other.
+# with the new data so every build checker proves it renders, SWEEPS that
+# build, and commits the snapshot to main. Vercel deploys from that push like
+# any other.
 #
 # It commits to main directly rather than opening a PR because a daily PR
 # that a person must merge is a record that goes stale the first week nobody
-# does; the build step is the review. Owner's call, on by default — see
-# CLAUDE.md, "The record".
+# does; the build and the sweep are the review. Owner's call, on by default:
+# see CLAUDE.md, "The record".
 #
-# A push made with GITHUB_TOKEN does not trigger `push` workflows, so verify.yml
-# would never see the bot's commit on its own. The last step dispatches it by
-# hand (workflow_dispatch is the one event that IS allowed to chain), so the
-# ten-count sweep, astro check and html-validate run on every snapshot exactly
-# as they run on every human commit. Vercel deploys from the push regardless
-# and runs every build checker again on its side.
+# TWO JOBS, ON PURPOSE. The job that runs npm code (311 packages, install
+# scripts, Astro, Vite, sharp) holds a read-only token and no git credential.
+# The job that can push to main runs no npm code at all: tools/record/fetch.cjs
+# uses nothing but Node's built-ins, so it simply fetches again and must arrive
+# at the same snapshot the first job built and swept (compared by digest, the
+# `fetched` stamp aside). If OpenParliament moved in between, nothing is
+# committed and tomorrow's run picks it up. Before this split the checkout's
+# push credential sat in .git/config through `npm ci` and the whole build.
+#
+# A push made with GITHUB_TOKEN does not trigger `push` workflows, so the
+# publish job dispatches verify.yml by hand (workflow_dispatch is the one
+# event that IS allowed to chain). Vercel deploys from the push regardless and
+# runs every build checker again on its side.
 #
 # Free: the repo is public, so Actions minutes are unmetered.
 name: record
@@ -27,52 +35,134 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
-  actions: write # to dispatch verify.yml on the new commit
+  contents: read
 
 concurrency:
   group: record
   cancel-in-progress: false
 
 jobs:
-  refresh:
+  fetch:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+    outputs:
+      changed: ${{ steps.diff.outputs.changed }}
+      digest: ${{ steps.diff.outputs.digest }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: main
-      - uses: actions/setup-node@v4
+          persist-credentials: false
+      - uses: actions/setup-node@v7
         with:
-          node-version: 22
+          node-version-file: .nvmrc
           cache: npm
       - run: npm ci
 
+      # Fails, and so turns the run red, when OpenParliament's newest division
+      # belongs to another session: see fetch.cjs. Writes nothing unless the
+      # whole snapshot validates (tools/record/validate.cjs).
       - name: Fetch new divisions
-        run: node tools/record/fetch.cjs 45-1
+        run: node tools/record/fetch.cjs
 
       - name: Anything new?
         id: diff
         run: |
           if git diff --quiet -- src/data/record; then echo "changed=false" >> "$GITHUB_OUTPUT"; else echo "changed=true" >> "$GITHUB_OUTPUT"; fi
+          echo "digest=$(node tools/record/fetch.cjs --digest)" >> "$GITHUB_OUTPUT"
 
       # The build is the gate: every build checker runs against the new snapshot.
-      # A snapshot that does not render never reaches main.
       - name: Build with the new snapshot
         if: steps.diff.outputs.changed == 'true'
         run: npm run build
 
-      - name: Commit the snapshot
+      # And the sweep, BEFORE anything reaches main. It used to run only after
+      # the bot had pushed and Vercel had deployed, which is backwards for text
+      # that comes from upstream and is rendered into the ledgers verbatim.
+      - name: Validate and sweep the new build
         if: steps.diff.outputs.changed == 'true'
+        run: |
+          npm i --no-save playwright@1.63.0 html-validate@11.16.0
+          npx playwright install --with-deps chromium
+          npx html-validate '.vercel/output/static/**/*.html'
+          node tools/verify.cjs
+
+  publish:
+    needs: fetch
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      actions: write # to dispatch verify.yml on the new commit
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+
+      # No npm install in this job. fetch.cjs needs only Node's built-ins.
+      - name: Fetch again and match what was built
+        id: same
+        if: needs.fetch.outputs.changed == 'true'
+        run: |
+          node tools/record/fetch.cjs
+          digest=$(node tools/record/fetch.cjs --digest)
+          if [ "$digest" = "${{ needs.fetch.outputs.digest }}" ]; then
+            echo "match=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::notice::OpenParliament changed between the build and the publish; nothing committed, tomorrow's run takes it."
+            echo "match=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit the snapshot
+        if: steps.same.outputs.match == 'true'
         run: |
           git config user.name "record[bot]"
           git config user.email "record-bot@northerntemper.ca"
-          n=$(node -e 'console.log(require("./src/data/record/45-1.json").votes.length)')
           git add src/data/record
-          git commit -m "record: ${n} divisions on record as of $(date -u +%Y-%m-%d)"
-          git push origin main
+          git commit -m "record: $(node tools/record/fetch.cjs --count) divisions on record as of $(date -u +%Y-%m-%d)"
+          # A human merge can land while the build runs. The bot's change
+          # touches only src/data/record, so a rebase cannot conflict.
+          git pull --rebase origin main
+          git push origin HEAD:main
 
       - name: Run the full verification on the new commit
-        if: steps.diff.outputs.changed == 'true'
+        if: steps.same.outputs.match == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh workflow run verify.yml --ref main
+
+      # GitHub disables every scheduled workflow in a public repo after 60 days
+      # with no repository activity. The House rises for about 90 days each
+      # summer, and main once went 97 days without a commit, so this workflow
+      # (and the weekly checks) would have switched themselves off exactly when
+      # the House came back. When nothing else has touched main for 45 days,
+      # the bot commits one dated line. It also redeploys, which renews the
+      # build-time figures and security.txt.
+      - name: Heartbeat after 45 quiet days
+        if: needs.fetch.outputs.changed != 'true'
+        run: |
+          last=$(git log -1 --format=%ct)
+          if [ $(( $(date +%s) - last )) -gt $(( 45 * 86400 )) ]; then
+            date -u +%Y-%m-%dT%H:%MZ > .github/heartbeat
+            git config user.name "record[bot]"
+            git config user.email "record-bot@northerntemper.ca"
+            git add .github/heartbeat
+            git commit -m "heartbeat: main has been quiet for 45 days"
+            git push origin HEAD:main
+          fi
+
+      # Pages are built, not served per request, so a build-time figure is as
+      # old as the last deploy. A Vercel Deploy Hook (free on Hobby) rebuilds
+      # the site each morning. It needs one secret the owner creates:
+      # Vercel -> Project -> Settings -> Git -> Deploy Hooks, then store the URL
+      # as the repository secret VERCEL_DEPLOY_HOOK. Until then this says so.
+      - name: Daily rebuild
+        if: needs.fetch.outputs.changed != 'true'
+        env:
+          HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}
+        run: |
+          if [ -n "$HOOK" ]; then curl -fsS -X POST "$HOOK" > /dev/null && echo "rebuild requested"
+          else echo "::notice::No VERCEL_DEPLOY_HOOK secret, so the site rebuilds only on a push. See the comment above this step."; fi
