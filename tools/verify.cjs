@@ -323,7 +323,7 @@ function checkServiceWorker() {
   const swProblems = checkServiceWorker();
   for (const m of swProblems) console.log(`  SW        ${m}`);
   const browser = await chromium.launch();
-  let overflow = 0, jsErrors = 0, taps = 0, contrast = 0, missing = 0, altMissing = 0, broken = 0, axeFails = 0, cspFails = 0;
+  let overflow = 0, jsErrors = 0, taps = 0, contrast = 0, missing = 0, altMissing = 0, broken = 0, axeFails = 0, cspFails = 0, grids = 0;
   const report = [];
   const glued = new Set();
 
@@ -382,9 +382,33 @@ function checkServiceWorker() {
         if (!glued.has(`${p} ${g}`)) { glued.add(`${p} ${g}`); report.push(`  GLUED     ${width}px  ${p}  "${g}"`); }
       }
 
-      // Contrast and metadata do not change with width; check once, at 1280.
-      if (width === 1280) {
-        for (const c of await page.evaluate(CONTRAST_PROBE)) { contrast++; report.push(`  CONTRAST  ${p}  ${c.ratio}:1 (needs ${c.need}) ${c.px}px  "${c.text}"`); }
+      // A row that is shown must show every cell. The ledgers turn each row
+      // into a block on a phone, and an empty cell hidden with display:none
+      // left the row one cell short in the accessibility tree: on 312 member
+      // rows a screen reader read every later value under the wrong column
+      // header. axe builds its grid from the DOM, not from what is rendered,
+      // so it passed. Visually hidden (clipped) is fine; not rendered is not.
+      for (const g of await page.evaluate(() => [...document.querySelectorAll('tr')]
+        .filter((tr) => tr.checkVisibility({ visibilityProperty: true }))
+        .map((tr) => ({ tr, gone: [...tr.cells].filter((c) => !c.checkVisibility({ visibilityProperty: true })) }))
+        .filter((x) => x.gone.length)
+        .map((x) => `${x.tr.closest('table')?.getAttribute('aria-label') || x.tr.closest('table')?.caption?.textContent.trim().slice(0, 40) || 'table'}: ${x.gone.length} of ${x.tr.cells.length} cells hidden in "${x.tr.textContent.trim().replace(/\s+/g, ' ').slice(0, 40)}"`))) {
+        grids++; report.push(`  GRID      ${width}px  ${p}  ${g}`);
+      }
+
+      // Contrast and axe run at a phone width and at 1280: a layout that
+      // exists only on a phone (the ledgers as blocks) was audited by hand
+      // until September 2026, because this ran at 1280 alone. Metadata does
+      // not change with width; check it once.
+      if (width === 390 || width === 1280) {
+        // Judge content at rest. Below the fold, the scroll reveal holds each
+        // .rv block at opacity 0 (which axe treats as hidden and SKIPS) or part
+        // way through its fade (which it measures as a failure: "170B" on
+        // /hand at 17% opacity). Reduced motion makes the site show every
+        // block fully, as a reader who prefers it sees the page, so these
+        // passes cover the whole page rather than what is above the fold.
+        await page.emulateMedia({ reducedMotion: 'reduce' });
+        for (const c of await page.evaluate(CONTRAST_PROBE)) { contrast++; report.push(`  CONTRAST  ${width}px  ${p}  ${c.ratio}:1 (needs ${c.need}) ${c.px}px  "${c.text}"`); }
         // axe-core catches the whole class of failures a geometry-and-colour
         // sweep cannot see: a scroll container the keyboard cannot reach, a
         // heading level skipped so the outline has a hole in it, content
@@ -400,14 +424,15 @@ function checkServiceWorker() {
                            sample: v.nodes[0]?.html.slice(0, 110) })));
         for (const v of violations) {
           axeFails++;
-          report.push(`  AXE       ${p}  [${v.impact}] ${v.id} × ${v.n} — ${v.help}\n              ${v.sample}`);
+          report.push(`  AXE       ${width}px  ${p}  [${v.impact}] ${v.id} × ${v.n} — ${v.help}\n              ${v.sample}`);
         }
 
         const alt = await page.evaluate(() => {
           const g = (s) => document.querySelector(s)?.getAttribute('content') || '';
           return { img: g('meta[property="og:image"]'), alt: g('meta[property="og:image:alt"]'), talt: g('meta[name="twitter:image:alt"]') };
         });
-        if (!alt.alt || !alt.talt) { altMissing++; report.push(`  OG ALT    ${p}  missing`); }
+        if (width === 1280 && (!alt.alt || !alt.talt)) { altMissing++; report.push(`  OG ALT    ${p}  missing`); }
+        await page.emulateMedia({ reducedMotion: 'no-preference' });
       }
     }
     await ctx.close();
@@ -431,8 +456,9 @@ function checkServiceWorker() {
   console.log(`  CSP violations           ${cspFails}`);
   console.log(`  glued words              ${glued.size}`);
   console.log(`  navigation problems      ${navProblems.length}`);
+  console.log(`  broken table grids       ${grids}`);
   const bad = overflow + jsErrors + taps + contrast + missing + altMissing + broken + swProblems.length + axeFails + cspFails
-    + glued.size + navProblems.length;
+    + glued.size + navProblems.length + grids;
   console.log(bad ? `\nverify: ${bad} issue(s)` : '\nverify: clean');
   process.exit(bad ? 1 : 0);
 })();

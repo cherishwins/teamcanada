@@ -359,8 +359,16 @@ on a page built days earlier. What holds it now:
   link reachable by a finger, none focusable while closed, closed when focus
   leaves it; `/record/divisions#v73` landing below the sticky nav; and the menu
   working while a third-party script is stalled for eight seconds, which it
-  did not while Umami loaded with `defer`). It exits non-zero. **Current state:
-  clean on all twelve counts.** Keep it there.
+  did not while Umami loaded with `defer`), and **broken table grids** (a row
+  that is shown with one of its cells not rendered: the ledgers' phone layout
+  hid an empty cell with `display:none`, and 312 member rows then read every
+  later value to a screen reader under the wrong header; axe builds its grid
+  from the DOM and passed). **Contrast and axe run at 390 and 1280, with
+  reduced motion on**, so the scroll reveal shows every block: before, they ran
+  at 1280 alone, where every block below the fold sat at opacity 0 and axe
+  skipped it as hidden, and a phone-only layout was never audited at all. It
+  exits non-zero. **Current state: clean on all thirteen counts.** Keep it
+  there.
   **`.github/workflows/verify.yml` runs all of it on every PR and every push to
   `main`**, so none of this depends on somebody remembering. The repo is public,
   so Actions minutes are free and unmetered — that is the only reason it is
