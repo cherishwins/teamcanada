@@ -69,6 +69,50 @@ const { title, pageTitle, description, imprint, standfirst, path, dateline, ogIm
     font-size: clamp(17px, 1.9vw, 23px);
     margin: clamp(30px, 4vh, 52px) 0 var(--space-2);
   }
+  /* A heading's kicker ("Letter the First", "Tier I — …") rides inside the
+     heading as a block, so the outline carries it and nothing floats loose
+     between sections. A section counter ("03 / 06") is decoration: hidden
+     from assistive tech, set small at the heading's end. */
+  .col :global(h2 .eyebrow), .col :global(h3 .eyebrow) {
+    display: block; margin-bottom: var(--space-1);
+    font-weight: var(--fw-label); font-size: var(--type-label-sm);
+    letter-spacing: var(--ls-key); color: var(--nt-red);
+  }
+  .col :global(h2 .count) {
+    display: block; margin-top: var(--space-1);
+    font-weight: var(--fw-label); font-size: var(--type-label-sm);
+    letter-spacing: var(--ls-key); color: var(--text-caption);
+  }
+  .col :global(h4) {
+    font-family: var(--font-display); font-weight: var(--fw-label);
+    text-transform: uppercase; letter-spacing: .06em; font-size: var(--type-label);
+    margin: clamp(26px, 3.4vh, 44px) 0 var(--space-1);
+  }
+  .col :global(.verdict) {
+    display: inline-block; font-family: var(--font-display); font-weight: var(--fw-display);
+    text-transform: uppercase; letter-spacing: var(--ls-key); font-size: var(--type-label-sm);
+    border: var(--border-key) solid var(--nt-red); color: var(--nt-red); padding: 2px 10px;
+  }
+  .col :global(.byline) { color: var(--text-muted); font-size: var(--type-body-sm); }
+  .col :global(ol.claims li::marker), .col :global(ol.notes li::marker) { color: var(--nt-red); font-weight: var(--fw-body-strong); }
+  .col :global(.claims .src) {
+    display: block; margin-top: var(--space-1);
+    font-family: var(--font-display); font-weight: var(--fw-label); font-size: var(--type-stamp);
+    letter-spacing: var(--ls-caption); text-transform: uppercase; color: var(--text-caption);
+  }
+  .col :global(sup a) { text-decoration: none; padding: 0 2px; }
+  .col :global(.compare h4) { margin-top: 0; }
+  /* In a household card the figures are a small ledger: label left, amount right. */
+  .col :global(.households dl) { display: grid; grid-template-columns: 1fr auto; column-gap: var(--space-2); align-items: baseline; }
+  .col :global(.households dt) { margin-top: var(--space-1); }
+  .col :global(.households dd) { margin-top: var(--space-1); font-variant-numeric: tabular-nums; font-weight: var(--fw-body-strong); text-align: right; }
+  .col :global(.compare dl), .col :global(dl.ledger) { margin: var(--space-2) 0 var(--space-3); }
+  .col :global(dl.ledger) { border-left: var(--rule-weight) solid var(--nt-red); padding-left: var(--space-3); }
+  .col :global(.stat) { margin: clamp(28px, 4vh, 52px) 0; border-top: var(--border-key) solid var(--nt-red); padding-top: var(--space-3); }
+  .col :global(.stat .big) {
+    font-family: var(--font-display); font-weight: var(--fw-display);
+    font-size: clamp(40px, 6vw, 64px); line-height: .9; color: var(--nt-red); margin: 0;
+  }
   .col :global(p) { margin-bottom: var(--space-2); max-width: none; }
   .col :global(p.lead) {
     font-size: var(--type-lede); line-height: var(--lh-lede);
