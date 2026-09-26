@@ -15,7 +15,7 @@ excellent one; when the excellent one costs money, see ZERO BUDGET below — it
 has to earn it first. Everything that follows in this file (seven build-time
 checkers, a ten-viewport sweep, figures written once, sources quoted from
 their abstracts) exists because of this bar. Do not lower it to finish faster.
-(That parenthesis said "seven" checkers when it was written; it is nine now,
+(That parenthesis said "seven" checkers when it was written; it is ten now,
 plus a generator that fails. Counts in prose drift; the tools do not.)
 
 ## What this is
@@ -175,7 +175,11 @@ one file serves both colourways. **Never reference them via `<img src>`:**
   the build ships**, in both directions, with no `'unsafe-inline'`; and
   `tools/check-internal-links.cjs` — **every same-origin `href` in the build
   must land on a page the build produced, and every `#fragment` must name an
-  id on that page.** All nine run in `npm run build` and fail it, and so does
+  id on that page**; and `tools/check-canonical.cjs` — **one page, one URL:
+  every canonical names its own page, every sitemap `<loc>` equals that
+  canonical byte for byte, every same-origin reference the build writes uses
+  it, and the other form permanently redirects.** All ten run in
+  `npm run build` and fail it, and so does
   `tools/generate-llms-full.cjs` if a sitemap page is in neither its reading
   order nor its exclusion list. Outside the build: `tools/check-links.cjs`
   (every external link the site cites, weekly, from
@@ -209,6 +213,11 @@ one file serves both colourways. **Never reference them via `<img src>`:**
   `public/favicon.svg`; `tools/check-icons.cjs` — proves they still match.
 - `tools/check-sitemap.cjs` — the sitemap and the pages' robots meta must agree.
 - `tools/check-csp.cjs` — the CSP in `vercel.json` matches the built scripts.
+- `tools/check-canonical.cjs` — one page, one URL, in the build. See the
+  convention "One page, one URL" below for why it exists.
+- `tools/check-urls-live.cjs` — the same claim on the real edge, weekly from
+  `links.yml`: canonical pages answer 200, the slash form 308s to them, and
+  http, www and `teamcanada.vercel.app` all land on the apex.
 - `tools/check-internal-links.cjs` — no link inside the site points at a page
   that does not exist, and no fragment points at an id that is not there
   (the members ledger links every break to `/record/divisions#vN`, and a
@@ -304,6 +313,34 @@ public and checkable" — it can afford neither a dash nor a silently stale numb
 - **Astro 7's compiler rejects unbalanced tags outright** (Astro 5 tolerated
   them). Any generated markup must balance its own anchors — an `<a href="#…">`
   that is skipped on open must not still emit its close.
+- **One page, one URL: no trailing slash, and the other form redirects.**
+  For the site's first months every page answered 200 at BOTH `/bloc` and
+  `/bloc/`. Every canonical, og:url, JSON-LD url and internal link said
+  `/bloc`; the sitemap said `/bloc/` (what `@astrojs/sitemap` writes when
+  `trailingSlash` is unset and `build.format` is `'directory'`), and so did
+  the share band on thirteen pages, because it falls back to
+  `Astro.url.pathname`. Google's own rule is "don't specify one URL in a
+  sitemap, but a different URL for that same page using rel=canonical", and
+  Search Console showed the cost in September 2026: twelve slash URLs from the
+  sitemap "Discovered, currently not indexed", and `/bloc/` and `/privacy/`
+  filed as "Alternate page with proper canonical tag". Nine checkers and a
+  ten-count sweep passed the whole time, because `check-internal-links`
+  resolves both forms to the same file and a share URL sits percent-encoded
+  inside a query string. Now `trailingSlash: 'never'` is set in
+  `astro.config.mjs` **and nowhere else**: the adapter turns it into a 308 from
+  `/x/` to `/x` ahead of the filesystem, the sitemap drops the slash, and
+  `Astro.url.pathname` loses it. Do not also set `trailingSlash` in
+  `vercel.json`; the adapter warns against having both. Two consequences:
+  `astro dev` answers `/bloc/` with a 404 (production redirects), and every
+  link written by hand must be the no-slash form, which `check-canonical`
+  enforces. **The retired default host follows the same rule:**
+  `teamcanada.vercel.app` served the whole site with no noindex, so the first
+  entry in `vercel.json` `redirects` sends it to the apex with a
+  host-conditioned 308. Its source is `/(.*)`, NOT the `/:path*` in Vercel's
+  own KB example: in the compiler Vercel uses, `/:path*` matches neither `/`
+  nor any path ending in a slash, so it would have redirected most of the site
+  and silently kept the homepage. A `has` condition cannot run on a preview
+  or under `vercel dev`, which is why `check-urls-live` exists.
 - Develop on a branch → draft PR → merge to `main`. The one exception is
   `record[bot]`, which commits a new snapshot straight to `main` after the
   build passes — see "The record".
@@ -313,7 +350,7 @@ public and checkable" — it can afford neither a dash nor a silently stale numb
   see a bot commit. `workflow_dispatch` is the one event that IS allowed to
   chain, so `verify.yml` carries it and `record.yml` dispatches it by hand
   after the push (`actions: write`). Vercel deploys from the push regardless
-  and runs the nine build checkers again on its side.
+  and runs the ten build checkers again on its side.
 - **A scoped `<style>` stamps `data-astro-cid-…` onto every element it could
   match, and on a ledger that is the page.** The first record page carried
   5,935 of them, 154 kB of a 391 kB file, on cells whose only styling was a
@@ -362,8 +399,9 @@ public and checkable" — it can afford neither a dash nor a silently stale numb
   (`<strong>Vercel</strong> Web Analytics`) would have read fine to a human and
   failed `includes()` silently. Its own negative test passed while asserting
   nothing. Every checker in `tools/` should be run once against a deliberately
-  broken input before it is trusted — all ten have been, `check-csp`,
-  `check-links` and `check-internal-links` included.
+  broken input before it is trusted — every one has been. `check-canonical`
+  failed the unmodified main build with 33 problems before it passed the
+  fix, and `check-urls-live` failed production with 5 before the fix shipped.
   **A checker can also fail for the WRONG reason, which costs just as much
   trust.** `check-privacy` stripped block comments before line comments, so a
   `//` line elsewhere in `astro.config.mjs` that happened to contain the two
@@ -558,7 +596,8 @@ Everything is CC0 and the site is built to be repeated, not protected.
   regenerated, the filename and its contents must match. Google ignores
   IndexNow; submit the sitemap once in Search Console instead.
 - Sitemaps are validated XML against the sitemaps.org 0.9 schema, all URLs
-  absolute on the canonical host. **`/fr` is excluded while it is `noindex`.**
+  absolute on the canonical host and in the canonical form, byte for byte
+  (`check-canonical`). **`/fr` is excluded while it is `noindex`.**
 - Structured data: WebSite on every page, Article on each read, **Dataset on the
   six public endpoints** so the figures are findable as data.
 
@@ -865,7 +904,7 @@ diff gate mean something.**
 
 **Freshness.** `.github/workflows/record.yml`, 06:23 UTC Monday to Saturday
 and on demand: fetch, `git diff --quiet` gate, **`npm run build` with the new
-snapshot so all nine checkers pass before anything is committed**, commit as
+snapshot so all ten checkers pass before anything is committed**, commit as
 `record[bot]`, push to `main`, then dispatch `verify.yml` by hand (a
 `GITHUB_TOKEN` push triggers nothing on its own — see Conventions). `main` is
 unprotected, which is what lets the push land; if that ever changes, the bot

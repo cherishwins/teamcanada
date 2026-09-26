@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && node tools/check-french.cjs && node tools/check-llms.cjs && node tools/check-privacy.cjs && node tools/check-figures.cjs && node tools/check-icons.cjs && node tools/check-sitemap.cjs && node tools/check-csp.cjs && node tools/check-docs.cjs && node tools/generate-llms-full.cjs && node tools/check-internal-links.cjs",
+    "build": "astro build && node tools/check-french.cjs && node tools/check-llms.cjs && node tools/check-privacy.cjs && node tools/check-figures.cjs && node tools/check-icons.cjs && node tools/check-sitemap.cjs && node tools/check-csp.cjs && node tools/check-docs.cjs && node tools/generate-llms-full.cjs && node tools/check-internal-links.cjs && node tools/check-canonical.cjs",
     "preview": "astro preview",
     "check": "npm i --no-save @astrojs/check typescript && astro check",
     "check:fr": "node tools/check-french.cjs",
@@ -14,7 +14,8 @@
     "check:privacy": "node tools/check-privacy.cjs",
     "check:figures": "node tools/check-figures.cjs",
     "icons": "node tools/generate-favicons.cjs",
-    "check:sitemap": "node tools/check-sitemap.cjs"
+    "check:sitemap": "node tools/check-sitemap.cjs",
+    "check:canonical": "node tools/check-canonical.cjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.6.0",

@@ -33,7 +33,9 @@ const { chromium } = (() => {
 const BASE = (process.argv[2] || 'https://northerntemper.ca').replace(/\/$/, '');
 
 // One page per distinct inline script the policy hashes, plus the two heaviest.
-const PAGES = ['/', '/calculator/', '/record/', '/sources/', '/read/the-red-is-the-work/', '/join/', '/bloc/'];
+// Canonical form: no trailing slash. The slash form now 308s to this one, and
+// a page checked through a redirect is a page checked at the wrong address.
+const PAGES = ['/', '/calculator', '/record', '/sources', '/read/the-red-is-the-work', '/join', '/bloc'];
 
 // Third-party requests worth listing so the run shows the vendors actually
 // loaded, not just that nothing was blocked.

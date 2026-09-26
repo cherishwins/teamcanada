@@ -8,6 +8,7 @@ import { SITE } from './src/config.mjs';
 export default defineConfig({
   site: SITE.origin,
   output: 'static',
+  trailingSlash: 'never',
   // TWO analytics vendors now ship on every page, and that is a live decision
   // rather than a settled one — see CLAUDE.md. Umami has always been here.
   // Vercel Web Analytics was removed once as redundant, then re-enabled

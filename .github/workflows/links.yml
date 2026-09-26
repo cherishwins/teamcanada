@@ -53,3 +53,17 @@ jobs:
           npx playwright install --with-deps chromium
       - name: Check the CSP on production
         run: node tools/check-csp-live.cjs https://northerntemper.ca
+
+  # One URL per page, on the real edge. check-canonical proves the build asks
+  # for the redirect; only production can prove the edge performs it, and the
+  # host redirect for teamcanada.vercel.app cannot run anywhere else at all.
+  # Plain fetch, no browser, no install.
+  urls-live:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check canonical URLs and host redirects on production
+        run: node tools/check-urls-live.cjs https://northerntemper.ca

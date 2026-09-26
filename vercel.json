@@ -62,6 +62,7 @@
     }
   ],
   "redirects": [
+    { "source": "/(.*)", "has": [{ "type": "host", "value": "teamcanada\\.vercel\\.app" }], "destination": "https://northerntemper.ca/$1", "permanent": true },
     { "source": "/go/poilievre", "destination": "https://www.linkedin.com/posts/jessecares_pierre-poilievre-and-everyones-mother-wants-activity-7467130700870348800-mtOI", "permanent": false },
     { "source": "/go/swf", "destination": "https://www.linkedin.com/posts/jessecares_canadas-sovereign-wealth-fund-ugcPost-7468997068183740416-5w1B", "permanent": false },
     { "source": "/go/enough", "destination": "https://www.linkedin.com/posts/jessecares_enough-is-enough-activity-7453025502757408768-y6QT", "permanent": false },

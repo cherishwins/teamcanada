@@ -96,7 +96,10 @@ for (const url of [...locs].sort()) {
 // ---- 2. Nothing indexable may be MISSING from the sitemap.
 // The opposite failure, and just as quiet: a page ships, nothing links to it
 // from the sitemap, and it waits forever to be discovered.
-const inSitemap = new Set([...locs].map((u) => new URL(u).pathname));
+// Compare paths, not spellings: /bloc and /bloc/ name the same built page.
+// Whether the sitemap uses the canonical spelling is check-canonical's claim.
+const norm = (p) => p.replace(/(.)\/$/, '$1');
+const inSitemap = new Set([...locs].map((u) => norm(new URL(u).pathname)));
 const orphans = [];
 (function walk(dir) {
   for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -104,7 +107,7 @@ const orphans = [];
     if (e.isDirectory()) { walk(p); continue; }
     if (e.name !== 'index.html') continue;
     const rel = path.relative(ROOT, p).replace(/index\.html$/, '');
-    const pathname = '/' + rel.replace(/\\/g, '/');
+    const pathname = norm('/' + rel.replace(/\\/g, '/'));
     if (inSitemap.has(pathname)) continue;
     if (/\bnoindex\b/.test(robotsOf(fs.readFileSync(p, 'utf8')))) continue; // correctly excluded
     orphans.push(pathname);

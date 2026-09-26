@@ -3,7 +3,7 @@
 # The site is static and the House sits on weekdays. Every morning this fetches
 # only the divisions the committed snapshot does not have yet (a run with
 # nothing new makes about three requests to OpenParliament), BUILDS THE SITE
-# with the new data so all nine checkers prove it renders, and commits the
+# with the new data so all ten checkers prove it renders, and commits the
 # snapshot to main. Vercel deploys from that push like any other.
 #
 # It commits to main directly rather than opening a PR because a daily PR
@@ -16,7 +16,7 @@
 # hand (workflow_dispatch is the one event that IS allowed to chain), so the
 # ten-count sweep, astro check and html-validate run on every snapshot exactly
 # as they run on every human commit. Vercel deploys from the push regardless
-# and runs the nine build checkers again on its side.
+# and runs the ten build checkers again on its side.
 #
 # Free: the repo is public, so Actions minutes are unmetered.
 name: record
@@ -55,7 +55,7 @@ jobs:
         run: |
           if git diff --quiet -- src/data/record; then echo "changed=false" >> "$GITHUB_OUTPUT"; else echo "changed=true" >> "$GITHUB_OUTPUT"; fi
 
-      # The build is the gate: all nine checkers run against the new snapshot.
+      # The build is the gate: all ten checkers run against the new snapshot.
       # A snapshot that does not render never reaches main.
       - name: Build with the new snapshot
         if: steps.diff.outputs.changed == 'true'
