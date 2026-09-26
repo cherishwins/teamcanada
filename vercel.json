@@ -57,7 +57,7 @@
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self' https://cloud.umami.is 'sha256-ipVu24fJB4N9VK6cLL0TmioKXqjvYwd6zJ/Sn+5suLg=' 'sha256-hyzZqWQnRB93g/KVQUU+H9WZrFtUpTdz20WbDbtwMz4=' 'sha256-6FsAfYV+MJF6lAEYyoACyH0na3wmpxmAWJdRXWFp0fY=' 'sha256-8Y7CR8M/2Dh8NUyQaYjqw7xtMIg0aXhgqrhJE/nrXwM=' 'sha256-BIxetqWYdbFbqewj92OVFihjQ8yhM1NJIN14MldJ3cg=' 'sha256-wCgLfoN6650VuU9dmTUN1qDZjon3H3W+PNNuHY8J5W8=' 'sha256-OtAOWinLMlIuCObB9+FkNE0KrAgp5EGPsgLkAzBagLc='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://cloud.umami.is https://gateway.umami.is; manifest-src 'self'; worker-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'" },
+        { "key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self' https://cloud.umami.is 'sha256-ipVu24fJB4N9VK6cLL0TmioKXqjvYwd6zJ/Sn+5suLg=' 'sha256-hyzZqWQnRB93g/KVQUU+H9WZrFtUpTdz20WbDbtwMz4=' 'sha256-6FsAfYV+MJF6lAEYyoACyH0na3wmpxmAWJdRXWFp0fY=' 'sha256-8Y7CR8M/2Dh8NUyQaYjqw7xtMIg0aXhgqrhJE/nrXwM=' 'sha256-DZe0PnD+Kr6WPINxjP2/gbCIfdut1AMFt7a4xa6yERQ=' 'sha256-wCgLfoN6650VuU9dmTUN1qDZjon3H3W+PNNuHY8J5W8=' 'sha256-OtAOWinLMlIuCObB9+FkNE0KrAgp5EGPsgLkAzBagLc='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://cloud.umami.is https://gateway.umami.is; manifest-src 'self'; worker-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'" },
         { "key": "X-Frame-Options", "value": "DENY" },
         { "key": "Cross-Origin-Opener-Policy", "value": "same-origin" },
         { "key": "X-Content-Type-Options", "value": "nosniff" },

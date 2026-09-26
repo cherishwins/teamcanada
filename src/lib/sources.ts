@@ -27,10 +27,22 @@ export interface Figure {
 }
 
 const TIMEOUT_MS = 6000;
+
+/**
+ * NT_OFFLINE=1 fails every upstream at once, as if StatCan, the Bank, the World
+ * Bank and ECCC all had a bad morning during the same build. CI builds this way
+ * as well as normally, and both must pass: every page falls back and says so,
+ * and nothing a page SHIPS may change because of it. /calculator once carried
+ * the live population inside an inline script whose sha256 vercel.json pins, so
+ * the next deploy failed whenever StatCan published a quarter or timed out;
+ * the offline build is what catches that class on the PR instead.
+ */
+const OFFLINE = typeof process !== 'undefined' && process.env?.NT_OFFLINE === '1';
 const BOC = 'https://www.bankofcanada.ca/valet/observations';
 const WDS = 'https://www150.statcan.gc.ca/t1/wds/rest';
 
 async function getJSON(url: string, init?: RequestInit): Promise<unknown> {
+  if (OFFLINE) throw new Error('NT_OFFLINE: upstreams disabled for this build');
   const ctl = new AbortController();
   const timer = setTimeout(() => ctl.abort(), TIMEOUT_MS);
   try {

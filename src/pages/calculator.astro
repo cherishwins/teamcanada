@@ -6,7 +6,7 @@ import Share from '../components/Share.astro';
 import { getProvinces } from '../lib/sources';
 import {
   FEDERAL_DEBT, FRICTION_LOW, FRICTION_HIGH,
-  BUILD_STATE_LOW_B, BUILD_STATE_HIGH_B, BUILD_STATE_BASE_POP, NATO_PCT,
+  BUILD_STATE_LOW_B, BUILD_STATE_HIGH_B, BUILD_STATE_BASE_POP, NATO_PCT, NATO_DIRECT_PCT,
 } from '../lib/figures';
 
 const { provinces, canadaPopulation } = await getProvinces();
@@ -14,23 +14,75 @@ const { provinces, canadaPopulation } = await getProvinces();
 /**
  * Every constant here is published and cited on the page itself. The
  * calculator's only claim is arithmetic: it does not estimate anything it
- * cannot show the source for, and each line states its own method.
+ * cannot show the source for, and each line states its own method. Every
+ * sourced value comes from src/lib/figures.ts, the one place a hand-entered
+ * number on this site is written; the one assumption of this page's own, the
+ * markup for a negotiation going badly, is named below and printed from here.
  */
-// Every value here now comes from src/lib/figures.ts, which is the one place
-// a hand-entered number on this site is written. The shape is unchanged
-// because it is serialised into the page for the client-side recompute below.
-const CONST = {
-  federalDebtB: FEDERAL_DEBT.value,
-  frictionLow: FRICTION_LOW,
-  frictionHigh: FRICTION_HIGH,
-  buildStateLowB: BUILD_STATE_LOW_B,
-  buildStateHighB: BUILD_STATE_HIGH_B,
-  buildStateBasePop: BUILD_STATE_BASE_POP,
-  natoPct: NATO_PCT,
-};
+const DEBT_HIGH_MARKUP = 0.15;
 
 const sorted = [...provinces].sort((a, b) => b.gdp - a.gdp);
 const gdpYear = provinces[0]?.gdpYear ?? '2024';
+
+/**
+ * The arithmetic exists once, here, and runs at build time for EVERY province.
+ *
+ * It used to run twice: once here for the default province, and again in an
+ * inline script that carried the live StatCan population in its source via
+ * define:vars. Two copies of the math could drift, and worse, the script's CSP
+ * hash moved whenever StatCan published a new quarter or timed out during a
+ * build, so the next deploy after either failed check-csp. Now each <option>
+ * carries its province's finished lines as text and the script only swaps it
+ * in. No figure is in the script, so its hash cannot move with the data, and
+ * the page reads the same with scripting off: the default province is rendered
+ * from the same function.
+ */
+function bill(pop: number, gdpM: number) {
+  const lossLow = gdpM * FRICTION_LOW;
+  const lossHigh = gdpM * FRICTION_HIGH;
+  const debtLow = FEDERAL_DEBT.value * 1000 * (pop / canadaPopulation);
+  const debtHigh = debtLow * (1 + DEBT_HIGH_MARKUP);
+  const buildLow = ((BUILD_STATE_LOW_B * 1000) / BUILD_STATE_BASE_POP) * pop;
+  const buildHigh = ((BUILD_STATE_HIGH_B * 1000) / BUILD_STATE_BASE_POP) * pop;
+  const natoLow = gdpM * NATO_DIRECT_PCT;
+  const natoHigh = gdpM * NATO_PCT;
+  const totLow = debtLow + buildLow;
+  const totHigh = debtHigh + buildHigh;
+  const recurring = lossLow + natoHigh;
+  return { lossLow, lossHigh, debtLow, debtHigh, buildLow, buildHigh,
+           natoLow, natoHigh, totLow, totHigh, recurring };
+}
+const big = (m: number) => {
+  const b = m / 1000;
+  return b >= 1 ? `$${b.toFixed(b < 10 ? 1 : 0)}B` : `$${Math.round(m)}M`;
+};
+const cad = new Intl.NumberFormat('en-CA', { style: 'currency', currency: 'CAD', maximumFractionDigits: 0 });
+const pct = (x: number) => `${Number((x * 100).toFixed(1))}%`;
+
+/** Each element id the script fills, in the order every option lists its text. */
+const IDS = ['totalFirstYear', 'perPerson', 'annualLoss', 'lossLow', 'lossHigh', 'debtLow', 'debtHigh',
+             'buildLow', 'buildHigh', 'natoLow', 'natoHigh', 'totLow', 'totHigh', 'flatPer'] as const;
+type Lines = Record<(typeof IDS)[number], string>;
+
+function lines(p: { population: number; gdp: number }): Lines {
+  const b = bill(p.population, p.gdp);
+  return {
+    totalFirstYear: big(b.totLow),
+    perPerson: cad.format((b.recurring * 1e6) / p.population),
+    annualLoss: `${big(b.recurring)}/yr`,
+    lossLow: big(b.lossLow), lossHigh: big(b.lossHigh),
+    debtLow: big(b.debtLow), debtHigh: big(b.debtHigh),
+    buildLow: big(b.buildLow), buildHigh: big(b.buildHigh),
+    natoLow: big(b.natoLow), natoHigh: big(b.natoHigh),
+    totLow: big(b.totLow), totHigh: big(b.totHigh),
+    flatPer: cad.format((b.totLow * 1e6) / p.population),
+  };
+}
+// '|' never occurs in a formatted amount, so it can separate them.
+const packed = (p: { population: number; gdp: number }) => {
+  const l = lines(p);
+  return IDS.map((id) => l[id]).join('|');
+};
 
 /**
  * The default province is computed here, not only in the browser. Without this
@@ -38,30 +90,8 @@ const gdpYear = provinces[0]?.gdpYear ?? '2024';
  * for every crawler — which contradicts the rule the rest of the site follows:
  * nothing may depend on scripting to be readable. Script only handles changes.
  */
-const canadaPop = provinces.reduce((s, p) => s + p.population, 0);
 const DEFAULT = provinces.find((p) => p.code === 'AB') ?? sorted[0];
-
-function bill(pop: number, gdpM: number) {
-  const lossLow = gdpM * CONST.frictionLow;
-  const lossHigh = gdpM * CONST.frictionHigh;
-  const debtLow = CONST.federalDebtB * 1000 * (pop / canadaPop);
-  const debtHigh = debtLow * 1.15;
-  const buildLow = ((CONST.buildStateLowB * 1000) / CONST.buildStateBasePop) * pop;
-  const buildHigh = ((CONST.buildStateHighB * 1000) / CONST.buildStateBasePop) * pop;
-  const natoLow = gdpM * 0.035;
-  const natoHigh = gdpM * CONST.natoPct;
-  const totLow = debtLow + buildLow;
-  const totHigh = debtHigh + buildHigh;
-  const recurring = lossLow + natoHigh;
-  return { lossLow, lossHigh, debtLow, debtHigh, buildLow, buildHigh,
-           natoLow, natoHigh, totLow, totHigh, recurring };
-}
-const d = bill(DEFAULT.population, DEFAULT.gdp);
-const big = (m: number) => {
-  const b = m / 1000;
-  return b >= 1 ? `$${b.toFixed(b < 10 ? 1 : 0)}B` : `$${Math.round(m)}M`;
-};
-const cad = new Intl.NumberFormat('en-CA', { style: 'currency', currency: 'CAD', maximumFractionDigits: 0 });
+const v = lines(DEFAULT);
 
 const description =
   'Pick a province and see the bill. Trade friction, federal debt share, the ' +
@@ -86,25 +116,25 @@ const description =
       <div class="nt-wrap">
         <div class="picker">
           <label class="nt-label" for="prov">Province</label>
-          <select id="prov" name="prov">
+          <select id="prov" name="prov" data-ids={IDS.join(' ')}>
             {sorted.map((p) => (
               <option value={p.code} selected={p.code === DEFAULT.code}
-                      data-pop={p.population} data-gdp={p.gdp}>{p.name}</option>
+                      data-bill={packed(p)}>{p.name}</option>
             ))}
           </select>
         </div>
 
         <div class="headline">
           <div class="hl">
-            <div class="hn" id="totalFirstYear">{big(d.totLow)}</div>
+            <div class="hn" id="totalFirstYear">{v.totalFirstYear}</div>
             <div class="hk">Day-one bill, low estimate</div>
           </div>
           <div class="hl">
-            <div class="hn" id="perPerson">{cad.format((d.recurring * 1e6) / DEFAULT.population)}</div>
+            <div class="hn" id="perPerson">{v.perPerson}</div>
             <div class="hk">Per resident, every year after</div>
           </div>
           <div class="hl">
-            <div class="hn" id="annualLoss">{big(d.recurring)}/yr</div>
+            <div class="hn" id="annualLoss">{v.annualLoss}</div>
             <div class="hk">Recurring, every year after</div>
           </div>
         </div>
@@ -117,27 +147,27 @@ const description =
           <tbody>
             <tr>
               <th scope="row">Lost output, per year</th>
-              <td id="lossLow">{big(d.lossLow)}</td><td id="lossHigh">{big(d.lossHigh)}</td>
-              <td class="how">4% of provincial GDP at a 5% rise in trade friction with the rest of Canada; 6% at 8% friction. <span class="cite">Tombe, University of Calgary</span></td>
+              <td id="lossLow">{v.lossLow}</td><td id="lossHigh">{v.lossHigh}</td>
+              <td class="how">{pct(FRICTION_LOW)} of provincial GDP at a 5% rise in trade friction with the rest of Canada; {pct(FRICTION_HIGH)} at 8% friction. <span class="cite">Tombe, University of Calgary</span></td>
             </tr>
             <tr>
               <th scope="row">Share of federal debt</th>
-              <td id="debtLow">{big(d.debtLow)}</td><td id="debtHigh">{big(d.debtHigh)}</td>
-              <td class="how">Population share of the {FEDERAL_DEBT.display} federal accumulated deficit. The high column adds 15% for the negotiation going badly. <span class="cite">{FEDERAL_DEBT.source}, {FEDERAL_DEBT.period}</span></td>
+              <td id="debtLow">{v.debtLow}</td><td id="debtHigh">{v.debtHigh}</td>
+              <td class="how">Population share of the {FEDERAL_DEBT.display} federal accumulated deficit. The high column adds {pct(DEBT_HIGH_MARKUP)} for the negotiation going badly. <span class="cite">{FEDERAL_DEBT.source}, {FEDERAL_DEBT.period}</span></td>
             </tr>
             <tr>
               <th scope="row">Building a state from zero</th>
-              <td id="buildLow">{big(d.buildLow)}</td><td id="buildHigh">{big(d.buildHigh)}</td>
-              <td class="how">Army, navy, air force, coast guard, central bank, passports, borders, customs, foreign service. Scaled per person from the Alberta Prosperity Project's own ${CONST.buildStateLowB}–${CONST.buildStateHighB}B estimate. <span class="cite">APP, fully costed plan</span></td>
+              <td id="buildLow">{v.buildLow}</td><td id="buildHigh">{v.buildHigh}</td>
+              <td class="how">Army, navy, air force, coast guard, central bank, passports, borders, customs, foreign service. Scaled per person from the Alberta Prosperity Project's own ${BUILD_STATE_LOW_B}–{BUILD_STATE_HIGH_B}B estimate. <span class="cite">APP, fully costed plan</span></td>
             </tr>
             <tr>
               <th scope="row">Defence, per year</th>
-              <td id="natoLow">{big(d.natoLow)}</td><td id="natoHigh">{big(d.natoHigh)}</td>
-              <td class="how">5% of GDP, the NATO pledge adopted at the Hague in 2025. The low column is the 3.5% direct-military portion. <span class="cite">NATO Hague summit, 2025</span></td>
+              <td id="natoLow">{v.natoLow}</td><td id="natoHigh">{v.natoHigh}</td>
+              <td class="how">{pct(NATO_PCT)} of GDP, the NATO pledge adopted at the Hague in 2025. The low column is the {pct(NATO_DIRECT_PCT)} direct-military portion. <span class="cite">NATO Hague summit, 2025</span></td>
             </tr>
             <tr class="tot">
               <th scope="row">Day one, before anything is built</th>
-              <td id="totLow">{big(d.totLow)}</td><td id="totHigh">{big(d.totHigh)}</td>
+              <td id="totLow">{v.totLow}</td><td id="totHigh">{v.totHigh}</td>
               <td class="how">Debt share plus standing up a state. The output loss and the defence bill recur every year afterwards.</td>
             </tr>
           </tbody>
@@ -147,7 +177,7 @@ const description =
           <p class="nt-label">A thing worth noticing</p>
           <p>
             The day-one bill per resident lands at roughly
-            <strong id="flatPer">{cad.format((d.totLow * 1e6) / DEFAULT.population)}</strong> whichever province you pick. That is
+            <strong id="flatPer">{v.flatPer}</strong> whichever province you pick. That is
             not a coincidence and it is not a bug: both of its parts — the share
             of federal debt and the cost of standing up a state — scale with
             population. <strong>Leaving costs about the same per person
@@ -252,58 +282,25 @@ const description =
   .src { margin-top: clamp(26px, 4vh, 46px); }
 </style>
 
-<script define:vars={{ CONST, canadaPopulation }}>
-  const sel = document.getElementById('prov');
-  const cad = new Intl.NumberFormat('en-CA', { style: 'currency', currency: 'CAD', maximumFractionDigits: 0 });
-  const big = (millions) => {
-    const b = millions / 1000;
-    return b >= 1 ? `$${b.toFixed(b < 10 ? 1 : 0)}B` : `$${Math.round(millions)}M`;
-  };
-  const set = (id, txt) => { const el = document.getElementById(id); if (el) el.textContent = txt; };
-
-  function render() {
-    const o = sel?.selectedOptions?.[0];
-    if (!o) return;
-    const pop = Number(o.dataset.pop);
-    const gdpM = Number(o.dataset.gdp);            // $ millions
-
-    const lossLow  = gdpM * CONST.frictionLow;
-    const lossHigh = gdpM * CONST.frictionHigh;
-    const share    = pop / canadaPopulation;
-    const debtLow  = CONST.federalDebtB * 1000 * share;
-    const debtHigh = debtLow * 1.15;
-    const perCap   = (CONST.buildStateLowB * 1000) / CONST.buildStateBasePop;
-    const perCapHi = (CONST.buildStateHighB * 1000) / CONST.buildStateBasePop;
-    const buildLow = perCap * pop;
-    const buildHi  = perCapHi * pop;
-    const natoHigh = gdpM * CONST.natoPct;
-    const natoLow  = gdpM * 0.035;
-
-    set('lossLow', big(lossLow));   set('lossHigh', big(lossHigh));
-    set('debtLow', big(debtLow));   set('debtHigh', big(debtHigh));
-    set('buildLow', big(buildLow)); set('buildHigh', big(buildHi));
-    set('natoLow', big(natoLow));   set('natoHigh', big(natoHigh));
-
-    const totLow = debtLow + buildLow;
-    const totHigh = debtHigh + buildHi;
-    set('totLow', big(totLow));     set('totHigh', big(totHigh));
-
-    set('totalFirstYear', big(totLow));
-
-    // The recurring bill is what actually differs between provinces: lost
-    // output plus the defence floor, both driven by GDP per head rather than
-    // by headcount.
-    const recurring = lossLow + natoHigh;
-    set('annualLoss', big(recurring) + '/yr');
-    set('perPerson', cad.format((recurring * 1e6) / pop));
-
-    // Day-one per head is near-constant by construction; say so rather than
-    // letting it read as a broken number.
-    set('flatPer', cad.format((totLow * 1e6) / pop));
-  }
-
-  sel?.addEventListener('change', render);
-  // The default province is already rendered server-side; this re-render is a
-  // no-op that simply keeps one code path for every province.
-  render();
+<script is:inline>
+  // Every province's lines are computed at build time, in the frontmatter, and
+  // ride on its <option> as data-bill in the order data-ids names. This only
+  // swaps text: no figure lives here, so the CSP hash cannot move with the data.
+  (() => {
+    const sel = document.getElementById('prov');
+    if (!sel) return;
+    const ids = (sel.dataset.ids || '').split(' ');
+    const render = () => {
+      const vals = (sel.selectedOptions[0]?.dataset.bill || '').split('|');
+      if (vals.length !== ids.length) return;
+      ids.forEach((id, i) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = vals[i];
+      });
+    };
+    sel.addEventListener('change', render);
+    // A browser that restores form state on reload can show a province other
+    // than the one rendered; this brings the figures back in line with it.
+    render();
+  })();
 </script>

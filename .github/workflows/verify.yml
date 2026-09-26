@@ -100,3 +100,30 @@ jobs:
           name: build-output
           path: .vercel/output/static
           retention-days: 3
+
+  # The same build with every upstream down. Pages are prerendered from StatCan,
+  # the Bank of Canada, the World Bank and ECCC, and a figure never renders
+  # blank: each falls back and says so. That has to hold for the BUILD as well,
+  # and so does everything a page ships. /calculator once carried the live
+  # population inside an inline script whose sha256 vercel.json pins, so every
+  # deploy after StatCan published a new quarter, or timed out mid-build, would
+  # have failed check-csp; nothing noticed, because CI only ever built with the
+  # network up. NT_OFFLINE=1 (src/lib/sources.ts) fails every upstream at once,
+  # so a shipped byte that depends on the data fails HERE, on the PR.
+  offline-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build with every upstream down
+        run: npm run build
+        env:
+          NT_OFFLINE: '1'

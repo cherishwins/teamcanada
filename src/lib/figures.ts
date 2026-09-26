@@ -101,6 +101,8 @@ export const BUILD_STATE_BASE_POP = 5057077;
 
 /** NATO's Hague pledge, 2025: 5% of GDP by 2035. */
 export const NATO_PCT = 0.05;
+/** The direct-military part of that pledge; the other 1.5% is defence-related. */
+export const NATO_DIRECT_PCT = 0.035;
 
 /**
  * Nitrogen a plant recovers from a leaf before dropping it.
