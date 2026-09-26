@@ -9,6 +9,8 @@
   Statistics Canada — the Web Data Service, free and without a key
   Bank of Canada — the Valet API, same
   Environment and Climate Change Canada — real-time hydrometric gauges
+  FAO AQUASTAT, served by the World Bank — the water figures, one source, one year
+  OpenParliament.ca — every recorded division and every ballot, keyless
   Natural Earth — public-domain world geometry
   The Oswald and Inter projects — open-licence typefaces
 
@@ -19,9 +21,10 @@
 
   Standards: HTML5, CSS, a little JavaScript
   Components: Astro, self-hosted WOFF2, inline SVG
-  Client JavaScript: about one kilobyte, gzipped
+  Client JavaScript: a few small inline scripts; every page reads without them
   Licence: CC0 1.0 — public domain, no permission needed
   Doctype: HTML5
   Language: English, with French in draft
 
-  Built without a tracker, a cookie banner, or a paid dependency.
+  Built with cookieless analytics (both named at /privacy), no cookie
+  banner, and no paid dependency.

@@ -102,6 +102,10 @@ async function expectPermanent(url, want) {
     await expect200(BASE + p);
     await expectPermanent(BASE + p + '/', BASE + p);
   }
+  // The legacy site's addresses ended in .html and are still linked from
+  // around the web. vercel.json forwards each to its page.
+  await expectPermanent(BASE + '/read/two-leaders.html', BASE + '/read/two-leaders');
+  await expectPermanent(BASE + '/index.html', BASE + '/');
   if (IS_PROD) await expect200(BASE + '/llms-full.txt', { noindex: true });
 
   if (IS_PROD) {

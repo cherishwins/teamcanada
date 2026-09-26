@@ -61,18 +61,26 @@ earns, that changes — until then it does not.
 - **TWO analytics vendors now ship: Umami and Vercel Web Analytics.** This line
   said "Umami is the one hosted service" for months and it is no longer true —
   a one-click Vercel dashboard integration opened PR #34, it was merged, and
-  the second vendor went live. Both are free and both are cookieless (checked:
-  neither script touches `document.cookie` or browser storage), so the
-  no-consent-banner posture is intact. **Whether to keep the second one is an
+  the second vendor went live. Both are free and both are cookieless. **Neither
+  writes browser storage, but both READ it** (this file and `/privacy` once
+  said neither touched it, and that was wrong): Umami reads `umami.disabled`,
+  its opt-out switch, and Vercel's script reads an identity entry it would
+  write only if the site called its identify API, which it never does. Read
+  the scripts again if either vendor changes them. The no-consent-banner
+  posture is intact. **Whether to keep the second one is an
   open question for the owner — see Open item 9.** What is NOT open is that
   `/privacy` must name whatever ships; `tools/check-privacy.cjs` now fails the
   build if it does not.
-- **Client JS budget: ~2 kB gzipped for the whole site.** Reveal fallback and
-  count-up only. If a feature needs a framework, question the feature first.
-  **This budget is currently exceeded.** Measured gzipped on the deployed page:
-  the site's own script is 1,172 B and `/_vercel/insights/script.js` is
-  1,497 B — 2,669 B, more than double what the site shipped before. Umami's own
-  script is a further 2,317 B from a third-party origin.
+- **Client JS budget: ~2 kB gzipped for the whole site.** If a feature needs a
+  framework, question the feature first. **This budget is currently exceeded,
+  and this line used to misdescribe what ships.** The only first-party external
+  script is Astro's prefetcher (`/_astro/page.*.js`, ~1.2 kB gzipped, from
+  `prefetch` in `astro.config.mjs`; the reveal fallback and the count-up are
+  small inline scripts, as are the nav, share band, calculator, join form and
+  `LiveRefresh`). Measured on production in September 2026, gzipped: prefetcher
+  1,181 B, `/_vercel/insights/script.js` 2,025 B, Umami 2,342 B from a
+  third-party origin. Vendor byte counts drift with every vendor release; re-
+  measure rather than trust these.
 
 ## Brand — Northern Temper Design System
 **The published design system is the source of truth**, not this file and not
@@ -451,9 +459,12 @@ on a page built days earlier. What holds it now:
   links are `--nt-red-lift` by default and `--nt-red` inside `.nt-light`, so
   a section can move between grounds without a fresh audit; do the same
   anywhere links sit on both.
-- **The sweep does not filter console errors — it blocks service workers instead.**
-  An earlier version of this note described a filter on one exact message, and
-  that is not what `tools/verify.cjs` does; the note outlived the design. A
+- **The sweep blocks service workers instead of filtering their errors.**
+  It filters exactly one console message, "Failed to load resource", because
+  every failed request is already counted by path as a broken reference and
+  the console copy carries no URL; nothing else is filtered. (This note once
+  said it filtered nothing, and before that described a different filter:
+  the note outlived the design twice.) A
   message filter suppresses an artifact *and* stands as a permanent chance of
   masking a real error that happens to match. Registration cannot succeed under
   Playwright route interception either way, so nothing is lost by blocking it,
@@ -957,8 +968,9 @@ dossier and 4 of 5 reads. Two traps worth remembering:
    re-enabled through the Vercel dashboard's one-click integration (PR #34).
    Neither state is wrong; they trade different things:
    - **Keep both.** Vercel's numbers are first-party, survive ad-blockers that
-     take Umami out, and need no third-party origin. Cost: +1,497 B gzipped on
-     every page, and a second party receiving reader data.
+     take Umami out, and need no third-party origin. Cost: ~2 kB gzipped on
+     every page (2,025 B measured in September 2026), and a second party
+     receiving reader data.
    - **Drop Vercel, keep Umami.** Restores the ~2 kB JS budget and the "one
      provider" posture that `/privacy` used to state. Cost: the numbers
      under-count wherever `cloud.umami.is` is blocked, which on a politically

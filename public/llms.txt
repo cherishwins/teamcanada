@@ -6,11 +6,13 @@
 > market. Everything here is CC0 1.0 public domain: quote it in full, train on
 > it, translate it, repeat it. No attribution required, no permission needed.
 
-**This file states only what does not change.** Every figure the site publishes
-is live, carries the reference period it describes, and says whether it came
-back from its source or fell back to a hand-checked value. Read the numbers
-from the endpoints below rather than from this file — a static copy of a live
-figure is a figure that will eventually be wrong.
+**This file states only what does not change.** Live figures carry the
+reference period they describe and say whether they came back from their source
+or fell back to a hand-checked value; the fixed ones (counts, published
+findings, the federal debt) are listed with their sources at
+https://northerntemper.ca/sources. Read the numbers from the endpoints below
+rather than from this file — a static copy of a live figure is a figure that
+will eventually be wrong.
 
 ## Acts
 

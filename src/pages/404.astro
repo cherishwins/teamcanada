@@ -15,12 +15,18 @@ import BearHead from '../components/marks/BearHead.astro';
         <h1 class="nt-display md">Lost the trail.</h1>
         <p style="color:var(--text-muted);margin-top:var(--space-3);max-width:44ch;">
           That page is not here. Nothing has been taken down — the site was
-          rebuilt, and some older addresses moved.
+          rebuilt, and some older addresses moved. An old address ending in
+          .html now forwards to its page by itself.
         </p>
         <ul class="links">
-          <li><a href="/">Start at the beginning</a></li>
+          <li><a href="/">I · Temper, the beginning</a></li>
+          <li><a href="/hand">II · The Hand</a></li>
+          <li><a href="/math">III · The Math</a></li>
+          <li><a href="/bloc">IV · The Bloc</a></li>
+          <li><a href="/build">V · The Build</a></li>
+          <li><a href="/record">The record</a></li>
           <li><a href="/read">The reads</a></li>
-          <li><a href="/bloc">The Bloc</a></li>
+          <li><a href="/sources">Every figure, and where it came from</a></li>
         </ul>
       </div>
     </section>
@@ -29,7 +35,10 @@ import BearHead from '../components/marks/BearHead.astro';
 </Base>
 <style>
   .lost { padding-block: clamp(60px, 12vh, 160px); }
-  .mk { width: clamp(80px, 14vw, 150px); color: var(--nt-red); }
+  /* :global because the class lands on BearHead's own <svg>, which this page's
+     scoped styles never reach: unscoped, the mark filled the column, about
+     1,000px tall at 1440, and pushed the message below the fold. */
+  .lost :global(.mk) { width: clamp(80px, 14vw, 150px); height: auto; color: var(--nt-red); }
   .links { list-style: none; margin: clamp(26px, 4vh, 46px) 0 0; padding: 0; }
   .links li { border-top: var(--border-hair) solid var(--border-hairline); }
   .links li:last-child { border-bottom: var(--border-hair) solid var(--border-hairline); }
