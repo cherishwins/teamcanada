@@ -163,6 +163,23 @@ function save(snap) {
     }
     // 2. Names for anyone new.
     for (const m of snap.members) if (m.name === m.id) { const p = await get(`/politicians/${m.id}/`); if (p) m.name = p.name; }
+    // 3. Party and riding for anyone who has left the House. OpenParliament's
+    //    politician record carries no current party or riding for a former
+    //    member, and the snapshot's first import took both from there, so twelve
+    //    members, the most dissenting one among them, showed a dash in every
+    //    column. Their last membership still names both. One request per such
+    //    member, once: a filled riding is never fetched again.
+    let repaired = 0;
+    for (const [i, m] of snap.members.entries()) {
+      if (m.riding) continue;
+      const last = snap.memberships.filter((x) => x.m === i && x.url).sort((a, b) => (a.from < b.from ? 1 : -1))[0];
+      const mem = last && (await get(last.url));
+      if (mem?.riding) {
+        Object.assign(m, { party: mem.party?.short_name?.en || m.party, riding: mem.riding.name?.en || null, province: mem.riding.province || null });
+        repaired++;
+      }
+    }
+    if (repaired) console.log(`record ${SESSION}: filled party and riding for ${repaired} member(s) from their last membership`);
     if (fresh.length) snap.fetched = new Date().toISOString();
   }
 

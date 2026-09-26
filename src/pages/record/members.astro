@@ -39,8 +39,8 @@ const description =
             {r.members.map((m) => (
               <tr id={`mp-${m.id}`}>
                 <td class="nowrap"><a href={m.openparliament}>{m.name}</a></td>
-                <td class="nowrap">{m.party ?? '—'}</td>
-                <td>{m.riding ?? '—'}</td>
+                <td class="nowrap">{m.parties.length > 1 ? m.parties.join(' → ') : (m.party ?? '—')}</td>
+                <td>{m.riding ?? '—'}{m.left && <span class="left">Sat until {day(m.left)}</span>}</td>
                 <td class="nowrap">{m.province ?? '—'}</td>
                 <td class="num">{m.cast}</td>
                 <td class="num">{pct(m.rate)}</td>
@@ -53,11 +53,13 @@ const description =
         </table>
       </section>
       <p class="foot">
-        The party a member is scored against is the one they sat for on the day of each vote. A member with
+        The party a member is scored against is the one they sat for on the day of each vote; a member who
+        changed party during the session is listed with every party in order, and one whose seat has ended
+        with the day it did. A member with
         fewer than twenty comparable votes, or whose party had fewer than three members casting, is listed
         without a rate. Every division is on <a href="/record/divisions">the divisions ledger</a>; the method,
         the party agreement matrix and the sources are on <a href="/record">the record's front page</a>.
-        The whole record is at <a href="/api/record.json"><code>/api/record.json</code></a>.
+        The whole record is at <a href="/api/record.json" data-astro-prefetch="false"><code>/api/record.json</code></a>.
       </p>
     </div>
   </section>

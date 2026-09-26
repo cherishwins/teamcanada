@@ -997,6 +997,14 @@ copy, `src/lib/record.ts`:** the three pages and the endpoint import it, and
 `memberships[]` (with the OpenParliament URL, so an incremental run never
 refetches one), and `votes[]` each carrying a `ballots` string of `Y/N/P/A/-`
 indexed by member position. 59,579 ballots in 174 kB, committed, diffable.
+**A member who has left the House has no current party or riding on
+OpenParliament**, and the snapshot's first import took both from the
+politician record, so twelve members showed a dash in every column of the
+ledger, including the most dissenting one the front page names. `fetch.cjs`
+now fills them from the member's last membership, once. The ledger also
+lists every party a member sat for this session in order (six crossed the
+floor or left their caucus: five to the Liberals, one to sit as an
+independent), and the day a seat ended; `party` alone is only the last one.
 `node tools/record/fetch.cjs 45-1` fetches only the divisions the snapshot
 lacks (a run with nothing new is about three requests) and only bumps
 `fetched` when something was; `node tools/record/analyse.cjs` prints the
