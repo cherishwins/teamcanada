@@ -9,11 +9,23 @@
  * data colour), because the identity of each bar is its row and column label,
  * never its colour.
  *
+ * A space is written between cells. A table never renders it, and a reader
+ * of the text alone (llms-full.txt, a copy of the page) would otherwise get
+ * "LayerCalgaryVancouverToronto" and "Clean858 TWh".
+ *
  * Written for /read/the-vertical-squeeze, whose three figures were PNG charts
  * in the legacy page and were dropped in migration while their captions
- * stayed, so the read described figures it did not show.
+ * stayed, so the read described figures it did not show. /read/the-closed-loop
+ * uses it too: its Figure 1 was a bar drawn in divs, which migration flattened
+ * into eight loose lines of text.
  */
-interface Row { label: string; values: number[]; bars?: boolean }
+interface Row {
+  label: string;
+  values: number[];
+  bars?: boolean;
+  /** The source states the value as approximate; it prints with a "~", as written there. */
+  approx?: boolean;
+}
 interface Props {
   /** Names the scrolling region and the table, e.g. "Figure 1". */
   name: string;
@@ -21,30 +33,32 @@ interface Props {
   rowHead: string;
   columns: string[];
   rows: Row[];
-  /** How a value is printed, e.g. dollars or a percentage. */
-  unit: 'dollars' | 'percent';
+  /** How a value is printed, e.g. dollars, a percentage, or terawatt-hours. */
+  unit: 'dollars' | 'percent' | 'TWh';
 }
 const { name, rowHead, columns, rows, unit } = Astro.props;
 const max = Math.max(...rows.filter((r) => r.bars !== false).flatMap((r) => r.values), 1);
 const nf = new Intl.NumberFormat('en-CA');
-const fmt = (v: number) => (unit === 'percent' ? `${nf.format(v)}%` : `$${nf.format(v)}`);
+const fmt = (v: number, approx = false) =>
+  (approx ? '~' : '') +
+  (unit === 'percent' ? `${nf.format(v)}%` : unit === 'TWh' ? `${nf.format(v)}\u00a0TWh` : `$${nf.format(v)}`);
 ---
 <figure class="bt">
   <section class="tw" tabindex="0" aria-label={`${name}, as a table`}>
     <table class:list={['narrow bars', { single: columns.length === 1 }]}>
       <thead>
-        <tr><th scope="col">{rowHead}</th>{columns.map((c) => <th scope="col">{c}</th>)}</tr>
+        <tr><th scope="col">{rowHead}</th>{columns.map((c) => <>{' '}<th scope="col">{c}</th></>)}</tr>
       </thead>
       <tbody>
         {rows.map((r) => (
           <tr class={r.bars === false ? 'sum' : undefined}>
             <th scope="row">{r.label}</th>
-            {r.values.map((v) => (
-              <td>
-                <span class="v">{fmt(v)}</span>
+            {r.values.map((v) => (<>
+              {' '}<td>
+                <span class="v">{fmt(v, r.approx)}</span>
                 {r.bars !== false && <span class="b" style={`width:${((v / max) * 100).toFixed(1)}%`}></span>}
               </td>
-            ))}
+            </>))}
           </tr>
         ))}
       </tbody>

@@ -72,7 +72,10 @@ const { title, pageTitle, description, imprint, standfirst, path, dateline, ogIm
   /* A heading's kicker ("Letter the First", "Tier I — …") rides inside the
      heading as a block, so the outline carries it and nothing floats loose
      between sections. A section counter ("03 / 06") is decoration: hidden
-     from assistive tech, set small at the heading's end. */
+     from assistive tech, set small at the heading's end. Write a space after
+     the kicker's closing tag: the block drops it on screen, and without it
+     the heading's text is "Part IThe Diagnosis" to anything that reads text
+     rather than layout (llms-full.txt is built that way). */
   .col :global(h2 .eyebrow), .col :global(h3 .eyebrow) {
     display: block; margin-bottom: var(--space-1);
     font-weight: var(--fw-label); font-size: var(--type-label-sm);
@@ -94,6 +97,8 @@ const { title, pageTitle, description, imprint, standfirst, path, dateline, ogIm
     border: var(--border-key) solid var(--nt-red); color: var(--nt-red); padding: 2px 10px;
   }
   .col :global(.byline) { color: var(--text-muted); font-size: var(--type-body-sm); }
+  /* A token that must not break at its own hyphens, e.g. "CC-BY-4.0" as "CC-" / "BY-4.0". */
+  .col :global(.nw) { white-space: nowrap; }
   .col :global(ol.claims li::marker), .col :global(ol.notes li::marker) { color: var(--nt-red); font-weight: var(--fw-body-strong); }
   .col :global(.claims .src) {
     display: block; margin-top: var(--space-1);
@@ -167,6 +172,15 @@ const { title, pageTitle, description, imprint, standfirst, path, dateline, ogIm
     font-size: clamp(40px, 6vw, 64px); line-height: .9; color: var(--nt-red);
     margin: var(--space-3) 0 0;
   }
+  /* Three cards that belong in one row (the three rails of a working paper):
+     one row where the column has room, one column on a phone. The auto-fit
+     minimum above would leave the third card alone on a second row. */
+  @media (min-width: 48rem) {
+    .col :global(.compare.three) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+  /* A card's heading wraps in a third of the column; at body leading its two
+     lines drift apart and read as two headings. */
+  .col :global(.compare.three h3) { line-height: 1.15; }
   .col :global(.compare .big small) {
     display: block; font-family: var(--font-display); font-weight: var(--fw-label);
     font-size: var(--type-stamp); letter-spacing: var(--ls-caption); text-transform: uppercase;
@@ -194,4 +208,13 @@ const { title, pageTitle, description, imprint, standfirst, path, dateline, ogIm
   }
   .col :global(td) { border-bottom: var(--border-hair) solid var(--border-hairline); padding: 11px 13px; vertical-align: top; }
   .col :global(tbody tr:first-child td) { font-weight: var(--fw-body-strong); }
+  /* A table keyed by its first column: each row's name is its header cell,
+     set bold on the page ground (as the legacy set it), not as a black header,
+     and no row is a headline, so the first-row emphasis above does not apply. */
+  .col :global(table.keyed tbody th) {
+    background: none; color: inherit; font-family: var(--font-body); font-weight: var(--fw-body-strong);
+    font-size: inherit; letter-spacing: 0; text-transform: none; vertical-align: top;
+    border-bottom: var(--border-hair) solid var(--border-hairline);
+  }
+  .col :global(table.keyed tbody tr:first-child td) { font-weight: inherit; }
 </style>
