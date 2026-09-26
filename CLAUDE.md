@@ -163,7 +163,9 @@ one file serves both colourways. **Never reference them via `<img src>`:**
 - `.github/workflows/verify.yml` — build + `check-french` + `npm audit` + the
   full sweep, on every PR and every push to `main`. Free: the repo is public.
 - `tools/check-french.cjs` — Québec typography + banned-framing audit;
-  `tools/check-llms.cjs` — llms.txt shape + no-restated-figures; and
+  `tools/check-llms.cjs` — llms.txt shape + no-restated-figures, and
+  `ai.txt`'s `Data:` lines equal `src/pages/api` both ways (it said "four
+  endpoints" while six shipped, the third typed count to drift here); and
   `tools/check-docs.cjs` — **every path THIS file names must exist**; and
   `tools/check-privacy.cjs` — **`/privacy` must name exactly the analytics
   vendors the site actually ships**, and no third-party script origin may reach
@@ -212,8 +214,8 @@ one file serves both colourways. **Never reference them via `<img src>`:**
 - `tools/generate-favicons.cjs` — every small icon, drawn from
   `public/favicon.svg`; `tools/check-icons.cjs` — proves they still match.
 - `tools/check-sitemap.cjs` — the sitemap and the pages' robots meta must
-  agree, and no `X-Robots-Tag` header rule in `vercel.json` may noindex a page
-  that should be indexed.
+  agree, and the `X-Robots-Tag` rules in `vercel.json` must reach exactly the
+  five machine text files, no more and no fewer.
 - `tools/check-csp.cjs` — the CSP in `vercel.json` matches the built scripts.
 - `tools/check-canonical.cjs` — one page, one URL, in the build. See the
   convention "One page, one URL" below for why it exists.
@@ -345,8 +347,8 @@ public and checkable" — it can afford neither a dash nor a silently stale numb
   and silently kept the homepage. A `has` condition cannot run on a preview
   or under `vercel dev`, which is why `check-urls-live` exists.
 - **The five machine text files carry `X-Robots-Tag: noindex`; nothing else
-  does.** `/llms-full.txt` is every page's prose in one file, 70 to 97% of
-  each page's text, and it was indexable: an extra search result that could
+  does.** `/llms-full.txt` is 18 pages' prose in one file, 70 to 99% of
+  each one's words, and it was indexable: an extra search result that could
   win a long-tail query as bare text/plain, with no share band, no live
   figures and no fallback notice. It was also the only indexable copy of the
   `/fr` BROUILLON, which the owner deliberately keeps `noindex`. `llms.txt`,
@@ -361,10 +363,16 @@ public and checkable" — it can afford neither a dash nor a silently stale numb
   reads the markup on `/sources` and `/record`); and `/og/`, because Article
   images must be crawlable and indexable. **The rule is one careless edit away
   from deleting the site from Google** (a source widened to `/(.*)`), so
-  `check-sitemap` now compiles every header rule with Vercel's own router and
-  fails if any would noindex a sitemap URL or an indexable page. It was proven
-  on two broken configs: 39 violations for the widened rule, 1 for a rule
-  catching a single read.
+  `check-sitemap` compiles every header rule with Vercel's own router, tests
+  it against every file the build wrote, every page in both spellings and
+  every `/api/` route, and fails unless the rules reach exactly these five
+  files. It counts `none` and `unavailable_after` as well as `noindex`: its
+  first version matched only the word, and a rule sending `none` to `/(.*)`,
+  which Google defines as "Equivalent to noindex, nofollow", passed with every
+  page deindexed. It fails on a missing `vercel.json` rather than skipping.
+  Proven by swapping the rule's source: `/(.*)` sending `none` fails with
+  138 violations (the first version passed it with 0), `/og/(.*)` with 41,
+  `/api/(.*)` 11, `/(.*)\.xml` 8, `/(.*)\.txt` 3, a single read 6.
 - Develop on a branch → draft PR → merge to `main`. The one exception is
   `record[bot]`, which commits a new snapshot straight to `main` after the
   build passes — see "The record".

@@ -22,6 +22,13 @@
  *      wrong. So per-capita water figures and any ratio phrased as "N:1" are
  *      refused outright, and the retired pair is named explicitly so it can
  *      never reappear.
+ *
+ *   3. ai.txt NAMES EVERY ENDPOINT, AND ONLY REAL ONES. ai.txt is the other
+ *      hand-written file machines are told to trust, and it said "four public
+ *      JSON endpoints" and listed four while six shipped — the third time a
+ *      typed endpoint count drifted on this site (/sources and llms-full.txt
+ *      were the first two). Its `Data:` lines must equal src/pages/api, both
+ *      ways.
  */
 const fs = require('fs');
 const path = require('path');
@@ -74,6 +81,23 @@ lines.forEach((line, i) => {
   }
 });
 
+// ---- 3. ai.txt lists exactly the endpoints the site serves.
+const AI = path.join(path.dirname(FILE), 'ai.txt');
+const API = path.join('src', 'pages', 'api');
+let endpoints = 0;
+if (!fs.existsSync(AI)) {
+  fail.push(`${AI} not found`);
+} else if (fs.existsSync(API)) {
+  const listed = new Set([...fs.readFileSync(AI, 'utf8').matchAll(/^Data:\s*\S*?(\/api\/[^\s]+)\s*$/gm)].map((m) => m[1]));
+  const served = new Set(fs.readdirSync(API).filter((f) => /\.json\.[cm]?[jt]s$/.test(f)).map((f) => '/api/' + f.replace(/\.[cm]?[jt]s$/, '')));
+  endpoints = served.size;
+  for (const e of served) if (!listed.has(e)) fail.push(`ai.txt: no "Data:" line for ${e}, which the site serves`);
+  for (const e of listed) if (!served.has(e)) fail.push(`ai.txt: "Data:" names ${e}, which the site does not serve`);
+  if (/\b(two|three|four|five|six|seven|eight|nine|ten|\d+)\s+(public\s+)?(JSON\s+)?endpoints\b/i.test(fs.readFileSync(AI, 'utf8'))) {
+    fail.push('ai.txt: states a count of endpoints in prose — list them as Data: lines instead; a typed count drifts');
+  }
+}
+
 if (fail.length) {
   console.error(`\ncheck-llms: ${fail.length} issue(s) in ${FILE}\n`);
   for (const f of fail) console.error('  ' + f);
@@ -82,4 +106,4 @@ if (fail.length) {
 }
 const sections = (text.match(/^## /gm) || []).length;
 const links = (text.match(/^[-*] \[[^\]]+\]\([^)]+\)/gm) || []).length;
-console.log(`check-llms: ${FILE} — H1 ok, ${sections} sections, ${links} links, 0 restated figures`);
+console.log(`check-llms: ${FILE} — H1 ok, ${sections} sections, ${links} links, 0 restated figures; ai.txt lists all ${endpoints} endpoints`);

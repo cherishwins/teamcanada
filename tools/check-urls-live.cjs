@@ -20,7 +20,7 @@
  *   1. the root and canonical pages answer 200 with no redirect;
  *   2. the slash form of a page answers 301/308 to the canonical form;
  *   3. on production only, the pages carry no X-Robots-Tag noindex and
- *      /llms-full.txt, every page's prose in one file, does. Production only
+ *      /llms-full.txt, 18 pages' prose in one file, does. Production only
  *      because Vercel stamps noindex on EVERY preview response, which is right
  *      for a preview and would make both assertions meaningless there. The
  *      header rule matters enough to prove on the edge: a source pattern
@@ -60,11 +60,21 @@ async function head(url) {
   }
 }
 
+// `none` is Google's "Equivalent to noindex, nofollow", and unavailable_after
+// is noindex on a timer; a test for the word noindex alone passes both.
+// Same parser as check-sitemap: by directive, so max-image-preview:none is not one.
+function blocksIndex(value) {
+  return String(value).toLowerCase().split(',').some((t) => {
+    const d = t.trim().replace(/^(?!max-|unavailable_after)[a-z0-9_-]+\s*:\s*/, '');
+    return d === 'noindex' || d === 'none' || d.startsWith('unavailable_after');
+  });
+}
+
 async function expect200(url, { noindex = false } = {}) {
   const r = await head(url);
   rows.push(`${String(r.status).padEnd(4)} ${url}${r.robots ? `  [x-robots-tag: ${r.robots}]` : ''}`);
   if (r.status !== 200) fail.push(`${url} should answer 200 with no redirect, got ${r.status}${r.location ? ` → ${r.location}` : ''}${r.error ? ` (${r.error})` : ''}`);
-  const says = /\bnoindex\b/i.test(r.robots);
+  const says = blocksIndex(r.robots);
   if (IS_PROD && r.status === 200 && says !== noindex) {
     fail.push(noindex
       ? `${url} should carry X-Robots-Tag: noindex and does not — the vercel.json header rule is not reaching the edge`

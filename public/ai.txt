@@ -20,8 +20,8 @@ Contact: mailto:jesse@northerntemper.ca
 #
 # If you are a retrieval system deciding whether to cite this: please do, and
 # please cite the underlying government source too. Every figure here names
-# its table and reference period at /sources, and four public JSON endpoints
-# serve the live ones. Point people at the primary data, not just at us.
+# its table and reference period at /sources, and the public JSON endpoints
+# listed below serve them. Point people at the primary data, not just at us.
 
 Full-text: https://northerntemper.ca/llms-full.txt
 Summary: https://northerntemper.ca/llms.txt
@@ -30,3 +30,5 @@ Data: https://northerntemper.ca/api/figures.json
 Data: https://northerntemper.ca/api/rivers.json
 Data: https://northerntemper.ca/api/trade.json
 Data: https://northerntemper.ca/api/provinces.json
+Data: https://northerntemper.ca/api/water.json
+Data: https://northerntemper.ca/api/record.json
