@@ -72,6 +72,8 @@ async function buildCards(){
   line:'Public domain. Nothing here is behind a payment.', stat:'CC0', statk:'no permission needed'},
  {slug:'join',      label:'The coalition', title:'Put your name\nbehind one country',
   line:'No account. No fee. Free to leave whenever you like.', stat:'∅', statk:'nothing to sign'},
+ {slug:'the-warning-label', label:'Northern Temper · Paper No. 01', title:'The warning\nlabel',
+  line:'What a British law from 1887 can tell Canada about the China panic.', stat:'139', statk:'years of warning labels'},
  {slug:'the-red-is-the-work', label:'A reading of the leaf', title:'The red\nis the work',
   line:'Not a leaf giving up. A tree getting ready for a long winter, on purpose.', stat:N_RESORPTION.display, statk:'of the nitrogen, taken back first'},
  {slug:'the-closed-loop', label:'NPSI · Working Paper No. 6', title:'The Closed\nLoop',

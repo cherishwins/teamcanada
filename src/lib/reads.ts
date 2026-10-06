@@ -41,6 +41,11 @@ export interface ReadMeta {
 
 export const READS: ReadMeta[] = [
   {
+    slug: 'the-warning-label', title: 'The Warning Label', imprint: 'Northern Temper · Paper No. 01',
+    blurb: 'Dominant powers keep putting warning labels on rising competitors, and the labels keep failing. What a British law from 1887 can tell Canada about the China panic.',
+    published: '2026-10-06', words: 3876,
+  },
+  {
     slug: 'the-red-is-the-work', title: 'The Red Is the Work', imprint: 'A reading of the leaf',
     blurb: 'The red on a maple leaf is not the leaf dying. The tree makes it, on purpose, to cover the work of taking back what it needs before winter. A reading of the flag.',
     published: '2026-09-24', words: 1180,
