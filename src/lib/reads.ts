@@ -37,11 +37,30 @@ export interface ReadMeta {
   published: string;
   /** Counted from the built article by check-figures, never estimated. */
   words: number;
+  /**
+   * THE PAPER REGISTER. A Northern Temper paper carries its number here and
+   * nowhere else. The imprint is derived from it (see `paperImprint`), so the
+   * label on the page, on /read, in the feed and on the share card cannot
+   * disagree with the number. tools/check-figures.cjs proves the register:
+   * numbers run 1..N with no gap and no repeat, each paper's imprint is the
+   * derived one, and a later number is never dated before an earlier one.
+   * The next paper takes `nextPaper()`; do not pick a number by hand, and
+   * do not keep this list anywhere else (a session's memory is not a file).
+   */
+  paper?: number;
 }
+
+/** The imprint every paper prints, from its number. */
+export const paperImprint = (n: number) => `Northern Temper · Paper No. ${String(n).padStart(2, '0')}`;
 
 export const READS: ReadMeta[] = [
   {
-    slug: 'the-warning-label', title: 'The Warning Label', imprint: 'Northern Temper · Paper No. 01',
+    slug: 'the-waiting-discount', title: 'The Waiting Discount', imprint: paperImprint(2), paper: 2,
+    blurb: 'Sixty years of oil sands tailings, the regulator’s own numbers, and why the ponds are cheaper to keep than to clean. The one rule that would make somebody pay to finish.',
+    published: '2026-10-14', words: 4381,
+  },
+  {
+    slug: 'the-warning-label', title: 'The Warning Label', imprint: paperImprint(1), paper: 1,
     blurb: 'Dominant powers keep putting warning labels on rising competitors, and the labels keep failing. What a British law from 1887 can tell Canada about the China panic.',
     published: '2026-10-06', words: 3876,
   },
@@ -77,6 +96,11 @@ export const READS: ReadMeta[] = [
     published: '2026-06-01', words: 710,
   },
 ];
+
+/** The papers, in number order. */
+export const papers = () => READS.filter((r) => r.paper).sort((a, b) => a.paper! - b.paper!);
+/** The number the next paper takes. */
+export const nextPaper = () => (papers().at(-1)?.paper ?? 0) + 1;
 
 export function read(slug: string): ReadMeta {
   const r = READS.find((x) => x.slug === slug);

@@ -43,6 +43,7 @@ AQUASTAT via the World Bank.
 ## Reading
 
 - [The reads](https://northerntemper.ca/read): long-form pieces, sourced in full
+- [The Waiting Discount](https://northerntemper.ca/read/the-waiting-discount): sixty years of oil sands tailings, the regulator's own numbers, and the accounting that makes a pond cheaper to keep than to clean
 - [The Warning Label](https://northerntemper.ca/read/the-warning-label): what a British law from 1887 can tell Canada about the China panic, and who has been writing our labels
 - [The Red Is the Work](https://northerntemper.ca/read/the-red-is-the-work): the red on a maple leaf is not the leaf dying, it is the tree taking back what it needs before winter
 - [The Closed Loop](https://northerntemper.ca/read/the-closed-loop): Korea holds the silicon, Canada holds the power

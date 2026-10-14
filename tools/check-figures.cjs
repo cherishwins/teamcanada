@@ -166,6 +166,20 @@ async function countReads() {
     return null;
   };
   if (!READS.length) fail.push('src/lib/reads.ts exported no reads — this check went blind. Fix the load, do not delete the check.');
+  // ---- 4. The paper register. A paper's number is written once, in reads.ts,
+  // and this is what keeps the sequence honest across sessions: numbers run
+  // 1..N with no gap and no repeat, the imprint is the one derived from the
+  // number, and a later paper is never dated before an earlier one. The
+  // owner asked for a register nobody has to remember; a check is the only
+  // kind that nobody has to remember.
+  const { paperImprint } = require('./load-ts.cjs')('reads');
+  const papers = READS.filter((r) => r.paper != null).sort((a, b) => a.paper - b.paper);
+  papers.forEach((r, i) => {
+    if (r.paper !== i + 1) fail.push(`paper register: read/${r.slug} is Paper No. ${r.paper} but the sequence needs No. ${i + 1} there (numbers run 1..N, no gaps, no repeats). Use nextPaper() from src/lib/reads.ts.`);
+    if (r.imprint !== paperImprint(r.paper)) fail.push(`paper register: read/${r.slug} prints imprint "${r.imprint}" but Paper No. ${r.paper} derives "${paperImprint(r.paper)}". Set imprint: paperImprint(${r.paper}).`);
+    const prev = papers[i - 1];
+    if (prev && r.published < prev.published) fail.push(`paper register: Paper No. ${r.paper} (${r.published}) is dated before Paper No. ${prev.paper} (${prev.published}); numbers follow publication order.`);
+  });
   for (const r of READS) {
     const file = path.join(ROOT, 'read', r.slug, 'index.html');
     if (!fs.existsSync(file)) { fail.push(`read/${r.slug} is in src/lib/reads.ts but the build has no page for it`); continue; }
@@ -174,10 +188,10 @@ async function countReads() {
     const n = say(body).split(/\s+/).filter((w) => /[\p{L}\p{N}]/u.test(w)).length;
     if (n !== r.words) fail.push(`read/${r.slug} says ${r.words.toLocaleString('en-CA')} words and its article counts ${n.toLocaleString('en-CA')}. Set words: ${n} in src/lib/reads.ts.`);
   }
-  return READS.length;
+  return { reads: READS.length, papers: papers.length };
 }
 
-countReads().then((reads) => {
+countReads().then(({ reads, papers: papersCount }) => {
   if (fail.length) {
     console.error('check-figures: a hand-entered figure needs attention\n');
     for (const f of fail) console.error(`  ✗ ${f}`);
@@ -188,6 +202,6 @@ countReads().then((reads) => {
   const next = reviews.map((r) => r.date).sort()[0];
   console.log(
     `check-figures: ${displays.length} fixed figures, ${reviews.length} with a review date` +
-      `${next ? ` (next ${next})` : ''}, no re-typed copies in ${pages.length} pages, ${reads} reads counted`,
+      `${next ? ` (next ${next})` : ''}, no re-typed copies in ${pages.length} pages, ${reads} reads counted, ${papersCount} papers in register`,
   );
 });
