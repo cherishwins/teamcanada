@@ -1,0 +1,266 @@
+---
+import Read from '../../layouts/Read.astro';
+import Share from '../../components/Share.astro';
+import BarTable from '../../components/BarTable.astro';
+import BearDual from '../../components/marks/BearDual.astro';
+import { FLUID_TAILINGS, TAILINGS_SECURITY, TAILINGS_LIABILITY, TAILINGS_SECURED_PCT } from '../../lib/figures';
+
+/**
+ * Northern Temper Paper No. 02, 14 October 2026.
+ *
+ * Drafted here, from two days of research the owner directed (the working
+ * notes and the 107-agent deep-research run are in the session, not in the
+ * repo): every figure below was read from its primary source in that work,
+ * and the three that have a publishing cycle (the fluid tailings inventory,
+ * the security held and the liability) render from src/lib/figures.ts with
+ * review dates, so the build fails the autumn they go stale. The figures that
+ * appear once, footnoted, are typed here as the sources print them.
+ *
+ * The rule for a paper is that the words are the author's. This draft is
+ * offered to the owner to make theirs: the opinions are set as `p.view` and
+ * say "our view", and the byline says the paper was drafted with the
+ * research in the open. Change either before it ships if the owner signs it
+ * in the first person.
+ *
+ * Two corrections the research forced on the draft before it was written,
+ * kept here so a reader of the earlier notes can see why the paper differs:
+ *   - the security and liability pair quoted almost everywhere, $2.6 billion
+ *     against $52.7 billion, includes the coal mines; the oil sands pair is
+ *     $1.8 billion against $51.9 billion (Auditor General of Alberta, Dec.
+ *     2025; ABlawg, Oct. 2025);
+ *   - CNRL Horizon's carbon dioxide tailings are a throughput success and an
+ *     inventory failure: the regulator accepted 11.5 of the 84.7 million m³
+ *     claimed as ready to reclaim, and the site's own inventory rose.
+ */
+const secured = TAILINGS_SECURED_PCT.toFixed(1);
+---
+<Read
+  slug="the-waiting-discount"
+  description={"Sixty years of oil sands tailings, the regulator's own numbers, and the accounting that makes a pond cheaper to keep than to clean. One rule would change that, and the people downstream are holding the stronger argument."}
+  standfirst={"Sixty years of oil sands tailings, the regulator's own numbers, and why the ponds are cheaper to keep than to clean."}
+>
+      <section class="brief" aria-labelledby="in-brief">
+        <h2 id="in-brief">In brief</h2>
+        <ul>
+          <li>The oil sands hold {FLUID_TAILINGS.display} of fluid tailings, and the inventory grew by 43.8 million cubic metres in 2024. It has grown every year but one since 2015.</li>
+          <li>The industry's plan for every pond is to cap it with water and wait. The one full-scale test has run for eleven years. Its volume is down 15 percent and its toxins have not moved.</li>
+          <li>Alberta holds {TAILINGS_SECURITY.display} of security against a {TAILINGS_LIABILITY.display} cleanup bill. That is {secured} percent. The mechanism meant to collect more has never once triggered.</li>
+          <li>The ponds are not a chemistry problem that nobody can solve. They are an accounting problem that nobody is paid to solve. We call it the waiting discount.</li>
+          <li>Most of what would fix them is already sitting within thirty kilometres: a mountain of coke, a mountain of sulphur, waste heat, and five months of winter.</li>
+          <li>The First Nations asking for reuse instead of release are holding the stronger arithmetic. This paper shows why, and names the one rule that would make somebody finish.</li>
+        </ul>
+      </section>
+
+      <h3>How to read this</h3>
+      <p>Every figure in this paper is public, dated and footnoted. The three that move each year render from one file on this site and carry the date they must be checked again. Where we give an opinion, it stands in its own sentence and says so.</p>
+      <p>Nothing here asks an Albertan to feel ashamed or an oil worker to feel accused. It asks a Canadian reader to look at a bill.</p>
+      <p class="byline">Northern Temper. Drafted with the research in the open, 14 October 2026. <a href="#sources">The sources are at the end.</a></p>
+
+      <h2><span class="eyebrow">Part one</span> The lake that is a pond</h2>
+      <p>In December 2012, Syncrude stopped pumping tailings into a mined-out pit north of Fort McMurray, covered it with water, and called it a lake.<sup><a href="#note-1">1</a></sup></p>
+      <p>Base Mine Lake is the test case. Every closure plan in the oil sands leans on the same idea: when a mine is done, the pond becomes a pit lake, the clay settles, the water clears, and in time a reader could fish in it. The industry has had eleven years to show that this works on the one lake where it has been tried.</p>
+      <p>Here is what eleven years show. The fluid tailings under the water cap went from 196 million cubic metres to 167 million. That is a loss of 14.9 percent, and Syncrude's own projection is that nine tenths of the settling will not be done until 2050.<sup><a href="#note-1">1</a></sup></p>
+      <p>The naphthenic acids, the compounds that kill a duck and poison a fish, have not moved. The median in the lake water has been flat since 2013. In 2022 it sat at 27 to 29 milligrams per litre. The freshwater reservoir next door reads one or two.<sup><a href="#note-1">1</a></sup></p>
+      <p>The water is no longer acutely toxic. It is still chronically toxic to the small animals that tests use. Chloride, sulphide and boron sit above the long-term guidelines for aquatic life.<sup><a href="#note-1">1</a></sup></p>
+      <p>A 2026 study of the lake's chemistry says the plain thing. The tailings below keep feeding acids into the water above, and the water column is "an effective barrier" that holds the level steady.<sup><a href="#note-2">2</a></sup> A barrier is not a sink. The lake is a reactor that runs at the same setting every year.</p>
+      <p>One thing did work. In September 2016 a single dose of alum, the stuff a water plant uses, cleared the cloudiness for good.<sup><a href="#note-1">1</a></sup> Hold on to that. It is the shape of every fix in this paper: cheap, ordinary, and already proven somewhere else.</p>
+
+      <dl class="facts">
+        <div><dt>11</dt><dd>Years of the one full-scale pit lake test, December 2012 to 2023.</dd></div>
+        <div><dt>14.9%</dt><dd>Of the fluid tailings volume gone in that time.</dd></div>
+        <div><dt>0</dt><dd>Change in the median naphthenic acid level since 2013.</dd></div>
+        <div><dt>2050</dt><dd>When Syncrude expects ninety percent of the settling to be done.</dd></div>
+      </dl>
+
+      <p>The plan is to wait, and the data say waiting does not work. So why is waiting still the plan?</p>
+      <p>Because waiting is free. That is the whole paper, and it takes five more parts to show.</p>
+
+      <h2><span class="eyebrow">Part two</span> One coat, three problems</h2>
+      <p>On 13 October 2026, CBC News put the size of the ponds at 600,000 Olympic swimming pools, or the Island of Montreal under three metres of water.<sup><a href="#note-3">3</a></sup> The Alberta Energy Regulator's figure, in its own units, is {FLUID_TAILINGS.display} of fluid tailings at the end of 2024, up from 1,075 million ten years before.<sup><a href="#note-4">4</a></sup></p>
+      <p>That number hides three different problems wearing one coat. The public argument is about one of them, and it is the smallest.</p>
+
+      <BarTable name="Figure 1" rowHead="Year" columns={['Fluid tailings in the Athabasca oil sands region']} unit="Mm³" rows={[
+        { label: '2014', values: [1075] },
+        { label: '2024', values: [FLUID_TAILINGS.value] },
+      ]}>Figure 1 · The inventory, new and legacy tailings combined, in millions of cubic metres. Source: Alberta Energy Regulator, State of Fluid Tailings Management for Mineable Oil Sands, 2024.<sup><a href="#note-4">4</a></sup></BarTable>
+      <p class="fig">The regulator reports the 2024 total and the year's net addition of 43.8 million cubic metres. Its own appendix sums about 55 million higher and says it may include volumes already counted as ready to reclaim, so the headline is cited as the report states it.</p>
+
+      <p><strong>The first problem is mud.</strong> Most of that is not water. It is a clay gel at 30 to 35 percent solids that will not settle in a human lifetime. The clay is mostly kaolinite and illite, and it holds its water by electric charge.<sup><a href="#note-5">5</a></sup></p>
+      <p> Gravity has had sixty years. This is the volume problem, and it is nine tenths of the coat.</p>
+      <p><strong>The second problem is water.</strong> The ponds hold 380.7 million cubic metres of free water.<sup><a href="#note-4">4</a></sup> It carries the naphthenic acids, salts, and trace metals, vanadium above all.</p>
+      <p> This is the toxicity problem. Treat-and-release, the thing in the news, is about this problem alone, and about a share of it, and about decades from now.</p>
+      <p><strong>The third problem is money.</strong> Nobody is paid to finish. We get to that in Part three, because it is the one that explains the other two.</p>
+      <p>Look at what happens when you fix the mud and ignore the money. In 2024 Canadian Natural ran 138.5 million cubic metres of tailings through a process at Horizon that injects carbon dioxide from its own hydrogen plant to make the clay settle. It is the largest single treatment stream in the industry.</p>
+      <p> The company reported 84.7 million cubic metres as ready to reclaim. The regulator accepted 11.5 million, because it counts only the fine clay, and Horizon's own inventory rose in the same year.<sup><a href="#note-4">4</a></sup></p>
+      <p>The best treatment in the industry, running flat out, did not make one site's number go down.</p>
+      <p>And the growth is not slowing. The regulator's own line is that tailings produced outran tailings reported as ready to reclaim in every year from 2015 to 2024 except one.<sup><a href="#note-4">4</a></sup> Any fix has to beat 44 million cubic metres a year before it touches the stock at all.</p>
+
+      <h2><span class="eyebrow">Part three</span> The waiting discount</h2>
+      <p>In 2018 two engineers in Western Australia, Carneiro and Fourie, costed three ways of storing the tailings from one gold mine over its whole life, closure included. Wet slurry in a dam. Thickened paste. Filtered and stacked dry.<sup><a href="#note-6">6</a></sup></p>
+      <p>The dry stack had the lowest closure cost by a wide margin. Rehabilitating a hectare of it cost a fifth of rehabilitating a hectare of wet dam. If the closure estimate turned out three times too low, the dry option's total rose one percent. The wet dam's rose eight.<sup><a href="#note-6">6</a></sup></p>
+      <p>The wet dam still won on paper. The reason was a discount rate. At ten percent a year, a bill that falls due twenty years out is worth about a seventh of its face value today, so the cheapest plan on paper is the one that puts the bill furthest away.<sup><a href="#note-6">6</a></sup></p>
+      <p>That is the waiting discount. The accounting convention, not the technology, is what makes a pond look cheap.</p>
+      <p>Now bring it home. Alberta's Mine Financial Security Program is meant to hold money against the day a mine closes.</p>
+      <p> As of September 2025 it held {TAILINGS_SECURITY.display} against an estimated {TAILINGS_LIABILITY.display} for the oil sands mines. That is {secured} percent. The figure usually quoted, $2.6 billion against $52.7 billion, includes two coal mines.<sup><a href="#note-7">7</a>, <a href="#note-8">8</a></sup></p>
+      <p>The program's trigger, the rule that collects more security when a company's assets fall below three times its liabilities, has never fired since 2011. In 2021 a rule change stopped it firing for some operators when it otherwise would have.<sup><a href="#note-7">7</a></sup> The Auditor General found the program's asset values more than double one operator's own forecast of its future net revenue.<sup><a href="#note-7">7</a></sup></p>
+      <p>The one new deposit since 2011 came from Syncrude in 2025, $869 million, because its mine has fewer than fifteen years of reserves left. Every other mine has paid its 2011 base deposit and nothing since.<sup><a href="#note-7">7</a></sup></p>
+
+      <BarTable name="Figure 2" rowHead="Oil sands mines, September 2025" columns={['Billions of dollars']} unit="dollars" rows={[
+        { label: 'Closure liability, as estimated by the operators', values: [TAILINGS_LIABILITY.value] },
+        { label: 'Security held by Alberta', values: [TAILINGS_SECURITY.value] },
+      ]}>Figure 2 · What is owed and what is held, oil sands mines only. Source: Auditor General of Alberta, December 2025, from Alberta Energy Regulator data.<sup><a href="#note-7">7</a>, <a href="#note-8">8</a></sup></BarTable>
+      <p class="fig"><strong>Reading the figure.</strong> The liability is reported by the companies that owe it, not estimated by anyone else, and it moved from $33 billion in 2021 to $56.5 billion in 2023 and back to $51.9 billion in 2024.<sup><a href="#note-7">7</a></sup> The security did not move at all until Syncrude's deposit.</p>
+
+      <p>Put the two halves together. A deferred liability is value earned, every year, as long as nobody makes you post the money. The release ban that everyone argues about is, from inside that arithmetic, a convenient reason to wait.</p>
+      <p class="view"><strong>Our view:</strong> this is not a story about bad people. It is a story about a discount rate doing exactly what discount rates do. The companies are behaving the way the rule tells them to. The rule is the thing to change.</p>
+      <p>What would a different rule look like? Western Australia has one. Its Mining Rehabilitation Fund charges a yearly levy on every hectare of disturbed land, set at one percent of the estimated cost to fix it. The moment a hectare is under rehabilitation the rate drops 25-fold.<sup><a href="#note-6">6</a></sup></p>
+      <p> The authors of the gold-mine study call that a direct lever on operating cost. It makes waiting the expensive option.</p>
+      <p>Alberta reviewed its program from 2022 to 2023. The review produced a new way to calculate assets and nothing else. The department has said it will make no further substantive changes.<sup><a href="#note-7">7</a></sup></p>
+      <p>So the money problem is unsolved on purpose. Which makes the next question the interesting one. If somebody were paid per cubic metre, what would they build?</p>
+
+      <h2><span class="eyebrow">Part four</span> What the region throws away</h2>
+      <p>Start with a rule of scale. At {FLUID_TAILINGS.display}, any treatment that costs more than a dollar a cubic metre in chemicals is dead before it starts, because that is already a billion and a half dollars. So the answer cannot be a new molecule from a laboratory. It has to be made of gravity, winter, and the waste that is already piled next to the ponds.</p>
+      <p>The oil sands region has, sitting in the open, an estimated 184 million tonnes of petroleum coke,<sup><a href="#note-25">25</a></sup> mountains of sulphur, a stream of carbon dioxide from every hydrogen plant, low-grade heat from every upgrader, and five months a year below minus ten. Each is a tool nobody has pointed at the ponds. Here are five, in the order we would bet on them.</p>
+
+      <h3>One. The coke pile is a water treatment plant nobody built</h3>
+      <p>Warren Zubot, a Syncrude engineer, showed in 2012 that fresh coke from the company's own cokers soaks up naphthenic acids from pond water and takes away its acute toxicity to trout.<sup><a href="#note-9">9</a></sup> Syncrude patented the method. Its own bench data show that 40 percent coke by weight, with carbon dioxide bubbled in to drop the pH, took the acids from 65.5 milligrams per litre to 4.8.<sup><a href="#note-10">10</a></sup></p>
+      <p>Suncor already pumps coke onto its ponds as a cap. It capped 20 million cubic metres on its Base Plant in 2017 and ran a trial on Pond 6 through 2024 and 2025.<sup><a href="#note-4">4</a></sup> The capping and the treatment are the same physical act: coke slurried into pond water. The only addition is a gas the site already makes.</p>
+      <p>Two honest caveats. Zubot's paper found that coke raises vanadium and molybdenum in the water, so this trades an organic toxin for a metal one and needs a second step after it. And it cleans water. It does nothing for {FLUID_TAILINGS.display} of mud.</p>
+
+      <h3>Two. Electricity, in place, at fifteen kilowatt-hours a cubic metre</h3>
+      <p>Between 2019 and 2021 a small company called Electro-Kinetic Solutions ran a field test on a Canadian Natural site. They put electrodes into 1,700 cubic metres of fluid tailings and ran a current through it. The clay flocculated and the water drained, year-round, with no chemicals and no moving parts. The measured cost was 14.8 kilowatt-hours per cubic metre of water released, half the target.<sup><a href="#note-11">11</a></sup></p>
+      <p>At Alberta's industrial power price that is about a dollar a cubic metre of water in electricity. The water that came out had less chloride, calcium and magnesium than the water that went in.<sup><a href="#note-11">11</a></sup> Consolidated tailings also hold their methane in.</p>
+      <p>The patent runs to 2033. It was paid up and transferred to a new Alberta company in the first week of February 2026.<sup><a href="#note-12">12</a></sup> Somebody has a plan for it. The field test has never been repeated by anyone independent, and that is the first thing a buyer should pay for.</p>
+
+      <h3>Three. Winter is the cheapest dewatering machine on Earth</h3>
+      <p>One freeze-thaw cycle releases up to half the water held in mature fine tailings and raises how fast it drains sixfold.<sup><a href="#note-13">13</a></sup> That is University of Alberta work from a decade ago, and it costs earthmoving and nothing else. Fort McMurray has five months of it a year and uses it for nothing.</p>
+      <p>The cold works on brine too. Every route that cleans this water leaves a salty concentrate, and a concentrate needs a sink that is not a river. A South African study of freeze crystallisation, which splits brine into clean ice and a saleable salt, put the running cost at a quarter of boiling the water off. Its working temperature is about minus 21.<sup><a href="#note-14">14</a></sup></p>
+      <p> In January, the compressor is the weather.</p>
+
+      <h3>Four. The heat the region throws away, and the heat it is about to</h3>
+      <p>If the water cannot go into the river, it can go into the air. Turning water to vapour takes heat, a great deal of it, which is why nobody does it on purpose. But a modern distiller recovers most of that heat and runs on the low-grade warmth an upgrader rejects to the sky every hour of every day.</p>
+      <p>Alberta also wants $100 billion of data centres, and a data centre is a machine for making warm water.<sup><a href="#note-15">15</a></sup> The federal working group on these ponds screened out "transfer to data centres" in 2023 for want of a driver.<sup><a href="#note-16">16</a></sup> The driver arrived in 2025. Nobody has re-run the screen.</p>
+      <p>Summer heat and winter cold are two halves of one plant. The unknown is whether real pond water foams and fouls a distiller, and the test is a university bench and one semester.</p>
+
+      <h3>Five. The clay is a cement ingredient, and the market just opened</h3>
+      <p>In 2003 a study for Natural Resources Canada calcined mature fine tailings in a kiln and found the result 85 to 90 percent as reactive as metakaolin, a premium cement additive. It was judged technically feasible and uneconomic, because Alberta coal plants gave away fly ash for $8 to $12 a tonne.<sup><a href="#note-17">17</a></sup></p>
+      <p>The coal plants near Edmonton stopped in 2021, and the fresh fly ash stopped with them. Lafarge is now digging old ash out of a landfill at a retired power station on a $15 million grant to fill the gap.<sup><a href="#note-18">18</a></sup> The 2003 verdict rests on a price that no longer exists.</p>
+      <p>Graymont, the lime company, patented calcined oil sands clay as a cement additive in 2020. Its claim covers clay that has been treated with lime to a high pH.<sup><a href="#note-19">19</a></sup> Clay dewatered by cold or by electricity is not lime-treated. The gate is narrower than it looks, and the company behind it sells lime, so it would rather be a partner than a wall.</p>
+      <p>This pays for a slice, never the volume: the Western Canadian market was sized at a few hundred thousand tonnes a year against a clay inventory in the hundreds of millions.<sup><a href="#note-17">17</a></sup> The slice is worth testing because the test is a kiln and a cube crusher.</p>
+
+      <figure class="stat">
+        <p class="big">2.8 Mt</p>
+        <figcaption>Carbon dioxide equivalent the tailings ponds release each year as methane, from the breakdown of leftover solvent in the mud.<sup><a href="#note-20">20</a></sup> A 2025 University of Alberta study found that one dose of sulphate to fresh tailings, before they go in the pond, could stop half to four fifths of it.<sup><a href="#note-20">20</a></sup> The sulphur is stacked in yellow blocks beside the upgraders. No Alberta carbon-credit protocol exists for pond methane, so nobody can be paid for stopping it yet.</figcaption>
+      </figure>
+
+      <p>Five tools, every one of them already proven once by someone, and none of them strung together. A kiln, a current, a gas, a cold month, a pile of coke. Nothing here is a breakthrough. It is an arrangement.</p>
+      <p>Which leaves the question of where the clean water goes, and that is where the argument in the news turns out to be backwards.</p>
+
+      <h2><span class="eyebrow">Part five</span> The river's people hold the stronger argument</h2>
+      <p>Chief Melody Lepine of the Mikisew Cree First Nation told CBC her nation would consider legal action if release threatened Fort Chipewyan. "We often say if the rivers flew in the opposite direction to non-Indigenous communities," she said, "would things be like this?"<sup><a href="#note-3">3</a></sup> Ron Quintal, whose Indigenous-led company Tũ Nipi has a conditional grant to research treatment, said his community could never support release. He wants treat-and-reuse.<sup><a href="#note-3">3</a>, <a href="#note-21">21</a></sup></p>
+      <p>The news frames that as sentiment against science. The arithmetic says the opposite.</p>
+      <p>Naphthenic acids do not stop pond water from being reused to extract bitumen. Salts do. So water good enough to reuse needs salt control, not acid destruction, and the only stream that ever has to leave the site is a small desalination bleed. Run that bleed through a membrane and then through the winter, and what is left is a concentrate of a few percent of the volume.<sup><a href="#note-14">14</a></sup></p>
+      <p> That is the one thing that needs a hole in the ground, and it is small.</p>
+      <p>Ottawa's own working group, nine Indigenous communities with the federal environment department, ranked its non-release options in 2025. The four at the top were separating clean water from dirty, injecting treated water into deep rock, using it to wash out salt caverns, and reusing it in fracking.<sup><a href="#note-16">16</a></sup> Not one of them is the river. The group's own earlier report concluded no single option could handle the volumes and a portfolio was needed.<sup><a href="#note-22">22</a></sup></p>
+      <p>Fort McKay First Nation issued the request for proposals to cost those alternatives in June 2025, with a report due in early 2026. It has not surfaced publicly.<sup><a href="#note-22">22</a></sup></p>
+      <p>The people downstream are not asking for the impossible. They are asking for the engineering that is already on the government's own shortlist. And they are the only owners the river will accept.</p>
+      <p class="view"><strong>Our view:</strong> the company that gets paid per cubic metre should be majority-owned by the nations who drink the water. Not as a gesture. Twenty-three Athabasca First Nations and Métis communities already own a stake in the pipelines that cross their land,<sup><a href="#note-26">26</a></sup> and a treatment company whose owners live downstream is the one structure that survives a change of government, which is the same test this site applies to every sentence it prints.</p>
+
+      <h2><span class="eyebrow">Part six</span> What a country that keeps its temper does</h2>
+      <p>In March 2026 Emissions Reduction Alberta handed out $46 million for tailings technology. Six of the nine awards went to the three companies that own the ponds. The largest, $15 million, went to mixing fine tailings with sand inside an existing pond.<sup><a href="#note-23">23</a></sup> The money flows to the people who are paid to wait.</p>
+      <p>A search for a company anywhere in the world that is paid per cubic metre to make a tailings number go down found none. There are engineering contracts and there are studies. There is no one whose invoice is the inventory.</p>
+      <p>That is the whole gap, and it is one rule wide.</p>
+      <p><strong>The rule.</strong> A yearly levy on every cubic metre of fluid tailings, set against the operator's own liability estimate, held in escrow, and paid out per cubic metre certified ready to reclaim.</p>
+      <p> Western Australia runs it by the hectare. Alberta already levies the industry for orphan wells. Divide {TAILINGS_LIABILITY.display} by {FLUID_TAILINGS.display} and the market is about $35 a cubic metre, made of money the companies already say they owe.</p>
+      <p>Against that, the measured costs are small. Electricity for the in-place method is about a dollar. Filtered dry stacking in other industries runs one to four dollars a cubic metre before capital, if the clay cooperates.<sup><a href="#note-24">24</a></sup> Coke, cold and waste heat are closer to free.</p>
+      <p> The products on the side, cement clay, salt, hydrogen, a few minerals, do not pay the bill. They flip the sign on the last cubic metre, which is enough once somebody is paid for it.</p>
+      <p><strong>The experiments, cheapest first.</strong></p>
+      <ul>
+        <li>A patent agent's afternoon on four registry entries.</li>
+        <li>A phone call to the company that bought the electrokinetic patent in February.</li>
+        <li>One semester with real pond water in a distiller.</li>
+        <li>A re-run of the 2003 cement study at 2026 ash prices.</li>
+        <li>Twenty kilograms of tailings, a kiln, and a cube crusher.</li>
+      </ul>
+      <p>None of that needs Ottawa to decide on release. All of it is cheaper than one more year of air cannons.</p>
+      <figure class="mark">
+        <BearDual />
+      </figure>
+      <p>This site argues that restraint is a form of strength: that a country's character shows in what it declines to do. A country also shows its character in the bill it declines to leave. Sixty years is long enough to have been waiting.</p>
+      <p class="pull">The ponds are not a problem nobody can solve. They are a problem nobody is paid to solve. The rule that pays somebody is one line long.</p>
+      <p>We can write that line, or we can keep collecting the discount. The choice is ours, and it is not a chemistry question.</p>
+
+      <h2 id="sources">Sources</h2>
+      <ol class="notes">
+        <li id="note-1">Syncrude and Suncor, <cite>2024 Pit Lake Monitoring and Research Report: Base Mine Lake Demonstration Summary 2012–2023</cite>, submitted to the Alberta Energy Regulator, 31 July 2024. <a href="https://era.library.ualberta.ca/items/a98747d6-d176-4fb9-a86e-ac82e12f6104">era.library.ualberta.ca</a></li>
+        <li id="note-2">&quot;Sources and biodegradation potential of naphthenic acids in an oil sands pit-lake,&quot; <cite>Applied Geochemistry</cite>, 2026. <a href="https://www.sciencedirect.com/science/article/pii/S0883292726001794">sciencedirect.com</a></li>
+        <li id="note-3">Kyle Bakx and Vincent McDermott, <cite>CBC News</cite>, &quot;Ottawa wants to expand the oilsands, but the industry&#x27;s wastewater problem will grow with it,&quot; 13 October 2026.</li>
+        <li id="note-4">Alberta Energy Regulator, <cite>State of Fluid Tailings Management for Mineable Oil Sands, 2024</cite>, October 2025, sections 7, 7.2, 8 and 13 and Table 3. <a href="https://static.aer.ca/prd/documents/reports/2024-State-Fluid-Tailings-Management-Mineable-OilSands.pdf">static.aer.ca</a></li>
+        <li id="note-5">Klohn Crippen Berger for MEND, <cite>Study of Tailings Management Technologies</cite>, Report 2.50.1, 2017, on the clay content and plasticity of mature fine tailings.</li>
+        <li id="note-6">Carneiro and Fourie, &quot;A conceptual cost comparison of alternative tailings disposal strategies in Western Australia,&quot; <cite>Paste 2018</cite>, Australian Centre for Geomechanics. <a href="https://papers.acg.uwa.edu.au/d/1805_36_Carneiro/36_Carneiro.pdf">papers.acg.uwa.edu.au</a></li>
+        <li id="note-7">Auditor General of Alberta, <cite>Mine Financial Security Program, Environment and Protected Areas: Audit of Implementation</cite>, December 2025. <a href="https://www.oag.ab.ca/wp-content/uploads/2025/12/2025-Mine-Financial-Security-Program-AOI.pdf">oag.ab.ca</a></li>
+        <li id="note-8">Drew Yewchuk and Martin Olszynski, &quot;The 2025 Mine Financial Security Program Update,&quot; <cite>ABlawg</cite>, 3 October 2025. <a href="https://ablawg.ca/2025/10/03/the-2025-mine-financial-security-program-update-security-collected-for-aging-syncrude-mine-offers-a-first-estimate-of-mine-closure-costs/">ablawg.ca</a></li>
+        <li id="note-9">Zubot, MacKinnon, Chelme-Ayala, Smith and Gamal El-Din, &quot;Petroleum coke adsorption as a water management option for oil sands process-affected water,&quot; <cite>Science of the Total Environment</cite>, 2012.</li>
+        <li id="note-10">US Patent 9,890,060, &quot;Method of treating water using petroleum coke and a pH-lowering agent,&quot; Syncrude Canada Ltd., granted 13 February 2018, Table 1. Google Patents lists the US grant as lapsed for unpaid fees; the Canadian counterpart is CA 2,870,244. <a href="https://patents.google.com/patent/US9890060">patents.google.com</a></li>
+        <li id="note-11">Alberta Innovates, <cite>A Field Demonstration of the EKS-DT Process Dewatering Oil Sands Tailings</cite>, project summary, 2022. <a href="https://albertainnovates.ca/wp-content/uploads/2022/07/A-Field-Demonstration-of-the-EKS-DT-Process-Dewatering-Oil-Sands-Tailings.pdf">albertainnovates.ca</a></li>
+        <li id="note-12">US Patent 9,896,356, &quot;Electrokinetic process for consolidation of oil sands tailings,&quot; granted 20 February 2018; legal events of January and February 2026 as recorded by Google Patents. <a href="https://patents.google.com/patent/US9896356B2/en">patents.google.com</a></li>
+        <li id="note-13">Zhang and Sego, &quot;Freeze-thaw dewatering of Albian mature fine tailings,&quot; CIM, 2014, and Zhang&#x27;s 2012 University of Alberta thesis. <a href="https://onemine.org/documents/freeze-thaw-dewatering-of-albian-mature-fine-tailings">onemine.org</a></li>
+        <li id="note-14">Water Research Commission of South Africa, <cite>Eutectic Freeze Crystallization for Brine Treatment</cite>, Report 1727/1/10, University of Cape Town, 2010. <a href="https://www.wrc.org.za/wp-content/uploads/mdocs/1727-1-101.pdf">wrc.org.za</a></li>
+        <li id="note-15"><cite>CBC News</cite>, &quot;Alberta tech minister wants $100B in AI data centre infrastructure built over next 5 years,&quot; December 2024. <a href="https://www.cbc.ca/lite/story/1.7401602">cbc.ca</a></li>
+        <li id="note-16">Environment and Climate Change Canada, <cite>Discussion paper: Crown-Indigenous Working Group, path forward for managing accumulated oil sands mine water</cite>, 2025. <a href="https://www.canada.ca/en/environment-climate-change/services/managing-pollution/sources-industry/mining-effluent/oil-sands/discussion-paper-crown-indigenous-working-group-2025.html">canada.ca</a></li>
+        <li id="note-17">EcoSmart Concrete Project, <cite>Calcined Mature Fine Tailings as a metakaolin-type supplementary cementitious material: pre-feasibility study</cite>, for Natural Resources Canada, November 2003. <a href="https://ecosmartconcrete.com/?p=66">ecosmartconcrete.com</a></li>
+        <li id="note-18"><cite>Concrete Products</cite>, &quot;Lafarge Canada harvests ash from retired TransAlta power station,&quot; 16 January 2023. <a href="https://concreteproducts.com/index.php/2023/01/16/lafarge-canada-harvests-ash-from-retired-transalta-power-station/">concreteproducts.com</a>; the grant is listed by Emissions Reduction Alberta, &quot;Landfill Fly Ash Beneficiation.&quot; <a href="https://www.eralberta.ca/projects/details/landfill-fly-ash-beneficiation/">eralberta.ca</a></li>
+        <li id="note-19">US Patent 11,725,148, &quot;Calcined clay tailings and/or calcined mine waste, and associated systems and methods,&quot; Graymont Western Canada Inc., granted 15 August 2023, claim 1. <a href="https://patents.google.com/patent/US11725148B2/en">patents.google.com</a></li>
+        <li id="note-20">Afzal et al., &quot;Mitigation of Methane Emissions from Oil Sands Tailings by Sulfate Amendment: Mathematical Modeling of Empirical Observations,&quot; <cite>ACS ES&amp;T Engineering</cite> 5, 3051–3063, 2025.</li>
+        <li id="note-21">BioLargo Canada and Tũ Nipi Water Solutions, &quot;BioLargo Canada and Tũ Nipi Form Indigenous-Led Partnership to Treat Oil Sands Process Water,&quot; press release, 10 September 2026. <a href="https://www.newswire.com/news/biolargo-canada-and-tu-nipi-form-indigenous-led-partnership-to-treat-22859270">newswire.com</a></li>
+        <li id="note-22">Fort McKay First Nation, <cite>Assessment of Oil Sands Mine Water Management Options in the Athabasca Region</cite>, request for proposals, 16 June 2025. <a href="https://www.fortmckay.com/app/uploads/2025/06/Assessment-of-OSMW-management-options-RFP_Final_June-16-2025.pdf">fortmckay.com</a></li>
+        <li id="note-23">Emissions Reduction Alberta, &quot;Alberta invests $46 million to advance tailings and mine water technologies across the oil sands,&quot; 4 March 2026. <a href="https://www.eralberta.ca/media-releases/alberta-invests-46-million-to-advance-tailings-and-mine-water-technologies-across-the-oil-sands/">eralberta.ca</a></li>
+        <li id="note-24">Cacciuttolo et al., &quot;Dry Stacking of Filtered Tailings for Large-Scale Production Rates,&quot; <cite>Minerals</cite> 13(11):1445, 2023, read against MEND Report 2.50.1 above. <a href="https://www.mdpi.com/2075-163X/13/11/1445">mdpi.com</a></li>
+        <li id="note-25">&quot;Oil Sands Petroleum Coke as Secondary Source of Vanadium,&quot; OneMine (CIM), an estimate of the stockpile at the end of 2025. <a href="https://onemine.org/documents/oil-sands-petroleum-coke-as-secondary-source-of-vanadium">onemine.org</a></li>
+        <li id="note-26"><cite>CTV News Edmonton</cite> (The Canadian Press), &quot;Enbridge sells minority stake in 7 pipelines to Indigenous communities,&quot; 28 September 2022: Athabasca Indigenous Investments, 23 Treaty 6 and Treaty 8 communities, took an 11.57 percent interest in seven pipelines for $1.12 billion. <a href="https://edmonton.ctvnews.ca/enbridge-sells-minority-stake-in-7-pipelines-to-indigenous-communities-1.6087398">ctvnews.ca</a></li>
+      </ol>
+      <p class="fig"><strong>A note on what is not in here.</strong> Every patent status above comes from Google Patents&#x27; mirror of the registries, which is not a legal opinion. The cost figures from other industries are for coarse tailings in other countries and other years, and no one has yet shown that oil sands clay filters at all. The paper says so where it uses them.</p>
+
+      <Share
+        slot="after"
+        quote={"The oil sands ponds are not a problem nobody can solve. They are a problem nobody is paid to solve. The rule that pays somebody is one line long."}
+      />
+</Read>
+
+<style>
+  .brief {
+    border-top: var(--border-key) solid var(--nt-red);
+    border-bottom: var(--border-hair) solid var(--border-hairline);
+    padding: var(--space-3) 0 var(--space-2);
+    margin-bottom: var(--space-4);
+  }
+  .brief h2 { margin-top: 0; padding-top: 0; border-top: 0; }
+  .brief li { margin-bottom: .8rem; }
+
+  /* The paper's own opinion stands in its own sentence and says so. */
+  .view { border-left: var(--rule-weight) solid var(--nt-red); padding-left: var(--space-2); }
+
+  .facts {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+    gap: var(--space-3); margin: clamp(28px, 4vh, 52px) 0;
+    border-top: var(--border-key) solid var(--nt-red); padding-top: var(--space-3);
+  }
+  .facts dt {
+    margin: 0; color: var(--nt-red); letter-spacing: 0;
+    font-family: var(--font-display); font-weight: var(--fw-display);
+    font-size: clamp(34px, 4.6vw, 52px); line-height: .95;
+  }
+  .facts dd { margin: var(--space-1) 0 0; font-size: var(--type-body-sm); }
+
+  .mark { margin: clamp(30px, 4.5vh, 56px) auto var(--space-3); max-width: 22rem; color: var(--nt-black); }
+  .mark :global(svg) { width: 100%; height: auto; display: block; }
+
+  .pull {
+    margin: clamp(30px, 4.5vh, 56px) 0; padding-left: clamp(18px, 2.4vw, 30px);
+    border-left: var(--rule-weight) solid var(--nt-red);
+    font-family: var(--font-display); font-weight: var(--fw-display);
+    text-transform: uppercase; line-height: 1.1; font-size: clamp(20px, 2.8vw, 34px);
+  }
+  .notes cite { font-style: normal; font-weight: var(--fw-body-strong); }
+  .notes a { overflow-wrap: anywhere; }
+</style>

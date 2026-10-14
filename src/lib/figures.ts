@@ -148,6 +148,66 @@ export const C5_RETAINED_GDP: StaticFigure = {
 };
 
 /**
+ * The oil sands tailings figures Paper No. 02 (/read/the-waiting-discount)
+ * runs on. Three numbers from two annual documents, neither with an endpoint.
+ *
+ * FLUID_TAILINGS is the regional inventory of fluid tailings, new and legacy,
+ * from the Alberta Energy Regulator's "State of Fluid Tailings Management for
+ * Mineable Oil Sands, 2024" (cover-dated 30 October 2025), section 7: "Total
+ * fluid tailings volumes increased from 1075 million cubic metres (Mm³) in
+ * 2014 to 1505 Mm³ in 2024." The same section gives the year's net addition
+ * (43.8 Mm³) and section 7.2 the water held in the ponds (380.7 Mm³); those
+ * print in the paper from the report, footnoted, and are not repeated here
+ * because nothing else on the site prints them. The report's own Appendix 3
+ * sums to about 55 Mm³ more and is footnoted as possibly including
+ * ready-to-reclaim volumes; cite the headline as the report states it.
+ *
+ * TAILINGS_SECURITY and TAILINGS_LIABILITY are the Mine Financial Security
+ * Program's oil sands mine figures as of September 2025: $1.8 billion held
+ * against $51.9 billion of operator-estimated closure liability. The pair
+ * quoted most often, $2.6 billion against $52.7 billion, INCLUDES the coal
+ * mines; the Auditor General of Alberta's December 2025 audit of the program
+ * and the ABlawg analysis of the AER's 2025 data both give the oil-sands-only
+ * split. Do not mix the two bases: that is the two-vintages error again.
+ *
+ * Both publishers run on a yearly cycle (the AER's tailings report each
+ * autumn, the MFSP figures each September), which is exactly the case
+ * `reviewBy` exists for.
+ */
+export const FLUID_TAILINGS: StaticFigure = {
+  value: 1505,
+  display: '1,505 million m³',
+  source: 'Alberta Energy Regulator',
+  period: '2024',
+  reviewBy: '2026-12-15',
+  reviewNote:
+    'The AER\'s State of Fluid Tailings Management report for 2025 should be out by now (the 2024 edition was published 30 October 2025). Take the regional total from its section on fluid tailings volumes, update value/display/period, re-read the paper\'s section 7 figures (the year\'s net addition and the ponded water) and its Figure 1 series, and move reviewBy on a year.',
+};
+
+export const TAILINGS_SECURITY: StaticFigure = {
+  value: 1.8,
+  display: '$1.8B',
+  source: 'Alberta Energy Regulator, MFSP',
+  period: 'September 2025',
+  reviewBy: '2026-12-15',
+  reviewNote:
+    'The MFSP security and liability figures for September 2026 should be published by now. Take the OIL SANDS MINE figures (not the combined oil sands and coal total) for security held and estimated liability, update TAILINGS_SECURITY and TAILINGS_LIABILITY together, and move both reviewBy dates on a year.',
+};
+
+export const TAILINGS_LIABILITY: StaticFigure = {
+  value: 51.9,
+  display: '$51.9B',
+  source: 'Alberta Energy Regulator, MFSP',
+  period: 'September 2025',
+  reviewBy: '2026-12-15',
+  reviewNote:
+    'Update with TAILINGS_SECURITY, from the same MFSP publication, oil sands mines only.',
+};
+
+/** The share of the oil sands closure liability that is secured. Computed, never typed. */
+export const TAILINGS_SECURED_PCT = (TAILINGS_SECURITY.value / TAILINGS_LIABILITY.value) * 100;
+
+/**
  * The figures /sources lists as fixed, in the order the page shows them.
  *
  * /sources used to retype each of these. It now renders this array, so a figure
@@ -181,6 +241,12 @@ export const FIXED_FIGURES: readonly (StaticFigure & { figure: string; note?: st
     source: 'NATO, Hague summit', period: '2025' },
   { figure: 'Bill C-5 retained GDP', ...C5_RETAINED_GDP,
     display: `${C5_RETAINED_GDP.display} per Canadian` },
+  { figure: 'Oil sands fluid tailings, new and legacy', ...FLUID_TAILINGS,
+    note: 'The regional inventory across every mine. The paper on it prints the year’s addition and the ponded water from the same report.' },
+  { figure: 'Oil sands mine closure security held', ...TAILINGS_SECURITY,
+    note: 'Oil sands mines only; the figure usually quoted includes the coal mines.' },
+  { figure: 'Oil sands mine closure liability, operator-estimated', ...TAILINGS_LIABILITY,
+    note: 'Oil sands mines only. The security above covers about ' + TAILINGS_SECURED_PCT.toFixed(1) + '% of it.' },
   { figure: 'Leaf nitrogen a plant takes back before the leaf falls', ...N_RESORPTION,
     note: 'Global mean across six plant types, 86 studies, about 1,000 data points. Not a maple-specific figure, and the read that cites it says “a plant”, not “a maple”.' },
 ];

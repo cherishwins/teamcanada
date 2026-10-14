@@ -148,7 +148,16 @@ one file serves both colourways. **Never reference them via `<img src>`:**
   and period, and — where the publisher runs on a cycle — a `reviewBy` date
   that fails the build once it passes. `/calculator`, `/math`, `/build`,
   `/sources` and `/read/the-red-is-the-work` all render from it.
-- `src/lib/reads.ts` — **each read's title, imprint, date and length, once.**
+- `src/lib/reads.ts` — **each read's title, imprint, date and length, once,
+  and THE PAPER REGISTER.** A Northern Temper paper carries `paper: N` here
+  and nowhere else; its imprint is `paperImprint(N)`, never typed; the next
+  paper takes `nextPaper()`. `tools/check-figures.cjs` fails the build if
+  the numbers do not run 1..N with no gap or repeat, if a paper's imprint is
+  not the derived one, or if a later number is dated before an earlier one.
+  This exists because the owner asked for a register nobody has to remember
+  across sessions, and a check is the only register nobody has to remember.
+  Papers so far: No. 01 The Warning Label (6 Oct 2026), No. 02 The Waiting
+  Discount (14 Oct 2026).
   The read page, `/read`, `feed.xml`, the Article markup, the OG article tags
   and the `/read` share card all read it. They used to be typed in up to four
   places, and three reads carried May dates their own text contradicts ("current
@@ -840,9 +849,10 @@ V   · THE BUILD /build    Refine · Compute · Corridor + C-5.     from teamcan
 /sources     The receipts                every figure, source, period, endpoint
 /fr          La trempe du Nord           BROUILLON, noindex, Act I only
 /offline     Service-worker fallback     noindex, OUT of the sitemap
-/read + 7 long-form pieces   5 migrated from the old site (9,162 words)
+/read + 8 long-form pieces   5 migrated from the old site (9,162 words)
                              + The Red Is the Work, written here (1,154)
                              + The Warning Label, Paper No. 01 (3,876)
+                             + The Waiting Discount, Paper No. 02 (4,381)
 /join  /privacy  /terms  /404          /support is HIDDEN (noindex, unlinked)
 /feed.xml    RSS for every read
 robots.txt · llms.txt · humans.txt · site.webmanifest · sw.js · security.txt
@@ -876,6 +886,29 @@ only its `slug`, description and standfirst to `Read.astro`), its entry in
 `src/lib/reads.ts` (the build prints its word count), `llms.txt`,
 `generate-llms-full.cjs` ORDER, and the CARDS list in `generate-og.cjs`. `/read`,
 the feed and the `read` card's total follow from `reads.ts`.
+
+**`/read/the-waiting-discount` is Northern Temper Paper No. 02** (14 October
+2026): the oil sands tailings ponds as three problems in one coat (the clay,
+the water, the money), the pit-lake plan measured against Base Mine Lake's
+eleven years, the Mine Financial Security Program's $1.8B against $51.9B, the
+five fixes already proven once each (coke plus CO₂, in-place electrokinetics,
+freeze-thaw and freeze crystallisation, waste-heat distillation, calcined
+clay), and the one rule that would pay somebody per cubic metre. Its coined
+noun is **the waiting discount**: the discount rate, not the chemistry, is
+what makes a pond cheaper to keep than to clean. Unlike No. 01 it was DRAFTED
+HERE, from two days of directed research, and offered to the owner to sign:
+its opinions say "our view" and its byline says so; change both if the owner
+takes the first person. Its three cycling figures (`FLUID_TAILINGS`,
+`TAILINGS_SECURITY`, `TAILINGS_LIABILITY`) live in `src/lib/figures.ts` with
+`reviewBy` dates, render on the page, on `/sources` and on its share card
+(whose 3.5% is computed from the pair), and the AER's next tailings report
+and the next MFSP figures will fail the build until they are re-read. Two
+corrections the research forced before it was written are in the page's
+frontmatter comment. The share cards were redrawn on a different Chromium
+than the ones committed, which re-hashes every card byte-for-byte with no
+visible change; only the two whose content moved (this paper's, and `/read`
+whose word total it changed) were kept, the rest restored. Do the same: a
+hash should move when the image does, not when the renderer does.
 
 **`/read/the-warning-label` is Northern Temper Paper No. 01**, the owner's own
 paper (Jesse James, 6 October 2026), published here as the web edition of a

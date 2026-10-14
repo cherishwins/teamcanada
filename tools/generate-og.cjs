@@ -21,8 +21,8 @@ const loadTs = require('./load-ts.cjs');
 const record = require('./record/load.cjs')();
 const { getWater, getTrade, getProvinces, tradeLead, tradeName } = loadTs('sources');
 const { bill, big } = loadTs('calculator');
-const { C5_RETAINED_GDP, N_RESORPTION } = loadTs('figures');
-const { READS } = loadTs('reads');
+const { C5_RETAINED_GDP, N_RESORPTION, TAILINGS_SECURED_PCT, TAILINGS_SECURITY } = loadTs('figures');
+const { READS, paperImprint } = loadTs('reads');
 
 const CP_MONTHS=['Jan','Feb','Mar','Apr','May','June','July','Aug','Sept','Oct','Nov','Dec'];
 const cpDate = iso => { const [y,m,d]=iso.split('-').map(Number); return `${d} ${CP_MONTHS[m-1]} ${y}`; };
@@ -72,7 +72,12 @@ async function buildCards(){
   line:'Public domain. Nothing here is behind a payment.', stat:'CC0', statk:'no permission needed'},
  {slug:'join',      label:'The coalition', title:'Put your name\nbehind one country',
   line:'No account. No fee. Free to leave whenever you like.', stat:'∅', statk:'nothing to sign'},
- {slug:'the-warning-label', label:'Northern Temper · Paper No. 01', title:'The warning\nlabel',
+ // The share is computed from the two MFSP figures in figures.ts and dated to
+ // their period, because a PNG cannot update itself when the AER does.
+ {slug:'the-waiting-discount', label:paperImprint(2), title:'The waiting\ndiscount',
+  line:'Sixty years of tailings. The ponds are cheaper to keep than to clean, and here is the arithmetic.',
+  stat:`${TAILINGS_SECURED_PCT.toFixed(1)}%`, statk:`of the cleanup bill, secured, ${TAILINGS_SECURITY.period}`},
+ {slug:'the-warning-label', label:paperImprint(1), title:'The warning\nlabel',
   line:'What a British law from 1887 can tell Canada about the China panic.', stat:'139', statk:'years of warning labels'},
  {slug:'the-red-is-the-work', label:'A reading of the leaf', title:'The red\nis the work',
   line:'Not a leaf giving up. A tree getting ready for a long winter, on purpose.', stat:N_RESORPTION.display, statk:'of the nitrogen, taken back first'},
