@@ -72,6 +72,11 @@ async function buildCards(){
   line:'Public domain. Nothing here is behind a payment.', stat:'CC0', statk:'no permission needed'},
  {slug:'join',      label:'The coalition', title:'Put your name\nbehind one country',
   line:'No account. No fee. Free to leave whenever you like.', stat:'∅', statk:'nothing to sign'},
+ // The co-op refinery's capacity is a published figure with no next edition
+ // (CKOM, June 2025); the label is the register's derived imprint.
+ {slug:'common-barrel', label:paperImprint(3), title:'Common\nBarrel',
+  line:'We ship the barrel south and buy the fuel back. A proposal to own the refinery instead, together.',
+  stat:'130,000', statk:'barrels a day, owned by the people who use it'},
  // The share is computed from the two MFSP figures in figures.ts and dated to
  // their period, because a PNG cannot update itself when the AER does.
  {slug:'the-waiting-discount', label:paperImprint(2), title:'The waiting\ndiscount',
