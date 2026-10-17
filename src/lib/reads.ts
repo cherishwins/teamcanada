@@ -57,9 +57,10 @@ export const READS: ReadMeta[] = [
   {
     slug: 'common-barrel', title: 'Common Barrel', imprint: paperImprint(3), paper: 3,
     blurb: 'Canada ships its crude south to be refined, then buys fuel back. A proposal to own the refinery instead, together: by the producers who fill it, the pensions that fund it, First Nations partners, and any Canadian who wants a share.',
-    // Dated after the Alberta referendum of 19 October 2026, which the paper
-    // describes in the past tense. Do not merge before that date.
-    published: '2026-10-20', words: 1916,
+    // Published on the owner's instruction two days before the Alberta
+    // referendum of 19 October 2026; the paper names the date in the present
+    // tense. After the vote, flip that one sentence to the past tense.
+    published: '2026-10-17', words: 2675,
   },
   {
     slug: 'the-waiting-discount', title: 'The Waiting Discount', imprint: paperImprint(2), paper: 2,
