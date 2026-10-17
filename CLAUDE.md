@@ -157,7 +157,10 @@ one file serves both colourways. **Never reference them via `<img src>`:**
   This exists because the owner asked for a register nobody has to remember
   across sessions, and a check is the only register nobody has to remember.
   Papers so far: No. 01 The Warning Label (6 Oct 2026), No. 02 The Waiting
-  Discount (14 Oct 2026).
+  Discount (14 Oct 2026), No. 03 Common Barrel (20 Oct 2026). **The register
+  has already done its job once:** the owner's own file for Common Barrel
+  said "No. 02" while No. 02 was live; it published as 03 and the owner was
+  told why. A paper's number is the register's, not the draft's.
   The read page, `/read`, `feed.xml`, the Article markup, the OG article tags
   and the `/read` share card all read it. They used to be typed in up to four
   places, and three reads carried May dates their own text contradicts ("current
@@ -849,10 +852,11 @@ V   · THE BUILD /build    Refine · Compute · Corridor + C-5.     from teamcan
 /sources     The receipts                every figure, source, period, endpoint
 /fr          La trempe du Nord           BROUILLON, noindex, Act I only
 /offline     Service-worker fallback     noindex, OUT of the sitemap
-/read + 8 long-form pieces   5 migrated from the old site (9,162 words)
+/read + 9 long-form pieces   5 migrated from the old site (9,162 words)
                              + The Red Is the Work, written here (1,154)
                              + The Warning Label, Paper No. 01 (3,876)
                              + The Waiting Discount, Paper No. 02 (4,381)
+                             + Common Barrel, Paper No. 03 (1,916)
 /join  /privacy  /terms  /404          /support is HIDDEN (noindex, unlinked)
 /feed.xml    RSS for every read
 robots.txt · llms.txt · humans.txt · site.webmanifest · sw.js · security.txt
@@ -886,6 +890,28 @@ only its `slug`, description and standfirst to `Read.astro`), its entry in
 `src/lib/reads.ts` (the build prints its word count), `llms.txt`,
 `generate-llms-full.cjs` ORDER, and the CARDS list in `generate-og.cjs`. `/read`,
 the feed and the `read` card's total follow from `reads.ts`.
+
+**`/read/common-barrel` is Northern Temper Paper No. 03** (dated 20 October
+2026): the owner's own proposal for a Canadian-owned refinery held in a
+partnership and owned in layers (a producers' co-op with one vote per
+member, pension funds paid by contract, First Nations as owners from day one,
+the Canada Strong Fund on the same terms, lenders paid first), with the 1935
+Co-op refinery in Regina as the precedent and a two-of-three ledger for
+payment at the gate. The paper rule applies: **the words are the author's.**
+Four things were corrected against sources before it shipped and the page's
+frontmatter comment lists each: the US share of crude exports (87 percent in
+2025 per CER data via CAPP, not "more than 90"), and two dead source links
+(FCL's refinery history, a CTV Heritage Fund story) replaced with sources
+stating the same facts. One figure, "only 26 per cent named independence"
+from a September Abacus poll via CBC, could not be verified from the sandbox
+(CBC returns 403) and stands as the author's cited claim. **It describes the
+19 October 2026 Alberta referendum in the past tense ("On Monday, Albertans
+voted"), so it is dated 20 October and was not to be merged before then.**
+Its four diagrams are the author's inline SVGs with classes mapped to the
+site's tokens and the scroll animations removed; its red field is set as the
+site's red-rule pull line; its cost and fund bars are a facts list and a
+BarTable (which gained a `billions` unit). The upload's progress bar, Google
+Fonts link and script were not carried over.
 
 **`/read/the-waiting-discount` is Northern Temper Paper No. 02** (14 October
 2026): the oil sands tailings ponds as three problems in one coat (the clay,

@@ -1,0 +1,382 @@
+---
+import Read from '../../layouts/Read.astro';
+import Share from '../../components/Share.astro';
+import BarTable from '../../components/BarTable.astro';
+import BearDual from '../../components/marks/BearDual.astro';
+
+/**
+ * Northern Temper Paper No. 03, the web edition of the owner's own page
+ * "Common Barrel" (Jesse James, October 2026), uploaded 17 October 2026.
+ * The words are the author's. Facts were checked against the paper's own
+ * sources before it was published here, and four things changed:
+ *   - "More than 90 per cent of oil sands exports go to the United States"
+ *     is now "nearly nine barrels in ten of the crude Canada exports": the
+ *     Canada Energy Regulator and EIA data CAPP summarised in April 2026 put
+ *     the US share of Canadian crude exports at 87 percent in 2025, down
+ *     from 95 in 2023, since the Trans Mountain expansion opened Asia. The
+ *     CTV story the author cited stays as note 1; CAPP is added beside it.
+ *   - Note 9, Federated Co-operatives' "The story of the Co-op Refinery
+ *     Complex", answers 200 with a "Page Not Found" body: the page is gone.
+ *     The 1933 tariff of 3.7 cents a gallon and the eight farmers are now
+ *     cited to the CCRL Refinery Complex article on Wikipedia, which the
+ *     paper already uses for notes 12 and 22, and which states both.
+ *   - Note 25, a CTV Edmonton story on the Heritage Fund, redirects to a
+ *     404. The 1976 founding, Lougheed and the 30 percent deposit rule are
+ *     now cited to the fund's Wikipedia article and to alberta.ca.
+ *   - The Sturgeon figures hold: $5.7 billion when sanctioned in November
+ *     2012 (Oil & Gas Journal, 2013), $10.1 billion by 2020 (CBC), and
+ *     about 78,000 barrels a day of diluted bitumen per the partnership's
+ *     own 2015 statement, which is 50,000 of bitumen plus diluent.
+ * One figure could not be checked from this sandbox, which CBC refuses:
+ * "only 26 per cent named independence", attributed to an Abacus Data
+ * survey of 4 to 7 September 2026 via CBC. Abacus's own February release
+ * puts 26 percent in favour of sovereignty, and its September release
+ * reports 24 to 27 percent choosing to start the process; a question about
+ * motives among leaners was not found. It stands as the author's cited
+ * claim; the owner should confirm it against the CBC story before quoting
+ * it elsewhere.
+ *
+ * Two things about the edition itself. The paper says "On Monday, Albertans
+ * voted", about the referendum of 19 October 2026, so it is dated 20 October
+ * and must not go live before then; the sentence states no result, so it
+ * holds either way. And the register numbers it 03: the author's file said
+ * 02, but No. 02 has been live since 14 October, and the register exists so
+ * that two papers never carry one number.
+ *
+ * Form, not words: the page's full-bleed red field ("Each province alone is
+ * a vassal") is set as the site's red-rule pull line, because the long-form
+ * column has no red field and the design system allows one per document;
+ * the cost and fund comparisons are BarTables and a facts list rather than
+ * CSS bars; the four diagrams are the author's SVGs with their classes
+ * mapped to the site's tokens and their scroll animations removed; the
+ * progress bar, the Google Fonts link and its script are not carried over.
+ */
+---
+<Read
+  slug="common-barrel"
+  description={"A proposal for a Canadian refinery owned in layers: by the producers who fill it, the pensions that fund it, First Nations partners, and any Canadian who wants a share."}
+  standfirst={"Canada ships its crude south to be refined, then buys fuel back. Here is a proposal to own the refinery instead, together."}
+>
+      <p class="byline">Jesse James · Northern Temper. A proposal for Canadian ownership, October 2026. <a href="#sources">The receipts are at the end.</a></p>
+
+      <h2><span class="eyebrow">One · The round trip</span> We ship the barrel south. We buy the fuel back.</h2>
+      <figure class="diagram">
+        <svg viewBox="0 0 400 330" role="img" aria-labelledby="rt-t rt-d">
+          <title id="rt-t">The round trip</title>
+          <desc id="rt-d">Crude from the oil sands travels south across the border to be refined in the United States, and fuel travels back north to Canadian pumps.</desc>
+          <line x1="12" y1="176" x2="388" y2="176" class="s-hair" stroke-width="1.5" stroke-dasharray="4 6"/>
+          <text x="16" y="164" class="sm mu-t">Canada</text>
+          <text x="16" y="198" class="sm mu-t">United States</text>
+          <circle cx="96" cy="78" r="7" class="f-red"/>
+          <text x="96" y="52" text-anchor="middle" class="ttl fg-t">OIL SANDS CRUDE</text>
+          <circle cx="304" cy="78" r="7" class="f-data"/>
+          <text x="304" y="52" text-anchor="middle" class="ttl fg-t">CANADIAN PUMPS</text>
+          <circle cx="200" cy="270" r="7" class="f-fg"/>
+          <text x="200" y="306" text-anchor="middle" class="ttl fg-t">U.S. REFINERIES</text>
+          <path class="s-red" d="M96 90 C96 190 140 262 182 267" fill="none" stroke-width="5"/>
+          <polygon class="f-red" points="179,259 193,268 179,276"/>
+          <path class="s-data" d="M214 268 C258 262 304 192 304 98" fill="none" stroke-width="3"/>
+          <polygon class="f-data" points="297,100 304,87 311,100"/>
+          <text x="112" y="130" class="sm mu-t">crude, south</text>
+          <text x="289" y="130" text-anchor="end" class="sm mu-t">fuel, north</text>
+        </svg>
+        <figcaption>Figure 1 · The round trip. Nearly nine barrels in ten of the crude Canada exports go to the United States to be refined, and Canada still buys refined products from American suppliers.<sup><a href="#note-1">1</a></sup></figcaption>
+      </figure>
+      <p>On Monday, Albertans voted on whether to start down the road to leaving Canada.<sup><a href="#note-2">2</a></sup> Two weeks earlier, Quebec elected a Parti Québécois government that has promised a referendum of its own, though not before 2029.<sup><a href="#note-3">3</a></sup></p>
+      <p>Six weeks before the vote, a pollster asked Albertans leaning toward the separation option what was driving them. Only 26 per cent named independence.<sup><a href="#note-4">4</a></sup></p>
+      <p>The rest had other reasons. I read that as people sending a message, and I think the message deserves a better answer than a slogan. Here is mine.</p>
+
+      <h2><span class="eyebrow">Two · The case against</span> The skeptics have a point.</h2>
+      <p>Let me start with the strongest argument against what I’m about to propose, because it’s a good one.</p>
+      <p>When B.C.’s premier floated a new Canadian refinery in January, a UBC business lecturer called it “not an economically justifiable or feasible idea.”<sup><a href="#note-5">5</a></sup></p>
+      <p>Alberta’s last new refinery is the best evidence for his side. Sturgeon was estimated at $5.7 billion when it was approved in 2012. It finished at more than $10 billion, for a plant that processes roughly 78,000 barrels a day.<sup><a href="#note-6">6</a>, <a href="#note-7">7</a>, <a href="#note-8">8</a></sup></p>
+      <dl class="facts">
+        <div><dt>$5.7B</dt><dd>Estimate when approved, 2012.<sup><a href="#note-6">6</a></sup></dd></div>
+        <div><dt>Over $10B</dt><dd>Final cost, Alberta’s Sturgeon refinery.<sup><a href="#note-7">7</a>, <a href="#note-8">8</a></sup></dd></div>
+      </dl>
+      <p>If we build a refinery the way that one was built, the skeptics will be right. So the real question isn’t whether Canada should refine more of its own oil. <strong>It’s who should own the refinery, and how it gets built.</strong></p>
+
+      <h2><span class="eyebrow">Three · The farmers’ answer</span> Farmers solved this once.</h2>
+      <p>In 1933, Ottawa put a tariff of 3.7 cents a gallon on American gasoline, and the small prairie fuel co-ops lost their cheap supply. They could also see the big oil companies moving the profit into refining, where the co-ops had no seat.<sup><a href="#note-9">9</a></sup></p>
+      <p>So that winter, they started a drive to build their own refinery.</p>
+      <figure class="timeline" aria-labelledby="fig-2">
+        <figcaption id="fig-2" class="fig">Figure 2 · The Co-op refinery, from a tariff to today</figcaption>
+        <ol>
+          <li>
+            <p class="yr">1933</p>
+            <p class="tag">The squeeze</p>
+            <p>A new tariff cuts prairie fuel co-ops off from cheap American gasoline.<sup><a href="#note-9">9</a></sup></p>
+          </li>
+          <li>
+            <p class="yr">1935</p>
+            <p class="tag">The answer</p>
+            <p>In the refinery’s own telling, eight farmers get it started in Regina.<sup><a href="#note-10">10</a></sup></p>
+          </li>
+          <li>
+            <p class="yr">130,000</p>
+            <p class="tag">Barrels a day, today</p>
+            <p>More than 1,000 people work there. It is owned through Federated Co-operatives by about 160 local co-ops.<sup><a href="#note-11">11</a>, <a href="#note-12">12</a></sup></p>
+          </li>
+        </ol>
+      </figure>
+      <p>Nobody got rich flipping shares in it. That was never the point. <strong>The people who use it own it, and nobody else can buy it out from under them.</strong></p>
+
+      <h2><span class="eyebrow">Four · What changed</span> The money is already looking.</h2>
+      <p>The farmers had to raise every dollar themselves. We don’t.</p>
+      <p>In April, Ottawa launched the Canada Strong Fund, a $25 billion sovereign wealth fund that invests alongside private capital on equal terms. It plans a retail product so any Canadian can put in savings, with the initial capital protected. The details are still being designed.<sup><a href="#note-13">13</a>, <a href="#note-14">14</a></sup></p>
+      <p>Canada’s big pension funds are bringing money home too.</p>
+      <BarTable name="Figure 3" rowHead="Commitment" columns={['Billions of dollars']} unit="billions" rows={[
+        { label: 'Maple Fund, CPP Investments and Brookfield, five years', values: [50] },
+        { label: 'Canada Strong Fund, federal, three years', values: [25] },
+        { label: 'Ontario Teachers’, by the end of 2027', values: [10] },
+        { label: 'OMERS, at least, over five years', values: [10] },
+      ]}>Figure 3 · Commitments announced in 2026 for Canadian investment. Time frames differ, and none of it is earmarked for refining.<sup><a href="#note-13">13</a>, <a href="#note-15">15</a>, <a href="#note-16">16</a>, <a href="#note-17">17</a></sup></BarTable>
+      <p>The money is looking for projects. <strong>The question is who ends up owning them.</strong></p>
+
+      <h2><span class="eyebrow">Five · The structure</span> Owned in layers.</h2>
+      <p>Here is the structure I’m proposing. I call it Common Barrel: one refinery, held in a partnership, owned in layers.</p>
+      <figure class="diagram">
+        <svg viewBox="0 0 400 330" role="img" aria-labelledby="ly-t ly-d">
+          <title id="ly-t">Who owns Common Barrel</title>
+          <desc id="ly-d">A producers’ co-op, pension funds, First Nations partners and the Canada Strong Fund hold equity in the Common Barrel partnership, lenders provide debt and are paid first, and the partnership owns the refinery.</desc>
+          <rect x="10" y="24" width="10" height="10" class="f-red"/>
+          <text x="28" y="34" class="ttl fg-t">PRODUCERS’ CO-OP</text>
+          <text x="28" y="52" class="sm mu-t">one vote per member</text>
+          <rect x="10" y="78" width="10" height="10" class="f-red"/>
+          <text x="28" y="88" class="ttl fg-t">PENSION FUNDS</text>
+          <text x="28" y="106" class="sm mu-t">paid by contract</text>
+          <rect x="10" y="132" width="10" height="10" class="f-red"/>
+          <text x="28" y="142" class="ttl fg-t">FIRST NATIONS</text>
+          <text x="28" y="160" class="sm mu-t">owners from day one</text>
+          <rect x="10" y="186" width="10" height="10" class="f-red"/>
+          <text x="28" y="196" class="ttl fg-t">CANADA STRONG FUND</text>
+          <text x="28" y="214" class="sm mu-t">same terms as all</text>
+          <rect x="10" y="240" width="10" height="10" class="f-data"/>
+          <text x="28" y="250" class="ttl fg-t">LENDERS</text>
+          <text x="28" y="268" class="sm mu-t">paid first</text>
+          <path d="M200 29 C216 29 214 150 230 150" fill="none" class="s-fg" stroke-width="1.25"/>
+          <path d="M200 83 C216 83 214 150 230 150" fill="none" class="s-fg" stroke-width="1.25"/>
+          <path d="M200 137 C216 137 214 150 230 150" fill="none" class="s-fg" stroke-width="1.25"/>
+          <path d="M200 191 C216 191 214 150 230 150" fill="none" class="s-fg" stroke-width="1.25"/>
+          <path d="M200 245 C216 245 214 150 230 150" fill="none" class="s-data" stroke-width="1.5" stroke-dasharray="4 4"/>
+          <rect x="232" y="118" width="156" height="64" class="f-panel s-red" stroke-width="2"/>
+          <text x="310" y="147" text-anchor="middle" class="ttl fg-t">COMMON BARREL</text>
+          <text x="310" y="167" text-anchor="middle" class="sm mu-t">the partnership</text>
+          <line x1="310" y1="182" x2="310" y2="240" class="s-muted" stroke-width="1.5"/>
+          <polygon points="303,238 310,250 317,238" class="f-fg"/>
+          <rect x="232" y="252" width="156" height="58" class="f-panel s-hair" stroke-width="1.5"/>
+          <text x="310" y="279" text-anchor="middle" class="ttl fg-t">THE REFINERY</text>
+          <text x="310" y="298" text-anchor="middle" class="sm mu-t">Canadian-owned</text>
+        </svg>
+        <figcaption>Figure 4 · Who owns Common Barrel. Solid lines are ownership. The dashed line is debt, which is repaid before anyone else is paid.</figcaption>
+      </figure>
+      <p><strong>Producers join through a co-op.</strong> They buy in by the barrel they commit, get paid by the barrel they deliver, and get one vote each. Saskatchewan already has a law for exactly this kind of co-op, and under that model members’ own money typically covers 35 to 50 per cent of start-up costs.<sup><a href="#note-18">18</a>, <a href="#note-19">19</a></sup></p>
+      <p><strong>Pension funds come in as partners,</strong> paid through processing fees set by contract instead of bets on fuel prices. Pension funds favour infrastructure because it pays returns that keep pace with inflation.<sup><a href="#note-20">20</a></sup></p>
+      <p><strong>First Nations hold equity as owners from the start,</strong> on terms they set with us rather than terms written for them.</p>
+      <p><strong>The Canada Strong Fund takes a stake</strong> on the same terms as everyone else. Any Canadian who buys its retail product would own a slice.</p>
+      <p><strong>Lenders get paid first.</strong> Everyone else gets paid in a set order, written down before construction starts.</p>
+
+      <h2><span class="eyebrow">Six · Control</span> Nobody can buy control.</h2>
+      <p>In an ordinary company, votes follow money. Whoever owns the most shares runs it, and can sell it.</p>
+      <figure class="diagram">
+        <svg viewBox="0 0 400 190" role="img" aria-labelledby="ct-t ct-d">
+          <title id="ct-t">Votes in a company versus a co-op</title>
+          <desc id="ct-d">In an ordinary company, one large investor outvotes four small ones. In a co-op, five members each hold one equal vote.</desc>
+          <line x1="200" y1="14" x2="200" y2="176" class="s-hair" stroke-width="1"/>
+          <text x="96" y="26" text-anchor="middle" class="ttl fg-t">ORDINARY COMPANY</text>
+          <text x="96" y="44" text-anchor="middle" class="sm mu-t">votes follow money</text>
+          <circle cx="58" cy="108" r="34" class="f-red"/>
+          <circle cx="122" cy="92" r="9" class="f-inert"/>
+          <circle cx="150" cy="92" r="9" class="f-inert"/>
+          <circle cx="122" cy="124" r="9" class="f-inert"/>
+          <circle cx="150" cy="124" r="9" class="f-inert"/>
+          <text x="96" y="170" text-anchor="middle" class="sm mu-t">one investor outvotes the rest</text>
+          <text x="304" y="26" text-anchor="middle" class="ttl fg-t">CO-OP</text>
+          <text x="304" y="44" text-anchor="middle" class="sm mu-t">one member, one vote</text>
+          <circle cx="236" cy="108" r="14" class="f-data"/>
+          <circle cx="270" cy="108" r="14" class="f-data"/>
+          <circle cx="304" cy="108" r="14" class="f-data"/>
+          <circle cx="338" cy="108" r="14" class="f-data"/>
+          <circle cx="372" cy="108" r="14" class="f-data"/>
+          <text x="304" y="170" text-anchor="middle" class="sm mu-t">no one can buy control</text>
+        </svg>
+        <figcaption>Figure 5 · Votes in a company versus a co-op.</figcaption>
+      </figure>
+      <p>In a co-op, every member gets one vote no matter how much they put in. A big producer is paid in proportion to its barrels, but it can’t take over. <strong>Under Common Barrel, selling the refinery would need the producers’ co-op to agree.</strong></p>
+
+      <h2><span class="eyebrow">Seven · Payment</span> Proof before payment.</h2>
+      <p>One modern piece belongs in this. When a producer’s crude crosses the meter at the refinery gate, three records already exist: the meter’s reading, the pipeline’s ticket, and an independent inspector’s report.</p>
+      <p>Put those records on a shared ledger and payment follows automatically when two of the three agree. If one disagrees, the payment waits for a person to look.</p>
+      <figure class="diagram">
+        <svg viewBox="0 0 400 300" role="img" aria-labelledby="pf-t pf-d">
+          <title id="pf-t">Proof before payment</title>
+          <desc id="pf-d">The gate meter, the pipeline ticket and the inspector’s report are compared. If two of three agree, payment is released to the producer. If not, the payment waits while a person reviews it.</desc>
+          <rect x="8" y="18" width="120" height="52" class="f-panel s-hair" stroke-width="1.25"/>
+          <text x="68" y="42" text-anchor="middle" class="ttl fg-t">GATE METER</text>
+          <text x="68" y="60" text-anchor="middle" class="sm mu-t">volume</text>
+          <rect x="140" y="18" width="120" height="52" class="f-panel s-hair" stroke-width="1.25"/>
+          <text x="200" y="42" text-anchor="middle" class="ttl fg-t">PIPELINE</text>
+          <text x="200" y="60" text-anchor="middle" class="sm mu-t">batch ticket</text>
+          <rect x="272" y="18" width="120" height="52" class="f-panel s-hair" stroke-width="1.25"/>
+          <text x="332" y="42" text-anchor="middle" class="ttl fg-t">INSPECTOR</text>
+          <text x="332" y="60" text-anchor="middle" class="sm mu-t">quality report</text>
+          <path d="M68 70 C68 100 160 100 172 122" fill="none" class="s-muted" stroke-width="1.5"/>
+          <line x1="200" y1="70" x2="200" y2="122" class="s-muted" stroke-width="1.5"/>
+          <path d="M332 70 C332 100 240 100 228 122" fill="none" class="s-muted" stroke-width="1.5"/>
+          <rect x="130" y="124" width="140" height="48" class="f-panel s-red" stroke-width="2.5"/>
+          <text x="200" y="154" text-anchor="middle" class="ttl fg-t">2 OF 3 AGREE?</text>
+          <line x1="168" y1="172" x2="112" y2="222" class="s-data" stroke-width="2"/>
+          <polygon points="113,212 106,227 121,222" class="f-data"/>
+          <text x="124" y="200" text-anchor="end" class="sm mu-t">yes</text>
+          <line x1="232" y1="172" x2="288" y2="222" class="s-muted" stroke-width="1.5"/>
+          <polygon points="279,222 294,227 287,212" class="f-fg"/>
+          <text x="276" y="200" class="sm mu-t">no</text>
+          <rect x="16" y="230" width="176" height="56" class="f-panel s-data" stroke-width="2"/>
+          <text x="104" y="255" text-anchor="middle" class="ttl fg-t">PAYMENT RELEASED</text>
+          <text x="104" y="274" text-anchor="middle" class="sm mu-t">to the producer</text>
+          <rect x="208" y="230" width="176" height="56" class="f-panel s-hair" stroke-width="1.5"/>
+          <text x="296" y="255" text-anchor="middle" class="ttl fg-t">PAYMENT WAITS</text>
+          <text x="296" y="274" text-anchor="middle" class="sm mu-t">a person reviews it</text>
+        </svg>
+        <figcaption>Figure 6 · Proof before payment.</figcaption>
+      </figure>
+      <p>Canada has already tested the plumbing. In March 2026, Export Development Canada issued the country’s first tokenized bond, with regulators’ approval, on a private network.<sup><a href="#note-21">21</a></sup> The contracts stay in charge. Canadian banks still move the money. <strong>A person can always press pause.</strong></p>
+
+      <h2><span class="eyebrow">Eight · The limits</span> What this isn’t.</h2>
+      <dl>
+        <dt>It isn’t a coin.</dt>
+        <dd>Venezuela launched a token backed by its oil in 2018 and shut it down in January 2024.<sup><a href="#note-22">22</a></sup></dd>
+        <dt>It isn’t an offer.</dt>
+        <dd>Nobody can invest in Common Barrel today, and I’m not asking anyone to.</dd>
+        <dt>It isn’t finished.</dt>
+        <dd>Refining margins swing. Construction budgets blow up. The skeptics have a point, and this plan has to answer them in numbers before anyone pours concrete.</dd>
+      </dl>
+
+      <h2><span class="eyebrow">Nine · The precedent</span> Alberta and Quebec have done this before.</h2>
+      <p>In 1962, Jean Lesage called an election on a single idea: buy out Quebec’s private power companies and fold them into Hydro-Québec. His slogan was <i lang="fr">maîtres chez nous</i>, masters in our own house. He won, and Hydro-Québec became a source of pride.<sup><a href="#note-23">23</a>, <a href="#note-24">24</a></sup></p>
+      <p>In 1976, Peter Lougheed set up the Heritage Savings Trust Fund to put 30 per cent of Alberta’s resource revenue into savings.<sup><a href="#note-25">25</a></sup></p>
+      <p class="view">Both provinces already understand the idea underneath Common Barrel. <strong>My view: when you own the asset, you stop asking for permission.</strong></p>
+      <p class="pull">Each province alone is a vassal. Together we are a peer.</p>
+
+      <h2><span class="eyebrow">Ten · The ask</span> Not money. Scrutiny.</h2>
+      <p>If you build refineries, run a producer, sit on a pension investment committee, work in government, or help lead a Nation’s development corporation, tell me what breaks first.</p>
+      <p>If you’re a Canadian who would want a share of a refinery this country owns, say so, loudly enough for Ottawa to hear it.</p>
+      <figure class="mark">
+        <BearDual />
+      </figure>
+      <p class="sign">Strong. Proud. Free.</p>
+      <p>Jesse James</p>
+      <p class="fig">Common Barrel is a proposal for public discussion. It is not an offer to sell, or a solicitation of an offer to buy, any security. A French edition is in preparation.</p>
+
+      <h2 id="sources"><span class="eyebrow">Receipts</span> Every figure, sourced.</h2>
+      <ol class="notes">
+        <li id="note-1"><cite>CTV News</cite>, &quot;Eby says Canada should build refineries, not pipelines,&quot; January 6, 2026, citing Canada Energy Regulator data. <a href="https://www.ctvnews.ca/vancouver/article/eby-says-canada-should-build-refineries-not-pipelines-amid-oilsands-uncertainty/">ctvnews.ca</a>. The share is from the Canadian Association of Petroleum Producers, <cite>Canadian Exports of Crude Oil and Natural Gas</cite>, April 17, 2026, from Canada Energy Regulator and U.S. Energy Information Administration data: the United States took 87 per cent of Canada&#x27;s crude exports in 2025, down from 95 per cent in 2023. <a href="https://www.capp.ca/wp-content/uploads/2026/05/Canadian-Exports-of-Crude-Oil-and-Natural-Gas-April-17-2026.pdf">capp.ca</a></li>
+        <li id="note-2"><cite>CBC News</cite>, guide to the 10 questions in Alberta&#x27;s October 19 referendum. <a href="https://www.cbc.ca/news/canada/calgary/guide-to-the-10-questions-in-alberta-s-oct-19-referendum-9.7361550">cbc.ca</a></li>
+        <li id="note-3"><cite>Al Jazeera</cite>, &quot;Secessionist Parti Québécois wins Quebec election,&quot; October 6, 2026. <a href="https://www.aljazeera.com/amp/news/2026/10/6/secessionist-parti-quebecois-wins-quebec-election-in-canada">aljazeera.com</a></li>
+        <li id="note-4"><cite>CBC News</cite>, on an Abacus Data survey of 1,000 Albertans, September 4 to 7, 2026. <a href="https://www.cbc.ca/news/canada/edmonton/alberta-separatists-expect-to-win-poll-projects-loss-9.7337551">cbc.ca</a></li>
+        <li id="note-5"><cite>CBC News</cite>, &quot;B.C. premier proposes publicly funded refinery over pipeline,&quot; January 2026. <a href="https://www.cbc.ca/news/canada/british-columbia/bc-premier-refinery-pipeline-proposal-9.7038936">cbc.ca</a></li>
+        <li id="note-6"><cite>Oil &amp; Gas Journal</cite>, &quot;Rising costs delay Alberta refinery project,&quot; December 5, 2013. <a href="https://www.ogj.com/refining-processing/refining/article/17258690/rising-costs-delay-alberta-refinery-project">ogj.com</a></li>
+        <li id="note-7"><cite>CBC News</cite>, &quot;Sturgeon Refinery saga.&quot; <a href="https://www.cbc.ca/news/canada/calgary/alberta-bitumen-sturgeon-refinery-nwrp-1.5718044">cbc.ca</a></li>
+        <li id="note-8"><cite>CBC News</cite>, &quot;Alberta taxpayers could be on hook for $26B oil refinery.&quot; <a href="https://www.cbc.ca/1.3037519">cbc.ca</a></li>
+        <li id="note-9"><cite>Wikipedia</cite>, &quot;CCRL Refinery Complex,&quot; on the 1933 tariff of 3.7 cents a gallon and the eight farmers whose money started the refinery. Federated Co-operatives&#x27; own history page, &quot;The story of the Co-op Refinery Complex&quot; (June 9, 2015), was the paper&#x27;s source and no longer resolves. <a href="https://en.wikipedia.org/wiki/CCRL_Refinery_Complex">wikipedia.org</a></li>
+        <li id="note-10">Co-op Refinery Complex, company description on LinkedIn. <a href="https://www.linkedin.com/posts/co-op-refinery-complex_fcl-is-proud-to-fuel-farms-across-western-activity-7059679591673593856-vC17">linkedin.com</a></li>
+        <li id="note-11"><cite>CKOM</cite>, &quot;Co-op Refinery celebrates 90 years of operation,&quot; June 27, 2025. <a href="https://www.ckom.com/2025/06/27/co-op-refinery-celebrates-90-years-of-operation/">ckom.com</a></li>
+        <li id="note-12"><cite>Wikipedia</cite>, &quot;Federated Co-operatives.&quot; <a href="https://en.wikipedia.org/wiki/Federated_Co-operatives">wikipedia.org</a></li>
+        <li id="note-13">Government of Canada, Department of Finance, Canada Strong Fund backgrounder, April 27, 2026. <a href="https://www.canada.ca/en/department-finance/news/2026/04/canada-strong-fund.html">canada.ca</a></li>
+        <li id="note-14"><cite>McMillan LLP</cite>, &quot;Canada Launches Its First National Sovereign Wealth Fund.&quot; <a href="https://mcmillan.ca/insights/publications/ground-breaking-canada-launches-its-first-national-sovereign-wealth-fund/">mcmillan.ca</a></li>
+        <li id="note-15"><cite>The Canadian Press</cite> via Advisor.ca, &quot;CPP Investments, Brookfield launch $50B fund,&quot; September 15, 2026. <a href="https://www.advisor.ca/industry-news/cpp-investments-brookfield-launch-50b-fund-to-invest-in-big-canadian-projects/">advisor.ca</a></li>
+        <li id="note-16"><cite>Benefits and Pensions Monitor</cite>, &quot;Pension funds put nearly $100 billion back on home ice,&quot; September 16, 2026. <a href="https://www.benefitsandpensionsmonitor.com/news/industry-news/pension-funds-put-nearly-100-billion-back-on-home-ice/394145">benefitsandpensionsmonitor.com</a></li>
+        <li id="note-17"><cite>Benefits and Pensions Monitor</cite>, OMERS first-half 2026 results. <a href="https://www.benefitsandpensionsmonitor.com/pensions/defined-benefit/maple-eight-pension-fund-earns-almost-7-billion-in-first-half-of-2026/39">benefitsandpensionsmonitor.com</a></li>
+        <li id="note-18">Information Services Corporation of Saskatchewan, <cite>The New Generation Co-operatives Act</cite>. <a href="https://www.isc.ca/CorporateRegistry/ActsandRegulations/Pages/The-New-Generation-Co-operatives-Act.aspx">isc.ca</a></li>
+        <li id="note-19"><cite>Encyclopedia of Saskatchewan</cite>, &quot;New Generation Co-operative Model.&quot; <a href="https://www.esask.uregina.ca/entry/new_generation_co-operative_model.html">esask.uregina.ca</a></li>
+        <li id="note-20">Luciano Arvin, &quot;Bring Canada&#x27;s pension funds back home to build our own economy,&quot; <cite>Policy Options</cite>, December 1, 2025. <a href="https://policyoptions.irpp.org/2025/12/pension-funds-canada-economy/">policyoptions.irpp.org</a></li>
+        <li id="note-21">Export Development Canada, &quot;EDC issues Canada&#x27;s first tokenized bond,&quot; March 5, 2026. The Ontario Securities Commission, the Autorité des marchés financiers and the Canadian Investment Regulatory Organization approved the project the same week. <a href="https://www.edc.ca/en/about-us/news/edc-issues-tokenized-bond.html">edc.ca</a></li>
+        <li id="note-22"><cite>Wikipedia</cite>, &quot;Petro (token).&quot; <a href="https://en.wikipedia.org/wiki/Petro_(token)">wikipedia.org</a></li>
+        <li id="note-23"><cite>The Canadian Encyclopedia</cite>, &quot;Jean Lesage.&quot; <a href="https://thecanadianencyclopedia.ca/en/article/jean-lesage">thecanadianencyclopedia.ca</a></li>
+        <li id="note-24"><cite>The Canadian Encyclopedia</cite>, &quot;Quiet Revolution.&quot; <a href="https://thecanadianencyclopedia.ca/en/article/quiet-revolution">thecanadianencyclopedia.ca</a></li>
+        <li id="note-25"><cite>Wikipedia</cite>, &quot;Alberta Heritage Savings Trust Fund&quot; (founded 19 May 1976 under Peter Lougheed; 30 per cent of non-renewable resource revenue deposited until 1983), and Government of Alberta, &quot;Heritage Savings Trust Fund.&quot; The CTV Edmonton story the paper cited now returns a 404. <a href="https://en.wikipedia.org/wiki/Alberta_Heritage_Savings_Trust_Fund">wikipedia.org</a> · <a href="https://www.alberta.ca/heritage-savings-trust-fund">alberta.ca</a></li>
+      </ol>
+      <p class="fig"><strong>A note on this edition.</strong> Two of the paper&#x27;s source links had died before it was published here and were replaced with sources that state the same facts; the export share was corrected to the current Canada Energy Regulator figure. The page&#x27;s own record of what changed is in its source.</p>
+
+      <Share
+        slot="after"
+        quote={"We ship the barrel south. We buy the fuel back. Here is a proposal to own the refinery instead, together."}
+      />
+</Read>
+
+<style>
+  /* The author's own opinion stands in its own sentence and says so. */
+  .view { border-left: var(--rule-weight) solid var(--nt-red); padding-left: var(--space-2); }
+
+  /* Two figures side by side, one above the other on a phone. */
+  .facts {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+    gap: var(--space-3); margin: clamp(28px, 4vh, 52px) 0;
+    border-top: var(--border-key) solid var(--nt-red); padding-top: var(--space-3);
+  }
+  .facts dt {
+    margin: 0; color: var(--nt-red); letter-spacing: 0;
+    font-family: var(--font-display); font-weight: var(--fw-display);
+    font-size: clamp(34px, 4.6vw, 52px); line-height: .95;
+  }
+  .facts dd { margin: var(--space-1) 0 0; font-size: var(--type-body-sm); }
+
+  /* The co-op refinery, from the tariff to today. */
+  .timeline { margin: clamp(28px, 4vh, 52px) 0; }
+  .timeline ol { list-style: none; margin: var(--space-2) 0 0; padding: 0; border-left: 3px solid var(--nt-red); }
+  .timeline li { position: relative; padding: 0 0 var(--space-3) var(--space-3); margin: 0; }
+  .timeline li::before {
+    content: ""; position: absolute; left: -9px; top: .45em;
+    width: 15px; height: 15px; border-radius: 50%; background: var(--nt-red);
+  }
+  .timeline p { margin: 0 0 .35rem; }
+  .timeline .yr {
+    font-family: var(--font-display); font-weight: var(--fw-display);
+    font-size: clamp(28px, 3.6vw, 40px); line-height: 1;
+  }
+  .timeline .tag {
+    font-family: var(--font-display); font-weight: var(--fw-label);
+    text-transform: uppercase; letter-spacing: .14em; color: var(--nt-red);
+  }
+
+  /* The author's diagrams, drawn in the site's own colours. Red for the
+     strike, the data colour for the second series, the page's ink for the
+     rest; frost never sits behind type, so the panels are the light grey. */
+  .diagram { margin: clamp(28px, 4vh, 52px) 0; }
+  .diagram svg { display: block; width: 100%; max-width: 34rem; height: auto; margin-inline: auto; }
+  .diagram .ttl { font-family: var(--font-display); font-weight: var(--fw-label); font-size: 15px; letter-spacing: .06em; }
+  .diagram .sm { font-family: var(--font-body); font-size: 12.5px; }
+  .diagram .fg-t, .diagram .f-fg { fill: currentColor; }
+  .diagram .mu-t { fill: var(--text-muted); }
+  .diagram .f-red { fill: var(--nt-red); }
+  .diagram .f-data { fill: var(--data-primary); }
+  .diagram .f-inert { fill: var(--nt-n-260); }
+  .diagram .f-panel { fill: var(--nt-white); }
+  .diagram .s-red { stroke: var(--nt-red); }
+  .diagram .s-data { stroke: var(--data-primary); }
+  .diagram .s-hair { stroke: var(--nt-n-260); }
+  .diagram .s-muted { stroke: var(--text-muted); }
+  .diagram .s-fg { stroke: currentColor; }
+  @media (forced-colors: active) {
+    .diagram .f-red, .diagram .f-data, .diagram .f-inert { fill: CanvasText; }
+    .diagram .s-red, .diagram .s-data, .diagram .s-hair, .diagram .s-muted { stroke: CanvasText; }
+  }
+
+  .mark { margin: clamp(30px, 4.5vh, 56px) auto var(--space-3); max-width: 22rem; color: var(--nt-black); }
+  .mark :global(svg) { width: 100%; height: auto; display: block; }
+
+  /* The paper's own pull line and sign-off: the author's words, so not a <blockquote>. */
+  .pull {
+    margin: clamp(30px, 4.5vh, 56px) 0; padding-left: clamp(18px, 2.4vw, 30px);
+    border-left: var(--rule-weight) solid var(--nt-red);
+    font-family: var(--font-display); font-weight: var(--fw-display);
+    text-transform: uppercase; line-height: 1.1; font-size: clamp(20px, 2.8vw, 34px);
+  }
+  .sign {
+    font-family: var(--font-display); font-weight: var(--fw-display);
+    text-transform: uppercase; letter-spacing: .06em;
+    font-size: clamp(22px, 2.6vw, 32px); margin: var(--space-3) 0 var(--space-1);
+  }
+  .notes cite { font-style: normal; font-weight: var(--fw-body-strong); }
+  .notes a { overflow-wrap: anywhere; }
+</style>
