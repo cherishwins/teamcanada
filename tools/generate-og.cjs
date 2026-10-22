@@ -72,6 +72,10 @@ async function buildCards(){
   line:'Public domain. Nothing here is behind a payment.', stat:'CC0', statk:'no permission needed'},
  {slug:'join',      label:'The coalition', title:'Put your name\nbehind one country',
   line:'No account. No fee. Free to leave whenever you like.', stat:'∅', statk:'nothing to sign'},
+ // Three locks is the paper's own frame (ownership, keys, people); no source moves it.
+ {slug:'under-the-shield', label:paperImprint(4), title:'Under\nthe Shield',
+  line:'A Canadian address is not a Canadian key. How the pieces could fit.',
+  stat:'3', statk:'locks: who owns it, who holds the keys, who gets in'},
  // The co-op refinery's capacity is a published figure with no next edition
  // (CKOM, June 2025); the label is the register's derived imprint.
  {slug:'common-barrel', label:paperImprint(3), title:'Common\nBarrel',

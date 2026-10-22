@@ -55,11 +55,16 @@ export const paperImprint = (n: number) => `Northern Temper · Paper No. ${Strin
 
 export const READS: ReadMeta[] = [
   {
+    slug: 'under-the-shield', title: 'Under the Shield', imprint: paperImprint(4), paper: 4,
+    blurb: 'Canada has already started building a home for its most sensitive data. A Canadian address is not a Canadian key: three locks, three tiers, one set of keys, and a hardened copy under the Shield.',
+    // The owner's PDF said "No. 02"; the register had 02 and 03 taken.
+    published: '2026-10-22', words: 3804,
+  },
+  {
     slug: 'common-barrel', title: 'Common Barrel', imprint: paperImprint(3), paper: 3,
     blurb: 'Canada ships its crude south to be refined, then buys fuel back. A proposal to own the refinery instead, together: by the producers who fill it, the pensions that fund it, First Nations partners, and any Canadian who wants a share.',
-    // Published on the owner's instruction two days before the Alberta
-    // referendum of 19 October 2026; the paper names the date in the present
-    // tense. After the vote, flip that one sentence to the past tense.
+    // Published two days before the Alberta referendum of 19 October 2026 in
+    // the present tense; flipped to the past tense on 22 October 2026.
     published: '2026-10-17', words: 2675,
   },
   {

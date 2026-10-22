@@ -34,14 +34,14 @@ interface Props {
   columns: string[];
   rows: Row[];
   /** How a value is printed, e.g. dollars, a percentage, or terawatt-hours. */
-  unit: 'dollars' | 'percent' | 'TWh' | 'Mm³' | 'billions';
+  unit: 'dollars' | 'percent' | 'TWh' | 'Mm³' | 'billions' | 'usd';
 }
 const { name, rowHead, columns, rows, unit } = Astro.props;
 const max = Math.max(...rows.filter((r) => r.bars !== false).flatMap((r) => r.values), 1);
 const nf = new Intl.NumberFormat('en-CA');
 const fmt = (v: number, approx = false) =>
   (approx ? '~' : '') +
-  (unit === 'percent' ? `${nf.format(v)}%` : unit === 'TWh' ? `${nf.format(v)}\u00a0TWh` : unit === 'Mm³' ? `${nf.format(v)}\u00a0Mm³` : unit === 'billions' ? `$${nf.format(v)}B` : `$${nf.format(v)}`);
+  (unit === 'percent' ? `${nf.format(v)}%` : unit === 'TWh' ? `${nf.format(v)}\u00a0TWh` : unit === 'Mm³' ? `${nf.format(v)}\u00a0Mm³` : unit === 'billions' ? `$${nf.format(v)}B` : unit === 'usd' ? `US$${nf.format(v)}` : `$${nf.format(v)}`);
 ---
 <figure class="bt">
   <section class="tw" tabindex="0" aria-label={`${name}, as a table`}>
