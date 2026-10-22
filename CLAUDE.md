@@ -157,10 +157,12 @@ one file serves both colourways. **Never reference them via `<img src>`:**
   This exists because the owner asked for a register nobody has to remember
   across sessions, and a check is the only register nobody has to remember.
   Papers so far: No. 01 The Warning Label (6 Oct 2026), No. 02 The Waiting
-  Discount (14 Oct 2026), No. 03 Common Barrel (17 Oct 2026). **The register
-  has already done its job once:** the owner's own file for Common Barrel
-  said "No. 02" while No. 02 was live; it published as 03 and the owner was
-  told why. A paper's number is the register's, not the draft's.
+  Discount (14 Oct 2026), No. 03 Common Barrel (17 Oct 2026), No. 04 Under
+  the Shield (22 Oct 2026). **The register has done its job twice:** the
+  owner's own files for Common Barrel and for Under the Shield both said
+  "No. 02" while No. 02 was live; they published as 03 and 04 and the owner
+  was told why each time. Expect the next draft to say "No. 02" too. A
+  paper's number is the register's, not the draft's.
   The read page, `/read`, `feed.xml`, the Article markup, the OG article tags
   and the `/read` share card all read it. They used to be typed in up to four
   places, and three reads carried May dates their own text contradicts ("current
@@ -852,11 +854,12 @@ V   · THE BUILD /build    Refine · Compute · Corridor + C-5.     from teamcan
 /sources     The receipts                every figure, source, period, endpoint
 /fr          La trempe du Nord           BROUILLON, noindex, Act I only
 /offline     Service-worker fallback     noindex, OUT of the sitemap
-/read + 9 long-form pieces   5 migrated from the old site (9,162 words)
+/read + 10 long-form pieces  5 migrated from the old site (9,162 words)
                              + The Red Is the Work, written here (1,154)
                              + The Warning Label, Paper No. 01 (3,876)
                              + The Waiting Discount, Paper No. 02 (4,381)
                              + Common Barrel, Paper No. 03 (2,675)
+                             + Under the Shield, Paper No. 04 (3,804)
 /join  /privacy  /terms  /404          /support is HIDDEN (noindex, unlinked)
 /feed.xml    RSS for every read
 robots.txt · llms.txt · humans.txt · site.webmanifest · sw.js · security.txt
@@ -891,6 +894,29 @@ only its `slug`, description and standfirst to `Read.astro`), its entry in
 `generate-llms-full.cjs` ORDER, and the CARDS list in `generate-og.cjs`. `/read`,
 the feed and the `read` card's total follow from `reads.ts`.
 
+**`/read/under-the-shield` is Northern Temper Paper No. 04** (22 October
+2026): the owner's own paper, from a PDF they uploaded with a research brief.
+Its argument: a Canadian address is not a Canadian key. Canada's sensitive
+data is held to three locks (who owns the operator, who holds the keys, who
+can get in), and the paper proposes three tiers behind one set of Canadian
+keys: a sovereign cloud for Protected B and AI, a classified cloud for
+Secret work, and a hardened continuity copy deep in the Canadian Shield,
+each built on something already underway (Shared Services Canada's
+Sovereign Cloud Invitation to Qualify, National Defence's 2026-27 plan,
+"AI for All"). The paper rule applies: **the words are the author's.** Six
+facts were corrected against the paper's own sources and the page's
+frontmatter lists each (a policy idea the PDF put in Minister Solomon's
+mouth that the cited story does not, Lefdal's PUE, S3NS's certification
+timeline, Protected B in cloud since 2017 not 2018, a dead Defence 365
+citation, NATO's wording cited to NATO). Added for its stakeholders and
+listed there so the owner can strike them: an "In brief" box and a glossary.
+Its five diagrams follow the diagram discipline below; its data-tier figure
+draws the levels equal, because no public figure gives how much sits in
+each and unequal bars would imply one. **The research brief behind it is
+kept, unpublished, at `notes/under-the-shield-research-brief.md`**, with a
+header listing the four of its claims that are wrong as written. Quote the
+page, not the brief.
+
 **`/read/common-barrel` is Northern Temper Paper No. 03** (17 October
 2026): the owner's own proposal for a Canadian-owned refinery held in a
 partnership and owned in layers (a producers' co-op with one vote per
@@ -907,9 +933,9 @@ from a September Abacus poll via CBC, could not be verified from the sandbox
 (CBC returns 403) and stands as the author's cited claim. **The upload said
 "On Monday, Albertans voted" about the 19 October 2026 referendum and the
 owner asked for it published on the 17th**, so the sentence names the date
-in the present tense ("On October 19, Albertans vote"); **after the vote,
-flip that one sentence to the past tense.** Nothing else depends on the
-result. At the owner's request the edition was expanded for its
+in the present tense ("On October 19, Albertans vote") until the vote,
+and **was flipped to the past tense on 22 October 2026**. It names no
+result; nothing else depends on one. At the owner's request the edition was expanded for its
 stakeholders, in the paper's register, each addition listed in the page's
 frontmatter comment so the owner can strike any: an "In brief" box, a
 "How to read this" note naming who it is for, a table of what each party

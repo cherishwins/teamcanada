@@ -1,0 +1,544 @@
+---
+import Read from '../../layouts/Read.astro';
+import Share from '../../components/Share.astro';
+import BarTable from '../../components/BarTable.astro';
+import BearDual from '../../components/marks/BearDual.astro';
+
+/**
+ * Northern Temper Paper No. 04, the web edition of the owner's own PDF
+ * "Under the Shield" (Jesse James, October 2026, 18 pages, 28 sources),
+ * uploaded 22 October 2026 with a research brief behind it. The brief is
+ * kept, unpublished, in notes/under-the-shield-research-brief.md.
+ *
+ * THE NUMBER. The PDF's cover says "Paper No. 02". No. 02 (The Waiting
+ * Discount) and No. 03 (Common Barrel) were already live, so the register
+ * numbers it 04. A paper's number is the register's, not the draft's.
+ *
+ * The words, argument and opinions are the author's. Facts were checked
+ * against the paper's own sources on 22 October 2026, and six things
+ * changed:
+ *   - "Minister Solomon has said Ottawa is looking at financial backstops
+ *     and compute off-take agreements" (Idea 03, and "Paying for it"). The
+ *     cited BetaKit story reports that Ottawa is exploring financial
+ *     guarantees and commitments to buy compute capacity, and quotes
+ *     Solomon saying "We're not here to be backstopping everybody." The
+ *     page now says what the source says, and does not put the idea in the
+ *     minister's mouth.
+ *   - Lefdal's power usage effectiveness: "1.08 at its best" is now "under
+ *     1.1", which is what the cited Rittal page states.
+ *   - S3NS "took 17 months from the start of formal evaluation": the cited
+ *     Alenatec page now resolves to the firm's home page, and no other
+ *     source found states the 17 months. The page now says what Thales
+ *     states: S3NS, founded in 2022, earned SecNumCloud on 17 December
+ *     2025. The lesson the author draws from it stands.
+ *   - "Protected B ... allowed in commercial cloud under federal rules since
+ *     2018": the Treasury Board notice that allows it, SPIN 2017-01, is
+ *     dated 1 November 2017. Now "since 2017", cited to it.
+ *   - The Defence 365 FAQ the paper cited (note 13) returns a 404. "Up to
+ *     Protected A" is now cited to National Defence's own 28 April 2020
+ *     notice, which says exactly that, with its May 2024 guidance allowing
+ *     Protected B audio.
+ *   - "Up to 1.5% of GDP a year ... to protect critical infrastructure,
+ *     defend networks and strengthen civil preparedness" is the wording of
+ *     NATO's Hague Summit Declaration, not of the Prime Minister's release
+ *     the paper cited; note 20 now cites both.
+ * Verified as written: the Treasury Board quotations (2018 white paper),
+ * the Microsoft France testimony (The Register, from the 18 June 2025
+ * hearing), the CLOUD Act status (Lawfare), the October 2025 consortium
+ * and Hypertec's OEM status (eStruxture), $925.6 million (Budget 2025
+ * coverage), 160 proposals (BetaKit, May 2026), DND's "classified and
+ * sovereign cloud" sentence (2026-27 plan), "AI for All" and its sovereign
+ * foundation pillar (ISED, June 2026), the Sovereign Cloud ITQ
+ * (CS-SOVC-2026, published 25 September 2026, first intake closing 19 to
+ * 20 October), HIVE's US$220 million (SEC 8-K, 18 June 2026), SSC's
+ * classified cloud and Secret systems quotations, SSC's ownership test,
+ * the $10 billion loan guarantee program, the Mercatus H200 average
+ * (US$4.43, September 2026), Lefdal's 37 MW and the ~€300 million 3i
+ * stake (completed later at €263 million for 3i's own share), and
+ * Manitoba's preference for small data centres (BetaKit, June 2026).
+ * Not re-fetched: DND's 2025-26 plan (note 14), the Spring Economic
+ * Update (note 21), the TRG server price (note 23, an estimate the page
+ * labels as one).
+ *
+ * ADDED for its stakeholders, as on Common Barrel, and listed here so the
+ * owner can strike any: the "In brief" box and the "Words used here"
+ * glossary. Every other sentence is the PDF's.
+ *
+ * FORM. The red "sentence" page is a blockquote with its citation. The
+ * five diagrams (Figures 1 to 4 and 6; Figure 5 is a BarTable) follow the site's diagram discipline (see CLAUDE.md): one
+ * accent on one focal element, a four-pixel grid, orthogonal connectors,
+ * hairlines, square corners, no colour carrying meaning a label does not.
+ * The PDF's data-tier picture drew bars of different widths for levels
+ * that have no published volumes; the web figure draws them equal, so
+ * nothing implies a quantity nobody measured.
+ */
+---
+<Read
+  slug="under-the-shield"
+  description={"Canada has already started building a home for its most sensitive data. How the pieces could fit: three locks, three tiers, one set of keys, and a hardened copy under the Shield. Twenty-eight public sources."}
+  standfirst={"Canada has already started building a home for its most sensitive data. This is how the pieces could fit, offered by one Canadian to the people doing the work."}
+>
+      <section class="brief" aria-labelledby="in-brief">
+        <h2 id="in-brief">In brief</h2>
+        <ul>
+          <li>In 2018 Treasury Board wrote it down: as long as a cloud provider in Canada answers to a foreign country’s laws, Canada does not fully control its own data.</li>
+          <li>The answer is already being built. Shared Services Canada, National Defence and the national AI strategy all now name sovereign or classified cloud as a goal, and a Canadian-only procurement opened in September.</li>
+          <li>Canada’s most secret material already lives on government-run networks. The open question is the big middle: everyday protected work, and the AI computing that will run on it.</li>
+          <li>A Canadian address is not a Canadian key. Sovereignty is three locks: who owns the building, who holds the encryption keys, and who runs it.</li>
+          <li>One shape it could take: a sovereign cloud, a classified cloud, and a hardened continuity copy deep in the Canadian Shield, all behind one set of Canadian keys.</li>
+          <li>Five ideas, each building on something Ottawa has already started, offered to the people doing the work.</li>
+        </ul>
+      </section>
+
+      <blockquote class="sentence">
+        <p>As long as a CSP that operates in Canada is subject to the laws of a foreign country, Canada will not have full sovereignty over its data.</p>
+      </blockquote>
+      <p class="fig">Treasury Board of Canada Secretariat, <cite>Government of Canada White Paper: Data Sovereignty and Public Cloud</cite>, 25 June 2018.<sup><a href="#note-1">1</a></sup></p>
+      <p class="lead">In June 2018, a team at Treasury Board wrote the sentence this whole paper rests on.</p>
+      <p>CSP means cloud service provider. Read the sentence again with that in mind.</p>
+      <p>It wasn’t written by a critic. It was written by the people responsible for the government’s own systems, and they were right.</p>
+      <p><strong>Eight years on, the answer is being built. This paper is about helping finish it.</strong></p>
+
+      <h2><span class="eyebrow">Before we start</span> I’m not the expert in this room.</h2>
+      <p>I’m not a public servant. I’ve never sat in the rooms where these decisions get made, and the people who do know constraints I can’t see from here.</p>
+      <p>I’ll be honest about how this started. I went looking for where Canada keeps its most sensitive data, and I expected to come back angry.</p>
+      <p>I came back impressed. Shared Services Canada, National Defence and Treasury Board have been working on this for years, in public, with their reasoning written down. Most Canadians have no idea.</p>
+      <p>So this isn’t a list of instructions. It’s a map of what is already underway, and a few ideas offered in good faith to the people carrying it.</p>
+      <h3>The house key</h3>
+      <p>One idea runs through every page. You can live in a house in Canada and still not hold the key. Sovereignty comes down to who holds the house key: who owns the building, which courts the owner answers to, and whose hands are on the encryption keys.</p>
+      <dl class="rules">
+        <div><dt>Every figure is checkable</dt><dd>Twenty-eight numbered public sources, <a href="#sources">at the end</a>.</dd></div>
+        <div><dt>No one is blamed</dt><dd>This work is hard, and people are already doing it.</dd></div>
+        <div><dt>Ideas, not orders</dt><dd>Take what helps. Leave what doesn’t.</dd></div>
+      </dl>
+
+      <h2><span class="eyebrow">What Canada has already built</span> The work is further along than most people think.</h2>
+      <figure class="timeline" aria-labelledby="fig-1">
+        <figcaption id="fig-1" class="fig">Figure 1 · From the sentence to the first intake, 2018 to 2026</figcaption>
+        <ol>
+          <li><p class="yr"><time datetime="2018-06">Jun 2018</time></p><p>Treasury Board names the risk, and directs that government keep exclusive control of its own encryption keys.<sup><a href="#note-1">1</a></sup></p></li>
+          <li><p class="yr"><time datetime="2022-03">Mar 2022</time></p><p>Canada and the United States open formal talks on a CLOUD Act agreement. Only the UK and Australia have one in force today.<sup><a href="#note-2">2</a></sup></p></li>
+          <li><p class="yr"><time datetime="2025-10">Oct 2025</time></p><p>ThinkOn, Hypertec, Aptum and eStruxture launch a sovereign government cloud built and run in Canada.<sup><a href="#note-3">3</a></sup></p></li>
+          <li><p class="yr"><time datetime="2025-11">Nov 2025</time></p><p>Budget 2025 sets aside $925.6 million over five years for large-scale sovereign public AI infrastructure.<sup><a href="#note-5">5</a></sup></p></li>
+          <li><p class="yr"><time datetime="2026-02">Feb 2026</time></p><p>Ottawa’s call for sovereign AI data centres closes with 160 proposals.<sup><a href="#note-6">6</a></sup></p></li>
+          <li><p class="yr"><time datetime="2026-03">Mar 2026</time></p><p>National Defence commits to accelerate classified and sovereign cloud services.<sup><a href="#note-7">7</a></sup></p></li>
+          <li><p class="yr"><time datetime="2026-06">Jun 2026</time></p><p>“AI for All” makes sovereign AI infrastructure a pillar of the national strategy.<sup><a href="#note-8">8</a></sup></p></li>
+          <li><p class="yr"><time datetime="2026-09">Sep 2026</time></p><p>Shared Services Canada opens a Sovereign Cloud Invitation to Qualify for Canadian-owned and controlled firms.<sup><a href="#note-9">9</a></sup></p></li>
+          <li class="now"><p class="yr"><time datetime="2026-10">Oct 2026</time></p><p>The first intake closes. More are coming.<sup><a href="#note-9">9</a></sup></p></li>
+        </ol>
+      </figure>
+
+      <h2><span class="eyebrow">What it adds up to</span> Read the plans side by side and they rhyme.</h2>
+      <dl class="facts">
+        <div><dt>160</dt><dd>proposals to build sovereign AI data centres, sent in during a one-month federal call in early 2026.<sup><a href="#note-6">6</a></sup></dd></div>
+        <div><dt>$925.6M</dt><dd>committed in Budget 2025 over five years for large-scale sovereign public AI infrastructure.<sup><a href="#note-5">5</a></sup></dd></div>
+        <div><dt>US$220M</dt><dd>for a sovereign AI GPU contract serving Cohere, a Canadian AI company, at Bell’s facility in Merritt, BC.<sup><a href="#note-10">10</a></sup></dd></div>
+        <div><dt>3</dt><dd>federal plans that name sovereign or classified cloud as a goal: Shared Services Canada, National Defence, and the national AI strategy.<sup><a href="#note-7">7</a>, <a href="#note-8">8</a>, <a href="#note-11">11</a></sup></dd></div>
+      </dl>
+      <p class="lead">The direction is set. Money is moving. Canadian companies are building.</p>
+      <p>What’s left is the hardest stretch, and the most important one: making sure that when the buildings are finished, Canada is the one holding the house key.</p>
+
+      <h2><span class="eyebrow">Where the data lives today</span> The good news is hiding in this picture.</h2>
+      <figure class="diagram">
+        <svg viewBox="0 0 400 272" role="img" aria-labelledby="dl-t dl-d">
+          <title id="dl-t">Where the data lives today</title>
+          <desc id="dl-d">Four levels of government information, most sensitive at the top. Top Secret and Secret are on government-run networks kept apart from the internet. Protected B and Protected A, the big middle, are everyday protected work, allowed in commercial cloud that is mostly foreign-parented.</desc>
+          <rect x="12" y="16" width="376" height="48" class="box"/>
+          <text x="24" y="36" class="name">TOP SECRET</text>
+          <text x="24" y="52" class="sub">government-run networks, kept apart from the public internet</text>
+          <rect x="12" y="72" width="376" height="48" class="box"/>
+          <text x="24" y="92" class="name">SECRET</text>
+          <text x="24" y="108" class="sub">government-run, off the internet; a classified cloud is being built</text>
+          <rect x="4" y="128" width="392" height="120" class="frame focal"/>
+          <rect x="12" y="136" width="376" height="48" class="box"/>
+          <text x="24" y="156" class="name">PROTECTED B</text>
+          <text x="24" y="172" class="sub">commercial cloud allowed since 2017; mostly foreign-parented</text>
+          <rect x="12" y="192" width="376" height="48" class="box"/>
+          <text x="24" y="212" class="name">PROTECTED A</text>
+          <text x="24" y="228" class="sub">everyday work; Defence 365 runs on Microsoft 365</text>
+          <text x="200" y="268" text-anchor="middle" class="name focal-t">THE BIG MIDDLE</text>
+        </svg>
+        <figcaption>Figure 2 · Where the data lives today, most sensitive at the top. The levels are drawn equal: no public figure gives how much sits in each.<sup><a href="#note-11">11</a>, <a href="#note-12">12</a>, <a href="#note-13">13</a>, <a href="#note-14">14</a></sup></figcaption>
+      </figure>
+      <p><strong>Top Secret</strong> lives on government-run networks, kept apart from the public internet. <strong>Secret</strong> lives on government-run systems “not connected to the Internet or to any departmental network,” and a secure classified cloud is now being built.<sup><a href="#note-11">11</a>, <a href="#note-12">12</a></sup></p>
+      <p><strong>Protected B</strong> has been allowed in commercial cloud under federal rules since 2017. Most of that cloud is foreign-parented. Canadian-owned options exist.<sup><a href="#note-13">13</a>, <a href="#note-3">3</a></sup> <strong>Protected A</strong> is everyday work. Defence 365 runs on Microsoft 365 and is authorized up to Protected A. DND has set a goal of Protected B.<sup><a href="#note-13">13</a>, <a href="#note-14">14</a></sup></p>
+      <p class="lead">Canada’s most secret material already lives on government-run Canadian networks.</p>
+      <p>The open question is the big middle: everyday protected work, and the AI computing that will run on it. That’s exactly where Shared Services Canada is now buying. The timing could hardly be better.</p>
+
+      <h2><span class="eyebrow">Residency is not sovereignty</span> A Canadian address is not a Canadian key.</h2>
+      <figure class="diagram">
+        <svg viewBox="0 0 400 284" role="img" aria-labelledby="rs-t rs-d">
+          <title id="rs-t">The address and the owner</title>
+          <desc id="rs-d">A two-by-two grid. Across: where the server sits, outside Canada or in Canada. Down: who the owner answers to, Canadian law only, or foreign law can reach it. Server in Canada and Canadian law only is sovereign. Server in Canada with an owner foreign law can reach is residency only: the address is Canadian, the key is not. Canadian law only with a server abroad is owner only. Neither is neither.</desc>
+          <text x="8" y="12" class="eyebrow-t">THE OWNER</text>
+          <text x="88" y="64" text-anchor="end" class="eyebrow-t">CANADIAN</text>
+          <text x="88" y="80" text-anchor="end" class="eyebrow-t">LAW ONLY</text>
+          <text x="88" y="168" text-anchor="end" class="eyebrow-t">FOREIGN LAW</text>
+          <text x="88" y="184" text-anchor="end" class="eyebrow-t">CAN REACH IT</text>
+          <rect x="96" y="20" width="148" height="104" class="box"/>
+          <rect x="244" y="20" width="148" height="104" class="box"/>
+          <rect x="96" y="124" width="148" height="104" class="box"/>
+          <rect x="244" y="124" width="148" height="104" class="box"/>
+          <rect x="248" y="24" width="140" height="96" class="frame focal"/>
+          <text x="170" y="76" text-anchor="middle" class="name">OWNER ONLY</text>
+          <text x="318" y="64" text-anchor="middle" class="name focal-t">SOVEREIGN</text>
+          <text x="318" y="80" text-anchor="middle" class="sub">Canadian ground,</text>
+          <text x="318" y="96" text-anchor="middle" class="sub">owner and key</text>
+          <text x="170" y="180" text-anchor="middle" class="name">NEITHER</text>
+          <text x="318" y="168" text-anchor="middle" class="name">RESIDENCY ONLY</text>
+          <text x="318" y="184" text-anchor="middle" class="sub">the address is Canadian;</text>
+          <text x="318" y="200" text-anchor="middle" class="sub">the key isn’t</text>
+          <text x="170" y="248" text-anchor="middle" class="eyebrow-t">SERVER OUTSIDE CANADA</text>
+          <text x="318" y="248" text-anchor="middle" class="eyebrow-t">SERVER IN CANADA</text>
+          <text x="244" y="276" text-anchor="middle" class="eyebrow-t">THE ADDRESS</text>
+        </svg>
+        <figcaption>Figure 3 · The address and the owner. Only one corner holds the key.</figcaption>
+      </figure>
+      <p>Where a server sits is its address. Who it answers to is its owner. Treasury Board drew that line in 2018, and defined data sovereignty as Canada’s right to control its digital information “subject only to Canadian laws.”<sup><a href="#note-1">1</a></sup> A new federal paper made the same point again in late 2025.<sup><a href="#note-4">4</a></sup></p>
+      <p>In June 2025, a senior Microsoft France executive was asked under oath, before a French Senate inquiry, whether he could guarantee that French data would never reach US authorities without France’s agreement. He answered: “No, I cannot guarantee that.” He added that it had never happened.<sup><a href="#note-15">15</a></sup></p>
+      <p class="pull">That’s an honest answer from a good company. Good companies still answer to their home courts.</p>
+
+      <h2><span class="eyebrow">The house key</span> Sovereignty is three locks, not one.</h2>
+      <div class="compare three">
+        <article>
+          <p class="big">01</p>
+          <h3>Ownership</h3>
+          <p>Controlled in Canada “up to and including their ultimate parent corporations.”<sup><a href="#note-16">16</a></sup></p>
+          <p class="fig">Shared Services Canada, 2025 request for information</p>
+        </article>
+        <article>
+          <p class="big">02</p>
+          <h3>Keys</h3>
+          <p>Government to “maintain exclusive control of the encryption keys.”<sup><a href="#note-1">1</a></sup></p>
+          <p class="fig">Treasury Board white paper, 2018</p>
+        </article>
+        <article>
+          <p class="big">03</p>
+          <h3>People</h3>
+          <p>Operated in Canada, by cleared people, under Canadian law alone.<sup><a href="#note-1">1</a></sup></p>
+          <p class="fig">Treasury Board’s 2018 definition of data sovereignty</p>
+        </article>
+      </div>
+      <p class="lead">None of these ideas is new. Every one is already written down in a federal document.</p>
+      <p>Shared Services Canada wrote the ownership test. Treasury Board wrote the key rule. What remains is to fit all three locks to the same door.</p>
+      <p>A building that passes all three is one Canada holds the key to. That’s the whole idea.</p>
+      <p class="pull">Canada already wrote the rules. The work now is fitting the locks.</p>
+
+      <h2><span class="eyebrow">One shape it could take</span> Three tiers. One set of keys.</h2>
+      <figure class="diagram">
+        <svg viewBox="0 0 400 232" role="img" aria-labelledby="tt-t tt-d">
+          <title id="tt-t">Three tiers, one set of keys</title>
+          <desc id="tt-d">Three tiers stacked. Tier 1, sovereign cloud, for Protected B work and AI computing at 5 to 20 megawatts. Tier 2, classified cloud, for Secret workloads in the environment Shared Services Canada is building. Tier 3, continuity under the Shield, a hardened copy in Canadian rock. All three connect to one set of keys, held in Canada.</desc>
+          <rect x="8" y="16" width="264" height="56" class="box"/>
+          <text x="20" y="40" class="name">TIER 1 · SOVEREIGN CLOUD</text>
+          <text x="20" y="56" class="sub">Protected B and AI computing, 5 to 20 MW</text>
+          <rect x="8" y="88" width="264" height="56" class="box"/>
+          <text x="20" y="112" class="name">TIER 2 · CLASSIFIED CLOUD</text>
+          <text x="20" y="128" class="sub">Secret workloads, in SSC’s classified cloud</text>
+          <rect x="8" y="160" width="264" height="56" class="box"/>
+          <text x="20" y="184" class="name">TIER 3 · UNDER THE SHIELD</text>
+          <text x="20" y="200" class="sub">a hardened copy, deep in Canadian rock</text>
+          <path d="M272 44 H284 M272 116 H296 M272 188 H284 M284 44 V188" class="line" fill="none"/>
+          <rect x="296" y="80" width="96" height="72" class="box focal"/>
+          <text x="344" y="108" text-anchor="middle" class="name">ONE SET</text>
+          <text x="344" y="124" text-anchor="middle" class="name">OF KEYS</text>
+          <text x="344" y="140" text-anchor="middle" class="sub">held in Canada</text>
+        </svg>
+        <figcaption>Figure 4 · Three tiers, one set of keys. Each tier builds on something already underway: the Invitation to Qualify, the SSC and DND 2026 to 2027 plans, and Canada’s deep-mine expertise.</figcaption>
+      </figure>
+      <dl class="tiers">
+        <dt>Tier 1 · Sovereign cloud</dt>
+        <dd>Protected B work and AI computing. Canadian-owned, certified, on Canadian ground. A modest start: 5 to 20 megawatts. <span class="on">Builds on Shared Services Canada’s Invitation to Qualify.</span></dd>
+        <dt>Tier 2 · Classified cloud</dt>
+        <dd>Secret workloads, in the classified environment Shared Services Canada is already building. <span class="on">Builds on the SSC and DND 2026 to 2027 plans.</span></dd>
+        <dt>Tier 3 · Continuity, under the Shield</dt>
+        <dd>A hardened copy of what Canada cannot afford to lose, deep in Canadian rock. <span class="on">Builds on Canada’s deep-mine expertise.</span></dd>
+      </dl>
+      <h3>Who could build it together</h3>
+      <ul class="partners">
+        <li>A Canadian-owned operator</li>
+        <li>A Canadian hardware builder</li>
+        <li>A First Nation as equity owner</li>
+        <li>A university</li>
+        <li>A host community</li>
+      </ul>
+      <p>None of these partners is hypothetical. Canada already has Canadian-owned data centre operators, a Quebec-based NVIDIA hardware maker in Hypertec, and First Nations already investing in energy and data infrastructure.<sup><a href="#note-3">3</a>, <a href="#note-19">19</a></sup></p>
+
+      <h2><span class="eyebrow">Five ideas worth a conversation</span> Offered, not prescribed.</h2>
+      <p class="lead">Each idea builds on something Canada has already started. The people closest to the work will know which ones fit.</p>
+      <h3><span class="eyebrow">Idea 01</span> Let the definition travel</h3>
+      <p>Shared Services Canada has already written a clear test for “sovereign”: Canadian control all the way up to the ultimate parent, and no foreign law that lets another government reach the data without Canada’s consent.<sup><a href="#note-16">16</a></sup> The same test could inform the Defence Industrial Strategy and Buy Canadian, so the word means one thing across government.</p>
+      <p>Today, defence officials describe sovereign capability by what gets built in Canada, not by who owns it.<sup><a href="#note-17">17</a></sup> That’s a reasonable place to start. Ownership could be the next layer.</p>
+      <p class="builds"><span>Builds on</span> SSC’s 2025 request for information</p>
+      <h3><span class="eyebrow">Idea 02</span> A second door to classified</h3>
+      <p>Shared Services Canada asks classified-tier providers to bring certification from a recognized Five Eyes classified cloud provider.<sup><a href="#note-9">9</a></sup> That keeps Canada working smoothly with its allies, and that matters. A Canadian accreditation path, run with the Communications Security Establishment, could sit beside it as a second door.</p>
+      <p class="builds"><span>Builds on</span> The Sovereign Cloud Invitation to Qualify</p>
+      <h3><span class="eyebrow">Idea 03</span> Be the first customer</h3>
+      <p>Ottawa has said it is exploring financial guarantees and commitments to buy compute capacity.<sup><a href="#note-18">18</a></sup> A multi-year commitment to buy capacity lets Canadian and Indigenous capital do the building. Lenders finance against contracts.</p>
+      <p class="builds"><span>Builds on</span> Ottawa’s stated openness to buying compute</p>
+      <h3><span class="eyebrow">Idea 04</span> Partners from the first meeting</h3>
+      <p>Ottawa’s own call for sovereign AI data centres named Indigenous participation as an aim.<sup><a href="#note-6">6</a></sup> The federal Indigenous Loan Guarantee Program now stands at $10 billion and reaches beyond energy.<sup><a href="#note-19">19</a></sup></p>
+      <p>A First Nation as an equity owner, at the table before any site is chosen, turns a data centre from something done to a place into something a place owns.</p>
+      <p class="builds"><span>Builds on</span> The $10 billion Indigenous Loan Guarantee Program</p>
+      <h3><span class="eyebrow">Idea 05</span> Count it as resilience</h3>
+      <p>Canada’s NATO pledge sets aside up to 1.5% of GDP a year by 2035 to protect critical infrastructure, defend networks and strengthen civil preparedness.<sup><a href="#note-20">20</a></sup> A hardened, Canadian-owned home for defence data is a natural candidate. Whether it counts is Ottawa’s call to make.</p>
+      <p class="builds"><span>Builds on</span> Canada’s NATO Defence Investment Pledge</p>
+      <p class="pull">None of us can build this alone. Together, Canada can hold its own key.</p>
+
+      <h2><span class="eyebrow">Paying for it</span> Most of the money already has a home.</h2>
+      <dl class="facts">
+        <div><dt>Up to 1.5%</dt><dd>of GDP: NATO resilience envelope, by 2035, for infrastructure, networks and civil preparedness.<sup><a href="#note-20">20</a></sup></dd></div>
+        <div><dt>$10B</dt><dd>Indigenous Loan Guarantee Program, now open to infrastructure beyond energy.<sup><a href="#note-19">19</a></sup></dd></div>
+        <div><dt>$925.6M</dt><dd>Budget 2025, over five years, for large-scale sovereign public AI infrastructure.<sup><a href="#note-5">5</a></sup></dd></div>
+        <div><dt>Purchase</dt><dd>commitments: Ottawa is exploring guarantees and long-term commitments to buy compute capacity.<sup><a href="#note-18">18</a></sup></dd></div>
+      </dl>
+      <p class="fig">Each envelope has its own rules and its own decision-makers. None is a promise. The Canada Infrastructure Bank and the new Canada Strong Fund could invest alongside them.<sup><a href="#note-21">21</a></sup></p>
+      <h3>Why a long contract matters</h3>
+      <BarTable name="Figure 5" rowHead="One 8-GPU H200 server" columns={['US dollars, estimates']} unit="usd" rows={[
+        { label: 'Rent it for one year, around the clock', values: [310000] },
+        { label: 'Buy it outright', values: [315000], approx: true },
+      ]}>Figure 5 · One 8-GPU H200 server, rented all year at the September 2026 average of US$4.43 per GPU-hour, against an estimated purchase price. Estimates, not vendor quotes.<sup><a href="#note-22">22</a>, <a href="#note-23">23</a></sup></BarTable>
+      <p>Rented around the clock, an AI server costs about as much in one year as buying it.<sup><a href="#note-22">22</a>, <a href="#note-23">23</a></sup> A buyer who needs the capacity for years usually comes out ahead by owning, and a long government contract is what lets a Canadian owner borrow to build.</p>
+
+      <h2><span class="eyebrow">The continuity tier</span> Under the Shield.</h2>
+      <p>The Canadian Shield is some of the oldest, most stable rock on Earth, and Canadians already know how to work deep inside it. SNOLAB runs world-class physics two kilometres down in Vale’s Creighton Mine near Sudbury.<sup><a href="#note-24">24</a></sup> Norway has shown what a mine can become.</p>
+      <dl class="facts">
+        <div><dt>37 MW</dt><dd>operating at Lefdal Mine Datacenter in Norway, inside a former olivine mine.<sup><a href="#note-26">26</a></sup></dd></div>
+        <div><dt>€300M</dt><dd>agreed by 3i Infrastructure in March 2026 for a majority stake.<sup><a href="#note-26">26</a></sup></dd></div>
+        <div><dt>Under 1.1</dt><dd>power usage effectiveness, where 1.0 is perfect. Cooled by cold fjord water.<sup><a href="#note-25">25</a></sup></dd></div>
+      </dl>
+      <div class="compare">
+        <article>
+          <h3>What the rock gives</h3>
+          <ul>
+            <li>Protection from blast, fire and weather</li>
+            <li>Stable temperatures that help with cooling</li>
+            <li>A second life for a mining town</li>
+            <li>A continuity story people will pay for</li>
+          </ul>
+        </article>
+        <article>
+          <h3>What the rock costs</h3>
+          <ul>
+            <li>Water to pump and air to move</li>
+            <li>Fire safety in tight spaces</li>
+            <li>Getting AI-scale heat out of the rock</li>
+            <li>Slower access for people and parts</li>
+            <li>Retrofit costs nobody can quote until a real site is studied</li>
+          </ul>
+        </article>
+      </div>
+      <p>That’s why a hardened tier fits best as the third layer, not the first: a backup for what Canada can’t afford to lose, after a certified surface tier is running. Manitoba has said it will prioritize small-scale data centres over hyperscale ones.<sup><a href="#note-27">27</a></sup> A small, hardened, Canadian-owned site is that kind of project.</p>
+
+      <h2><span class="eyebrow">The part nobody can fix alone</span> We don’t make the chips. We can still hold the key.</h2>
+      <p class="lead">The leading AI chips come from a handful of foreign suppliers, under their home countries’ export rules.</p>
+      <p>No sovereignty plan anywhere fixes that this decade. Pretending otherwise would cost this paper its credibility, and it would cost Canada time.</p>
+      <p>What Canada can control is everything around the chip.</p>
+      <dl>
+        <dt>Canadian assembly</dt>
+        <dd>Hypertec, based in Quebec, is described as the only NVIDIA hardware maker headquartered in Canada.<sup><a href="#note-3">3</a></sup></dd>
+        <dt>Cut the cord</dt>
+        <dd>Classified tiers run air-gapped, with remote-management features switched off or isolated.</dd>
+        <dt>Keys stay home</dt>
+        <dd>Encryption keys never leave Canadian hands, as Treasury Board set out in 2018.<sup><a href="#note-1">1</a></sup></dd>
+        <dt>Models that run offline</dt>
+        <dd>Open and Canadian AI models can run entirely inside the building.</dd>
+      </dl>
+      <p class="pull">A chip that can’t phone home, in a building Canada owns, behind a key Canada holds, is about as sovereign as computing gets today.</p>
+
+      <h2><span class="eyebrow">How it could unfold</span> One step at a time.</h2>
+      <figure class="diagram">
+        <svg viewBox="0 0 400 188" role="img" aria-labelledby="gt-t gt-d">
+          <title id="gt-t">How it could unfold, 2026 to 2035</title>
+          <desc id="gt-d">A timeline from 2026 to 2035. Starting at the January 2027 intake: qualify and partner, through mid-2027. Build the surface tier, from mid-2027 to 2030. The Shield tier, if the study holds, from mid-2029 to 2035.</desc>
+          <path d="M32 24 V168 M72 24 V168 M112 24 V168 M152 24 V168 M192 24 V168 M232 24 V168 M272 24 V168 M312 24 V168 M352 24 V168 M392 24 V168" class="grid" fill="none"/>
+          <path d="M72 20 V168" class="marker" fill="none"/>
+          <text x="76" y="16" class="eyebrow-t focal-t">JANUARY 2027 INTAKE</text>
+          <rect x="72" y="40" width="20" height="24" class="box"/>
+          <text x="100" y="56" class="name">QUALIFY AND PARTNER</text>
+          <rect x="92" y="88" width="100" height="24" class="box"/>
+          <text x="200" y="104" class="name">BUILD THE SURFACE TIER</text>
+          <rect x="172" y="136" width="220" height="24" class="box"/>
+          <text x="180" y="152" class="name">SHIELD TIER, IF THE STUDY HOLDS</text>
+          <text x="32" y="184" text-anchor="middle" class="eyebrow-t">2026</text>
+          <text x="112" y="184" text-anchor="middle" class="eyebrow-t">2028</text>
+          <text x="192" y="184" text-anchor="middle" class="eyebrow-t">2030</text>
+          <text x="272" y="184" text-anchor="middle" class="eyebrow-t">2032</text>
+          <text x="352" y="184" text-anchor="middle" class="eyebrow-t">2034</text>
+        </svg>
+        <figcaption>Figure 6 · How it could unfold. A proposal, not a schedule anyone has committed to.</figcaption>
+      </figure>
+      <dl class="phases">
+        <dt>Now to mid-2027</dt>
+        <dd>A Canadian consortium qualifies through Shared Services Canada’s intake cycles. Definitions line up across departments. Partners sign on.</dd>
+        <dt>2027 to 2029</dt>
+        <dd>A certified surface tier opens on a multi-year government contract, with Indigenous equity at the table. A feasibility study looks at one site in the Shield.</dd>
+        <dt>2029 to 2035</dt>
+        <dd>If the study holds up, the continuity tier comes online under the Shield. Sovereign AI capacity grows with demand.</dd>
+      </dl>
+      <p>France’s experience is a useful guide. S3NS, a French sovereign cloud built with a large foreign technology partner, earned France’s national certification in December 2025, three years after it was founded.<sup><a href="#note-28">28</a></sup> Starting early is most of the battle, and Canada has already started.</p>
+
+      <h2><span class="eyebrow">What we can do together</span> Canada doesn’t need to be angry to be sovereign. It needs to finish what it started.</h2>
+      <p>The public servants who wrote that sentence in 2018 were right. The people building the answer now are doing hard work, mostly out of sight. The rest of us can help by understanding it, backing it, and showing up when there’s something to build.</p>
+      <p>Somewhere in the Shield there is a place that could hold the house key for the whole country. I’d like to help find it.</p>
+      <p><strong>If you’re working on any of this, I’d like to hear from you. If I got something wrong, I want to hear that even more.</strong></p>
+      <figure class="mark">
+        <BearDual />
+      </figure>
+      <p class="sign">Jesse James</p>
+      <p>Northern Temper</p>
+
+      <h2 id="words"><span class="eyebrow">Words used here</span> Eight terms, plainly.</h2>
+      <dl>
+        <dt>Protected A and Protected B</dt>
+        <dd>The government’s labels for sensitive information that is not classified. A is information whose release could hurt a person or a business; B is information whose release could cause serious harm. Most everyday government work sits here.</dd>
+        <dt>Secret and Top Secret</dt>
+        <dd>Classified information, whose release could harm the country. It lives on separate government networks, not the public internet.</dd>
+        <dt>Cloud service provider</dt>
+        <dd>A company that rents out computing and storage from its own data centres. CSP for short.</dd>
+        <dt>CLOUD Act</dt>
+        <dd>A 2018 United States law that lets US authorities require US-based companies to hand over data they control, wherever in the world it is stored. Countries can sign agreements with the US that set rules for these requests; Canada has been negotiating one since 2022.<sup><a href="#note-2">2</a></sup></dd>
+        <dt>Invitation to Qualify</dt>
+        <dd>A first step in federal buying: firms apply to be recognized as able to supply something, before any contract is offered.<sup><a href="#note-9">9</a></sup></dd>
+        <dt>Off-take, or purchase commitment</dt>
+        <dd>A promise to buy a set amount of something for a set time. Lenders will finance a building against one.</dd>
+        <dt>Air-gapped</dt>
+        <dd>Physically disconnected from any outside network. Nothing gets in or out except by hand.</dd>
+        <dt>Power usage effectiveness</dt>
+        <dd>All the power a data centre draws, divided by the power its computers use. 1.0 would mean none is spent on cooling or anything else.</dd>
+      </dl>
+
+      <h2 id="sources"><span class="eyebrow">Sources</span> Every figure, sourced.</h2>
+      <ol class="notes">
+        <li id="note-1">Treasury Board of Canada Secretariat, <cite>Government of Canada White Paper: Data Sovereignty and Public Cloud</cite>, 25 June 2018. <a href="https://www.canada.ca/en/government/system/digital-government/digital-government-innovations/cloud-services/digital-sovereignty/gc-white-paper-data-sovereignty-public-cloud.html">canada.ca</a></li>
+        <li id="note-2"><cite>Lawfare</cite>, &quot;Chasing Surveillance Powers, Canada Risks the CLOUD Act Deal It Needs&quot;; Microsoft, Government Requests for Customer Data Report. <a href="https://www.lawfaremedia.org/article/chasing-surveillance-powers--canada-risks-the-cloud-act-deal-it-needs">lawfaremedia.org</a></li>
+        <li id="note-3">eStruxture, &quot;ThinkOn, Hypertec, Aptum, and eStruxture Launch Canada&#x27;s First End-to-End Sovereign, AI-Ready Government Cloud,&quot; 8 October 2025. <a href="https://www.estruxture.com/press-releases/thinkon-hypertec-aptum-and-estruxture-launch-canadas-first-end-to-end-sovereign-ai-ready-government-cloud">estruxture.com</a></li>
+        <li id="note-4"><cite>The Canadian Press</cite>, &quot;Data stored in Canada can be subject to foreign courts, government paper warns,&quot; 3 November 2025. <a href="https://www.nationalnewswatch.com/2025/11/03/data-stored-in-canada-can-be-subject-to-foreign-courts-government-paper-warns">nationalnewswatch.com</a></li>
+        <li id="note-5"><cite>CBC News</cite>, &quot;Canada wants sovereign AI data centres. What does that actually mean?,&quot; 2026. <a href="https://www.cbc.ca/news/business/bakx-canada-sovereign-ai-9.7198649">cbc.ca</a>. The $925.6 million is confirmed in Budget 2025 coverage, among others by <cite>Bennett Jones</cite>, &quot;Canada&#x27;s AI Efforts in 2025: A Year in Review.&quot; <a href="https://www.bennettjones.com/Insights/Blogs/2025/12/Canadas-AI-Efforts-in-2025-A-Year-in-Review">bennettjones.com</a></li>
+        <li id="note-6"><cite>BetaKit</cite>, &quot;Feds and Telus announce three AI data centres in BC,&quot; 11 May 2026, on the 160 proposals. <a href="https://betakit.com/steel-concrete-and-code-feds-and-telus-announce-three-ai-data-centres-in-bc">betakit.com</a>. Innovation, Science and Economic Development Canada, &quot;Enabling large-scale sovereign AI data centres,&quot; the call and its criteria. <a href="https://ised-isde.canada.ca/site/ised/en/enabling-large-scale-sovereign-ai-data-centres">ised-isde.canada.ca</a></li>
+        <li id="note-7">National Defence, <cite>2026-27 Departmental Plan</cite>: the department &quot;will also accelerate the adoption of classified and sovereign cloud services.&quot; <a href="https://www.canada.ca/en/department-national-defence/corporate/reports-publications/departmental-plans/departmental-plan-2026-27.html">canada.ca</a></li>
+        <li id="note-8">Innovation, Science and Economic Development Canada, &quot;Minister Solomon highlights Canada&#x27;s National Artificial Intelligence Strategy,&quot; June 2026. <a href="https://www.canada.ca/en/innovation-science-economic-development/news/2026/06/minister-solomon-highlights-canadas-national-artificial-intelligence.html">canada.ca</a></li>
+        <li id="note-9">Shared Services Canada, <cite>Sovereign Cloud Invitation to Qualify</cite>, CS-SOVC-2026, published 25 September 2026, via MERX and CanadaBuys. <a href="https://www.merx.com/public/supplier/solicitations/notice/22785014840/abstract">merx.com</a></li>
+        <li id="note-10">HIVE Digital Technologies, Form 8-K, Exhibit 99.1, 18 June 2026. <a href="https://www.sec.gov/Archives/edgar/data/0001720424/000106299326003293/exhibit99-1.htm">sec.gov</a></li>
+        <li id="note-11">Shared Services Canada, <cite>2026-27 Departmental Plan</cite>: &quot;a secure classified cloud environment&quot; that will &quot;keep sensitive government data within Canada.&quot; <a href="https://www.canada.ca/en/shared-services/corporate/about-us/transparency/departmental-plan/2026-27/shared-services-canada-2026-27-departmental-plan.html">canada.ca</a></li>
+        <li id="note-12">Shared Services Canada, &quot;Shared Services Canada&#x27;s ‘SECRET’ agenda.&quot; <a href="https://www.canada.ca/en/shared-services/campaigns/stories/shared-services-canadas-secret-agenda.html">canada.ca</a></li>
+        <li id="note-13">National Defence, &quot;Defence O365,&quot; 28 April 2020 (tools for &quot;up to Protected A information&quot;), <a href="https://www.canada.ca/en/department-national-defence/maple-leaf/defence/2020/04/message-defence-o365.html">canada.ca</a>, and &quot;Securing Office 365,&quot; 17 May 2024 (Protected B audio only), <a href="https://www.canada.ca/en/department-national-defence/maple-leaf/defence/2024/05/securing-office-365.html">canada.ca</a>. Treasury Board, <cite>Direction on the Secure Use of Commercial Cloud Services</cite>, SPIN 2017-01, 1 November 2017, which applies to Protected B information in commercial cloud. <a href="https://www.canada.ca/en/government/system/digital-government/modern-emerging-technologies/direction-secure-use-commercial-cloud-services-spin.html">canada.ca</a>. The Defence 365 FAQ the paper cited now returns a 404.</li>
+        <li id="note-14">National Defence, <cite>2025-26 Departmental Plan</cite>. <a href="https://www.canada.ca/en/department-national-defence/corporate/reports-publications/departmental-plans/departmental-plan-2025-26.html">canada.ca</a></li>
+        <li id="note-15"><cite>The Register</cite>, &quot;Microsoft exec admits it ‘cannot guarantee’ data sovereignty,&quot; 25 July 2025, on testimony of 18 June 2025. <a href="https://www.theregister.com/off-prem/2025/07/25/microsoft-exec-admits-it-cannot-guarantee-data-sovereignty/458553">theregister.com</a></li>
+        <li id="note-16">Shared Services Canada, <cite>Request for Information: Sovereign Public Cloud Capability</cite>, CS-IAAS-2025, via MERX. <a href="https://www.merx.com/public/supplier/solicitations/notice/22784981390/abstract">merx.com</a></li>
+        <li id="note-17">Al Vigier, &quot;What counts as Canadian software in defence procurement?,&quot; <cite>Policy Options</cite>, 22 June 2026. <a href="https://policyoptions.irpp.org/2026/06/canadian-defence-procurement-software">policyoptions.irpp.org</a></li>
+        <li id="note-18"><cite>BetaKit</cite>, &quot;Minister Solomon: Canada&#x27;s AI and Buy Canadian strategies likely to launch in 2026,&quot; November 2025: Ottawa is exploring financial guarantees and commitments to buy compute capacity. <a href="https://www.betakit.com/minister-solomon-canadas-ai-and-buy-canadian-strategies-likely-to-launch-in-2026">betakit.com</a></li>
+        <li id="note-19"><cite>Dentons</cite>, &quot;Stake in the ground: Indigenous equity in Canadian infrastructure,&quot; May 2026, <a href="https://www.dentons.com/en/insights/newsletters/2026/may/11/infrastructure-and-major-projects-perspectives/stake-in-the-ground">dentons.com</a>; <cite>Bennett Jones</cite>, &quot;Government of Canada Doubles Funding for Federal Indigenous Loan Guarantee Program,&quot; May 2025. <a href="https://www.bennettjones.com/Insights/Blogs/2025/05/Government-of-Canada-Doubles-Funding-for-Federal-Indigenous-Loan-Guarantee-Program">bennettjones.com</a></li>
+        <li id="note-20">Prime Minister of Canada, &quot;Canada joins new NATO Defence Investment Pledge,&quot; 25 June 2025, <a href="https://www.pm.gc.ca/en/news/news-releases/2025/06/25/canada-joins-new-nato-defence-investment-pledge">pm.gc.ca</a>; NATO, <cite>The Hague Summit Declaration</cite>, 25 June 2025, paragraph 3, the source of &quot;up to 1.5% of GDP annually to inter alia protect our critical infrastructure, defend our networks, ensure our civil preparedness and resilience.&quot;</li>
+        <li id="note-21">Department of Finance, <cite>Spring Economic Update 2026</cite>, Chapter 1. <a href="https://budget.canada.ca/update-miseajour/2026/report-rapport/chap1-en.html">budget.canada.ca</a></li>
+        <li id="note-22">Mercatus, &quot;GPU Rental Prices: H100, H200, B200 Cost Per Hour by Provider,&quot; September 2026 (US$4.43 per H200 GPU-hour). <a href="https://www.mercatus-ai.com/blog/gpu-rental-prices">mercatus-ai.com</a></li>
+        <li id="note-23">TRG Datacenters, &quot;NVIDIA H200 Price Guide&quot; (8-GPU server estimate). <a href="https://www.trgdatacenters.com/resource/nvidia-h200-price-guide">trgdatacenters.com</a></li>
+        <li id="note-24">SNOLAB, Creighton Mine, Sudbury. <a href="https://www.snolab.ca">snolab.ca</a></li>
+        <li id="note-25">Rittal, &quot;Solutions with depth: Rittal and the Lefdal Mine Datacenter&quot;: &quot;a PUE ... of less than 1.1.&quot; <a href="https://www.rittal.com/com-en/Solutions/Technologies-and-Trends/Lefdal-Mine">rittal.com</a></li>
+        <li id="note-26">3i Infrastructure plc, press release on Lefdal Mine Datacenter, 11 March 2026; <cite>DatacenterDynamics</cite>, &quot;3i Infrastructure acquires majority stake in Norway&#x27;s Lefdal Mine Datacenter.&quot; <a href="https://datacenterdynamics.com/en/news/3i-infrastructure-acquires-majority-stake-in-norways-lefdal-mine-datacenter/">datacenterdynamics.com</a></li>
+        <li id="note-27"><cite>BetaKit</cite>, &quot;Manitoba premier says air force base expansion only possible thanks to data centre rejection,&quot; 24 June 2026. <a href="https://www.betakit.com/manitoba-premier-says-air-force-base-expansion-only-possible-thanks-to-data-centre-rejection">betakit.com</a></li>
+        <li id="note-28">Thales, &quot;S3NS receives SecNumCloud qualification: a turning point for trusted cloud solutions,&quot; December 2025. <a href="https://www.thalesgroup.com/en/news-centre/insights/group/s3ns-receives-secnumcloud-qualification-turning-point-trusted-cloud">thalesgroup.com</a>. The Alenatec page the paper cited now resolves to the firm&#x27;s home page.</li>
+      </ol>
+      <p class="fig"><strong>A note on this edition.</strong> Rental and purchase figures are market estimates, not vendor quotes. Programs and office-holders change, so check the current version of each source. Six details were corrected against their sources before this edition was published, and two dead links were replaced; the page&#x27;s own record of each is in its source. Corrections are welcome.</p>
+
+      <Share
+        slot="after"
+        quote={"A Canadian address is not a Canadian key. Canada already wrote the rules. The work now is fitting the locks."}
+      />
+</Read>
+
+<style>
+  .brief {
+    border-top: var(--border-key) solid var(--nt-red);
+    border-bottom: var(--border-hair) solid var(--border-hairline);
+    padding: var(--space-3) 0 var(--space-2);
+    margin-bottom: var(--space-4);
+  }
+  .brief h2 { margin-top: 0; padding-top: 0; border-top: 0; }
+  .brief li { margin-bottom: .8rem; }
+
+  /* The sentence the paper rests on: a real quotation, so a blockquote. */
+  .sentence { margin-bottom: var(--space-2); }
+  .sentence p { margin: 0; }
+
+  /* The paper's three rules for itself, in a row where there is room. */
+  .rules {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+    gap: var(--space-3); margin: var(--space-3) 0 var(--space-4);
+  }
+  .rules div { border-top: var(--border-key) solid var(--nt-red); padding-top: var(--space-2); }
+  .rules dt { margin-top: 0; }
+
+  .facts {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+    gap: var(--space-3); margin: clamp(28px, 4vh, 52px) 0;
+    border-top: var(--border-key) solid var(--nt-red); padding-top: var(--space-3);
+  }
+  .facts dt {
+    margin: 0; color: var(--nt-red); letter-spacing: 0;
+    font-family: var(--font-display); font-weight: var(--fw-display);
+    font-size: clamp(34px, 4.6vw, 52px); line-height: .95;
+  }
+  .facts dd { margin: var(--space-1) 0 0; font-size: var(--type-body-sm); }
+
+  .timeline { margin: clamp(28px, 4vh, 52px) 0; }
+  .timeline ol { list-style: none; margin: var(--space-2) 0 0; padding: 0; border-left: 3px solid var(--nt-n-260); }
+  .timeline li { position: relative; padding: 0 0 var(--space-3) var(--space-3); margin: 0; }
+  .timeline li::before {
+    content: ""; position: absolute; left: -9px; top: .45em;
+    width: 15px; height: 15px; border-radius: 50%; background: var(--nt-n-260);
+  }
+  /* The two entries this paper is about: the intake that is open now. */
+  .timeline li.now::before { background: var(--nt-red); }
+  .timeline p { margin: 0 0 .35rem; }
+  .timeline .yr {
+    font-family: var(--font-display); font-weight: var(--fw-display);
+    font-size: clamp(20px, 2.4vw, 26px); line-height: 1;
+  }
+  .timeline li.now .yr { color: var(--nt-red); }
+
+  .tiers dd .on, .builds {
+    display: block; margin-top: var(--space-1);
+    font-family: var(--font-display); font-weight: var(--fw-label);
+    font-size: var(--type-stamp); letter-spacing: var(--ls-caption);
+    text-transform: uppercase; color: var(--text-caption);
+  }
+  .builds span { color: var(--nt-red); margin-right: .6em; }
+  .partners { columns: 2 14rem; }
+
+  /* The diagrams: the site's discipline, as on Common Barrel. */
+  .diagram { margin: clamp(28px, 4vh, 52px) 0; }
+  .diagram svg { display: block; width: 100%; max-width: 34rem; height: auto; margin-inline: auto; overflow: visible; }
+  .diagram .name { font-family: var(--font-display); font-weight: var(--fw-label); font-size: 12px; letter-spacing: .08em; fill: currentColor; }
+  .diagram .sub { font-family: var(--font-body); font-size: 11px; fill: var(--text-muted); }
+  .diagram .eyebrow-t { font-family: var(--font-display); font-weight: var(--fw-label); font-size: 10px; letter-spacing: .2em; fill: var(--text-muted); }
+  .diagram .focal-t { fill: var(--nt-red); }
+  .diagram .box { fill: var(--nt-white); stroke: currentColor; stroke-width: 1; }
+  .diagram .box.focal { stroke: var(--nt-red); stroke-width: 2; }
+  .diagram .frame { fill: none; stroke: currentColor; stroke-width: 1; }
+  .diagram .frame.focal { stroke: var(--nt-red); stroke-width: 2; }
+  .diagram .line { stroke: currentColor; stroke-width: 1; }
+  .diagram .grid { stroke: var(--nt-n-260); stroke-width: 1; }
+  .diagram .marker { stroke: var(--nt-red); stroke-width: 2; stroke-dasharray: 4 4; }
+  @media (forced-colors: active) {
+    .diagram .box.focal, .diagram .frame.focal, .diagram .marker, .diagram .grid { stroke: CanvasText; }
+    .diagram .focal-t { fill: CanvasText; }
+  }
+
+  .mark { margin: clamp(30px, 4.5vh, 56px) auto var(--space-3); max-width: 22rem; color: var(--nt-black); }
+  .mark :global(svg) { width: 100%; height: auto; display: block; }
+
+  .pull {
+    margin: clamp(30px, 4.5vh, 56px) 0; padding-left: clamp(18px, 2.4vw, 30px);
+    border-left: var(--rule-weight) solid var(--nt-red);
+    font-family: var(--font-display); font-weight: var(--fw-display);
+    text-transform: uppercase; line-height: 1.1; font-size: clamp(20px, 2.8vw, 34px);
+  }
+  .sign {
+    font-family: var(--font-display); font-weight: var(--fw-display);
+    text-transform: uppercase; letter-spacing: .06em;
+    font-size: clamp(22px, 2.6vw, 32px); margin: var(--space-3) 0 var(--space-1);
+  }
+  .notes cite { font-style: normal; font-weight: var(--fw-body-strong); }
+  .notes a { overflow-wrap: anywhere; }
+</style>
