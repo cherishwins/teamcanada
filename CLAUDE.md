@@ -1253,13 +1253,15 @@ dossier and 4 of 5 reads. Two traps worth remembering:
     quota. **Expected, not errors:** "Page with redirect" grows to about 19
     slash URLs; "Alternate page" drops to 0; the noindex row gains the five
     machine text files; `/feed.xml` stays "Crawled, not indexed". **Never** use
-    Removals for this. Still the owner's: the old dossier on
-    `teamcanadawins.netlify.app` and `teamcanadawins.vercel.app` is live,
-    indexable, self-canonical and about 95% the same text as `/math`; a
-    permanent redirect to `/math` is written but uncommitted in that repo
-    (a push there was refused by permissions), and it should land before
-    `/math` is requested. The GitHub "Website" fields on both repos still
-    point at the old vercel.app hosts.
+    Removals for this. The old dossier on `teamcanadawins.netlify.app`
+    and `teamcanadawins.vercel.app` was live, indexable, self-canonical and
+    about 95% the same text as `/math` until a permanent redirect to
+    `/math` for both hosts went up as cherishwins/teamcanadawins#1 on 27
+    October 2026 (a forced 301 in `netlify.toml`, a permanent redirect in
+    `vercel.json`); once it is merged and both hosts have deployed, `curl
+    -sI` each root and expect 301 to `/math` (the weekly `urls-live` check
+    does not cover those hosts), then request `/math`. The GitHub "Website"
+    fields on both repos still point at the old vercel.app hosts.
 
 ## The record — approved 24 September 2026, v1 shipped the same day
 **Owner decisions (24 Sept 2026):** reference first, the "closest to you" tool
