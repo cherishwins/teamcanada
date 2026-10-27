@@ -4,7 +4,7 @@ import Share from '../../components/Share.astro';
 import BarTable from '../../components/BarTable.astro';
 import BearDual from '../../components/marks/BearDual.astro';
 import { WHEY_US_SHARE, WHEY_SURTAX, WPC_AUG_2026, WPC_AUG_2023, WPC_RATIO, SMPIF_CAP, SMPIF_BUDGET } from '../../lib/figures';
-import { MODEL, day, cases, plant, landed, netCapital, grantAmount, skidTotal, dollars, kg } from '../../lib/whey';
+import { MODEL, day, cases, plant, landed, netCapital, grantAmount, skidTotal, dollars, kg, run, BASE_INPUTS } from '../../lib/whey';
 
 /**
  * Northern Temper Paper No. 05, the web edition of the owner's own PDF "The
@@ -91,6 +91,19 @@ import { MODEL, day, cases, plant, landed, netCapital, grantAmount, skidTotal, d
  * or a plain table), because they are numbers. The PDF's price pair, landed
  * price, ledger and skid table had been laid out as slides; they are tables
  * here so every value has a row and column header.
+ *
+ * INTERACTIVE, added 27 October 2026 at the owner's ask. Two panels run the
+ * paper's own arithmetic in the reader's browser: "Build the landed price"
+ * (a US price, an exchange rate, the surtax on or off) and "Run it yourself"
+ * (whey a day, price, yield, grant share, toll). Both import src/lib/whey.ts,
+ * the same module the page ran at build, so the browser's numbers and the
+ * printed ones cannot disagree; the base case is rendered at build, so a
+ * reader without scripting sees the ledger's own figures and inert sliders.
+ * The surtax rate reaches the script from the markup (data-surtax), never
+ * from the script's bytes. Figure 1's two paths carry a moving dash so the
+ * loop reads as a loop; it stops under prefers-reduced-motion. Figure 4
+ * gains a strip to scale, because "mostly water" is a claim the eye should
+ * be able to check: 95 of every 100 litres leave as permeate.
  */
 const d = day();
 const c = cases();
@@ -108,6 +121,16 @@ const cap = (t: string) => t[0].toUpperCase() + t.slice(1);
 /** "$2.8 million", for prose; the tables print the dollar. */
 const millions = (v: number) => `$${(v / 1_000_000).toFixed(1)} million`;
 const share17 = ((MODEL.pricePerKg / hi.withSurtax) * 100).toFixed(0) + ' to ' + ((MODEL.pricePerKg / lo.withSurtax) * 100).toFixed(0);
+// The "run it yourself" panel renders the base case at build, so a reader
+// without scripting sees the ledger's own numbers; the script re-runs the
+// same run() when an input moves.
+const r0 = run(BASE_INPUTS);
+const pct = (v: number) => `${Math.max(0, v).toFixed(2)}%`;
+const litres = (v: number) => `${v.toLocaleString('en-CA')} L`;
+// The landed-price builder's bar is scaled to the top of its own slider, so
+// it can never overflow: US$15 a pound at $1.50 with the surtax.
+const LAND_MAX = landed(15, 1.5, surtax).withSurtax;
+const strip = { permeate: (d.permeateLitres / MODEL.litresPerDay) * 352, retentate: (d.retentateLitres / MODEL.litresPerDay) * 352, cream: (d.creamKg / MODEL.litresPerDay) * 352 };
 ---
 <Read
   slug="the-protein-leaves-as-water"
@@ -156,10 +179,10 @@ const share17 = ((MODEL.pricePerKg / hi.withSurtax) * 100).toFixed(0) + ' to ' +
           <rect x="136" y="168" width="128" height="48" class="box"/>
           <text x="200" y="188" text-anchor="middle" class="name">A U.S. DRYER</text>
           <text x="200" y="204" text-anchor="middle" class="sub">not ours</text>
-          <path d="M88 80 V192 H128" class="line" fill="none"/>
+          <path d="M88 80 V192 H128" class="line flow" fill="none"/>
           <polygon points="128,188 136,192 128,196" class="head"/>
           <text x="96" y="156" class="sub">whey, south, as water</text>
-          <path d="M264 192 H312 V88" class="line" fill="none"/>
+          <path d="M264 192 H312 V88" class="line flow" fill="none"/>
           <polygon points="308,88 312,80 316,88" class="head"/>
           <rect x="272" y="108" width="80" height="32" class="box focal"/>
           <text x="312" y="128" text-anchor="middle" class="name focal-t">{WHEY_SURTAX.display} SURTAX</text>
@@ -211,6 +234,36 @@ const share17 = ((MODEL.pricePerKg / hi.withSurtax) * 100).toFixed(0) + ' to ' +
         { label: `With the ${WHEY_SURTAX.display} surtax`, values: [Math.round(lo.withSurtax * 100) / 100, Math.round(hi.withSurtax * 100) / 100] },
         { label: 'What we model, Canadian powder', values: [MODEL.pricePerKg, MODEL.pricePerKg] },
       ]}>Figure 3 · The worked line, late-September low: US$10 a pound is US${lo.usdPerKg.toFixed(2)} a kilogram, times ${fx.toFixed(2)} is ${lo.cadPerKg.toFixed(2)}, times the {WHEY_SURTAX.display} surtax is ${lo.withSurtax.toFixed(2)} Canadian. The surtax is charged on the value for duty, so this is the low end of the bill. The ${MODEL.pricePerKg.toFixed(2)} is our asking price in the model, not a contract.</BarTable>
+      <section class="panel" id="land" aria-labelledby="land-h">
+        <h3 id="land-h"><span class="eyebrow">Try it</span> Build the landed price.</h3>
+        <p>Move the American price and the exchange rate, and switch the surtax off to see what it alone adds. The black mark is the ${MODEL.pricePerKg.toFixed(2)} the model asks for Canadian powder.</p>
+        <div class="ctls" role="group" aria-labelledby="land-h" data-land data-surtax={surtax} data-max={LAND_MAX} data-ours={MODEL.pricePerKg}>
+          <div class="ctl">
+            <label for="in-usd">US price, a pound</label>
+            <input type="range" id="in-usd" name="usd" min="3" max="15" step="0.25" value="10" />
+            <output for="in-usd" data-echo="usd">US$10.00</output>
+          </div>
+          <div class="ctl">
+            <label for="in-fx">One US dollar, in Canadian dollars</label>
+            <input type="range" id="in-fx" name="fx" min="1.25" max="1.5" step="0.01" value={fx} />
+            <output for="in-fx" data-echo="fx">${fx.toFixed(2)}</output>
+          </div>
+          <div class="ctl check">
+            <input type="checkbox" id="in-surtax" name="surtax" checked />
+            <label for="in-surtax">With the {WHEY_SURTAX.display} surtax</label>
+          </div>
+        </div>
+        <div class="lbar" aria-hidden="true">
+          <span class="seg base" data-seg="base" style={`width:${pct((lo.cadPerKg / LAND_MAX) * 100)}`}></span><span class="seg surtax" data-seg="surtax" style={`width:${pct((lo.surtaxPerKg / LAND_MAX) * 100)}`}></span>
+          <span class="ours" style={`left:${pct((MODEL.pricePerKg / LAND_MAX) * 100)}`}></span>
+        </div>
+        <dl class="facts three">
+          <div><dt data-out="landed">${lo.withSurtax.toFixed(2)}</dt><dd>a kilogram, landed in Canada, before freight</dd></div>
+          <div><dt data-out="surtax">${lo.surtaxPerKg.toFixed(2)}</dt><dd>of that is the surtax</dd></div>
+          <div><dt data-out="ours">{((MODEL.pricePerKg / lo.withSurtax) * 100).toFixed(0)}%</dt><dd>is where ${MODEL.pricePerKg.toFixed(2)}, the model’s Canadian price, sits against it</dd></div>
+        </dl>
+        <noscript><p class="fig">Moving the inputs needs scripting. The late-September low is shown.</p></noscript>
+      </section>
 
       <h2><span class="eyebrow">04 · Not this. This.</span> Do not build a factory. Sit beside the vat.</h2>
       <div class="compare">
@@ -232,21 +285,28 @@ const share17 = ((MODEL.pricePerKg / hi.withSurtax) * 100).toFixed(0) + ' to ' +
       <figure class="diagram">
         <svg viewBox="0 0 400 304" role="img" aria-labelledby="md-t md-d">
           <title id="md-t">One day through the skid</title>
-          <desc id="md-d">One hundred thousand litres of sweet whey enter the skid. The clarifier takes off {kg(d.creamKg)} of forty per cent cream, sold first. About {MODEL.permeateLitres.toLocaleString('en-CA')} litres of permeate, lactose and minerals in water, go back to the plant. About {MODEL.retentateLitres.toLocaleString('en-CA')} litres of protein retentate are hauled cold to a rented dryer and become {kg(MODEL.basePowderKgDay)} of powder a day in the cautious case.</desc>
+          <desc id="md-d">One hundred thousand litres of sweet whey enter the skid. A strip to scale shows that about ninety-five parts in a hundred leave as permeate, three as protein retentate and under one as cream. The clarifier takes off {kg(d.creamKg)} of forty per cent cream, sold first. About {MODEL.permeateLitres.toLocaleString('en-CA')} litres of permeate, lactose and minerals in water, go back to the plant. About {MODEL.retentateLitres.toLocaleString('en-CA')} litres of protein retentate are hauled cold to a rented dryer and become {kg(MODEL.basePowderKgDay)} of powder a day in the cautious case.</desc>
           <rect x="8" y="8" width="384" height="48" class="box"/>
           <text x="200" y="28" text-anchor="middle" class="name">{MODEL.litresPerDay.toLocaleString('en-CA')} L SWEET WHEY IN</text>
           <text x="200" y="44" text-anchor="middle" class="sub">a day, {MODEL.days} days a year</text>
+          <rect x="40" y="60" width="352" height="6" class="track"/>
+          <rect x="40" y="60" width={strip.permeate.toFixed(1)} height="6" class="sw-p"/>
+          <rect x={(40 + strip.permeate).toFixed(1)} y="60" width={strip.retentate.toFixed(1)} height="6" class="sw-r"/>
+          <rect x={(40 + strip.permeate + strip.retentate).toFixed(1)} y="60" width={Math.max(2, strip.cream).toFixed(1)} height="6" class="sw-c"/>
           <path d="M24 56 V196 M24 92 H32 M24 144 H32 M24 196 H32" class="line" fill="none"/>
           <polygon points="32,88 40,92 32,96" class="head"/>
           <polygon points="32,140 40,144 32,148" class="head"/>
           <polygon points="32,192 40,196 32,200" class="head"/>
           <rect x="40" y="72" width="352" height="40" class="box"/>
+          <rect x="376" y="80" width="8" height="8" class="sw-c"/>
           <text x="52" y="89" class="name">{kg(d.creamKg).toUpperCase()} WHEY CREAM</text>
           <text x="52" y="105" class="sub">40% fat, off the clarifier, sold first</text>
           <rect x="40" y="124" width="352" height="40" class="box"/>
+          <rect x="376" y="132" width="8" height="8" class="sw-p"/>
           <text x="52" y="141" class="name">~{MODEL.permeateLitres.toLocaleString('en-CA')} L PERMEATE</text>
           <text x="52" y="157" class="sub">lactose and minerals; the water goes back to the plant’s wash</text>
           <rect x="40" y="176" width="352" height="40" class="box"/>
+          <rect x="376" y="184" width="8" height="8" class="sw-r"/>
           <text x="52" y="193" class="name">~{MODEL.retentateLitres.toLocaleString('en-CA')} L PROTEIN RETENTATE</text>
           <text x="52" y="209" class="sub">25% solids, volume down {d.volumeCutPct.toFixed(0)}%, hauled cold to a dryer we rent</text>
           <path d="M216 216 V240" class="line" fill="none"/>
@@ -255,7 +315,7 @@ const share17 = ((MODEL.pricePerKg / hi.withSurtax) * 100).toFixed(0) + ' to ' +
           <text x="216" y="268" text-anchor="middle" class="name focal-t">{kg(MODEL.basePowderKgDay).toUpperCase()} POWDER OUT</text>
           <text x="216" y="284" text-anchor="middle" class="sub">a day, the cautious case; the membranes could yield {kg(d.maxPowderKg)}</text>
         </svg>
-        <figcaption>Figure 4 · One day through the skid. The clarifier sees the whole volume whether the powder yield is cautious or not. Planning model, October 2026.</figcaption>
+        <figcaption>Figure 4 · One day through the skid. The strip under the top box is to scale: about {Math.round(d.permeateLitres / MODEL.litresPerDay * 100)} of every 100 litres leave as water, and the protein is the thin dark band. The clarifier sees the whole volume whether the powder yield is cautious or not. Planning model, October 2026.</figcaption>
       </figure>
       <dl class="facts">
         <div><dt>{kg(d.creamKg)}</dt><dd>Whey cream, 40% fat. About {m(c.base.cream)} a year. This cheque arrives before a kilogram of powder is sold.</dd></div>
@@ -299,6 +359,62 @@ const share17 = ((MODEL.pricePerKg / hi.withSurtax) * 100).toFixed(0) + ' to ' +
       </section>
       <p class="fig">Figure 5 · Planning model, October 2026. Cream is the same in every column because it comes off the clarifier. The right-hand column is what the membranes could yield. It is not the plan. AgriInnovate, the interest-free loan in that row, is closed.<sup><a href="#note-6">6</a></sup></p>
       <p>A planning model, not a term sheet. At ${MODEL.downsidePricePerKg.toFixed(2)} a kilogram the same plant still clears about {millions(c.downside.ebitda)} EBITDA. The {Math.round(MODEL.grantShare * 100)}% grant is not in hand. Cream alone covers drying, freight, and power.</p>
+      <section class="panel" id="run" aria-labelledby="run-h">
+        <h3 id="run-h"><span class="eyebrow">Try it</span> Run the skid yourself.</h3>
+        <p>The same arithmetic as the ledger, with five inputs you can move. Labour, freight, power, membranes and the licence stay at the base case: a loop twice the size would move them, and the model does not pretend to know by how much.</p>
+        <div class="ctls" role="group" aria-labelledby="run-h" data-run>
+          <div class="ctl">
+            <label for="in-litres">Sweet whey a day</label>
+            <input type="range" id="in-litres" name="litresPerDay" min="20000" max="300000" step="5000" value={BASE_INPUTS.litresPerDay} />
+            <output for="in-litres" data-echo="litres">{litres(BASE_INPUTS.litresPerDay)}</output>
+          </div>
+          <div class="ctl">
+            <label for="in-price">Powder price, a kilogram</label>
+            <input type="range" id="in-price" name="pricePerKg" min="10" max="25" step="0.25" value={BASE_INPUTS.pricePerKg} />
+            <output for="in-price" data-echo="price">${BASE_INPUTS.pricePerKg.toFixed(2)}</output>
+          </div>
+          <div class="ctl">
+            <label for="in-yield">Powder a day, as a share of what the membranes could yield</label>
+            <input type="range" id="in-yield" name="yieldShare" min="0.5" max="1" step="0.001" value={BASE_INPUTS.yieldShare.toFixed(3)} />
+            <output for="in-yield" data-echo="yield">{kg(r0.m.basePowderKgDay)} of {kg(r0.d.maxPowderKg)}</output>
+          </div>
+          <div class="ctl">
+            <label for="in-grant">Grant share of the skid</label>
+            <input type="range" id="in-grant" name="grantShare" min="0" max="0.5" step="0.05" value={BASE_INPUTS.grantShare} />
+            <output for="in-grant" data-echo="grant">{Math.round(BASE_INPUTS.grantShare * 100)}%, {m(r0.grant)}</output>
+          </div>
+          <div class="ctl">
+            <label for="in-toll">Toll drying, a kilogram</label>
+            <input type="range" id="in-toll" name="tollPerKg" min="1.5" max="3.5" step="0.25" value={BASE_INPUTS.tollPerKg} />
+            <output for="in-toll" data-echo="toll">${BASE_INPUTS.tollPerKg.toFixed(2)}</output>
+          </div>
+          <button type="button" class="reset" data-reset>Back to the base case</button>
+        </div>
+        <dl class="facts">
+          <div><dt data-out="ebitda">{m(r0.y.ebitda)}</dt><dd>EBITDA for the year</dd></div>
+          <div><dt data-out="payback">{months(r0.y.paybackMonths)}</dt><dd>to pay back the <span data-out="net">{m(r0.net)}</span> a grant does not cover</dd></div>
+          <div><dt data-out="cents">{r0.p.centsPerLitre.toFixed(1)}¢</dt><dd>a litre back to the host plant: <span data-out="plant">{m(r0.p.share)}</span> a year</dd></div>
+          <div><dt data-out="powder">{kg(r0.m.basePowderKgDay)}</dt><dd>of powder a day, <span data-out="tonnes">{Math.round(r0.y.powderKg / 1000)}</span> tonnes a year</dd></div>
+        </dl>
+        <div class="stack">
+          <div class="row">
+            <p class="lab">Revenue <span data-out="revenue">{m(r0.y.revenue)}</span></p>
+            <div class="bar"><span class="seg in" data-seg="powder" style={`width:${pct(r0.y.powderRevenue / r0.y.revenue * 100)}`}></span><span class="seg in cream" data-seg="cream" style={`width:${pct(r0.y.cream / r0.y.revenue * 100)}`}></span></div>
+            <p class="key">powder <span data-out="powderRevenue">{m(r0.y.powderRevenue)}</span> · cream <span data-out="cream">{m(r0.y.cream)}</span></p>
+          </div>
+          <div class="row">
+            <p class="lab">Costs <span data-out="opex">{m(r0.y.opex)}</span></p>
+            <div class="bar">{(['toll', 'freight', 'labour', 'power', 'membranes', 'licence'] as const).map((k) => <span class="seg cost" data-seg={k} style={`width:${pct(r0.y[k] / r0.y.revenue * 100)}`}></span>)}</div>
+            <p class="key">toll drying <span data-out="toll">{m(r0.y.toll)}</span> · freight {m(r0.y.freight)} · labour {m(r0.y.labour)} · power {m(r0.y.power)} · membranes {m(r0.y.membranes)} · licence {m(r0.y.licence)}</p>
+          </div>
+          <div class="row">
+            <p class="lab">Left after the loan <span data-out="left">{m(r0.y.left)}</span></p>
+            <div class="bar"><span class="seg strike" data-seg="left" style={`width:${pct(r0.y.left / r0.y.revenue * 100)}`}></span></div>
+            <p class="key">the bars share one scale: the year’s revenue is the full width</p>
+          </div>
+        </div>
+        <noscript><p class="fig">Moving the inputs needs scripting. The base case is shown.</p></noscript>
+      </section>
 
       <h2><span class="eyebrow">07 · The plant</span> What the cheese plant is paid.</h2>
       <div class="compare">
@@ -559,6 +675,71 @@ const share17 = ((MODEL.pricePerKg / hi.withSurtax) * 100).toFixed(0) + ' to ' +
     .diagram .focal-t { fill: CanvasText; }
   }
 
+  /* Figure 1's two paths move: a loop should read as one. Off under reduced motion. */
+  .diagram .flow { stroke-dasharray: 5 5; animation: nt-flow 1.2s linear infinite; }
+  @keyframes nt-flow { to { stroke-dashoffset: -20; } }
+  @media (prefers-reduced-motion: reduce) { .diagram .flow { animation: none; stroke-dasharray: none; } }
+  /* Figure 4's strip, to scale: water in the chart colour, protein in ink, cream in the stamp grey. */
+  .diagram .track { fill: var(--nt-n-260); }
+  .diagram .sw-p { fill: var(--data-primary); }
+  .diagram .sw-r { fill: var(--nt-black); }
+  .diagram .sw-c { fill: var(--nt-n-460); }
+  @media (forced-colors: active) { .diagram .sw-p, .diagram .sw-r, .diagram .sw-c { fill: CanvasText; } .diagram .track { fill: Canvas; stroke: CanvasText; } }
+
+  /* The two panels that run the model in the reader's browser. */
+  .panel {
+    margin: clamp(28px, 4vh, 52px) 0; padding: var(--space-3) 0 var(--space-2);
+    border-top: var(--rule-weight) solid var(--nt-red); border-bottom: var(--border-hair) solid var(--border-hairline);
+  }
+  .panel h3 { margin-top: 0; }
+  .panel h3 .eyebrow { display: block; margin-bottom: var(--space-1); font-size: var(--type-label-sm); letter-spacing: var(--ls-key); color: var(--nt-red); }
+  .ctls { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); gap: var(--space-2) var(--space-4); margin: var(--space-3) 0; }
+  .ctl { display: grid; grid-template-columns: 1fr auto; align-items: end; column-gap: var(--space-2); }
+  .ctl label {
+    font-family: var(--font-display); font-weight: var(--fw-label); font-size: var(--type-label-sm);
+    letter-spacing: var(--ls-key); text-transform: uppercase; color: var(--text-caption);
+  }
+  .ctl output { font-variant-numeric: tabular-nums; font-weight: var(--fw-body-strong); white-space: nowrap; }
+  .ctl input[type="range"] { grid-column: 1 / -1; -webkit-appearance: none; appearance: none; width: 100%; height: 44px; margin: 0; background: transparent; cursor: pointer; }
+  .ctl input[type="range"]::-webkit-slider-runnable-track { height: 2px; background: var(--nt-n-260); }
+  .ctl input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; margin-top: -10px; background: var(--nt-red); border: 0; border-radius: 0; }
+  .ctl input[type="range"]::-moz-range-track { height: 2px; background: var(--nt-n-260); }
+  .ctl input[type="range"]::-moz-range-thumb { width: 22px; height: 22px; background: var(--nt-red); border: 0; border-radius: 0; }
+  .ctl.check { grid-template-columns: auto 1fr; align-items: center; min-height: 44px; }
+  .ctl.check input { width: 24px; height: 24px; margin: 0; accent-color: var(--nt-red); }
+  .ctl.check label { text-transform: none; letter-spacing: 0; font-family: var(--font-body); font-weight: var(--fw-body-medium); font-size: var(--type-body); color: var(--text-body); }
+  .reset {
+    align-self: end; justify-self: start; min-height: 44px; padding: 10px 16px;
+    background: transparent; color: var(--text-body); border: var(--border-hair) solid var(--border-hairline); border-radius: var(--radius);
+    font-family: var(--font-display); font-weight: var(--fw-label); font-size: var(--type-label-sm); letter-spacing: var(--ls-key); text-transform: uppercase; cursor: pointer;
+  }
+  .reset:hover { background: var(--nt-black); color: var(--nt-white); border-color: var(--nt-black); }
+  .facts.three { grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr)); }
+  .facts dt[data-out] { font-size: clamp(28px, 3.8vw, 44px); }
+  /* The landed-price bar: the price in the chart colour, the surtax on top of it in red, our price as a black mark. */
+  .lbar { position: relative; height: 28px; margin: var(--space-3) 0 var(--space-1); background: var(--nt-n-260); display: flex; }
+  .lbar .seg { display: block; height: 100%; transition: width .25s var(--ease); }
+  .lbar .base { background: var(--data-primary); }
+  .lbar .surtax { background: var(--data-strike); }
+  .lbar .ours { position: absolute; top: -6px; bottom: -6px; width: 3px; margin-left: -1px; background: var(--nt-black); transition: left .25s var(--ease); }
+  /* The run panel's three bars on one scale. */
+  .stack { margin: var(--space-3) 0 0; }
+  .stack .row { margin-bottom: var(--space-2); }
+  .stack .lab { margin: 0 0 4px; font-family: var(--font-display); font-weight: var(--fw-label); font-size: var(--type-label-sm); letter-spacing: var(--ls-key); text-transform: uppercase; }
+  .stack .lab span { color: var(--nt-red); margin-left: .5em; font-variant-numeric: tabular-nums; }
+  .stack .bar { display: flex; gap: 2px; height: 20px; background: var(--nt-n-260); }
+  .stack .seg { display: block; height: 100%; transition: width .25s var(--ease); }
+  .stack .seg.in { background: var(--data-primary); }
+  .stack .seg.cream { background: var(--nt-n-460); }
+  .stack .seg.cost { background: var(--data-inert); }
+  .stack .seg.strike { background: var(--data-strike); }
+  .stack .key { margin: 4px 0 0; font-size: var(--type-body-sm); color: var(--text-muted); }
+  .stack .key span { font-variant-numeric: tabular-nums; color: var(--text-body); }
+  @media (prefers-reduced-motion: reduce) { .lbar .seg, .lbar .ours, .stack .seg { transition: none; } }
+  @media (forced-colors: active) {
+    .lbar .base, .lbar .surtax, .stack .seg { background: CanvasText; } .lbar .surtax, .stack .seg.strike { background: Highlight; }
+  }
+
   .mark { margin: clamp(30px, 4.5vh, 56px) auto var(--space-3); max-width: 22rem; color: var(--nt-black); }
   .mark :global(svg) { width: 100%; height: auto; display: block; }
 
@@ -576,3 +757,84 @@ const share17 = ((MODEL.pricePerKg / hi.withSurtax) * 100).toFixed(0) + ' to ' +
   .notes cite { font-style: normal; font-weight: var(--fw-body-strong); }
   .notes a { overflow-wrap: anywhere; }
 </style>
+
+<script>
+  // The two panels. Every figure they print comes from src/lib/whey.ts, the
+  // module the page ran at build, so the browser cannot disagree with the
+  // ledger above it. The surtax rate and the bar's scale ride on the form as
+  // data attributes, rendered from figures.ts and the model, never typed here.
+  import { run, landed, dollars, kg } from '../../lib/whey';
+
+  const outs = (root: Element) => {
+    const map = new Map<string, HTMLElement>();
+    root.querySelectorAll<HTMLElement>('[data-out]').forEach((el) => map.set(el.dataset.out!, el));
+    return (k: string, v: string) => { const el = map.get(k); if (el) el.textContent = v; };
+  };
+  const seg = (root: Element, k: string, pctOf: number) => {
+    const el = root.querySelector<HTMLElement>(`[data-seg="${k}"]`);
+    if (el) el.style.width = `${Math.max(0, pctOf).toFixed(2)}%`;
+  };
+  const field = (group: Element, name: string) => group.querySelector<HTMLInputElement>(`[name="${name}"]`)!;
+  const num = (group: Element, name: string) => Number(field(group, name).value);
+  const echo = (group: Element, k: string, v: string) => { const el = group.querySelector<HTMLElement>(`[data-echo="${k}"]`); if (el) el.textContent = v; };
+  const months = (v: number) => (Number.isFinite(v) && v > 0 ? `${v.toFixed(1)} months` : 'never');
+  // The inputs' default values are the base case, rendered at build; "back to
+  // the base case" puts each one back to its own attribute.
+  const wire = (group: Element, render: () => void) => {
+    group.addEventListener('input', render);
+    group.querySelector('[data-reset]')?.addEventListener('click', () => {
+      group.querySelectorAll<HTMLInputElement>('input').forEach((i) => { if (i.type === 'checkbox') i.checked = i.defaultChecked; else i.value = i.defaultValue; });
+      render();
+    });
+    render();
+  };
+
+  const land = document.querySelector<HTMLElement>('[data-land]');
+  const landRoot = land?.closest('.panel');
+  if (land && landRoot) {
+    const set = outs(landRoot);
+    const rate = Number(land.dataset.surtax), max = Number(land.dataset.max), ours = Number(land.dataset.ours);
+    wire(land, () => {
+      const usd = num(land, 'usd'), fx = num(land, 'fx');
+      const on = field(land, 'surtax').checked;
+      const l = landed(usd, fx, on ? rate : 0);
+      echo(land, 'usd', `US$${usd.toFixed(2)}`);
+      echo(land, 'fx', `$${fx.toFixed(2)}`);
+      seg(landRoot, 'base', (l.cadPerKg / max) * 100);
+      seg(landRoot, 'surtax', (l.surtaxPerKg / max) * 100);
+      set('landed', `$${l.withSurtax.toFixed(2)}`);
+      set('surtax', `$${l.surtaxPerKg.toFixed(2)}`);
+      set('ours', `${((ours / l.withSurtax) * 100).toFixed(0)}%`);
+    });
+  }
+
+  const form = document.querySelector<HTMLElement>('[data-run]');
+  const root = form?.closest('.panel');
+  if (form && root) {
+    const set = outs(root);
+    wire(form, () => {
+      const r = run({
+        litresPerDay: num(form, 'litresPerDay'), pricePerKg: num(form, 'pricePerKg'), yieldShare: num(form, 'yieldShare'),
+        grantShare: num(form, 'grantShare'), tollPerKg: num(form, 'tollPerKg'),
+      });
+      const y = r.y, rev = y.revenue;
+      echo(form, 'litres', `${r.m.litresPerDay.toLocaleString('en-CA')} L`);
+      echo(form, 'price', `$${r.m.pricePerKg.toFixed(2)}`);
+      echo(form, 'yield', `${kg(r.m.basePowderKgDay)} of ${kg(r.d.maxPowderKg)}`);
+      echo(form, 'grant', `${Math.round(r.m.grantShare * 100)}%, ${dollars(r.grant)}`);
+      echo(form, 'toll', `$${r.m.tollPerKg.toFixed(2)}`);
+      set('ebitda', dollars(y.ebitda));
+      set('payback', months(y.paybackMonths));
+      set('net', dollars(r.net));
+      set('cents', `${Math.max(0, r.p.centsPerLitre).toFixed(1)}¢`);
+      set('plant', dollars(Math.max(0, r.p.share)));
+      set('powder', kg(r.m.basePowderKgDay));
+      set('tonnes', String(Math.round(y.powderKg / 1000)));
+      set('revenue', dollars(rev)); set('powderRevenue', dollars(y.powderRevenue)); set('cream', dollars(y.cream));
+      set('opex', dollars(y.opex)); set('toll', dollars(y.toll)); set('left', dollars(y.left));
+      seg(root, 'powder', (y.powderRevenue / rev) * 100); seg(root, 'cream', (y.cream / rev) * 100);
+      for (const k of ['toll', 'freight', 'labour', 'power', 'membranes', 'licence'] as const) seg(root, k, (y[k] / rev) * 100);
+      seg(root, 'left', (y.left / rev) * 100);
+    });
+  }
+</script>

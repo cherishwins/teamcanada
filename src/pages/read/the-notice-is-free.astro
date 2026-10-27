@@ -54,6 +54,14 @@ import { MERX_PROVINCE, MERX_NATIONAL, MERX_SALE } from '../../lib/figures';
  * FORM. Two diagrams (Figures 1 and 3) follow the site's diagram
  * discipline (CLAUDE.md). Figure 2 is the timeline the site already uses.
  * Figure 4, the doors, is a table.
+ *
+ * INTERACTIVE, added 27 October 2026 at the owner's ask: "The same tender,
+ * two doors", a working mock of the paper's first page. One notice, as a
+ * public buyer might post it; the reader opens its file through a public
+ * portal and through a private one. Built on <details>, so it needs no
+ * script, works from the keyboard, and reads as a document without CSS.
+ * The notice names no real buyer or firm. The two prices are the MERX
+ * plans from figures.ts.
  */
 const monthly = (yearly: number) => `$${(yearly / 12).toFixed(0)}`;
 ---
@@ -109,6 +117,62 @@ const monthly = (yearly: number) => `$${(yearly / 12).toFixed(0)}`;
         <div><dt>$0</dt><dd>What Article 506.5 of the Canadian Free Trade Agreement requires for the notice itself.<sup><a href="#note-5">5</a></sup></dd></div>
       </dl>
       <p class="pull">A small contractor does not pay that to be informed. They pay it to be allowed to look.</p>
+      <section class="panel" id="doors" aria-labelledby="doors-h">
+        <h3 id="doors-h"><span class="eyebrow">Try it</span> The same tender, two doors.</h3>
+        <p>One notice, as a public buyer might post it. Open its file through each door and count what it cost to find out whether the job was yours.</p>
+        <div class="notice">
+          <p class="nt-label">Tender notice · free, by Article 506.5</p>
+          <p class="title">Arena mechanical upgrade</p>
+          <p class="meta">A city · Goods and services · Closes in 21 days</p>
+          <p class="meta">Documents: see the buyer’s portal.</p>
+        </div>
+        <div class="two">
+          <article class="door">
+            <h4>Door one · A public portal</h4>
+            <details>
+              <summary>Open the file</summary>
+              <div class="file">
+                <p class="nt-label">The file</p>
+                <ul>
+                  <li>Scope: replace two rooftop units, rebalance the air handling, ninety days to complete.</li>
+                  <li>Drawings M-101 to M-108, attached.</li>
+                  <li>Evaluation: price 60, schedule 20, past work 20.</li>
+                  <li>Disqualified: no licensed mechanical contractor named on the bid.</li>
+                </ul>
+                <p class="cost">Cost to read: <strong>$0</strong>. No account.</p>
+              </div>
+            </details>
+          </article>
+          <article class="door">
+            <h4>Door two · A private portal</h4>
+            <details>
+              <summary>Open the file</summary>
+              <div class="wall">
+                <p class="nt-label">Sign in to view documents</p>
+                <ul>
+                  <li>Local, one province: $50 a month, billed annually. <strong>{MERX_PROVINCE.display} a year.</strong></li>
+                  <li>National: $167 a month, billed annually. <strong>{MERX_NATIONAL.display} a year.</strong></li>
+                  <li>Or a one-time access fee for this solicitation, at a price the portal does not publish.</li>
+                </ul>
+                <details>
+                  <summary>Pay the toll</summary>
+                  <div class="file">
+                    <p class="nt-label">The file</p>
+                    <ul>
+                      <li>Scope: replace two rooftop units, rebalance the air handling, ninety days to complete.</li>
+                      <li>Drawings M-101 to M-108, attached.</li>
+                      <li>Evaluation: price 60, schedule 20, past work 20.</li>
+                      <li>Disqualified: no licensed mechanical contractor named on the bid.</li>
+                    </ul>
+                    <p class="cost">Cost to read: <strong>{MERX_PROVINCE.display} to {MERX_NATIONAL.display} a year</strong>, paid before you knew the last line applied to you.</p>
+                  </div>
+                </details>
+              </div>
+            </details>
+          </article>
+        </div>
+        <p class="fig">The same file, the same four lines. A mock: the buyer, the job and the drawings are invented; the prices are MERX’s, as published.<sup><a href="#note-6">6</a></sup></p>
+      </section>
 
       <h2><span class="eyebrow">02 · How it was acquired</span> Not a birthright. A contract that never gave the files back.</h2>
       <p>No one handed a family a monopoly. A bank won a technology competition in 1997. The tollbooth outlived the contract.</p>
@@ -289,6 +353,39 @@ const monthly = (yearly: number) => `$${(yearly / 12).toFixed(0)}`;
     .diagram .box.focal, .diagram .frame.focal { stroke: CanvasText; }
     .diagram .focal-t, .diagram .focal-w { fill: CanvasText; }
   }
+
+  /* The two doors: one notice, two ways to the file, on native <details>. */
+  .panel {
+    margin: clamp(28px, 4vh, 52px) 0; padding: var(--space-3) 0 var(--space-2);
+    border-top: var(--rule-weight) solid var(--nt-red); border-bottom: var(--border-hair) solid var(--border-hairline);
+  }
+  .panel h3 { margin-top: 0; }
+  .panel h3 .eyebrow { display: block; margin-bottom: var(--space-1); font-size: var(--type-label-sm); letter-spacing: var(--ls-key); color: var(--nt-red); }
+  .notice { border: var(--border-hair) solid var(--nt-black); padding: var(--space-2) var(--space-3); margin: var(--space-3) 0; }
+  .notice p { margin: 0 0 .3rem; }
+  .notice .title { font-family: var(--font-display); font-weight: var(--fw-display); text-transform: uppercase; font-size: clamp(20px, 2.6vw, 28px); line-height: 1.05; margin-top: var(--space-1); }
+  .notice .meta { color: var(--text-muted); font-size: var(--type-body-sm); }
+  .two { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr)); gap: clamp(18px, 3vw, 36px); }
+  .door { border-top: var(--border-key) solid var(--nt-black); padding-top: var(--space-2); }
+  .door h4 { margin-top: 0; }
+  .door summary {
+    display: inline-flex; align-items: center; min-height: 44px; padding: 10px 16px; margin: var(--space-1) 0;
+    background: var(--nt-black); color: var(--nt-white); border: var(--border-hair) solid var(--nt-black); border-radius: var(--radius);
+    font-family: var(--font-display); font-weight: var(--fw-label); font-size: var(--type-label-sm); letter-spacing: var(--ls-key); text-transform: uppercase;
+    cursor: pointer; list-style: none; user-select: none;
+  }
+  .door summary::-webkit-details-marker { display: none; }
+  .door summary::before { content: "+"; margin-right: .6em; font-weight: var(--fw-display); }
+  .door details[open] > summary::before { content: "–"; }
+  .door details[open] > summary { background: var(--nt-white); color: var(--nt-black); }
+  .door .wall summary { background: var(--nt-red); border-color: var(--nt-red); }
+  .door .wall details[open] > summary { background: var(--nt-white); color: var(--nt-black); border-color: var(--nt-black); }
+  .door .file, .door .wall { border-left: var(--rule-weight) solid var(--nt-n-260); padding-left: var(--space-2); margin: var(--space-1) 0 var(--space-2); }
+  .door .wall { border-left-color: var(--nt-red); }
+  .door .file ul { margin: var(--space-1) 0 var(--space-2) 1.1rem; }
+  .door .file li, .door .wall li { margin-bottom: .4rem; font-size: var(--type-body-sm); }
+  .door .cost { margin: 0; }
+  .door .cost strong { color: var(--nt-red); }
 
   .mark { margin: clamp(30px, 4.5vh, 56px) auto var(--space-3); max-width: 22rem; color: var(--nt-black); }
   .mark :global(svg) { width: 100%; height: auto; display: block; }

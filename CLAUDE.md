@@ -80,7 +80,16 @@ earns, that changes — until then it does not.
   `LiveRefresh`). Measured on production in September 2026, gzipped: prefetcher
   1,181 B, `/_vercel/insights/script.js` 2,025 B, Umami 2,342 B from a
   third-party origin. Vendor byte counts drift with every vendor release; re-
-  measure rather than trust these.
+  measure rather than trust these. **One page carries its own module on top
+  of that:** `/read/the-protein-leaves-as-water` ships a 2.2 kB gzipped
+  bundle (`/_astro/the-protein-leaves-as-water.*.js`) for its two "try it"
+  panels, at the owner's ask on 27 October 2026 (the same exception the
+  record got: adding value and costing nothing). It is a page `<script>`
+  that imports `src/lib/whey.ts`, so the browser runs the page's own math;
+  Astro writes it as an external file because it is over the 4 kB inline
+  limit, and `check-csp` covers it under `'self'` with no hash to move. A
+  smaller page script is inlined and hashed instead, as the nav's is; either
+  way the checker passes or names the token. No other read ships a script.
 
 ## Brand — Northern Temper Design System
 **The published design system is the source of truth**, not this file and not
@@ -877,8 +886,8 @@ V   · THE BUILD /build    Refine · Compute · Corridor + C-5.     from teamcan
                              + The Waiting Discount, Paper No. 02 (4,381)
                              + Common Barrel, Paper No. 03 (2,675)
                              + Under the Shield, Paper No. 04 (3,804)
-                             + The Protein Leaves as Water, Paper No. 05 (4,322)
-                             + The Notice Is Free, Paper No. 06 (2,455)
+                             + The Protein Leaves as Water, Paper No. 05 (4,633)
+                             + The Notice Is Free, Paper No. 06 (2,695)
 /join  /privacy  /terms  /404          /support is HIDDEN (noindex, unlinked)
 /feed.xml    RSS for every read
 robots.txt · llms.txt · humans.txt · site.webmanifest · sw.js · security.txt
@@ -939,7 +948,20 @@ says the fee is unpublished. The two MERX plan prices render from
 `figures.ts` with a review date and the day they were read. Both pages
 follow the diagram discipline (four figures on No. 05, two on No. 06) and
 add, listed in their frontmatter, an "In brief" box, a "How to read this"
-note and a glossary.
+note and a glossary. **Both carry a "Try it" panel** (27 October 2026, the
+owner's ask): No. 05 has two, "Build the landed price" (a US price, an
+exchange rate, the surtax on or off) and "Run the skid yourself" (whey a
+day, price, yield, grant share, toll), each rendering the base case at
+build and re-running `whey.ts`'s own `run()` in the browser, so a reader
+without scripting sees the ledger's figures and the script cannot disagree
+with them; the surtax rate reaches the script from a `data-` attribute,
+never its bytes. Its loop figure moves (a dash along the two paths, off
+under reduced motion) and its one-day figure carries a strip to scale. No.
+06 has "The same tender, two doors", a mock notice opened through a public
+portal and a paywall, on native `<details>` with no script; the buyer and
+the job are invented and say so, the prices are MERX's. The panels are
+`role="group"`, not `<form>`: a form promises a submission and html-validate
+(WCAG H32) asks it for a submit button.
 
 **`/read/under-the-shield` is Northern Temper Paper No. 04** (22 October
 2026): the owner's own paper, from a PDF they uploaded with a research brief.

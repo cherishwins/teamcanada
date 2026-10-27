@@ -57,12 +57,12 @@ export const READS: ReadMeta[] = [
   {
     slug: 'the-notice-is-free', title: 'The Notice Is Free', imprint: paperImprint(6), paper: 6,
     blurb: 'A private company holds the documents for Canada’s public work, and a Canadian firm is charged to read them. The trade agreement makes the notice free and lets the file carry a price in two words. Three things a council could direct this month.',
-    published: '2026-10-27', words: 2455,
+    published: '2026-10-27', words: 2695,
   },
   {
     slug: 'the-protein-leaves-as-water', title: 'The Protein Leaves as Water', imprint: paperImprint(5), paper: 5,
     blurb: 'Canada ships its whey south as water, buys the powder back, and since September pays a surtax on the return. A plan to dry Canadian whey in Canada: one skid beside one vat, not a new factory, with every figure of the model computed on the page.',
-    published: '2026-10-27', words: 4322,
+    published: '2026-10-27', words: 4633,
   },
   {
     slug: 'under-the-shield', title: 'Under the Shield', imprint: paperImprint(4), paper: 4,

@@ -84,23 +84,32 @@ export const MODEL = {
   ],
 } as const;
 
+export type Model = typeof MODEL;
+/** The model with some inputs moved: what the page's "run it yourself" panel does. */
+export const withInputs = (o: Partial<Model> = {}): Model => ({ ...MODEL, ...o });
+
 /** What one day of whey becomes, before anything is sold. */
-export function day() {
-  const kg = MODEL.litresPerDay * MODEL.density;
+export function day(m: Model = MODEL) {
+  const kg = m.litresPerDay * m.density;
   // 102,500 kg × 0.31% is 317.75 kg exactly; the float is a hair under, and
   // the year's cream would then round to $810,262 instead of $810,263.
-  const fatKg = Math.round(kg * (MODEL.fatInShare - MODEL.fatOutShare) * 100) / 100;
-  const creamKg = fatKg / MODEL.creamFatShare;
-  const proteinKg = kg * MODEL.proteinShare * MODEL.ufRetention;
+  const fatKg = Math.round(kg * (m.fatInShare - m.fatOutShare) * 100) / 100;
+  const creamKg = fatKg / m.creamFatShare;
+  const proteinKg = kg * m.proteinShare * m.ufRetention;
   // What the membranes could yield, rounded down: a ceiling is rounded toward
   // caution, and the plan behind the paper prints the same number.
-  const maxPowderKg = Math.floor(proteinKg / MODEL.powderProteinAsIs);
-  const volumeCutPct = (1 - MODEL.retentateLitres / MODEL.litresPerDay) * 100;
-  return { fatKg, creamKg, proteinKg, maxPowderKg, volumeCutPct };
+  const maxPowderKg = Math.floor(proteinKg / m.powderProteinAsIs);
+  // The retentate and permeate volumes scale with the whey; the plan states
+  // them for 100,000 litres and the ratio is what carries.
+  const scale = m.litresPerDay / MODEL.litresPerDay;
+  const retentateLitres = m.retentateLitres * scale;
+  const permeateLitres = m.permeateLitres * scale;
+  const volumeCutPct = (1 - retentateLitres / m.litresPerDay) * 100;
+  return { fatKg, creamKg, proteinKg, maxPowderKg, retentateLitres, permeateLitres, volumeCutPct };
 }
 
 /** Cream revenue for the year: it comes off the clarifier, so it is the same in every case. */
-export const creamRevenue = () => day().fatKg * MODEL.days * MODEL.fatPricePerKg;
+export const creamRevenue = (m: Model = MODEL) => day(m).fatKg * m.days * m.fatPricePerKg;
 
 export interface Year {
   name: string;
@@ -125,45 +134,74 @@ export interface Year {
 }
 
 /** Capital the plan has to find without a grant. */
-export const netCapital = () => MODEL.capex * (1 - MODEL.grantShare);
+export const netCapital = (m: Model = MODEL) => m.capex * (1 - m.grantShare);
 /** What the grant would cover, if it covered the share the paper asks for. */
-export const grantAmount = () => MODEL.capex * MODEL.grantShare;
+export const grantAmount = (m: Model = MODEL) => m.capex * m.grantShare;
 
-export function year(name: string, powderKgDay: number, pricePerKg: number, atMaxYield = false): Year {
-  const powderKg = powderKgDay * MODEL.days;
+export function year(name: string, powderKgDay: number, pricePerKg: number, atMaxYield = false, m: Model = MODEL): Year {
+  const powderKg = powderKgDay * m.days;
   const powderRevenue = powderKg * pricePerKg;
-  const cream = creamRevenue();
+  const cream = creamRevenue(m);
   const revenue = powderRevenue + cream;
-  const toll = powderKg * MODEL.tollPerKg;
-  const power = atMaxYield ? MODEL.powerAtMaxYield : MODEL.power;
-  const membranes = atMaxYield ? MODEL.membranesAtMaxYield : MODEL.membranes;
-  const opex = toll + MODEL.freight + MODEL.labour + power + membranes + MODEL.licence;
+  const toll = powderKg * m.tollPerKg;
+  const power = atMaxYield ? m.powerAtMaxYield : m.power;
+  const membranes = atMaxYield ? m.membranesAtMaxYield : m.membranes;
+  const opex = toll + m.freight + m.labour + power + membranes + m.licence;
   const ebitda = revenue - opex;
-  const left = ebitda - MODEL.loanRepayment;
+  const left = ebitda - m.loanRepayment;
   return {
     name, powderKgDay, pricePerKg, powderKg, powderRevenue, cream, revenue, toll,
-    freight: MODEL.freight, labour: MODEL.labour, power, membranes, licence: MODEL.licence,
-    opex, ebitda, loan: MODEL.loanRepayment, left,
-    paybackMonths: netCapital() / (left / 12),
+    freight: m.freight, labour: m.labour, power, membranes, licence: m.licence,
+    opex, ebitda, loan: m.loanRepayment, left,
+    paybackMonths: netCapital(m) / (left / 12),
   };
 }
 
 /** The three cases the paper prints, in its order. */
-export function cases() {
-  const d = day();
+export function cases(m: Model = MODEL) {
+  const d = day(m);
   return {
-    downside: year('Downside', MODEL.basePowderKgDay, MODEL.downsidePricePerKg),
-    base: year('Base', MODEL.basePowderKgDay, MODEL.pricePerKg),
-    max: year('If yield holds', d.maxPowderKg, MODEL.pricePerKg, true),
+    downside: year('Downside', m.basePowderKgDay, m.downsidePricePerKg, false, m),
+    base: year('Base', m.basePowderKgDay, m.pricePerKg, false, m),
+    max: year('If yield holds', d.maxPowderKg, m.pricePerKg, true, m),
   };
 }
 
 /** What the host plant is paid in the base case: its share of what is left, and that per litre. */
-export function plant() {
-  const b = cases().base;
-  const share = b.left * MODEL.plantShare;
-  const litres = MODEL.litresPerDay * MODEL.days;
+export function plant(m: Model = MODEL) {
+  const b = cases(m).base;
+  const share = b.left * m.plantShare;
+  const litres = m.litresPerDay * m.days;
   return { share, litres, centsPerLitre: (share / litres) * 100 };
+}
+
+/**
+ * One run of the model for the page's panel: the inputs a reader can move,
+ * and everything the page prints from them. The panel's script calls this,
+ * the same function the page called at build time, so the two cannot drift.
+ */
+export interface Inputs {
+  litresPerDay: number;
+  pricePerKg: number;
+  /** Powder a day as a share of what the membranes could yield at that volume. */
+  yieldShare: number;
+  grantShare: number;
+  tollPerKg: number;
+}
+export const BASE_INPUTS: Inputs = {
+  litresPerDay: MODEL.litresPerDay,
+  pricePerKg: MODEL.pricePerKg,
+  yieldShare: MODEL.basePowderKgDay / day().maxPowderKg,
+  grantShare: MODEL.grantShare,
+  tollPerKg: MODEL.tollPerKg,
+};
+export function run(i: Inputs) {
+  const m0 = withInputs({ litresPerDay: i.litresPerDay, pricePerKg: i.pricePerKg, grantShare: i.grantShare, tollPerKg: i.tollPerKg });
+  const d = day(m0);
+  const m = withInputs({ ...m0, basePowderKgDay: Math.round(d.maxPowderKg * i.yieldShare) });
+  const y = year('Run', m.basePowderKgDay, m.pricePerKg, false, m);
+  const p = plant(m);
+  return { m, d, y, p, net: netCapital(m), grant: grantAmount(m) };
 }
 
 /**
