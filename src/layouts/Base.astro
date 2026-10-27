@@ -160,12 +160,12 @@ const schema = {
   <!-- Without JavaScript the phone menu cannot be toggled, so it stays open and
        the toggle is hidden. A style block needs no CSP hash (style-src allows
        inline); the selectors outrank Nav.astro's scoped rules on purpose. -->
+  {/* The phone menu needs no rule here: without a script its toggle is a
+      link and CSS :target opens it (Nav.astro). A rule that forced it open
+      and hid the toggle lived here until October 2026, and a reader whose
+      Chrome ran no script got a screen of menu with nothing to close it. */}
   <noscript><style>
     form.needs-js { display: none !important; }
-    @media (max-width: 1279px) {
-      nav.nav #navmenu { max-height: none; visibility: visible; overflow: visible; }
-      nav.nav button.toggle { display: none; }
-    }
   </style></noscript>
 
   <script type="application/ld+json" set:html={JSON.stringify(schema)} />
