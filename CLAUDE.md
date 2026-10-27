@@ -158,7 +158,8 @@ one file serves both colourways. **Never reference them via `<img src>`:**
   across sessions, and a check is the only register nobody has to remember.
   Papers so far: No. 01 The Warning Label (6 Oct 2026), No. 02 The Waiting
   Discount (14 Oct 2026), No. 03 Common Barrel (17 Oct 2026), No. 04 Under
-  the Shield (22 Oct 2026). **The register has done its job twice:** the
+  the Shield (22 Oct 2026), No. 05 The Protein Leaves as Water and No. 06
+  The Notice Is Free (both 27 Oct 2026; the PDFs carried no number). **The register has done its job twice:** the
   owner's own files for Common Barrel and for Under the Shield both said
   "No. 02" while No. 02 was live; they published as 03 and 04 and the owner
   was told why each time. Expect the next draft to say "No. 02" too. A
@@ -172,6 +173,15 @@ one file serves both colourways. **Never reference them via `<img src>`:**
   lengths had drifted up to 6%.
 - `src/lib/calculator.ts` — the separation bill's arithmetic, once;
   `/calculator` and the calculator share card both run it.
+- `src/lib/whey.ts` — the whey plan's arithmetic, once: the inputs of Paper
+  No. 05's planning model (litres, solids, retention, prices, cost lines)
+  and the functions that turn them into the day's mass balance, the three
+  cases, the plant's share and the landed price of American powder. The
+  page prints about forty numbers and every one is a result; the PDF typed
+  them, and one ("under 6 months") disagreed with its own inputs (6.0).
+  Nothing in it is a published figure, so nothing in it goes to `/sources`;
+  the published ones (surtax, import share, price readings, program cap)
+  are in `figures.ts`.
 - `tools/load-ts.cjs` — bundles a `src/lib` module with esbuild so a CommonJS
   tool calls the page's own code rather than a copy of it.
 - `src/components/Nav.astro`, `SiteFooter.astro`, `BlocChart.astro`.
@@ -210,6 +220,10 @@ one file serves both colourways. **Never reference them via `<img src>`:**
   `tools/record/load.cjs` (`record.ts`'s `compute()` for CommonJS tools),
   `tools/record/analyse.cjs` (the report), `.github/workflows/record.yml`
   (the daily refresh). See "The record" below.
+- `notes/canadian-whey-business-plan.md` — the plan behind Paper No. 05,
+  kept unpublished with a header listing the ten of its claims that are
+  wrong as written; `notes/under-the-shield-research-brief.md` is the same
+  for No. 04. Quote the page, not the brief.
 - `.github/dependabot.yml` — monthly PRs for GitHub Actions and npm, grouped.
   Every action sat on a major whose Node runtime GitHub had retired, and the
   adapter trailed a release that fixed a bug `vercel.json` works around, with
@@ -381,7 +395,10 @@ on a page built days earlier. What holds it now:
   that is shown with one of its cells not rendered: the ledgers' phone layout
   hid an empty cell with `display:none`, and 312 member rows then read every
   later value to a screen reader under the wrong header; axe builds its grid
-  from the DOM and passed). **Contrast and axe run at 390 and 1280, with
+  from the DOM and passed). The tap-target count exempts an inline link in a
+  run of text (inside `p`, `li`, `dd`, `figcaption`, and since Papers No. 05
+  and 06 footnoted the rows of their tables, `td` and `th`); everything else
+  interactive must reach 24px. **Contrast and axe run at 390 and 1280, with
   reduced motion on**, so the scroll reveal shows every block: before, they ran
   at 1280 alone, where every block below the fold sat at opacity 0 and axe
   skipped it as hidden, and a phone-only layout was never audited at all. It
@@ -854,12 +871,14 @@ V   · THE BUILD /build    Refine · Compute · Corridor + C-5.     from teamcan
 /sources     The receipts                every figure, source, period, endpoint
 /fr          La trempe du Nord           BROUILLON, noindex, Act I only
 /offline     Service-worker fallback     noindex, OUT of the sitemap
-/read + 10 long-form pieces  5 migrated from the old site (9,162 words)
+/read + 12 long-form pieces  5 migrated from the old site (9,162 words)
                              + The Red Is the Work, written here (1,154)
                              + The Warning Label, Paper No. 01 (3,876)
                              + The Waiting Discount, Paper No. 02 (4,381)
                              + Common Barrel, Paper No. 03 (2,675)
                              + Under the Shield, Paper No. 04 (3,804)
+                             + The Protein Leaves as Water, Paper No. 05 (4,322)
+                             + The Notice Is Free, Paper No. 06 (2,455)
 /join  /privacy  /terms  /404          /support is HIDDEN (noindex, unlinked)
 /feed.xml    RSS for every read
 robots.txt · llms.txt · humans.txt · site.webmanifest · sw.js · security.txt
@@ -891,8 +910,36 @@ which is the taunt this site exists not to make. Cold-public register from
 grade ~4–7. **Adding a read touches five places** — the page (which passes
 only its `slug`, description and standfirst to `Read.astro`), its entry in
 `src/lib/reads.ts` (the build prints its word count), `llms.txt`,
-`generate-llms-full.cjs` ORDER, and the CARDS list in `generate-og.cjs`. `/read`,
+`generate-llms-full.cjs` ORDER, and the CARDS list in `generate-og.cjs`;
+a paper also touches the paper register in this file and, if it carries a
+published figure, `figures.ts` and the `FIXED_FIGURES` rows `/sources`
+renders. `/read`,
 the feed and the `read` card's total follow from `reads.ts`.
+
+**`/read/the-protein-leaves-as-water` is Northern Temper Paper No. 05 and
+`/read/the-notice-is-free` is No. 06** (both 27 October 2026): the owner's
+own PDFs, uploaded together with the Word plan behind the first. The paper
+rule applies to both: **the words are the author's.** Each page's frontmatter
+lists what was corrected against sources and what could not be verified.
+No. 05 (whey): the plan's figures are not typed on the page; `src/lib/whey.ts`
+computes them from the model's inputs, and the surtax, the import share,
+the two Vesper readings and the SMPIF cap and budget render from
+`figures.ts`, three of them with review dates (a surtax in a live dispute,
+a program intake that can close). Six corrections, the one that matters
+most being a provincial fund the PDF called open that closed in February
+2025. **The two Vesper tonne prices could not be verified** (the Financial
+Post refuses fetches from the sandbox and no other outlet repeats the pair);
+they stand as the author's cited claim, flagged on the page beside the
+verified USDA and CNN readings, the same posture Common Barrel took with an
+Abacus poll. If the owner can open the Post's page, confirm them and remove
+the flag. No. 06 (procurement): five corrections, two of substance: Quebec's
+SEAO charges for tender documents (the PDF's table said "Free"), and MERX
+publishes no per-solicitation price (the PDF said about $70), so the page
+says the fee is unpublished. The two MERX plan prices render from
+`figures.ts` with a review date and the day they were read. Both pages
+follow the diagram discipline (four figures on No. 05, two on No. 06) and
+add, listed in their frontmatter, an "In brief" box, a "How to read this"
+note and a glossary.
 
 **`/read/under-the-shield` is Northern Temper Paper No. 04** (22 October
 2026): the owner's own paper, from a PDF they uploaded with a research brief.

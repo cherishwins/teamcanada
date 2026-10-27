@@ -1,0 +1,578 @@
+---
+import Read from '../../layouts/Read.astro';
+import Share from '../../components/Share.astro';
+import BarTable from '../../components/BarTable.astro';
+import BearDual from '../../components/marks/BearDual.astro';
+import { WHEY_US_SHARE, WHEY_SURTAX, WPC_AUG_2026, WPC_AUG_2023, WPC_RATIO, SMPIF_CAP, SMPIF_BUDGET } from '../../lib/figures';
+import { MODEL, day, cases, plant, landed, netCapital, grantAmount, skidTotal, dollars, kg } from '../../lib/whey';
+
+/**
+ * Northern Temper Paper No. 05, the web edition of the owner's own PDF "The
+ * protein leaves as water. It comes back as a bill." (Northern Temper,
+ * October 2026, 16 pages), uploaded 27 October 2026 with the plan behind it,
+ * a Word document kept unpublished at notes/canadian-whey-business-plan.md.
+ * An eight-page cut of the same PDF was uploaded beside it; this edition
+ * follows the sixteen.
+ *
+ * THE NUMBER. The register gives it 05; the PDF carries no number.
+ *
+ * The words, the argument and the plan are the author's. Every figure that
+ * somebody else published was checked against its source on 27 October 2026,
+ * and every figure of the plan's own is computed on this page from the
+ * model's inputs (src/lib/whey.ts) rather than typed. What changed:
+ *   - "Ontario's modernization stream, up to $200,000, still taking
+ *     applications." Ontario's guidelines say the Dairy Processing
+ *     Modernization Initiative's intake closed on 13 February 2025. The
+ *     page says so, and the "Us" column says a top-up only if a successor
+ *     opens.
+ *   - "On the order of 60,000 milligrams of oxygen demand per litre." FAO
+ *     gives whey a BOD of 30 to 40 grams a litre and Pires et al. (2021)
+ *     about 50 for second cheese whey; the page says 30,000 to 50,000 and
+ *     more.
+ *   - "Julien Chamberland ... told an Ontario symposium that in 2024." The
+ *     Farmtario story quotes him on the equipment and summarises his team's
+ *     research as finding feed the only viable option for very small
+ *     plants; the feed line is the writer's framing. The page attributes it
+ *     to his research, and names the 2026 paper (Kpadé, Chamberland, Singbo,
+ *     Pouliot and Doyen, Waste and Biomass Valorization 17:8127).
+ *   - "One pallet. About a tonne." Suppliers' pallets of WPC80 run from 600
+ *     to 1,000 kg (30 to 40 sacks of 20 or 25 kg). The line is now "one
+ *     tonne of powder", which is what the arithmetic is for.
+ *   - "About nine kilograms of whey" for every kilogram of cheese: Pires et
+ *     al. give 9 to 10 litres; the page says nine or ten litres.
+ *   - "About US$3.70 a pound, 2024 to 2025": no published series states it.
+ *     CNN (27 September 2026, on USDA data) reports June's US$13 as a 250
+ *     per cent rise year over year, which puts mid-2025 near US$3.70; the
+ *     page says so and cites that.
+ *   - "Payback under 6 months" in the downside case. The inputs put it at
+ *     6.0 months; the page prints the computed months in every case
+ *     (6.0, 4.5 and 2.7).
+ *   - "Volume down more than 96%" for the retentate. From 100,000 litres to
+ *     about 3,000 is 97%; printed computed.
+ *   - "About a third of that landed price" for $17.50 against $46 to $51 is
+ *     34 to 38 per cent; the page says "a little over a third".
+ *   - The surtax arithmetic is shown as the page computes it, on the value
+ *     for duty, and the page says so; the PDF's "$46 to $51" holds.
+ *   - SMPIF's "licence and the history": the fund asks for two complete
+ *     financial statements covering three years of revenue, with at least
+ *     24 months of processing revenue; the page says that.
+ *   - The US side: the 50 per cent duty is Proclamation 11047 (signed 20
+ *     July 2026, in effect from 22 August after a three-day suspension
+ *     lapsed) and the prohibition is Proclamation 11062 (8 September 2026,
+ *     effective 29 September), both cited. The "$20 billion" some coverage
+ *     attaches to the US duty is the size of Canada's own package.
+ * Could not be verified from this sandbox and stand as the author's cited
+ * claims, flagged on the page: the two Vesper tonne prices (US$28,160 in
+ * August 2026 against US$5,620 in August 2023), which the PDF cites to the
+ * Financial Post of 21 September 2026 and which no reachable outlet repeats
+ * (financialpost.com refuses fetches; the Post's own post of the story
+ * confirms the title, the date and the 90 per cent); and the byline
+ * (Andrew Rankin), which no reachable copy names. Verified as written: the
+ * 90 per cent ("about 90% of it from the U.S."), the Customs Notice (number,
+ * date, 50 per cent in Schedule 3 of SOR/2026-186 on 0404.10 and 0404.90,
+ * cheese at 25), the 29 September prohibition, the June peak and the late-
+ * September range (USDA via CNN; USDA's own weekly report for 19 to 23
+ * October has WPC 80 "in the $9s and $10s"), the Bank of Canada averages
+ * (1.3698 and 1.3978), SMPIF's cap, budget, end date and Stage 1 address,
+ * AgriInnovate's status and $5 million, Protein Industries Canada's mandate
+ * and its 27 May 2026 brewery project, Mark Hamel's billion litres, the Laval
+ * study, section 247 and the Health Canada boundary, the BC fund's 2024
+ * close and its October 2026 renewal notice.
+ *
+ * ADDED for its stakeholders, as on the last three papers, and listed here
+ * so the owner can strike any: the "In brief" box, the "How to read this"
+ * note, and the "Words used here" glossary. Every other sentence is the
+ * PDF's, with the figures rendered from the model or from figures.ts.
+ *
+ * FORM. Four diagrams (Figures 1, 4, 5 and 8) follow the site's diagram
+ * discipline (CLAUDE.md): one accent on one focal element, a four-pixel
+ * grid, orthogonal connectors, hairlines, square corners, no colour carrying
+ * meaning a label does not. Figures 2, 3, 6 and 7 are tables first (BarTable
+ * or a plain table), because they are numbers. The PDF's price pair, landed
+ * price, ledger and skid table had been laid out as slides; they are tables
+ * here so every value has a row and column header.
+ */
+const d = day();
+const c = cases();
+const pl = plant();
+const fx = 1.40;
+const surtax = WHEY_SURTAX.value / 100;
+const lo = landed(10, fx, surtax);
+const hi = landed(11, fx, surtax);
+const skid = skidTotal();
+const grant = grantAmount();
+const net = netCapital();
+const months = (m: number) => `${m.toFixed(1)} months`;
+const m = dollars;
+const cap = (t: string) => t[0].toUpperCase() + t.slice(1);
+/** "$2.8 million", for prose; the tables print the dollar. */
+const millions = (v: number) => `$${(v / 1_000_000).toFixed(1)} million`;
+const share17 = ((MODEL.pricePerKg / hi.withSurtax) * 100).toFixed(0) + ' to ' + ((MODEL.pricePerKg / lo.withSurtax) * 100).toFixed(0);
+---
+<Read
+  slug="the-protein-leaves-as-water"
+  pageTitle="The Protein Leaves as Water"
+  description={`Canada ships its whey south as water, buys the powder back, and since 8 September 2026 pays a ${WHEY_SURTAX.display} surtax on the return. A plan to dry Canadian whey in Canada: one skid beside one vat, not a new factory. Every figure named.`}
+  standfirst={"A plan to dry Canadian whey in Canada. Not a new factory. One skid, beside a vat that already has the milk, the licence and the waste."}
+>
+      <section class="brief" aria-labelledby="in-brief">
+        <h2 id="in-brief">In brief</h2>
+        <ul>
+          <li>A Canadian cheese plant makes nine or ten litres of whey for every kilogram of cheese. The milk was already bought. The whey is mostly water, and it has been shipped south to be dried, then sold back to Canada as protein powder.</li>
+          <li>{cap(WHEY_US_SHARE.display)} of the high-protein whey Canada imports still comes from the United States. Since 8 September 2026 that powder carries a {WHEY_SURTAX.display} surtax, and since 29 September listed Canadian whey is stopped at the American border. Both doors closed in one month.</li>
+          <li>Do not build a factory. A spray-drying plant is $50 to $100 million and years of permits. Phase one is a skid on the floor of a plant that already has the licence: about {millions(MODEL.capex)}, installed.</li>
+          <li>One skid on one day: {kg(MODEL.litresPerDay).replace(' kg', ' litres')} of sweet whey in; {kg(d.creamKg)} of cream, about {MODEL.retentateLitres.toLocaleString('en-CA')} litres of protein to haul to a dryer we rent, and the water back to the plant. {kg(MODEL.basePowderKgDay)} of powder a day in the cautious case.</li>
+          <li>In the base case the year returns about {millions(c.base.ebitda)} before interest and tax. Cream alone covers drying, freight and power. At $14 a kilogram it still clears about {millions(c.downside.ebitda)}.</li>
+          <li>The money: one federal door is open to a licensed cheese plant, up to {SMPIF_CAP.display}, non-repayable. The plant-protein fund will say no, and the interest-free loan is closed. Eight desks can stop it, and the page says what each is shown.</li>
+          <li>No cheese plant, dryer or brand has agreed to any of this. The sequence is the work.</li>
+        </ul>
+      </section>
+
+      <dl class="facts">
+        <div><dt>{WHEY_US_SHARE.display}</dt><dd>of high-protein whey imports still come from the United States.<sup><a href="#note-1">1</a></sup></dd></div>
+        <div><dt>{WHEY_SURTAX.display}</dt><dd>surtax on that import, in force since 8 September 2026.<sup><a href="#note-2">2</a></sup></dd></div>
+        <div><dt>{m(MODEL.capex).replace(',800,000', '.8M')}</dt><dd>the skid we model. Not a new factory.</dd></div>
+      </dl>
+
+      <h3>How to read this</h3>
+      <p>Every published figure here is dated and sourced in the receipts at the end. Every figure of the plan’s own is a planning model, October 2026, and the page says so wherever one appears; the model’s inputs are written once in the site’s source, every number that follows from them is computed on this page rather than typed, and the <a href="#words">words used here</a> explain the terms.</p>
+      <p>It is written for the people it would need: a cheese plant, a dryer, a blender, the dairy desk at Agriculture and Agri-Food Canada, a milk board, and anyone with a corner of a floor and a reason.</p>
+      <p class="byline">Northern Temper, October 2026. A planning model, not a term sheet. <a href="#sources">The receipts are at the end.</a></p>
+
+      <h2><span class="eyebrow">01 · The loop</span> We already milked it.</h2>
+      <figure class="diagram">
+        <svg viewBox="0 0 400 248" role="img" aria-labelledby="lp-t lp-d">
+          <title id="lp-t">The loop</title>
+          <desc id="lp-d">A Canadian cheese vat separates curd from sweet whey. The whey, mostly water, travels south to be dried in the United States. The powder travels back north to a Canadian blender, and at the border on the way back it now carries a fifty per cent surtax.</desc>
+          <text x="8" y="20" class="eyebrow-t">CANADA</text>
+          <text x="8" y="240" class="eyebrow-t">UNITED STATES</text>
+          <line x1="8" y1="124" x2="392" y2="124" class="hair" stroke-dasharray="4 4"/>
+          <rect x="24" y="32" width="128" height="48" class="box"/>
+          <text x="88" y="52" text-anchor="middle" class="name">THE VAT</text>
+          <text x="88" y="68" text-anchor="middle" class="sub">sweet whey, mostly water</text>
+          <rect x="248" y="32" width="128" height="48" class="box"/>
+          <text x="312" y="52" text-anchor="middle" class="name">THE BLENDER</text>
+          <text x="312" y="68" text-anchor="middle" class="sub">powder, bought back</text>
+          <rect x="136" y="168" width="128" height="48" class="box"/>
+          <text x="200" y="188" text-anchor="middle" class="name">A U.S. DRYER</text>
+          <text x="200" y="204" text-anchor="middle" class="sub">not ours</text>
+          <path d="M88 80 V192 H128" class="line" fill="none"/>
+          <polygon points="128,188 136,192 128,196" class="head"/>
+          <text x="96" y="156" class="sub">whey, south, as water</text>
+          <path d="M264 192 H312 V88" class="line" fill="none"/>
+          <polygon points="308,88 312,80 316,88" class="head"/>
+          <rect x="272" y="108" width="80" height="32" class="box focal"/>
+          <text x="312" y="128" text-anchor="middle" class="name focal-t">{WHEY_SURTAX.display} SURTAX</text>
+        </svg>
+        <figcaption>Figure 1 · The loop. The milk was already bought. The protein leaves as water and comes back as powder, and since 8 September 2026 the return is taxed.<sup><a href="#note-1">1</a>, <a href="#note-2">2</a></sup></figcaption>
+      </figure>
+      <dl class="steps">
+        <div><dt>Vat</dt><dd>A Canadian cheese plant separates curd from sweet whey. The milk was already bought. No new cow. No new quota.</dd></div>
+        <div><dt>South</dt><dd>The whey, mostly water, has been shipped to be dried in the United States, then sold back to Canada as powder.</dd></div>
+        <div><dt>Back</dt><dd>{cap(WHEY_US_SHARE.display)} of the high-protein whey Canada imports still comes from the United States.<sup><a href="#note-1">1</a></sup></dd></div>
+      </dl>
+      <p class="pull">The return is now taxed. Since 8 September 2026 that powder carries a {WHEY_SURTAX.display} surtax. The loop no longer pays.</p>
+
+      <h2><span class="eyebrow">02 · The border</span> Both doors closed in September.</h2>
+      <div class="compare">
+        <article>
+          <p class="big">8 Sept</p>
+          <h3>Canada</h3>
+          <p>A {WHEY_SURTAX.display} surtax on United States whey. Customs Notice 26-23.<sup><a href="#note-2">2</a></sup></p>
+        </article>
+        <article>
+          <p class="big">29 Sept</p>
+          <h3>United States</h3>
+          <p>Listed Canadian whey stopped at the border.<sup><a href="#note-1">1</a></sup></p>
+        </article>
+      </div>
+      <BarTable name="Figure 2" rowHead="Average US whey protein concentrate" columns={['US dollars a tonne']} unit="usd" rows={[
+        { label: WPC_AUG_2023.period, values: [WPC_AUG_2023.value] },
+        { label: WPC_AUG_2026.period, values: [WPC_AUG_2026.value] },
+      ]}>Figure 2 · Vesper, cited by the Financial Post. {WPC_AUG_2026.period} is {WPC_RATIO.toFixed(1)} times {WPC_AUG_2023.period}. The surtax sits on top of that price.<sup><a href="#note-3">3</a></sup></BarTable>
+
+      <h2><span class="eyebrow">03 · The penalty</span> What a kilogram costs now.</h2>
+      <section class="tw" tabindex="0" aria-label="Before and this autumn, scrolls sideways">
+        <table>
+          <thead><tr><th scope="col">Line</th> <th scope="col">Before</th> <th scope="col">This autumn</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">US wholesale</th> <td>About US$3.70 a pound in mid-2025, implied by the 250% rise to June.<sup><a href="#note-3">3</a></sup></td> <td>US$10 to $11 a pound. June peaked at US$13.<sup><a href="#note-3">3</a></sup></td></tr>
+            <tr><th scope="row">Surtax, HS 0404</th> <td>None under CUSMA.</td> <td>{WHEY_SURTAX.display} since 8 September 2026.<sup><a href="#note-2">2</a></sup></td></tr>
+            <tr><th scope="row">The US door</th> <td>Canadian whey could enter.</td> <td>Listed powders stopped, 29 September.<sup><a href="#note-1">1</a></sup></td></tr>
+            <tr><th scope="row">Planning rate</th> <td>$1.37 in 2024.</td> <td>${fx.toFixed(2)}.<sup><a href="#note-4">4</a></sup></td></tr>
+            <tr><th scope="row">Landed, our sum</th> <td>Duty-free.</td> <td>About {m(lo.withSurtax).replace(/\.\d+$/, '')} to {m(hi.withSurtax).replace(/\.\d+$/, '')} a kilogram, Canadian, before freight.</td></tr>
+            <tr><th scope="row">What we model</th> <td></td> <td>${MODEL.pricePerKg.toFixed(2)} a kilogram. A little over a third of that landed price.</td></tr>
+            <tr><th scope="row">One tonne of powder</th> <td></td> <td>Roughly {m(Math.floor(lo.surtaxPerKg * 1000 / 1000) * 1000)} of the bill is the surtax alone.</td></tr>
+          </tbody>
+        </table>
+      </section>
+      <BarTable name="Figure 3" rowHead="A kilogram of US powder" columns={['At US$10 a pound', 'At US$11 a pound']} unit="cents" rows={[
+        { label: `In Canadian dollars, at $${fx.toFixed(2)}`, values: [Math.round(lo.cadPerKg * 100) / 100, Math.round(hi.cadPerKg * 100) / 100] },
+        { label: `With the ${WHEY_SURTAX.display} surtax`, values: [Math.round(lo.withSurtax * 100) / 100, Math.round(hi.withSurtax * 100) / 100] },
+        { label: 'What we model, Canadian powder', values: [MODEL.pricePerKg, MODEL.pricePerKg] },
+      ]}>Figure 3 · The worked line, late-September low: US$10 a pound is US${lo.usdPerKg.toFixed(2)} a kilogram, times ${fx.toFixed(2)} is ${lo.cadPerKg.toFixed(2)}, times the {WHEY_SURTAX.display} surtax is ${lo.withSurtax.toFixed(2)} Canadian. The surtax is charged on the value for duty, so this is the low end of the bill. The ${MODEL.pricePerKg.toFixed(2)} is our asking price in the model, not a contract.</BarTable>
+
+      <h2><span class="eyebrow">04 · Not this. This.</span> Do not build a factory. Sit beside the vat.</h2>
+      <div class="compare">
+        <article>
+          <h3>Not this</h3>
+          <p>Raw whey is about 93% water. It spoils in hours. A tanker of it is a tanker of water.<sup><a href="#note-5">5</a></sup></p>
+          <p>A greenfield spray dryer is the $15 to $30 million machine, inside a $50 to $100 million plant, and two or three years of permits.</p>
+          <p class="big">$50–100M<small>Years.</small></p>
+        </article>
+        <article>
+          <h3>This</h3>
+          <p>Phase one is a skid on the floor of a plant that already has the licence, the milk, and the waste.</p>
+          <p>Sweet whey only. Cheddar, mozzarella, gouda. pH 6.0 to 6.5. Acid whey from cottage cheese or Greek yogurt is refused. It scales the membranes.<sup><a href="#note-5">5</a></sup></p>
+          <p class="big">{m(skid.low).replace(',100,000', '.1')}–{m(skid.high).replace(',200,000', '.2M')}<small>We model {m(MODEL.capex).replace(',800,000', '.8M')}.</small></p>
+        </article>
+      </div>
+
+      <h2><span class="eyebrow">05 · One day</span> One hundred thousand litres.</h2>
+      <figure class="diagram">
+        <svg viewBox="0 0 400 304" role="img" aria-labelledby="md-t md-d">
+          <title id="md-t">One day through the skid</title>
+          <desc id="md-d">One hundred thousand litres of sweet whey enter the skid. The clarifier takes off {kg(d.creamKg)} of forty per cent cream, sold first. About {MODEL.permeateLitres.toLocaleString('en-CA')} litres of permeate, lactose and minerals in water, go back to the plant. About {MODEL.retentateLitres.toLocaleString('en-CA')} litres of protein retentate are hauled cold to a rented dryer and become {kg(MODEL.basePowderKgDay)} of powder a day in the cautious case.</desc>
+          <rect x="8" y="8" width="384" height="48" class="box"/>
+          <text x="200" y="28" text-anchor="middle" class="name">{MODEL.litresPerDay.toLocaleString('en-CA')} L SWEET WHEY IN</text>
+          <text x="200" y="44" text-anchor="middle" class="sub">a day, {MODEL.days} days a year</text>
+          <path d="M24 56 V196 M24 92 H32 M24 144 H32 M24 196 H32" class="line" fill="none"/>
+          <polygon points="32,88 40,92 32,96" class="head"/>
+          <polygon points="32,140 40,144 32,148" class="head"/>
+          <polygon points="32,192 40,196 32,200" class="head"/>
+          <rect x="40" y="72" width="352" height="40" class="box"/>
+          <text x="52" y="89" class="name">{kg(d.creamKg).toUpperCase()} WHEY CREAM</text>
+          <text x="52" y="105" class="sub">40% fat, off the clarifier, sold first</text>
+          <rect x="40" y="124" width="352" height="40" class="box"/>
+          <text x="52" y="141" class="name">~{MODEL.permeateLitres.toLocaleString('en-CA')} L PERMEATE</text>
+          <text x="52" y="157" class="sub">lactose and minerals; the water goes back to the plant’s wash</text>
+          <rect x="40" y="176" width="352" height="40" class="box"/>
+          <text x="52" y="193" class="name">~{MODEL.retentateLitres.toLocaleString('en-CA')} L PROTEIN RETENTATE</text>
+          <text x="52" y="209" class="sub">25% solids, volume down {d.volumeCutPct.toFixed(0)}%, hauled cold to a dryer we rent</text>
+          <path d="M216 216 V240" class="line" fill="none"/>
+          <polygon points="212,240 216,248 220,240" class="head"/>
+          <rect x="40" y="248" width="352" height="48" class="box focal"/>
+          <text x="216" y="268" text-anchor="middle" class="name focal-t">{kg(MODEL.basePowderKgDay).toUpperCase()} POWDER OUT</text>
+          <text x="216" y="284" text-anchor="middle" class="sub">a day, the cautious case; the membranes could yield {kg(d.maxPowderKg)}</text>
+        </svg>
+        <figcaption>Figure 4 · One day through the skid. The clarifier sees the whole volume whether the powder yield is cautious or not. Planning model, October 2026.</figcaption>
+      </figure>
+      <dl class="facts">
+        <div><dt>{kg(d.creamKg)}</dt><dd>Whey cream, 40% fat. About {m(c.base.cream)} a year. This cheque arrives before a kilogram of powder is sold.</dd></div>
+        <div><dt>~{MODEL.retentateLitres.toLocaleString('en-CA')} L</dt><dd>Protein retentate at 25% solids. Volume down {d.volumeCutPct.toFixed(0)}%. This is what gets hauled, cold, to a dryer we rent.</dd></div>
+        <div><dt>~{MODEL.permeateLitres.toLocaleString('en-CA')} L</dt><dd>Permeate. Lactose and minerals. Water recovered for the plant’s own wash. The waste load leaves with it.</dd></div>
+      </dl>
+      <div class="compare">
+        <article>
+          <p class="big">{kg(MODEL.basePowderKgDay)}</p>
+          <p>Powder a day. The cautious case. {Math.round(c.base.powderKg / 1000)} tonnes a year. This is the number in the ledger.</p>
+        </article>
+        <article>
+          <p class="big">{kg(d.maxPowderKg)}</p>
+          <p>What the membranes could yield. Shown so it is not hidden. Not used in the base case.</p>
+        </article>
+      </div>
+      <p class="fig">Planning model, October 2026. Cream revenue is held flat because it comes off the clarifier, not the dryer. Toll drying is ${MODEL.tollPerKg.toFixed(2)} a kilogram and moves with the powder.</p>
+
+      <h2><span class="eyebrow">06 · Three cases</span> The year, three ways.</h2>
+      <section class="tw" tabindex="0" aria-label="Figure 5, the year three ways, scrolls sideways">
+        <table class="ledger-t">
+          <thead><tr><th scope="col">Line</th> <th scope="col">Downside</th> <th scope="col">Base</th> <th scope="col">If yield holds</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Powder a day</th> <td>{kg(c.downside.powderKgDay)}</td> <td>{kg(c.base.powderKgDay)}</td> <td>{kg(c.max.powderKgDay)}</td></tr>
+            <tr><th scope="row">Price a kilogram</th> <td>${c.downside.pricePerKg.toFixed(2)}</td> <td>${c.base.pricePerKg.toFixed(2)}</td> <td>${c.max.pricePerKg.toFixed(2)}</td></tr>
+            <tr><th scope="row">Powder revenue</th> <td>{m(c.downside.powderRevenue)}</td> <td>{m(c.base.powderRevenue)}</td> <td>{m(c.max.powderRevenue)}</td></tr>
+            <tr><th scope="row">Whey cream</th> <td>{m(c.downside.cream)}</td> <td>{m(c.base.cream)}</td> <td>{m(c.max.cream)}</td></tr>
+            <tr class="sum"><th scope="row">Revenue</th> <td>{m(c.downside.revenue)}</td> <td>{m(c.base.revenue)}</td> <td>{m(c.max.revenue)}</td></tr>
+            <tr><th scope="row">Toll drying, ${MODEL.tollPerKg.toFixed(2)} a kilogram</th> <td>−{m(c.downside.toll)}</td> <td>−{m(c.base.toll)}</td> <td>−{m(c.max.toll)}</td></tr>
+            <tr><th scope="row">Chilled freight</th> <td>−{m(c.downside.freight)}</td> <td>−{m(c.base.freight)}</td> <td>−{m(c.max.freight)}</td></tr>
+            <tr><th scope="row">Labour, five people</th> <td>−{m(c.downside.labour)}</td> <td>−{m(c.base.labour)}</td> <td>−{m(c.max.labour)}</td></tr>
+            <tr><th scope="row">Power and wash</th> <td>−{m(c.downside.power)}</td> <td>−{m(c.base.power)}</td> <td>−{m(c.max.power)}</td></tr>
+            <tr><th scope="row">Membranes, enzymes</th> <td>−{m(c.downside.membranes)}</td> <td>−{m(c.base.membranes)}</td> <td>−{m(c.max.membranes)}</td></tr>
+            <tr><th scope="row">Licence, lab, insurance</th> <td>−{m(c.downside.licence)}</td> <td>−{m(c.base.licence)}</td> <td>−{m(c.max.licence)}</td></tr>
+            <tr class="sum"><th scope="row">EBITDA</th> <td>{m(c.downside.ebitda)}</td> <td>{m(c.base.ebitda)}</td> <td>{m(c.max.ebitda)}</td></tr>
+            <tr><th scope="row">Loan, if it is made</th> <td>−{m(c.downside.loan)}</td> <td>−{m(c.base.loan)}</td> <td>−{m(c.max.loan)}</td></tr>
+            <tr class="sum"><th scope="row">Left to split</th> <td>{m(c.downside.left)}</td> <td>{m(c.base.left)}</td> <td>{m(c.max.left)}</td></tr>
+            <tr><th scope="row">Payback on {m(net)}</th> <td>{months(c.downside.paybackMonths)}</td> <td>{months(c.base.paybackMonths)}</td> <td>{months(c.max.paybackMonths)}</td></tr>
+          </tbody>
+        </table>
+      </section>
+      <p class="fig">Figure 5 · Planning model, October 2026. Cream is the same in every column because it comes off the clarifier. The right-hand column is what the membranes could yield. It is not the plan. AgriInnovate, the interest-free loan in that row, is closed.<sup><a href="#note-6">6</a></sup></p>
+      <p>A planning model, not a term sheet. At ${MODEL.downsidePricePerKg.toFixed(2)} a kilogram the same plant still clears about {millions(c.downside.ebitda)} EBITDA. The {Math.round(MODEL.grantShare * 100)}% grant is not in hand. Cream alone covers drying, freight, and power.</p>
+
+      <h2><span class="eyebrow">07 · The plant</span> What the cheese plant is paid.</h2>
+      <div class="compare">
+        <article>
+          <h3>$0 a litre up front</h3>
+          <p>The whey is not purchased. It is the stream the plant already separates, and used to pay to haul away.</p>
+        </article>
+        <article>
+          <h3>Hot water back</h3>
+          <p>Polished water returns warm, into the plant’s own wash. Less city water. Less gas.</p>
+        </article>
+        <article>
+          <h3>The cream first</h3>
+          <p>{m(c.base.cream)} a year from whey cream, before a kilogram of powder is sold. It covers drying, freight, and most of the power.</p>
+        </article>
+        <article>
+          <h3>{pl.centsPerLitre.toFixed(1)}¢ a litre after</h3>
+          <p>On the base case, {Math.round(MODEL.plantShare * 100)}% of what is left goes back to the member plant. About {m(Math.round(pl.share / 1000) * 1000)} a year. A split in the model, not a promise.</p>
+        </article>
+      </div>
+      <p class="fig">{(pl.litres / 1_000_000).toFixed(0)} million litres a year. {m(pl.share)} is {Math.round(MODEL.plantShare * 100)}% of the {m(c.base.left)} left after costs and the loan in the base case. The other {Math.round((1 - MODEL.plantShare) * 100)}% is a reserve and the operator’s share. Nothing here is agreed.</p>
+
+      <h2><span class="eyebrow">08 · The skid</span> Where the {m(MODEL.capex).replace(',800,000', '.8 million')} goes.</h2>
+      <BarTable name="Figure 6" rowHead="Line" columns={['Low', 'High']} unit="dollars" rows={[
+        ...MODEL.skid.map((r) => ({ label: r.label, values: [r.low, r.high] })),
+        { label: 'Installed, no spray dryer', values: [skid.low, skid.high], bars: false },
+      ]}>Figure 6 · Ranges are equipment estimates for a {MODEL.litresPerDay.toLocaleString('en-CA')}-litre-a-day loop, October 2026. The {m(MODEL.capex).replace(',800,000', '.8 million')} is the middle.</BarTable>
+      <dl class="facts">
+        <div><dt>{m(grant).replace(',000', 'k')}</dt><dd>Only if SMPIF covers {Math.round(MODEL.grantShare * 100)}%. The cheese plant has to apply. That share is our ask, not a rate the program publishes.<sup><a href="#note-7">7</a></sup></dd></div>
+        <div><dt>Closed</dt><dd>AgriInnovate is the interest-free loan. Its intake is shut. This model no longer spends that money.<sup><a href="#note-6">6</a></sup></dd></div>
+        <div><dt>{m(net).replace(',000', 'k')}</dt><dd>What is actually left. Members, then a lender against a purchase order. Interest is not in the EBITDA.</dd></div>
+      </dl>
+      <p class="fig">Agriculture and Agri-Food Canada lists AgriInnovate as closed. Repayment, when the program is open, is interest-free. It is not open.<sup><a href="#note-6">6</a></sup></p>
+
+      <h2><span class="eyebrow">09 · Where it goes</span> Feed, or a sewer. Not a powder.</h2>
+      <div class="compare">
+        <article>
+          <h3>Nine litres</h3>
+          <p>Nine or ten litres of whey leave the vat for every kilogram of cheese. The milk was already paid for. The protein is in the nine, not the one.<sup><a href="#note-5">5</a></sup></p>
+        </article>
+        <article>
+          <h3>The small plant sells it as feed</h3>
+          <p>For the plant without a dryer, livestock feed is the option that clears. Research by Julien Chamberland’s team at Université Laval, presented at an Ontario symposium in 2024, found it the only viable option for the smallest plants. The same group’s 2026 Quebec study found the same thing.<sup><a href="#note-8">8</a>, <a href="#note-9">9</a></sup></p>
+        </article>
+        <article>
+          <h3>The surplus is not small</h3>
+          <p>Dairy Farmers of Ontario’s chair said the province needed another billion litres of processing capacity for the solids-not-fat surplus. That is capacity, not a count of litres poured out.<sup><a href="#note-8">8</a></sup></p>
+        </article>
+        <article>
+          <h3>When feed will not take it</h3>
+          <p>Cheese whey carries 30,000 to 50,000 milligrams of oxygen demand per litre, and more. A municipal sewer is built for a few hundred. We will not claim a national figure for how much is flushed. The failure mode is the drain.<sup><a href="#note-10">10</a></sup></p>
+        </article>
+      </div>
+
+      <h2><span class="eyebrow">10 · The money</span> One door is open. One will say no.</h2>
+      <section class="tw" tabindex="0" aria-label="The funding doors, scrolls sideways">
+        <table>
+          <thead><tr><th scope="col">Door</th> <th scope="col">What it actually funds</th> <th scope="col">Us</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">SMPIF</th> <td>Dairy processors. New equipment. Non-repayable, up to {SMPIF_CAP.display}. Intake open. Ends 31 March 2028.<sup><a href="#note-7">7</a></sup></td> <td>Yes, if the cheese plant applies. A new company cannot.</td></tr>
+            <tr><th scope="row">Protein Industries Canada</th> <td>Plant protein. Its own line is “a global leader in plant protein.” Consortium, up to about 45%. It has funded a brewery byproduct.<sup><a href="#note-11">11</a></sup></td> <td>No. We do not qualify, and we will not pretend to. The argument is that the policy stops at the plant door.</td></tr>
+            <tr><th scope="row">AgriInnovate</th> <td>Repayable. Interest-free when it is open. Normally up to $5 million.<sup><a href="#note-6">6</a></sup></td> <td>Closed. The earlier stack that leaned on it is withdrawn.</td></tr>
+            <tr><th scope="row">Provincial dairy funds</th> <td>Ontario’s modernization stream paid up to $200,000 a plant. Its intake closed 13 February 2025. Real money, when it is open. Not a skid.<sup><a href="#note-12">12</a></sup></td> <td>A top-up if a successor opens, after the federal file. Not the plan.</td></tr>
+            <tr><th scope="row">BC Manufacturing Jobs Fund</th> <td>Capital for B.C. manufacturers, when an intake is open: up to 20% of a project, $100,000 to $10 million.<sup><a href="#note-13">13</a></sup></td> <td>The last capital intake closed in 2024. A $30 million renewal was announced in October 2026 with no intake date. Watch it. Do not book it.</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <h2><span class="eyebrow">11 · Who can stop it</span> Eight desks. Any one of them.</h2>
+      <section class="tw" tabindex="0" aria-label="Eight desks, scrolls sideways">
+        <table>
+          <thead><tr><th scope="col">Who</th> <th scope="col">How they stop us</th> <th scope="col">What we put in front of them</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">The cheese plant</th> <td>No letter, no whey, no file.</td> <td>Nothing up front. Hot water back. A share of the year, if the year makes money.</td></tr>
+            <tr><th scope="row">The milk board</th> <td>If this looks like milk moving around the board.</td> <td>No new cow. No new quota. Whey only, after the vat. In B.C., the BC Milk Marketing Board. In Ontario, Dairy Farmers of Ontario.</td></tr>
+            <tr><th scope="row">The Dairy Commission</th> <td>If the solids get reclassified and the pool objects.</td> <td>The milk was already paid as cheese milk. We are not buying a new class.</td></tr>
+            <tr><th scope="row">CFIA</th> <td>A new activity that is not on the licence or the preventive control plan.</td> <td>The plant amends its plan. Bulk sacks under section 247. Not a new food company.<sup><a href="#note-14">14</a></sup></td></tr>
+            <tr><th scope="row">Health Canada</th> <td>A tub that claims to build muscle. That is a natural health product, and it needs a number before sale.<sup><a href="#note-15">15</a></sup></td> <td>We do not sell a tub. The buyer already holds the product licence.</td></tr>
+            <tr><th scope="row">Environment, and the sewer</th> <td>Permeate dumped, or a new outfall. Lactose still has an oxygen demand.</td> <td>Protein and cream leave the drain. Lactose goes to a feed or fermentation buyer. Recovered water is reuse, not a discharge.</td></tr>
+            <tr><th scope="row">The blender</th> <td>No purchase order, no lender.</td> <td>A certificate of analysis first. Then a take-or-pay. Not a handshake.</td></tr>
+            <tr><th scope="row">Our own members</th> <td>If we treat a closed program as cash.</td> <td>{m(net)} has to be found without AgriInnovate. Some of it from us.</td></tr>
+          </tbody>
+        </table>
+      </section>
+      <p class="fig">Safe Food for Canadians Regulations, section 247, is the bulk-dairy label. The natural health product line is Health Canada’s boundary, not a slogan. Nothing on this page is a consent from any of these desks.<sup><a href="#note-14">14</a>, <a href="#note-15">15</a></sup></p>
+
+      <h2><span class="eyebrow">12 · Who can file</span> The cheese plant applies.</h2>
+      <ol class="file">
+        <li><h3>The plant</h3><p>A licensed dairy processor, with books. A new company cannot carry this file. The fund wants the licence and the history: two complete financial statements covering three years of revenue, at least two of them from processing.<sup><a href="#note-7">7</a></sup></p></li>
+        <li><h3>Stage 1</h3><p>A project summary to the dairy desk at Agriculture and Agri-Food Canada. Non-repayable, up to {SMPIF_CAP.display}, program open to 31 March 2028. An application is not an approval.<sup><a href="#note-7">7</a></sup></p></li>
+        <li><h3>The skid</h3><p>We bring the equipment, the offtake, and the reason the file is worth writing. Installed capital in the model, {m(MODEL.capex)}.</p></li>
+        <li><h3>The buyer</h3><p>Bulk powder to a Canadian blender who already holds a product licence. Not a claim on a tub. Not a school program. Plant-protein funds do not cover dairy whey.<sup><a href="#note-11">11</a></sup></p></li>
+      </ol>
+      <p class="fig">Agriculture and Agri-Food Canada, Supply Management Processing Investment Fund. Dairy intake open. Budget {SMPIF_BUDGET.display}. Stage 1: <a href="mailto:aafc.smpif-fitpgo.aac@agr.gc.ca">aafc.smpif-fitpgo.aac@agr.gc.ca</a>.<sup><a href="#note-7">7</a></sup></p>
+
+      <h2><span class="eyebrow">13 · The ask</span> Fund the equipment that stops a waste and a surtax.</h2>
+      <div class="compare three">
+        <article>
+          <p class="big">01</p>
+          <h3>One plant</h3>
+          <p>A licensed cheese plant, already separating sweet whey, willing to be the applicant.</p>
+        </article>
+        <article>
+          <p class="big">02</p>
+          <h3>One skid</h3>
+          <p>Beside the vat. Not a new factory. Not a new cow. Not a new quota.</p>
+        </article>
+        <article>
+          <p class="big">03</p>
+          <h3>One powder</h3>
+          <p>Sold in Canada, as an ingredient. Schools and the Forces can buy it once a plant is actually making it.</p>
+        </article>
+      </div>
+      <p class="pull">We are not asking for a set-aside. We are asking that protein we already milked be dried here, instead of poured out and bought back.</p>
+
+      <h2><span class="eyebrow">14 · Twelve months</span> The order of work.</h2>
+      <figure class="diagram">
+        <svg viewBox="0 0 400 204" role="img" aria-labelledby="tm-t tm-d">
+          <title id="tm-t">Twelve months, in order</title>
+          <desc id="tm-d">A twelve-month timeline in four steps. Months one and two: a plant says yes. Months three and four: a pilot powder, then the Stage 1 file. Months five to eight: a take-or-pay, then the skid is built. Months nine to twelve: tie-in, licence, first sacks. The first step is the one everything waits on.</desc>
+          <path d="M8 16 V176 M40 16 V176 M72 16 V176 M104 16 V176 M136 16 V176 M168 16 V176 M200 16 V176 M232 16 V176 M264 16 V176 M296 16 V176 M328 16 V176 M360 16 V176 M392 16 V176" class="grid" fill="none"/>
+          <text x="8" y="24" class="name focal-t">A PLANT SAYS YES</text>
+          <rect x="8" y="28" width="64" height="24" class="box focal"/>
+          <text x="72" y="64" class="name">PILOT POWDER, THEN THE FILE</text>
+          <rect x="72" y="68" width="64" height="24" class="box"/>
+          <text x="136" y="104" class="name">TAKE-OR-PAY, THEN BUILD</text>
+          <rect x="136" y="108" width="128" height="24" class="box"/>
+          <text x="392" y="144" text-anchor="end" class="name">TIE-IN, LICENCE, FIRST SACKS</text>
+          <rect x="264" y="148" width="128" height="24" class="box"/>
+          <text x="8" y="192" class="eyebrow-t">MONTH 1</text>
+          <text x="104" y="192" text-anchor="middle" class="eyebrow-t">4</text>
+          <text x="232" y="192" text-anchor="middle" class="eyebrow-t">8</text>
+          <text x="392" y="192" text-anchor="end" class="eyebrow-t">12</text>
+        </svg>
+        <figcaption>Figure 7 · The order of work. No cheese plant, dryer, or brand has agreed to any of this. The sequence is the work. It is not a list of partners.</figcaption>
+      </figure>
+      <dl class="phases">
+        <dt>Months 1 to 2</dt>
+        <dd>Three directors. A letter from one host plant for about {MODEL.litresPerDay.toLocaleString('en-CA')} litres a day and a corner of the floor. Five litres of sweet whey, cold, the same week. No co-op until a plant says yes.</dd>
+        <dt>Months 3 to 4</dt>
+        <dd>A pilot powder and a certificate of analysis. Then the Stage 1 summary. A toll-dry term sheet before anyone welds a frame.</dd>
+        <dt>Months 5 to 8</dt>
+        <dd>A take-or-pay from one blender, about $16.50 to ${MODEL.pricePerKg.toFixed(2)} a kilogram, 24 months. That contract is what a lender can read. Then the skid is built.</dd>
+        <dt>Months 9 to 12</dt>
+        <dd>Stainless into the existing vat. The preventive control plan. Bulk sacks, not a retail tub. Cream one way. Retentate the other. Powder back.</dd>
+      </dl>
+      <figure class="mark">
+        <BearDual />
+      </figure>
+      <p class="sign">Northern Temper</p>
+      <p>October 2026</p>
+
+      <h2 id="words"><span class="eyebrow">Words used here</span> Nine terms, plainly.</h2>
+      <dl>
+        <dt>Sweet whey</dt>
+        <dd>The liquid left when rennet sets milk into curd for cheddar, mozzarella or gouda. About 93 to 94% water, with a little under 1% true protein. Acid whey, from cottage cheese or Greek yogurt, is more acid and higher in minerals, and it fouls membranes; the plan refuses it.<sup><a href="#note-5">5</a></sup></dd>
+        <dt>Clarifier and cream separator</dt>
+        <dd>A centrifuge that spins out curd fines and most of the fat before the whey reaches the membranes. The fat leaves as 40% cream, which is the first thing sold.</dd>
+        <dt>Ultrafiltration</dt>
+        <dd>Pushing whey through a membrane that holds back the large protein molecules and lets water, lactose and salts through. What stays is the retentate; what passes is the permeate. Diafiltration adds clean water to wash more lactose out.</dd>
+        <dt>Retentate</dt>
+        <dd>The protein side of the membrane: about {MODEL.retentateLitres.toLocaleString('en-CA')} litres a day at 25% solids, from {MODEL.litresPerDay.toLocaleString('en-CA')} in. Small enough to truck cold to a dryer.</dd>
+        <dt>Toll drying</dt>
+        <dd>Paying a plant that already owns a spray dryer to dry your retentate into powder, by the kilogram. The model pays ${MODEL.tollPerKg.toFixed(2)} a kilogram rather than buying a $15 to $30 million dryer.</dd>
+        <dt>Take-or-pay</dt>
+        <dd>A contract where the buyer pays for an agreed quantity whether or not they take it. A lender can finance equipment against one; a handshake they cannot read.</dd>
+        <dt>Surtax</dt>
+        <dd>A duty added on top of the normal tariff, by order, as a countermeasure. Canada’s on United States whey is {WHEY_SURTAX.display} of the value for duty, from 8 September 2026.<sup><a href="#note-2">2</a></sup></dd>
+        <dt>EBITDA</dt>
+        <dd>Earnings before interest, tax, depreciation and amortisation: what the year leaves after operating costs and before the cost of the money that built it.</dd>
+        <dt>SMPIF</dt>
+        <dd>The Supply Management Processing Investment Fund, Agriculture and Agri-Food Canada’s non-repayable fund for dairy, poultry and egg processors buying equipment. Up to {SMPIF_CAP.display} a project; the dairy intake is open until the {SMPIF_BUDGET.display} is committed or 31 March 2028.<sup><a href="#note-7">7</a></sup></dd>
+      </dl>
+
+      <h2 id="sources"><span class="eyebrow">Sources</span> Every figure, named.</h2>
+      <ol class="notes">
+        <li id="note-1"><cite>Financial Post</cite>, &quot;How Canada&#x27;s 50% whey tariff is backfiring on Canadian protein makers,&quot; 21 September 2026 (the PDF credits Andrew Rankin): &quot;Canada imports roughly 1,000 tonnes of high-protein whey a month, about 90% of it from the U.S.&quot;; Canadian production of WPC80 and isolate is &quot;next to none&quot; beside the American; and &quot;Beginning Sept. 29, the U.S. will prohibit imports of specified Canadian whey.&quot; The prohibition is Proclamation 11062 of 8 September 2026, effective for goods imported on or after 29 September, whose annex lists whey protein concentrates, modified whey, fluid whey and dried whey; the 50 per cent American duty on Canadian dairy that preceded it is Proclamation 11047, signed 20 July and in effect from 22 August 2026. <a href="https://www.whitehouse.gov/presidential-actions/2026/09/excluding-certain-canadian-products-from-importation-into-the-united-states-in-response-to-continued-discrimination-against-the-commerce-of-the-united-states-with-respect-to-dairy/">whitehouse.gov</a> · <a href="https://www.govinfo.gov/content/pkg/DCPD-202600581/html/DCPD-202600581.htm">govinfo.gov</a></li>
+        <li id="note-2">Canada Border Services Agency, <cite>Customs Notice 26-23: United States Surtax Order (2026)</cite>, Ottawa, 7 September 2026: &quot;Effective September 8, 2026,&quot; goods in schedule 3 carry a surtax of &quot;50% of the value for duty.&quot; <a href="https://www.cbsa-asfc.gc.ca/publications/cn-ad/cn26-23-eng.html">cbsa-asfc.gc.ca</a>. The Order, SOR/2026-186, <cite>Canada Gazette</cite> Part II, 23 September 2026: Schedule 3 lists 0404.10.10 to 0404.90.20, the whey lines, at 50 per cent; cheese under 0406 is in Schedule 2 at 25. <a href="https://gazette.gc.ca/rp-pr/p2/2026/2026-09-23/html/sor-dors186-eng.html">gazette.gc.ca</a></li>
+        <li id="note-3">Vesper, as the <cite>Financial Post</cite> cited it (note 1): average United States price of whey protein concentrate, more than {WPC_AUG_2026.display} a tonne in {WPC_AUG_2026.period}, from about {WPC_AUG_2023.display} a tonne in {WPC_AUG_2023.period}. <strong>The Post&#x27;s page could not be opened from where this edition was prepared, and no other outlet repeats the two tonne prices, so they stand as the author&#x27;s cited claim.</strong> What is verified says the same thing: <cite>CNN</cite>, 27 September 2026, on USDA data, has WPC at a record US$13 a pound by June, a 250 per cent rise year over year, and &quot;around $10 to $11 a pound&quot; since (<a href="https://www.cnn.com/2026/09/27/business/whey-protein-trade-war">cnn.com</a>); USDA <cite>Dairy Market News</cite> for 19 to 23 October 2026 has WPC 80 &quot;in the $9s and $10s&quot; (<a href="https://www.ams.usda.gov/mnreports/dywweeklyreport.pdf">ams.usda.gov</a>); and <cite>NutraIngredients</cite>, 19 June 2026, citing Vesper, has WPC80 at US$32,000 a tonne against US$5,500 in the same period of 2023 (<a href="https://www.nutraingredients.com/Article/2026/06/19/protein-brands-grapple-with-soaring-whey-costs-amid-heightened-demand/">nutraingredients.com</a>). The &quot;about US$3.70&quot; before is the June price divided by that 250 per cent rise.</li>
+        <li id="note-4">Bank of Canada, annual average exchange rates, US dollar in Canadian dollars: 1.3698 for 2024 and 1.3978 for 2025. The model&#x27;s planning rate is the 2025 average, rounded. <a href="https://www.bankofcanada.ca/rates/exchange/annual-average-exchange-rates/">bankofcanada.ca</a></li>
+        <li id="note-5">Pires, Marnotes, Rubio, Garcia and Pereira, &quot;Dairy By-Products: A Review on the Valorization of Whey and Second Cheese Whey,&quot; <cite>Foods</cite> 10(5):1067, 2021: &quot;Around 9–10 L of whey results from the production of 1 kg of cheese,&quot; sweet whey at pH 6 to 7 and acid whey about 4.5 to 5.8. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC8151190/">pmc.ncbi.nlm.nih.gov</a>. Tetra Pak, <cite>Dairy Processing Handbook</cite>, chapter 18, table 18.1: cheese whey about 94 per cent water, 6 per cent solids; sweet whey pH 5.9 to 6.6. <a href="https://dairyprocessinghandbook.tetrapak.com/chapter/milk-and-whey-fractionation">dairyprocessinghandbook.tetrapak.com</a>. The pH 6.0 to 6.5 the plan takes in is its own intake specification inside that range.</li>
+        <li id="note-6">Agriculture and Agri-Food Canada, <cite>AgriInnovate Program</cite>: &quot;Intake period: Closed&quot;; contributions &quot;on a repayable basis,&quot; normally not above $5,000,000 a project; &quot;Interest is not charged on the contribution funding.&quot; <a href="https://agriculture.canada.ca/en/programs/agriinnovate">agriculture.canada.ca</a></li>
+        <li id="note-7">Agriculture and Agri-Food Canada, <cite>Supply Management Processing Investment Fund</cite>: &quot;The application intake period for contribution funding is open for dairy processors&quot;; budget {SMPIF_BUDGET.display} from 1 April 2022 to 31 March 2028; up to {SMPIF_CAP.display} for a dairy processor, non-repayable; applicants hold &quot;an active federal or provincial processing licence&quot; and file &quot;2 complete Financial Statements (which will cover three years of revenues),&quot; with at least 24 months of processing revenue; Stage 1 is a Project Summary Form to aafc.smpif-fitpgo.aac@agr.gc.ca. <a href="https://agriculture.canada.ca/en/programs/supply-management-processing-investment-fund">agriculture.canada.ca</a>. Confirm the program with the department before it is quoted as an offer.</li>
+        <li id="note-8"><cite>Farmtario</cite>, Stew Slater, &quot;Dairy processors are challenged to find viable options,&quot; 8 March 2024, from the Southwestern Ontario Dairy Symposium: Chamberland on the equipment whey protein takes, his team&#x27;s finding that for the very small plants &quot;continuing to send all whey into the animal feed stream appears to be the only viable option,&quot; and Mark Hamel of Dairy Farmers of Ontario on &quot;an additional billion litres in annual processing capacity&quot; for the province&#x27;s solids-not-fat surplus. <a href="https://farmtario.com/livestock/dairy-processors-are-challenged-to-find-viable-options/">farmtario.com</a></li>
+        <li id="note-9">Kpadé, Chamberland, Singbo, Pouliot and Doyen, &quot;Evaluating Techno-Economic Performances of Solids Non-fat Valorization from Cheese By-products in the Province of Québec (Canada),&quot; <cite>Waste and Biomass Valorization</cite> 17:8127–8145, 2026: for small plants, liquid whey to animal feed is &quot;the only viable option.&quot; <a href="https://doi.org/10.1007/s12649-026-03615-x">doi.org</a></li>
+        <li id="note-10">FAO, Thivend, &quot;Use of whey in feeding ruminants,&quot; <cite>World Animal Review</cite>: whey has a &quot;biochemical oxygen demand (BOD5) ranging from 30 to 40 g of oxygen per litre&quot; (<a href="https://www.fao.org/4/x6512e/X6512E09.htm">fao.org</a>); Pires et al. (note 5) give about 50 g a litre for second cheese whey. Wisconsin Department of Natural Resources, 1998: ordinary dairy-plant wastewater at 2,000 to 3,000 mg/L is &quot;10 times the strength of domestic sewage&quot; (<a href="https://datcp.wi.gov/documents/wheyspreading.pdf">datcp.wi.gov</a>). A published process range, not a national inventory.</li>
+        <li id="note-11">Protein Industries Canada: its vision is that &quot;Canada is a global leader in plant protein,&quot; projects &quot;must have a clear connection to plant protein,&quot; and co-investment is 45 per cent of a project&#x27;s costs for a consortium of three or more companies (<a href="https://www.proteinindustriescanada.ca/technology">proteinindustriescanada.ca</a>). &quot;Terra Bioindustries and Great Western Brewing Company partner,&quot; 27 May 2026: $1.1 million into a brewery byproduct, $486,000 of it from the cluster. <a href="https://www.proteinindustriescanada.ca/news-releases/terra-gwbc">proteinindustriescanada.ca</a></li>
+        <li id="note-12">Ontario, <cite>Dairy Processing Modernization Initiative</cite> guidelines: at most $200,000 a plant across all projects; &quot;Application intake for this Initiative closed on February 13, 2025.&quot; <a href="https://www.ontario.ca/page/dairy-processing-modernization-initiative-guidelines">ontario.ca</a></li>
+        <li id="note-13">Government of British Columbia, <cite>BC Manufacturing Jobs Fund</cite>: &quot;the program intake is currently closed&quot;; &quot;an additional $30M has been announced for a renewed BC Manufacturing Jobs Fund&quot; (page updated 6 October 2026); the June 2024 program guide set the capital stream at $100,000 to $10 million and up to 20 per cent of eligible costs, with the last intake closing in 2024. <a href="https://www2.gov.bc.ca/gov/content/employment-business/economic-development/support-organizations-community-partners/manufacturing-jobs-fund">www2.gov.bc.ca</a></li>
+        <li id="note-14"><cite>Safe Food for Canadians Regulations</cite>, SOR/2018-108, section 247: &quot;Prepackaged dairy products — not consumer prepackaged.&quot; <a href="https://laws-lois.justice.gc.ca/eng/regulations/SOR-2018-108/section-247.html">laws-lois.justice.gc.ca</a>. Canadian Food Inspection Agency on whey cream in butter: <a href="https://inspection.canada.ca/en/food-labels/labelling/industry/dairy/whey-cream">inspection.canada.ca</a></li>
+        <li id="note-15">Health Canada, <cite>Classification of Products at the Food-Natural Health Product Interface: Products in Food Formats</cite>: powdered protein products represented with terms such as &quot;muscle building&quot; or sold in measured doses are typically natural health products (<a href="https://www.canada.ca/en/health-canada/services/drugs-health-products/natural-non-prescription/legislation-guidelines/guidance-documents/classification-products-at-food-natural-health-product-interface.html">canada.ca</a>); <cite>Natural Health Products Regulations</cite>, section 4: no sale without a product licence (<a href="https://laws-lois.justice.gc.ca/eng/regulations/SOR-2003-196/section-4.html">laws-lois.justice.gc.ca</a>).</li>
+      </ol>
+      <p class="fig"><strong>A note on this edition.</strong> The skid cost, the daily yields, the ${MODEL.pricePerKg.toFixed(2)} price, the cream, the operating lines and the EBITDA are our planning model, October 2026, computed on this page from its inputs. Six details were corrected against their sources before this edition was published, among them a provincial fund the PDF called open that closed in February 2025; two prices the PDF cites to the Financial Post could not be verified from here and are marked as the author’s cited claim where they appear. Programs and prices move; check the current version of each source before any of this is quoted as an offer. The page’s own record of each change is in its source.</p>
+
+      <Share
+        slot="after"
+        quote={"The protein leaves as water. It comes back as a bill. A plan to dry Canadian whey in Canada: one skid, beside a vat, not a new factory."}
+      />
+</Read>
+
+<style>
+  .brief {
+    border-top: var(--border-key) solid var(--nt-red);
+    border-bottom: var(--border-hair) solid var(--border-hairline);
+    padding: var(--space-3) 0 var(--space-2);
+    margin-bottom: var(--space-4);
+  }
+  .brief h2 { margin-top: 0; padding-top: 0; border-top: 0; }
+  .brief li { margin-bottom: .8rem; }
+
+  .facts {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+    gap: var(--space-3); margin: clamp(28px, 4vh, 52px) 0;
+    border-top: var(--border-key) solid var(--nt-red); padding-top: var(--space-3);
+  }
+  .facts dt {
+    margin: 0; color: var(--nt-red); letter-spacing: 0;
+    font-family: var(--font-display); font-weight: var(--fw-display);
+    font-size: clamp(34px, 4.6vw, 52px); line-height: .95;
+  }
+  .facts dd { margin: var(--space-1) 0 0; font-size: var(--type-body-sm); }
+
+  /* The loop's three beats: term left, description right. */
+  .steps div { display: grid; grid-template-columns: 5.5rem 1fr; gap: var(--space-2); align-items: baseline; }
+  .steps dt { margin-top: var(--space-2); }
+  .steps dd { margin: var(--space-2) 0 0; }
+
+  /* The numbered filing steps: a number, a heading, a paragraph. */
+  .file { list-style: none; margin: var(--space-3) 0; padding: 0; counter-reset: file; }
+  .file li { counter-increment: file; border-top: var(--border-hair) solid var(--border-hairline); padding: var(--space-3) 0 var(--space-1); margin: 0; display: grid; grid-template-columns: 3.5rem 1fr; column-gap: var(--space-2); }
+  .file li::before {
+    content: counter(file, decimal-leading-zero); grid-row: 1 / span 2;
+    font-family: var(--font-display); font-weight: var(--fw-display); font-size: clamp(28px, 3.6vw, 40px); line-height: .9; color: var(--nt-red);
+  }
+  .file h3 { margin-top: 0; }
+
+  .phases dt { margin-top: var(--space-3); }
+
+  /* The ledger's subtotal rows. */
+  .ledger-t td { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .ledger-t .sum th, .ledger-t .sum td { border-top: var(--border-key) solid var(--nt-black); font-weight: var(--fw-body-strong); }
+
+  /* The diagrams: the site's discipline, as on Common Barrel and Under the Shield. */
+  .diagram { margin: clamp(28px, 4vh, 52px) 0; }
+  .diagram svg { display: block; width: 100%; max-width: 34rem; height: auto; margin-inline: auto; overflow: visible; }
+  .diagram .name { font-family: var(--font-display); font-weight: var(--fw-label); font-size: 12px; letter-spacing: .08em; fill: currentColor; }
+  .diagram .sub { font-family: var(--font-body); font-size: 11px; fill: var(--text-muted); }
+  .diagram .eyebrow-t { font-family: var(--font-display); font-weight: var(--fw-label); font-size: 10px; letter-spacing: .2em; fill: var(--text-muted); }
+  .diagram .focal-t { fill: var(--nt-red); }
+  .diagram .box { fill: var(--nt-white); stroke: currentColor; stroke-width: 1; }
+  .diagram .box.focal { stroke: var(--nt-red); stroke-width: 2; }
+  .diagram .line { stroke: currentColor; stroke-width: 1; }
+  .diagram .head { fill: currentColor; }
+  .diagram .hair { stroke: var(--nt-n-260); stroke-width: 1; }
+  .diagram .grid { stroke: var(--nt-n-260); stroke-width: 1; }
+  @media (forced-colors: active) {
+    .diagram .box.focal, .diagram .hair, .diagram .grid { stroke: CanvasText; }
+    .diagram .focal-t { fill: CanvasText; }
+  }
+
+  .mark { margin: clamp(30px, 4.5vh, 56px) auto var(--space-3); max-width: 22rem; color: var(--nt-black); }
+  .mark :global(svg) { width: 100%; height: auto; display: block; }
+
+  .pull {
+    margin: clamp(30px, 4.5vh, 56px) 0; padding-left: clamp(18px, 2.4vw, 30px);
+    border-left: var(--rule-weight) solid var(--nt-red);
+    font-family: var(--font-display); font-weight: var(--fw-display);
+    text-transform: uppercase; line-height: 1.1; font-size: clamp(20px, 2.8vw, 34px);
+  }
+  .sign {
+    font-family: var(--font-display); font-weight: var(--fw-display);
+    text-transform: uppercase; letter-spacing: .06em;
+    font-size: clamp(22px, 2.6vw, 32px); margin: var(--space-3) 0 var(--space-1);
+  }
+  .notes cite { font-style: normal; font-weight: var(--fw-body-strong); }
+  .notes a { overflow-wrap: anywhere; }
+</style>

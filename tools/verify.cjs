@@ -198,7 +198,11 @@ const TAP_PROBE = () => {
     if (!r.width || !r.height) continue;
     const cs = getComputedStyle(el);
     if (cs.visibility === 'hidden' || cs.display === 'none') continue;
-    if (cs.display === 'inline' && el.closest('p,li,dd,figcaption')) continue;  // inline links in prose
+    // Inline links in prose. A table cell is a run of text too: Papers No. 05
+    // and 06 footnote the rows of their tables, and a superscript "7" after a
+    // sentence in a cell is the same affordance as one after a sentence in a
+    // paragraph. Block-styled links in cells (none exist) would still count.
+    if (cs.display === 'inline' && el.closest('p,li,dd,figcaption,td,th')) continue;
     if (r.width < 24 || r.height < 24) out.push({ text: (el.textContent || el.getAttribute('aria-label') || el.tagName).trim().slice(0, 34), w: Math.round(r.width), h: Math.round(r.height) });
   }
   return out;
