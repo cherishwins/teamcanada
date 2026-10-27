@@ -5,6 +5,7 @@ import BarTable from '../../components/BarTable.astro';
 import BearDual from '../../components/marks/BearDual.astro';
 import { WHEY_US_SHARE, WHEY_SURTAX, WPC_AUG_2026, WPC_AUG_2023, WPC_RATIO, SMPIF_CAP, SMPIF_BUDGET } from '../../lib/figures';
 import { MODEL, day, cases, plant, landed, netCapital, grantAmount, skidTotal, dollars, kg, run, BASE_INPUTS } from '../../lib/whey';
+import { SITE } from '../../config.mjs';
 
 /**
  * Northern Temper Paper No. 05, the web edition of the owner's own PDF "The
@@ -81,8 +82,22 @@ import { MODEL, day, cases, plant, landed, netCapital, grantAmount, skidTotal, d
  *
  * ADDED for its stakeholders, as on the last three papers, and listed here
  * so the owner can strike any: the "In brief" box, the "How to read this"
- * note, and the "Words used here" glossary. Every other sentence is the
- * PDF's, with the figures rendered from the model or from figures.ts.
+ * note, the "Carry it" section (one line to each desk the paper names,
+ * each a mailto to the site's address with the desk in the subject, the
+ * same processor-free pattern as /join; no form, no list of names, no
+ * endorsement implied) and the "Words used here" glossary. Every other
+ * sentence is the PDF's, with the figures rendered from the model or from
+ * figures.ts.
+ *
+ * THE OPENING was turned round on 27 October 2026 at the owner's ask. The
+ * PDF opens on the loop: whey shipped south and bought back, 90 per cent
+ * from the United States, which puts Canada second in its own first
+ * sentence. The page now opens on what Canada already holds: the whey is
+ * made, the milk is paid, the plant is licensed; the plan; the day; the
+ * year. The border comes fourth, as weather, and the loop section's
+ * heading ("We already milked it") already said so. The facts row leads
+ * with the nine litres and the skid; the surtax is third. Not a word of
+ * the author's argument changed; its order did.
  *
  * FORM. Four diagrams (Figures 1, 4, 5 and 8) follow the site's diagram
  * discipline (CLAUDE.md): one accent on one focal element, a four-pixel
@@ -141,20 +156,20 @@ const strip = { permeate: (d.permeateLitres / MODEL.litresPerDay) * 352, retenta
       <section class="brief" aria-labelledby="in-brief">
         <h2 id="in-brief">In brief</h2>
         <ul>
-          <li>A Canadian cheese plant makes nine or ten litres of whey for every kilogram of cheese. The milk was already bought. The whey is mostly water, and it has been shipped south to be dried, then sold back to Canada as protein powder.</li>
-          <li>{cap(WHEY_US_SHARE.display)} of the high-protein whey Canada imports still comes from the United States. Since 8 September 2026 that powder carries a {WHEY_SURTAX.display} surtax, and since 29 September listed Canadian whey is stopped at the American border. Both doors closed in one month.</li>
-          <li>Do not build a factory. A spray-drying plant is $50 to $100 million and years of permits. Phase one is a skid on the floor of a plant that already has the licence: about {millions(MODEL.capex)}, installed.</li>
-          <li>One skid on one day: {kg(MODEL.litresPerDay).replace(' kg', ' litres')} of sweet whey in; {kg(d.creamKg)} of cream, about {MODEL.retentateLitres.toLocaleString('en-CA')} litres of protein to haul to a dryer we rent, and the water back to the plant. {kg(MODEL.basePowderKgDay)} of powder a day in the cautious case.</li>
-          <li>In the base case the year returns about {millions(c.base.ebitda)} before interest and tax. Cream alone covers drying, freight and power. At $14 a kilogram it still clears about {millions(c.downside.ebitda)}.</li>
+          <li>Canada already makes the protein. Every kilogram of Canadian cheese leaves nine or ten litres of whey behind, and the protein is in the nine. The milk is paid for. The plant is licensed. Nothing new has to be grown.</li>
+          <li>The plan is one skid beside one vat: about {millions(MODEL.capex)} installed, on the floor of a plant that already has the licence, the milk and the waste. Not a new factory. Not a new cow. Not a new quota.</li>
+          <li>One skid on one day: {kg(MODEL.litresPerDay).replace(' kg', ' litres')} of sweet whey in; {kg(d.creamKg)} of cream sold first, about {MODEL.retentateLitres.toLocaleString('en-CA')} litres of protein to a dryer we rent, and the water back to the plant. {kg(MODEL.basePowderKgDay)} of powder a day in the cautious case.</li>
+          <li>The year returns about {millions(c.base.ebitda)} before interest and tax in the base case. Cream alone covers drying, freight and power. At $14 a kilogram it still clears about {millions(c.downside.ebitda)}.</li>
+          <li>Until now that whey left as water and came back as powder: {WHEY_US_SHARE.display} of the high-protein whey Canada imports has been American. In September both doors closed in one month: a {WHEY_SURTAX.display} surtax on the return from 8 September, and listed Canadian whey stopped at the American border from the 29th. The loop no longer pays, which is the moment to stop running it.</li>
           <li>The money: one federal door is open to a licensed cheese plant, up to {SMPIF_CAP.display}, non-repayable. The plant-protein fund will say no, and the interest-free loan is closed. Eight desks can stop it, and the page says what each is shown.</li>
           <li>No cheese plant, dryer or brand has agreed to any of this. The sequence is the work.</li>
         </ul>
       </section>
 
       <dl class="facts">
-        <div><dt>{WHEY_US_SHARE.display}</dt><dd>of high-protein whey imports still come from the United States.<sup><a href="#note-1">1</a></sup></dd></div>
-        <div><dt>{WHEY_SURTAX.display}</dt><dd>surtax on that import, in force since 8 September 2026.<sup><a href="#note-2">2</a></sup></dd></div>
-        <div><dt>{m(MODEL.capex).replace(',800,000', '.8M')}</dt><dd>the skid we model. Not a new factory.</dd></div>
+        <div><dt>9 L</dt><dd>of whey for every kilogram of Canadian cheese. The protein is in the nine.<sup><a href="#note-5">5</a></sup></dd></div>
+        <div><dt>{m(MODEL.capex).replace(',800,000', '.8M')}</dt><dd>the skid we model, beside a vat. Not a new factory.</dd></div>
+        <div><dt>{WHEY_SURTAX.display}</dt><dd>surtax on the powder we have been buying back, since 8 September 2026.<sup><a href="#note-2">2</a></sup></dd></div>
       </dl>
 
       <h3>How to read this</h3>
@@ -529,6 +544,16 @@ const strip = { permeate: (d.permeateLitres / MODEL.litresPerDay) * 352, retenta
         </article>
       </div>
       <p class="pull">We are not asking for a set-aside. We are asking that protein we already milked be dried here, instead of poured out and bought back.</p>
+      <h3 id="carry"><span class="eyebrow">Carry it</span> One line to each desk.</h3>
+      <p>This plan needs a few people who already hold a piece of it. If one of these is your desk, the link opens a message to us with the desk in the subject line. Nothing else is collected, and nobody’s name goes on a list.</p>
+      <ul class="carry">
+        <li><a href={`mailto:${SITE.email}?subject=${encodeURIComponent('Whey · a cheese plant')}`}>A cheese plant</a> separating sweet whey, with a corner of floor and a reason. The first letter is yours to write.</li>
+        <li><a href={`mailto:${SITE.email}?subject=${encodeURIComponent('Whey · a dryer')}`}>A dryer</a> with a spray tower and a toll rate. A term sheet before anyone welds a frame.</li>
+        <li><a href={`mailto:${SITE.email}?subject=${encodeURIComponent('Whey · a blender')}`}>A blender</a> holding a product licence, who would read a certificate of analysis and talk about a take-or-pay.</li>
+        <li><a href={`mailto:${SITE.email}?subject=${encodeURIComponent('Whey · a milk board or the Dairy Commission')}`}>A milk board, or the Dairy Commission</a>, who can say early whether whey after the vat is anything the pool minds.</li>
+        <li><a href={`mailto:${SITE.email}?subject=${encodeURIComponent('Whey · the dairy desk')}`}>The dairy desk</a> at Agriculture and Agri-Food Canada, if the file reads as one worth a Stage 1.</li>
+        <li><a href={`mailto:${SITE.email}?subject=${encodeURIComponent('Whey · what breaks first')}`}>Anyone who knows what breaks first</a>. If a number above is wrong, that is the message we most want.</li>
+      </ul>
 
       <h2><span class="eyebrow">14 · Twelve months</span> The order of work.</h2>
       <figure class="diagram">
@@ -652,6 +677,10 @@ const strip = { permeate: (d.permeateLitres / MODEL.litresPerDay) * 352, retenta
   .file h3 { margin-top: 0; }
 
   .phases dt { margin-top: var(--space-3); }
+  /* One line to each desk: the link is the desk, the rest is the ask. */
+  .carry { list-style: none; margin: var(--space-3) 0; padding: 0; }
+  .carry li { border-top: var(--border-hair) solid var(--border-hairline); padding: var(--space-2) 0; margin: 0; }
+  .carry a { font-family: var(--font-display); font-weight: var(--fw-label); text-transform: uppercase; letter-spacing: .06em; text-decoration-thickness: 2px; }
 
   /* The ledger's subtotal rows. */
   .ledger-t td { font-variant-numeric: tabular-nums; white-space: nowrap; }

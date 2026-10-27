@@ -886,8 +886,8 @@ V   · THE BUILD /build    Refine · Compute · Corridor + C-5.     from teamcan
                              + The Waiting Discount, Paper No. 02 (4,381)
                              + Common Barrel, Paper No. 03 (2,675)
                              + Under the Shield, Paper No. 04 (3,804)
-                             + The Protein Leaves as Water, Paper No. 05 (4,633)
-                             + The Notice Is Free, Paper No. 06 (2,695)
+                             + The Protein Leaves as Water, Paper No. 05 (4,832)
+                             + The Notice Is Free, Paper No. 06 (2,728)
 /join  /privacy  /terms  /404          /support is HIDDEN (noindex, unlinked)
 /feed.xml    RSS for every read
 robots.txt · llms.txt · humans.txt · site.webmanifest · sw.js · security.txt
