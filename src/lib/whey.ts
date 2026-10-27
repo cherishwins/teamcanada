@@ -84,7 +84,12 @@ export const MODEL = {
   ],
 } as const;
 
-export type Model = typeof MODEL;
+/**
+ * MODEL is `as const`, so its own type is the literal 650 and 17.5; a model
+ * with an input moved holds any number. Widen every numeric field.
+ */
+type Widen<T> = T extends number ? number : T;
+export type Model = { [K in keyof typeof MODEL]: Widen<(typeof MODEL)[K]> };
 /** The model with some inputs moved: what the page's "run it yourself" panel does. */
 export const withInputs = (o: Partial<Model> = {}): Model => ({ ...MODEL, ...o });
 

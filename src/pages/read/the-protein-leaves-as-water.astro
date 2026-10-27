@@ -135,7 +135,6 @@ const m = dollars;
 const cap = (t: string) => t[0].toUpperCase() + t.slice(1);
 /** "$2.8 million", for prose; the tables print the dollar. */
 const millions = (v: number) => `$${(v / 1_000_000).toFixed(1)} million`;
-const share17 = ((MODEL.pricePerKg / hi.withSurtax) * 100).toFixed(0) + ' to ' + ((MODEL.pricePerKg / lo.withSurtax) * 100).toFixed(0);
 // The "run it yourself" panel renders the base case at build, so a reader
 // without scripting sees the ledger's own numbers; the script re-runs the
 // same run() when an input moves.
