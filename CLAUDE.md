@@ -304,6 +304,18 @@ one file serves both colourways. **Never reference them via `<img src>`:**
   `public/favicon.svg`, and the maskable manifest icons, drawn from
   `LeafSeal.astro`; `tools/check-icons.cjs` — proves they still match, and
   measures each maskable icon's safe zone.
+- `tools/generate-paper-pdf.cjs` — **a paper's PDF edition, drawn from the
+  page's own modules.** `npm run pdf -- the-protein-leaves-as-water` writes
+  an 18-page US Letter deck to `pdf/` (gitignored, never deployed) for the
+  owner to post on LinkedIn, which shows a PDF one page at a time at phone
+  width. Every figure on it comes from `whey.ts`, `figures.ts` and
+  `reads.ts` through `load-ts.cjs`, the words are the page's, the fonts are
+  the site's WOFF2 files inlined, and the run fails if any page's content
+  reaches its footer (its first run did, twice). The PDFs the papers came
+  from were printed from a browser with every figure typed; this exists so
+  the PDF and the page cannot say different numbers. One deck so far; add a
+  function to `DECKS` for the next paper. The page is the edition of
+  record and the deck's last page says so.
 - `tools/check-sitemap.cjs` — the sitemap and the pages' robots meta must
   agree (every `.html` the build writes, not only `index.html`: `404.html`
   answered 200 at its own filename, indexable, until the generic `.html`
@@ -969,7 +981,11 @@ under reduced motion) and its one-day figure carries a strip to scale. No.
 portal and a paywall, on native `<details>` with no script; the buyer and
 the job are invented and say so, the prices are MERX's. The panels are
 `role="group"`, not `<form>`: a form promises a submission and html-validate
-(WCAG H32) asks it for a submit button.
+(WCAG H32) asks it for a submit button. **No. 05 also has a PDF edition**
+for LinkedIn, drawn by `tools/generate-paper-pdf.cjs` from the same
+modules (see the file map); the owner keeps the posted files in the
+`second-stream` repo (its keep folder under public/files), one filename per draft,
+never replaced.
 
 **`/read/under-the-shield` is Northern Temper Paper No. 04** (22 October
 2026): the owner's own paper, from a PDF they uploaded with a research brief.

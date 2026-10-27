@@ -17,6 +17,7 @@
     "check:privacy": "node tools/check-privacy.cjs",
     "check:figures": "node tools/check-figures.cjs",
     "icons": "node tools/generate-favicons.cjs",
+    "pdf": "node tools/generate-paper-pdf.cjs",
     "check:sitemap": "node tools/check-sitemap.cjs",
     "check:canonical": "node tools/check-canonical.cjs",
     "check:live": "node tools/check-live.cjs",
