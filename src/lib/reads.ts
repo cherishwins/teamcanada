@@ -62,7 +62,7 @@ export const READS: ReadMeta[] = [
   {
     slug: 'the-protein-leaves-as-water', title: 'The Protein Leaves as Water', imprint: paperImprint(5), paper: 5,
     blurb: 'Canada ships its whey south as water, buys the powder back, and since September pays a surtax on the return. A plan to dry Canadian whey in Canada: one skid beside one vat, not a new factory, with every figure of the model computed on the page.',
-    published: '2026-10-27', words: 4832,
+    published: '2026-10-27', words: 4838,
   },
   {
     slug: 'under-the-shield', title: 'Under the Shield', imprint: paperImprint(4), paper: 4,
