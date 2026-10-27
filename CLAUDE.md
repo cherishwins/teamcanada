@@ -38,6 +38,19 @@ three seconds, and an American neighbour feels respect without being insulted.*
 An earlier identity ("Unyielding Dominion", roaring grizzly) was retired for
 failing exactly this test. Do not walk back toward it.
 
+**Restraint is stated as what the country does, never as what it refrains
+from.** Act I on `/` opened for a year on "We do not go first. We have never
+gone first. Not once." and the owner retired it on 27 October 2026: it
+defined the country by abstention and read as weak, with Gander, Kandahar,
+the fire crews and the water, every one of them an action, sitting under
+a headline about not acting. It is "We show up. When it counts, this
+country moves." now, the same facts, and it closes on "nothing on that
+list was done to anyone; all of it was done for someone". The thesis is
+unchanged; the subject of its sentences is. The same rule turned the
+whey paper's opening round the same day (see Paper No. 05). When a
+headline here describes a thing Canada did not do, rewrite it around the
+thing Canada did.
+
 > **"Eleven times" is retired — see Open item 7.** It came from two figures of
 > different vintages and was not reproducible from any single source. The site
 > now runs on FAO AQUASTAT: same year, same definition, both countries, and the
