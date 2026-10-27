@@ -399,8 +399,16 @@ on a page built days earlier. What holds it now:
   did not while Umami loaded with `defer`; and the desktop row sitting on one
   line beside the brand at every 16px from 900 to 1600, which it did not from
   921 to 1239px, where the sticky nav stood up to 184px tall. The menu now
-  collapses below 1280: `Nav.astro`, its `matchMedia` and Base's noscript
-  rule name that width), and **broken table grids** (a row
+  collapses below 1280: `Nav.astro` and its `matchMedia` name that width;
+  **and, since 27 October 2026, the page with scripts OFF**: the menu must
+  start closed on a phone, open when its toggle is followed, show a close
+  link a finger can hit, and close when that is followed. The toggle is a
+  link to `#navmenu` and CSS `:target` opens the menu, so no script is
+  needed; with one, the click is intercepted and the link acts as a button.
+  Until then a `<noscript>` rule in `Base.astro` forced the menu OPEN and hid
+  the toggle, and the owner's own Chrome, running no script, got a screen of
+  menu with nothing to close it. Nothing had ever loaded a page with scripts
+  off, so nothing saw it), and **broken table grids** (a row
   that is shown with one of its cells not rendered: the ledgers' phone layout
   hid an empty cell with `display:none`, and 312 member rows then read every
   later value to a screen reader under the wrong header; axe builds its grid

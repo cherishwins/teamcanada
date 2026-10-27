@@ -22,10 +22,18 @@ const here = (h: string) => {
     <span class="wm">Northern<br />Temper</span>
   </a>
 
-  <button class="toggle" type="button" aria-expanded="false" aria-controls="navmenu">
+  {/* A link to the menu's own id, not a button: with no script, following it
+      makes #navmenu the :target and the CSS below opens the menu; the "Close
+      menu" link at its foot sends the reader on to the content and clears
+      the target. With a script, the click is intercepted and the link acts
+      as a button, so the address never gains a fragment. Either way the
+      menu starts closed on a phone, which the old <noscript> fallback (menu
+      forced open, toggle hidden) did not: a reader whose browser ran no
+      script got a screen of menu with no way to shut it. */}
+  <a class="toggle" href="#navmenu" aria-expanded="false" aria-controls="navmenu">
     <span class="bars" aria-hidden="true"></span>
     <span class="sr">Menu</span>
-  </button>
+  </a>
 
   <div class="menu" id="navmenu">
     <ul class="acts">
@@ -45,6 +53,7 @@ const here = (h: string) => {
       <li><a href="/join" aria-current={here('/join')}>Coalition</a></li>
       <li><a class="lang" href="/fr" hreflang="fr-CA" lang="fr-CA" aria-current={here('/fr')}>FR</a></li>
     </ul>
+    <a class="close" href="#main">Close menu</a>
   </div>
 </nav>
 
@@ -82,7 +91,14 @@ const here = (h: string) => {
   .toggle {
     margin-left: auto; display: none; background: none; border: 0; cursor: pointer;
     width: 44px; height: 44px; align-items: center; justify-content: center; color: var(--nt-white);
+    text-decoration: none;
   }
+  /* The no-script close: shown only while the menu is the :target, which a
+     script never lets happen, so with one it is never drawn. Written as
+     `.menu a.close` because `.menu a` below would otherwise outrank it and
+     draw the link on every page (the sweep caught that: an extra link in
+     the tab order, and a second row on the desktop nav). */
+  .menu a.close { display: none; }
   .bars, .bars::before, .bars::after {
     display: block; width: 22px; height: 2px; background: currentColor; content: '';
     transition: transform .25s var(--ease), opacity .25s var(--ease);
@@ -121,8 +137,9 @@ const here = (h: string) => {
      change waits for the collapse to finish, so it still animates. The column
      must not wrap: capped at 70svh on a short phone, a wrapping column pushed
      the last six links into a second column that overflow clipped, and touch
-     could not reach them. Without JavaScript none of this applies (see the
-     <noscript> rule in Base.astro): the toggle is hidden and the menu stays open. */
+     could not reach them. Without JavaScript the same rules apply through
+     :target (see the toggle above): closed until the toggle is followed, then
+     open with a "Close menu" link at its foot. */
   /* The menu collapses wherever the full row cannot sit on one line. It
      fits from 1219px; below that it wrapped under the brand or onto two
      lines, and from 921 to 1239px the sticky nav stood 124 to 184px tall,
@@ -138,9 +155,16 @@ const here = (h: string) => {
       gap: 0; overflow: hidden; max-height: 0; visibility: hidden;
       transition: max-height .3s var(--ease), visibility 0s linear .3s;
     }
-    .nav[data-open='true'] .menu {
+    .nav[data-open='true'] .menu, .menu:target {
       max-height: 70svh; overflow-y: auto; visibility: visible;
       transition: max-height .3s var(--ease), visibility 0s;
+    }
+    .menu:target a.close {
+      display: flex; align-items: center; min-height: 44px; width: 100%;
+      padding: 13px 0; border-top: var(--border-hair) solid var(--border-hairline);
+      font-family: var(--font-display); font-weight: var(--fw-label);
+      font-size: 13px; letter-spacing: .2em; text-transform: uppercase;
+      color: var(--nt-white); text-decoration: none;
     }
     ul { flex-direction: column; flex-wrap: nowrap; gap: 0; width: 100%; }
     .aux { padding-left: 0; border-left: 0; border-top: var(--border-hair) solid var(--border-hairline); width: 100%; }
@@ -156,16 +180,22 @@ const here = (h: string) => {
 </style>
 
 <script>
-  // Progressive enhancement: without JS a <noscript> rule in Base.astro hides
-  // the toggle and leaves the menu open, so the links never depend on this.
+  // Progressive enhancement: without this, the toggle is a link to #navmenu
+  // and CSS :target opens the menu, so the links never depend on a script.
+  // With it, the link acts as a button and the address never gains a hash.
   const nav = document.querySelector<HTMLElement>('.nav');
-  const btn = nav?.querySelector<HTMLButtonElement>('.toggle');
+  const btn = nav?.querySelector<HTMLAnchorElement>('.toggle');
   const set = (open: boolean) => {
     if (!nav || !btn) return;
     nav.dataset.open = String(open);
     btn.setAttribute('aria-expanded', String(open));
   };
-  btn?.addEventListener('click', () => set(nav!.dataset.open !== 'true'));
+  btn?.addEventListener('click', (e) => { e.preventDefault(); set(nav!.dataset.open !== 'true'); });
+  // A link does not act on Space; a button does, and this one is announced as expandable.
+  btn?.addEventListener('keydown', (e) => { if (e.key === ' ') { e.preventDefault(); btn.click(); } });
+  // Arrived on a link that already names the menu (a no-script reader's
+  // shared address, say): open it the scripted way and drop the fragment.
+  if (location.hash === '#navmenu') { set(true); history.replaceState(null, '', location.pathname + location.search); }
   // Escape closes and hands focus back to the toggle.
   addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && nav?.dataset.open === 'true') {

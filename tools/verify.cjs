@@ -231,6 +231,36 @@ const TAP_PROBE = () => {
  */
 async function checkNavigation(browser) {
   const problems = [];
+  // With no script at all, the menu must still start closed on a phone, open
+  // when its toggle (a link to #navmenu) is followed, show a close link a
+  // finger can hit, and close again when that link is followed. Until October
+  // 2026 a <noscript> rule forced the menu open and hid the toggle, and a
+  // reader whose Chrome ran no script got a screen of menu with no way out;
+  // nothing here loaded a page with scripts off, so nothing saw it.
+  {
+    const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, javaScriptEnabled: false, serviceWorkers: 'block' });
+    const page = await ctx.newPage();
+    await serve(page, () => {});
+    await page.goto('https://local.test/', { waitUntil: 'load' });
+    const state = () => page.evaluate(() => {
+      const m = document.getElementById('navmenu'), t = document.querySelector('.nav .toggle'), c = document.querySelector('#navmenu .close');
+      const r = c ? c.getBoundingClientRect() : { width: 0, height: 0 };
+      return { open: getComputedStyle(m).visibility === 'visible', toggle: getComputedStyle(t).display !== 'none', closeW: r.width, closeH: r.height };
+    });
+    let s = await state();
+    if (s.open) problems.push('390x844  no script: the menu starts open');
+    if (!s.toggle) problems.push('390x844  no script: the menu toggle is hidden');
+    await page.click('.nav .toggle');
+    s = await state();
+    if (!s.open) problems.push('390x844  no script: following the toggle does not open the menu');
+    if (s.closeW < 24 || s.closeH < 24) problems.push(`390x844  no script: the close link is ${Math.round(s.closeW)}x${Math.round(s.closeH)}, under 24px`);
+    await page.click('#navmenu .close');
+    await page.waitForTimeout(450);   // the .3s collapse transition, and a margin
+    s = await state();
+    if (s.open) problems.push('390x844  no script: the close link does not close the menu');
+    await ctx.close();
+  }
+
   // Wherever the full row is shown (no toggle), it must be ONE row, beside
   // the brand. From 921 to 1239px it was not: the links dropped under the
   // brand or wrapped onto two lines, the sticky nav stood up to 184px tall,
@@ -246,7 +276,8 @@ async function checkNavigation(browser) {
       const r = await page.evaluate(() => {
         if (getComputedStyle(document.querySelector('.nav .toggle')).display !== 'none') return null;
         const brand = document.querySelector('.nav .brand').getBoundingClientRect();
-        const tops = [...document.querySelectorAll('#navmenu a')].map((a) => a.getBoundingClientRect().top);
+        // An undrawn link (the no-script close) has no row; see the loop below.
+        const tops = [...document.querySelectorAll('#navmenu a')].filter((a) => getComputedStyle(a).display !== 'none').map((a) => a.getBoundingClientRect().top);
         return { rows: new Set(tops.map((t) => Math.round(t / 4))).size, under: tops.some((t) => t >= brand.bottom) };
       });
       if (r && (r.rows > 1 || r.under)) problems.push(`${w}px  the desktop nav is not one row beside the brand (${r.rows} row${r.rows > 1 ? 's' : ''}${r.under ? ', under the brand' : ''}); raise the breakpoint in Nav.astro`);
@@ -269,6 +300,10 @@ async function checkNavigation(browser) {
       const m = document.getElementById('navmenu');
       const out = [];
       for (const a of m.querySelectorAll('a')) {
+        // The no-script close link is not drawn while a script runs the
+        // menu (Nav.astro); a link that is not rendered is not one a finger
+        // needs to reach. The scripts-off check above proves that one.
+        if (getComputedStyle(a).display === 'none') continue;
         m.scrollLeft = 0;
         m.scrollTop = Math.max(0, a.getBoundingClientRect().top - m.getBoundingClientRect().top + m.scrollTop - 8);
         const r = a.getBoundingClientRect();
