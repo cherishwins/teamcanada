@@ -208,6 +208,138 @@ export const TAILINGS_LIABILITY: StaticFigure = {
 export const TAILINGS_SECURED_PCT = (TAILINGS_SECURITY.value / TAILINGS_LIABILITY.value) * 100;
 
 /**
+ * The whey figures Paper No. 05 (/read/the-protein-leaves-as-water) runs on.
+ * Four published numbers from four documents, none with an endpoint.
+ *
+ * WHEY_US_SHARE is the Financial Post's figure (Andrew Rankin, 21 September
+ * 2026): about 90 per cent of Canada's high-protein whey imports come from
+ * the United States. A reported share with no next edition; no review date.
+ *
+ * WHEY_SURTAX is the rate the Canada Border Services Agency gives in Customs
+ * Notice 26-23 for the United States Surtax Order (2026): 50 per cent on
+ * whey under HS 0404, in force 8 September 2026. It is not on a publishing
+ * cycle. It is a measure in a live trade dispute that can be lifted or
+ * changed by order on any day, which is the other way a typed figure goes
+ * stale, so it carries a review date anyway: the paper's whole premise is
+ * that the return trip is taxed.
+ *
+ * WPC_AUG_2026 and WPC_AUG_2023 are Vesper's average United States price of
+ * whey protein concentrate, a tonne, as the owner's PDF cites the Financial
+ * Post citing them. Two dated readings of a series; the paper prints their
+ * ratio, computed. The series moves monthly, but a dated reading does not:
+ * no review date. NOT VERIFIED from the sandbox on 27 October 2026: the
+ * Post refuses fetches and no other outlet repeats the pair. The page says
+ * so beside them and prints the verified neighbours (USDA via CNN: US$13 a
+ * pound in June 2026, US$10 to $11 by late September; NutraIngredients
+ * citing Vesper: US$32,000 a tonne in June 2026 against US$5,500 in 2023).
+ * If the owner can open the Post's page, confirm the two figures there and
+ * delete this note and the page's flag.
+ *
+ * SMPIF_CAP and SMPIF_BUDGET are the Supply Management Processing Investment
+ * Fund's maximum per project and total budget, from Agriculture and Agri-Food
+ * Canada's program page. The program runs to 31 March 2028 and the dairy
+ * intake can close before that, so both carry the same review date and the
+ * same note: the paper says the door is open, and the build should fail the
+ * first time nobody has checked that in six months.
+ */
+export const WHEY_US_SHARE: StaticFigure = {
+  value: 90,
+  display: 'about 90%',
+  source: 'Financial Post',
+  period: '2026',
+};
+
+export const WHEY_SURTAX: StaticFigure = {
+  value: 50,
+  display: '50%',
+  source: 'Canada Border Services Agency, Customs Notice 26-23',
+  period: 'from 8 September 2026',
+  reviewBy: '2027-04-27',
+  reviewNote:
+    'Check whether the United States Surtax Order (2026) still applies a 50% surtax to whey under HS 0404 (CBSA Customs Notice 26-23 and any later notice amending or repealing it). If the rate changed or the order was lifted, update value/display/period, re-read /read/the-protein-leaves-as-water (its premise is the taxed return trip; its landed-price figure multiplies by this rate) and its share card, and move reviewBy on six months.',
+};
+
+export const WPC_AUG_2026: StaticFigure = {
+  value: 28160,
+  display: 'US$28,160',
+  source: 'Vesper, via the Financial Post',
+  period: 'August 2026',
+};
+
+export const WPC_AUG_2023: StaticFigure = {
+  value: 5620,
+  display: 'US$5,620',
+  source: 'Vesper, via the Financial Post',
+  period: 'August 2023',
+};
+
+/** How many times the August 2026 price is the August 2023 one. Computed, never typed. */
+export const WPC_RATIO = WPC_AUG_2026.value / WPC_AUG_2023.value;
+
+export const SMPIF_CAP: StaticFigure = {
+  value: 10,
+  display: '$10M',
+  source: 'Agriculture and Agri-Food Canada, SMPIF',
+  period: 'to 31 March 2028',
+  reviewBy: '2027-04-27',
+  reviewNote:
+    'Confirm on agriculture.canada.ca that the Supply Management Processing Investment Fund dairy intake is still open, the maximum is still $10 million a project and the budget $397.5 million to 31 March 2028. /read/the-protein-leaves-as-water says the door is open and names the Stage 1 address; if the intake has closed, say so on the page and in its "The money" table, then move reviewBy on six months.',
+};
+
+export const SMPIF_BUDGET: StaticFigure = {
+  value: 397.5,
+  display: '$397.5M',
+  source: 'Agriculture and Agri-Food Canada, SMPIF',
+  period: 'to 31 March 2028',
+  reviewBy: '2027-04-27',
+  reviewNote: 'Update with SMPIF_CAP, from the same program page.',
+};
+
+/**
+ * The procurement figures Paper No. 06 (/read/the-notice-is-free) runs on.
+ *
+ * MERX_PROVINCE and MERX_NATIONAL are MERX's published supplier prices
+ * (merx.com/public/pricing, re-read 27 October 2026): the "Local" plan is
+ * $50 a month billed annually, the "National" plan $167 a month billed
+ * annually, so a year is $600 and $2,004. The page prints monthly rates;
+ * the yearly totals are the twelve-month products and the paper prints them
+ * as such. The PDF also priced "a single solicitation" at about $70. MERX
+ * publishes no such price: its FAQ says a Basic subscriber "may ... pay a
+ * one-time access fee" and that pay-as-you-go "is no longer generally
+ * available"; the $70 appears only on third-party sites. So there is no
+ * MERX_DOCUMENT figure, and the page says the fee is unpublished. A vendor's
+ * price list changes without notice, and the paper's whole point is what the
+ * toll costs, so both carry a review date. MERX_SALE is what Mediagrif paid
+ * BMO for the business on 11 December 2002, as Lexpert reported it:
+ * history, no review.
+ */
+export const MERX_PROVINCE: StaticFigure = {
+  value: 600,
+  display: '$600',
+  source: 'MERX, published supplier plans',
+  period: 'checked 27 October 2026',
+  reviewBy: '2027-04-27',
+  reviewNote:
+    'Re-read MERX\'s supplier plans at merx.com/public/pricing: the Local plan (one province) and the National plan, billed annually, times twelve. Update MERX_PROVINCE and MERX_NATIONAL together with the date checked, re-read /read/the-notice-is-free (its three facts, its doors table and its share card print them), and move reviewBy on six months.',
+};
+
+export const MERX_NATIONAL: StaticFigure = {
+  value: 2004,
+  display: '$2,004',
+  source: 'MERX, published supplier plans',
+  period: 'checked 27 October 2026',
+  reviewBy: '2027-04-27',
+  reviewNote: 'Update with MERX_PROVINCE, from the same price list.',
+};
+
+export const MERX_SALE: StaticFigure = {
+  value: 6.5,
+  display: '$6.5M',
+  source: 'Lexpert',
+  period: '11 December 2002',
+};
+
+/**
  * The figures /sources lists as fixed, in the order the page shows them.
  *
  * /sources used to retype each of these. It now renders this array, so a figure
@@ -249,4 +381,17 @@ export const FIXED_FIGURES: readonly (StaticFigure & { figure: string; note?: st
     note: 'Oil sands mines only. The security above covers about ' + TAILINGS_SECURED_PCT.toFixed(1) + '% of it.' },
   { figure: 'Leaf nitrogen a plant takes back before the leaf falls', ...N_RESORPTION,
     note: 'Global mean across six plant types, 86 studies, about 1,000 data points. Not a maple-specific figure, and the read that cites it says “a plant”, not “a maple”.' },
+
+  { figure: 'High-protein whey imports that come from the United States', ...WHEY_US_SHARE,
+    note: 'Of roughly 1,000 tonnes a month, as the Post reported it. The paper on it says what is modelled and what is published.' },
+  { figure: 'Surtax on United States whey, HS 0404', ...WHEY_SURTAX,
+    note: 'A measure in a live dispute, not a release; it carries a review date because it can be lifted on any day.' },
+  { figure: 'Average US whey protein concentrate price, a tonne', ...WPC_AUG_2026,
+    note: 'Against ' + WPC_AUG_2023.display + ' in ' + WPC_AUG_2023.period + ': ' + WPC_RATIO.toFixed(1) + ' times, computed from the two readings. As the paper\'s author cites the Financial Post; the Post\'s page could not be opened to confirm the pair, and the paper says so.' },
+  { figure: 'Supply Management Processing Investment Fund, a project', ...SMPIF_CAP,
+    note: 'Non-repayable, for licensed dairy processors; program budget ' + SMPIF_BUDGET.display + '. An application is not an approval.' },
+  { figure: 'MERX national supplier plan, a year', ...MERX_NATIONAL,
+    note: 'The National plan at $167 a month, billed annually; one province (the Local plan) is ' + MERX_PROVINCE.display + ' the same way. The tender notice itself is free by Article 506.5 of the Canadian Free Trade Agreement.' },
+  { figure: 'What MERX sold for, 2002', ...MERX_SALE,
+    note: 'Plus royalties. Mediagrif bought it from BMO Financial Group; the company is SOVRA today.' },
 ];

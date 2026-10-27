@@ -18,6 +18,7 @@ const ORIGIN = 'https://northerntemper.ca';
 // Reading order, not alphabetical — the argument has a sequence.
 const ORDER = [
   '/', '/hand', '/math', '/bloc', '/build', '/calculator', '/record', '/sources',
+  '/read/the-notice-is-free', '/read/the-protein-leaves-as-water',
   '/read/under-the-shield', '/read/common-barrel', '/read/the-waiting-discount', '/read/the-warning-label', '/read/the-red-is-the-work',
   '/read/the-closed-loop', '/read/the-vertical-squeeze', '/read/changed-my-mind',
   '/read/two-leaders', '/read/honest-answer',

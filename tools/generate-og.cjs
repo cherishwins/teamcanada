@@ -21,7 +21,7 @@ const loadTs = require('./load-ts.cjs');
 const record = require('./record/load.cjs')();
 const { getWater, getTrade, getProvinces, tradeLead, tradeName } = loadTs('sources');
 const { bill, big } = loadTs('calculator');
-const { C5_RETAINED_GDP, N_RESORPTION, TAILINGS_SECURED_PCT, TAILINGS_SECURITY } = loadTs('figures');
+const { C5_RETAINED_GDP, N_RESORPTION, TAILINGS_SECURED_PCT, TAILINGS_SECURITY, WHEY_SURTAX, MERX_NATIONAL } = loadTs('figures');
 const { READS, paperImprint } = loadTs('reads');
 
 const CP_MONTHS=['Jan','Feb','Mar','Apr','May','June','July','Aug','Sept','Oct','Nov','Dec'];
@@ -72,6 +72,16 @@ async function buildCards(){
   line:'Public domain. Nothing here is behind a payment.', stat:'CC0', statk:'no permission needed'},
  {slug:'join',      label:'The coalition', title:'Put your name\nbehind one country',
   line:'No account. No fee. Free to leave whenever you like.', stat:'∅', statk:'nothing to sign'},
+ // MERX's National plan, from figures.ts, dated to the day it was read: a
+ // vendor's price list moves and a PNG cannot.
+ {slug:'the-notice-is-free', label:paperImprint(6), title:'The notice\nis free',
+  line:'The work is not. A private company holds the file for public work, and a Canadian firm pays to read it.',
+  stat:MERX_NATIONAL.display, statk:`a year to read the country's tenders, ${MERX_NATIONAL.period}`},
+ // The surtax rate from figures.ts, with the day it took effect: the figure
+ // the whole paper turns on, and one an order can lift.
+ {slug:'the-protein-leaves-as-water', label:paperImprint(5), title:'The protein\nleaves as water',
+  line:'It comes back as a bill. A plan to dry Canadian whey in Canada: one skid, beside a vat, not a new factory.',
+  stat:WHEY_SURTAX.display, statk:`surtax on the powder we buy back, ${WHEY_SURTAX.period}`},
  // Three locks is the paper's own frame (ownership, keys, people); no source moves it.
  {slug:'under-the-shield', label:paperImprint(4), title:'Under\nthe Shield',
   line:'A Canadian address is not a Canadian key. How the pieces could fit.',

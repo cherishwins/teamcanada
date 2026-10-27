@@ -1,0 +1,309 @@
+---
+import Read from '../../layouts/Read.astro';
+import Share from '../../components/Share.astro';
+import BearDual from '../../components/marks/BearDual.astro';
+import { MERX_PROVINCE, MERX_NATIONAL, MERX_SALE } from '../../lib/figures';
+
+/**
+ * Northern Temper Paper No. 06, the web edition of the owner's own PDF "The
+ * notice is free. The work is not." (Northern Temper, October 2026, 7
+ * pages), uploaded 27 October 2026. The PDF's colophon says a Word file
+ * for notes sits beside it; it was not uploaded.
+ *
+ * THE NUMBER. The register gives it 06; the PDF carries no number.
+ *
+ * The words, the argument and the asks are the author's. Every figure was
+ * checked against its source on 27 October 2026, and five things changed:
+ *   - "SEAO ... Free." Quebec's own page says tender documents "ne peuvent
+ *     être obtenus que par l'intermédiaire du SEAO", and the Ministère de
+ *     l'Économie's guide has the supplier click "Commander" and pay by
+ *     page or by subscription. Viewing the notice is free; ordering the
+ *     documents is charged. The doors table now says "Paid" for SEAO, and
+ *     the argument gets a sentence it did not have: Quebec, too.
+ *   - "About $70 to open a single solicitation." MERX publishes no such
+ *     price: its FAQ offers a Basic subscriber "a one-time access fee"
+ *     without an amount and says pay-as-you-go "is no longer generally
+ *     available". The $70 appears only on third-party sites. The page says
+ *     the fee is unpublished.
+ *   - $600 and $2,004 are the Local and National plans at $50 and $167 a
+ *     month, billed annually, times twelve; the page says how they are
+ *     made, and the figures live in src/lib/figures.ts with a review date.
+ *   - "Awarded because it met the requirements at the lowest cost to
+ *     subscribers": Manitoba's release reads "at the lowest overall cost to
+ *     subscribers"; quoted exactly now.
+ *   - "Mediagrif became mdf commerce. mdf commerce became SOVRA": dated.
+ *     The rename to mdf commerce was 23 September 2020; KKR took the
+ *     company private on 17 May 2024; the SOVRA brand followed on 26 August
+ *     2024. MERX's own FAQ still names mdf commerce.
+ * Verified as written: the 1997 release (16 April, Cebra, a BMO subsidiary,
+ * subscription from day one, the AIT's "equal access" aim), the 2002 sale
+ * ($6.5 million plus royalties, Lexpert), every CFTA article quoted
+ * (504.3, 506.5, 506.6(a), 509.7, from the consolidated text of 27 August
+ * 2026), CanadaBuys's daily file and free documents, the Ontario Tenders
+ * Portal's free downloads, the reciprocal procurement dates (announced 19
+ * June 2025, in force 14 July 2025), and that MERX is SOVRA's platform.
+ * One nuance added where the PDF generalised: some buyers prepay MERX so
+ * their documents are free to view (Winnipeg since March 2025, Manitoba,
+ * Airdrie); the page says "unless the buyer has paid for you".
+ *
+ * ADDED for its stakeholders, as on the last four papers, and listed here
+ * so the owner can strike any: the "In brief" box, the "How to read this"
+ * note, and the "Words used here" glossary. Every other sentence is the
+ * PDF's.
+ *
+ * FORM. Two diagrams (Figures 1 and 3) follow the site's diagram
+ * discipline (CLAUDE.md). Figure 2 is the timeline the site already uses.
+ * Figure 4, the doors, is a table.
+ */
+const monthly = (yearly: number) => `$${(yearly / 12).toFixed(0)}`;
+---
+<Read
+  slug="the-notice-is-free"
+  description={`A private company holds the documents for Canada's public work, and a Canadian firm is charged to read them: ${MERX_PROVINCE.display} a year for one province, ${MERX_NATIONAL.display} for the country. The notice is free because the trade agreement says so. The file is not. Three things a council or a minister could direct this month.`}
+  standfirst={"A private company holds the documents for public work. We are still charged to read them."}
+>
+      <section class="brief" aria-labelledby="in-brief">
+        <h2 id="in-brief">In brief</h2>
+        <ul>
+          <li>A city posts a contract. The notice is free, because the Canadian Free Trade Agreement says it must be. The scope, the drawings and the grounds for disqualification sit behind a private login, and a licensed Canadian contractor pays to find out whether the job was ever theirs to bid.</li>
+          <li>The toll is {MERX_PROVINCE.display} a year for one province on MERX, {MERX_NATIONAL.display} for the country. What the law requires for the notice itself is $0.</li>
+          <li>Nobody was handed this. A bank subsidiary won a national competition in 1997 to run the bulletin board; the bank sold it in 2002 for {MERX_SALE.display} plus royalties; the login outlived every owner since. The value was never the screen. It was being the only door.</li>
+          <li>The agreement already flinched. Article 506.5 makes the notice free. Article 506.6 lets the documents carry a cost, “if any.” Those two words are the whole privilege.</li>
+          <li>Ottawa did not wait: CanadaBuys posts the full file free and publishes an open data file every morning. Ontario does the same. Quebec and MERX still charge for the documents.</li>
+          <li>Three directions, any of which would do: post the full file free the same day as the notice; let a charge recover a printed set and nothing else; let a private portal take the bids but never keep the only copy.</li>
+        </ul>
+      </section>
+
+      <h3>How to read this</h3>
+      <p>Every figure here is dated and sourced in the receipts at the end. The prices are MERX’s own, as published, and the two that matter render from one file on this site with the date they must be checked again.</p>
+      <p>It is written for the people who could change it: a council, a school board, a hospital’s procurement office, a provincial minister, and the contractor who pays the toll.</p>
+      <p class="byline">Northern Temper, October 2026. <a href="#sources">The receipts are at the end.</a></p>
+
+      <h2><span class="eyebrow">01 · The toll</span> You cannot bid on a job you are not allowed to read.</h2>
+      <p>A city posts a mechanical contract. The notice is a few lines. The scope, the drawings, and the reason a firm would be disqualified sit behind a private login.</p>
+      <p>The firm paying that toll is not a spectator. It is a licensed contractor, already insured, already working for public institutions, already the Canadian supplier this policy says it wants. The fee is due before anyone knows whether the job is even theirs to do.</p>
+      <p>That is the whole insult. The notice is free, because the trade agreement says so. The document that tells you if you are wasting a week is not.</p>
+      <figure class="diagram">
+        <svg viewBox="0 0 400 200" role="img" aria-labelledby="tl-t tl-d">
+          <title id="tl-t">The notice, the login, the file</title>
+          <desc id="tl-d">Three boxes, one above the other. The notice, which is free by Article 506.5 of the trade agreement. Then the login, the toll, which costs {MERX_PROVINCE.display} to {MERX_NATIONAL.display} a year. Then the file: the scope, the drawings and who is disqualified, which is what a firm needs to decide whether to bid. The login is the focus.</desc>
+          <rect x="8" y="8" width="384" height="48" class="box"/>
+          <text x="20" y="28" class="name">THE NOTICE</text>
+          <text x="20" y="44" class="sub">a title, a buyer, a date; free, by Article 506.5</text>
+          <path d="M200 56 V72" class="line" fill="none"/>
+          <polygon points="196,72 200,80 204,72" class="head"/>
+          <rect x="8" y="80" width="384" height="48" class="box focal"/>
+          <text x="20" y="100" class="name focal-t">THE LOGIN</text>
+          <text x="20" y="116" class="sub">{MERX_PROVINCE.display} to {MERX_NATIONAL.display} a year, or a one-time fee at an unpublished price</text>
+          <path d="M200 128 V144" class="line" fill="none"/>
+          <polygon points="196,144 200,152 204,144" class="head"/>
+          <rect x="8" y="152" width="384" height="48" class="box"/>
+          <text x="20" y="172" class="name">THE FILE</text>
+          <text x="20" y="188" class="sub">scope, drawings, criteria, who is out (Article 509.7)</text>
+        </svg>
+        <figcaption>Figure 1 · The notice, the login, the file. The law makes the first free and the third complete. The second is where the charge sits.<sup><a href="#note-5">5</a>, <a href="#note-6">6</a></sup></figcaption>
+      </figure>
+      <dl class="facts">
+        <div><dt>{MERX_PROVINCE.display}</dt><dd>About one province, for a year. MERX’s Local plan, {monthly(MERX_PROVINCE.value)} a month billed annually, checked {MERX_PROVINCE.period.replace('checked ', '')}.<sup><a href="#note-6">6</a></sup></dd></div>
+        <div><dt>{MERX_NATIONAL.display}</dt><dd>National access, same plans, same date. Or a one-time access fee to open a single solicitation, at a price MERX does not publish.<sup><a href="#note-6">6</a></sup></dd></div>
+        <div><dt>$0</dt><dd>What Article 506.5 of the Canadian Free Trade Agreement requires for the notice itself.<sup><a href="#note-5">5</a></sup></dd></div>
+      </dl>
+      <p class="pull">A small contractor does not pay that to be informed. They pay it to be allowed to look.</p>
+
+      <h2><span class="eyebrow">02 · How it was acquired</span> Not a birthright. A contract that never gave the files back.</h2>
+      <p>No one handed a family a monopoly. A bank won a technology competition in 1997. The tollbooth outlived the contract.</p>
+      <figure class="timeline" aria-labelledby="fig-2">
+        <figcaption id="fig-2" class="fig">Figure 2 · From a trade agreement to a private login, 1994 to today</figcaption>
+        <ol>
+          <li><p class="yr">1994</p><p>The Agreement on Internal Trade. Governments needed one place to post work, instead of a newspaper in every capital. The aim was equal access.<sup><a href="#note-1">1</a></sup></p></li>
+          <li><p class="yr">1997</p><p>A national competition. Cebra Inc., a subsidiary of the Bank of Montreal, won it. Manitoba said so on 16 April: awarded because it met the requirements “at the lowest overall cost to subscribers.” The service was named MERX. It was access. It was also, on day one, a subscription.<sup><a href="#note-2">2</a></sup></p></li>
+          <li><p class="yr">2002</p><p>The bank sold the business. On 11 December, Mediagrif bought MERX from BMO Financial Group for {MERX_SALE.display}, plus royalties, as reported by Lexpert. A public function changed hands for the price of a small building.<sup><a href="#note-3">3</a></sup></p></li>
+          <li class="now"><p class="yr">Now</p><p>Mediagrif became mdf commerce in 2020. KKR took mdf commerce private in May 2024, and that August it became SOVRA. The login remained. The company sells the buying software back to the agencies. The charge on the supplier is what is left of the original bargain.<sup><a href="#note-4">4</a></sup></p></li>
+        </ol>
+      </figure>
+      <p>Nobody had to corrupt a procurement officer for this. Governments outsourced the bulletin board, then left the bulletins inside the vendor’s building. After a few hundred cities, school boards, and hospitals posted there, leaving looked harder than staying.</p>
+      <p class="pull">The value was never the screen. It was being the only door.</p>
+
+      <h2><span class="eyebrow">03 · The sentence that permits it</span> The law already flinched.</h2>
+      <p>Chapter Five of the Canadian Free Trade Agreement covers federal buyers and, above its thresholds, municipalities, school boards, and publicly funded hospitals and colleges. The text is at cfta-alec.ca.<sup><a href="#note-5">5</a></sup></p>
+      <figure class="diagram">
+        <svg viewBox="0 0 400 240" role="img" aria-labelledby="ar-t ar-d">
+          <title id="ar-t">Three articles</title>
+          <desc id="ar-d">Three stacked rows. Article 506.5: all tender notices shall be available to suppliers free of charge. Article 506.6: the notice must say how to obtain the documents, and their cost and terms of payment, if any. The words "if any" are the focus. Article 509.7: tender documentation shall include all information necessary to permit suppliers to prepare and submit responsive tenders.</desc>
+          <rect x="8" y="8" width="384" height="64" class="box"/>
+          <text x="20" y="30" class="name">ARTICLE 506.5 · THE NOTICE</text>
+          <text x="20" y="48" class="sub">“All tender notices shall be available</text>
+          <text x="20" y="62" class="sub">to suppliers free of charge.”</text>
+          <rect x="8" y="88" width="384" height="64" class="box"/>
+          <text x="20" y="110" class="name">ARTICLE 506.6 · THE DOCUMENTS</text>
+          <text x="20" y="128" class="sub">“…obtain all relevant documents relating to the procurement,</text>
+          <text x="20" y="142" class="sub">and their cost and terms of payment, <tspan class="focal-w">if any</tspan>;”</text>
+          <rect x="8" y="168" width="384" height="64" class="box"/>
+          <text x="20" y="190" class="name">ARTICLE 509.7 · THE FILE</text>
+          <text x="20" y="208" class="sub">“…all information necessary to permit suppliers</text>
+          <text x="20" y="222" class="sub">to prepare and submit responsive tenders.”</text>
+        </svg>
+        <figcaption>Figure 3 · Three articles. The first makes the notice free. The third makes the file complete. The second lets the file carry a price, in two words.<sup><a href="#note-5">5</a></sup></figcaption>
+      </figure>
+      <dl class="articles">
+        <dt>Article 506.5</dt>
+        <dd>“All tender notices shall be available to suppliers free of charge.” This part, the country already obeys. A title, a buyer, a date. Enough to know something is for sale. Not enough to know if you can do it.</dd>
+        <dt>Article 506.6</dt>
+        <dd>The notice must say how to obtain the documents, “and their cost and terms of payment, if any.” Those two words, <em>if any</em>, are the entire privilege. The headline is a public good. The document is allowed to be a product.</dd>
+        <dt>Article 509</dt>
+        <dd>Then requires the opposite of a teaser. The buyer must make available everything a supplier needs to write a real bid: the criteria, the weightings, the specifications, the warranty, the terms of submission. A notice without that file is not a tender. It is an advertisement for a paywall.</dd>
+      </dl>
+      <p class="pull">A fee to mail a drawing set, in 1997, was a handling charge. A subscription to learn whether you are eligible, in 2026, is a cover charge on public spending.</p>
+
+      <h2><span class="eyebrow">04 · The country already knows how</span> Ottawa did not wait for permission.</h2>
+      <section class="tw" tabindex="0" aria-label="Figure 4, the four doors, scrolls sideways">
+        <table>
+          <thead><tr><th scope="col">Door</th> <th scope="col">Who it serves</th> <th scope="col">The file</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">CanadaBuys</th> <td>Government of Canada tenders, and an open data file refreshed each morning.<sup><a href="#note-7">7</a></sup></td> <td>Free</td></tr>
+            <tr><th scope="row">Ontario Tenders</th> <td>Supply Ontario. Provincial competitions.<sup><a href="#note-8">8</a></sup></td> <td>Free</td></tr>
+            <tr><th scope="row">SEAO</th> <td>Quebec. Provincial, municipal, health, and education. The notice is free to read; the documents are ordered and charged, by the page or by subscription.<sup><a href="#note-9">9</a></sup></td> <td class="paid">Paid</td></tr>
+            <tr><th scope="row">MERX</th> <td>Private. Useful as a bundle, and sometimes the only full copy a city left behind. Free to read only where the buyer has paid for you.<sup><a href="#note-6">6</a></sup></td> <td class="paid">Paid</td></tr>
+          </tbody>
+        </table>
+      </section>
+      <p class="fig">Figure 4 · The four doors. Two public portals post the full file free. The other two charge for it, one of them a province.</p>
+      <p>In June 2025 the federal government began reciprocal procurement: sell to Canada if you would let a Canadian sell to you. That is a rule about who may be paid. It is not yet a rule about who may read.<sup><a href="#note-10">10</a></sup></p>
+      <p>Buy Canadian, and then rent the doorway from a private network, is not an industrial strategy. It is a slogan with a tollbooth in front of it. MERX is the oldest and the widest of those booths. It is not the only vendor. The rule should not name a company. It should name the file.</p>
+
+      <h2><span class="eyebrow">05 · What to direct</span> One vote. Or one instruction. Either will do.</h2>
+      <ol class="asks">
+        <li><h3>Post the full file, free, the same day as the notice.</h3><p>Every public buyer covered by Chapter Five: ministries, municipalities, school boards, hospitals, and the corporations they control. The solicitation a supplier needs in order to decide, not a summary that points at a login.</p></li>
+        <li><h3>A charge may recover a printed set. It may not gate the digital file.</h3><p>“Cost, if any” in Article 506.6 was a mailing charge. It is not a right to sell eligibility.</p></li>
+        <li><h3>A private portal may take the bids. It may not keep the only copy.</h3><p>Cities can keep whatever system receives submissions. Custody of the documents is not a concession. If it is on MERX, it is also on the public record.</p></li>
+      </ol>
+      <p>A statute would be cleaner. A directive would be faster. A council can free its own city this month, without waiting for anyone in Ottawa to feel brave.</p>
+      <p class="pull">We are not asking for a preference, a set-aside, or a contract. We are asking that a Canadian firm be allowed to read the work.</p>
+      <figure class="mark">
+        <BearDual />
+      </figure>
+      <p class="sign">Northern Temper</p>
+      <p>October 2026</p>
+
+      <h2 id="words"><span class="eyebrow">Words used here</span> Five terms, plainly.</h2>
+      <dl>
+        <dt>Tender notice</dt>
+        <dd>The public announcement that a buyer wants bids: who is buying, what, and by when. The agreement says it must be free.<sup><a href="#note-5">5</a></sup></dd>
+        <dt>Solicitation documents</dt>
+        <dd>The file behind the notice: specifications, drawings, evaluation criteria and their weightings, warranty and submission terms. Article 509.7 lists what it must contain. This is what a firm needs to decide, and what a login can price.</dd>
+        <dt>Chapter Five</dt>
+        <dd>The government procurement chapter of the Canadian Free Trade Agreement, the 2017 successor to the 1994 Agreement on Internal Trade. It binds federal and provincial buyers, and municipalities, school boards and publicly funded health and academic bodies above its thresholds: $100,000 for goods or services and $250,000 for construction at the municipal level.<sup><a href="#note-5">5</a></sup></dd>
+        <dt>Electronic tendering service</dt>
+        <dd>The one place a government designates for posting its notices, which the agreement requires to be “equally accessible to all Canadian suppliers.” MERX was the first national one; CanadaBuys and the provincial portals are its public successors.<sup><a href="#note-1">1</a></sup></dd>
+        <dt>Reciprocal procurement</dt>
+        <dd>Ottawa’s rule since July 2025 that a supplier from a country which gives Canadian firms no access to its public contracts loses access to Canada’s. A rule about who may be paid.<sup><a href="#note-10">10</a></sup></dd>
+      </dl>
+
+      <h2 id="sources"><span class="eyebrow">Sources</span> Every figure, named.</h2>
+      <ol class="notes">
+        <li id="note-1"><cite>Agreement on Internal Trade</cite>, consolidated text, Article 506(2)(a): a call for tenders through “an electronic tendering system that is equally accessible to all Canadian suppliers; the notices of a call for tenders shall be available to suppliers free of charge.” The “equal access” aim is Manitoba’s own description of the 1994 agreement, in the release at note 2. <a href="https://sia.sk.ca/wp-content/uploads/2021/03/120101-Agreement-on-Internal-Trade.pdf">sia.sk.ca</a></li>
+        <li id="note-2">Manitoba Government Services, news release, “New Electronic Tendering Service Combines Access with Affordability,” 16 April 1997: the contract “was awarded to Cebra Inc. because of the company’s ability to meet all technical and operational requirements … at the lowest overall cost to subscribers. Cebra, a wholly owned subsidiary of the Bank of Montreal”; “MERX will have about 25,000 subscribers when launched”; the service “arose from the 1994 Agreement on Internal Trade, which is aimed at providing equal access to opportunities.” <a href="https://news.gov.mb.ca/news/index.html?item=22898">news.gov.mb.ca</a></li>
+        <li id="note-3"><cite>Lexpert</cite>, “Mediagrif Acquires BMO MERX Business”: “On December 11, 2002, Mediagrif Interactive Technologies Inc. … purchased BMO Financial Group’s MERX public-sector electronic tendering service business. The purchase price was $6.5 million plus certain performance-based royalty payments payable to BMO.” <a href="https://www.lexpert.ca/article/mediagrif-acquires-bmo-merx-business/">lexpert.ca</a></li>
+        <li id="note-4">Mediagrif became mdf commerce on 23 September 2020. “mdf commerce Announces Completion of Acquisition by KKR,” 17 May 2024, C$5.80 a share (<a href="https://www.mccarthy.ca/en/experience/mdf-commerce-completes-definitive-agreement-to-be-acquired-by-kkr-for-c-255m">mccarthy.ca</a>). SOVRA, “Unveiling SOVRA: Rebranding to Better Serve the Public Sector,” 26 August 2024 (<a href="https://www.sovra.com/?p=4501">sovra.com</a>); SOVRA on MERX as “one of SOVRA’s core supplier-facing platforms” (<a href="https://www.sovra.com/?p=16262">sovra.com</a>). MERX’s own FAQ still reads “a subsidiary of mdf commerce.” <a href="https://www.merx.com/public/faq">merx.com</a></li>
+        <li id="note-5"><cite>Canadian Free Trade Agreement</cite>, consolidated text of 27 August 2026, Chapter Five. Article 504.3 sets the thresholds; Article 506.5: “All tender notices shall be available to suppliers free of charge”; Article 506.6(a): each notice shall include how to “obtain all relevant documents relating to the procurement, and their cost and terms of payment, if any”; Article 509.7: “A procuring entity shall make available to suppliers tender documentation that includes all information necessary to permit suppliers to prepare and submit responsive tenders,” including the evaluation criteria and their weighting, technical specifications, warranty and the terms of submission. <a href="https://www.cfta-alec.ca/wp-content/uploads/2026/08/CFTA-Consolidated-Text-August-27-2026-1.pdf">cfta-alec.ca</a></li>
+        <li id="note-6">MERX, supplier pricing, read 27 October 2026: “Local, $50 / month, billed annually … for one province”; “National, $167 / month, billed annually … for all of Canada”; a Basic tier is free for “participating member agencies” that “have paid for your access.” The yearly figures on this page are twelve times the monthly rates. <a href="https://www.merx.com/public/pricing">merx.com</a>. MERX’s FAQ: a Basic subscriber may “pay a one-time access fee,” amount unstated, and pay-as-you-go “is no longer generally available.” <a href="https://www.merx.com/public/faq">merx.com</a>. Buyers who charge through MERX include Metrolinx (“exclusively through MERX, either for a flat, per-opportunity access fee or on an annual membership fee basis,” <a href="https://www.metrolinx.merx.com/">metrolinx.merx.com</a>); buyers who have prepaid include Winnipeg (“There is no charge to view City of Winnipeg documents on MERX,” <a href="https://legacy.winnipeg.ca/matmgt/bidopp.asp">winnipeg.ca</a>).</li>
+        <li id="note-7">CanadaBuys: “solicitation documents, and other attachments are fully accessible and available free of charge and without having to register” (any tender notice page, <a href="https://canadabuys.canada.ca/en/tender-opportunities">canadabuys.canada.ca</a>); open tender notices as a CSV, “refreshed each morning.” <a href="https://open.canada.ca/data/en/dataset/6abd20d4-7a1c-4b38-baa2-9525d0bb2fd2">open.canada.ca</a></li>
+        <li id="note-8">Ontario Tenders Portal: vendors can view and download opportunities “without incurring a cost.” <a href="https://ontariotenders.app.jaggaer.com/esop/nac-host/public/web/about.html">ontariotenders.app.jaggaer.com</a></li>
+        <li id="note-9">Québec, “Système électronique d’appel d’offres,” updated 31 August 2026: tender documents “ne peuvent être obtenus que par l’intermédiaire du SEAO” (<a href="https://www.quebec.ca/gouvernement/faire-affaire-gouvernement/outils/systeme-electronique-appel-offre">quebec.ca</a>); Ministère de l’Économie, “Procédure d’obtention des documents d’appel d’offres sur SEAO”: order the documents and “le coût s’inscrira selon le mode d’abonnement.” <a href="https://www.economie.gouv.qc.ca/fileadmin/contenu/applications-interactives/marches-publics/depot-soumission/module-1/assets/pdf/1-Procurer_documents_ao.pdf">economie.gouv.qc.ca</a></li>
+        <li id="note-10">Treasury Board of Canada Secretariat, <cite>Contracting Policy Notice 2025-5: Reciprocity in Federal Procurement</cite>, 10 July 2025: announced 19 June 2025; the Interim Policy on Reciprocal Procurement “takes effect on July 14, 2025.” <a href="https://www.canada.ca/en/treasury-board-secretariat/services/policy-notice/2025-5.html">canada.ca</a></li>
+      </ol>
+      <p class="fig"><strong>A note on this edition.</strong> Prices are MERX’s as published on the date given and will move; the two on this page carry a review date in the site’s source. Five details were corrected against their sources before this edition was published, among them a provincial portal the PDF listed as free; the page’s own record of each is in its source. The same public-domain terms as the site.</p>
+
+      <Share
+        slot="after"
+        quote={"The notice is free. The work is not. A private company holds the documents for Canada's public work, and a Canadian firm is charged to read them."}
+      />
+</Read>
+
+<style>
+  .brief {
+    border-top: var(--border-key) solid var(--nt-red);
+    border-bottom: var(--border-hair) solid var(--border-hairline);
+    padding: var(--space-3) 0 var(--space-2);
+    margin-bottom: var(--space-4);
+  }
+  .brief h2 { margin-top: 0; padding-top: 0; border-top: 0; }
+  .brief li { margin-bottom: .8rem; }
+
+  .facts {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+    gap: var(--space-3); margin: clamp(28px, 4vh, 52px) 0;
+    border-top: var(--border-key) solid var(--nt-red); padding-top: var(--space-3);
+  }
+  .facts dt {
+    margin: 0; color: var(--nt-red); letter-spacing: 0;
+    font-family: var(--font-display); font-weight: var(--fw-display);
+    font-size: clamp(34px, 4.6vw, 52px); line-height: .95;
+  }
+  .facts dd { margin: var(--space-1) 0 0; font-size: var(--type-body-sm); }
+
+  .timeline { margin: clamp(28px, 4vh, 52px) 0; }
+  .timeline ol { list-style: none; margin: var(--space-2) 0 0; padding: 0; border-left: 3px solid var(--nt-n-260); }
+  .timeline li { position: relative; padding: 0 0 var(--space-3) var(--space-3); margin: 0; }
+  .timeline li::before {
+    content: ""; position: absolute; left: -9px; top: .45em;
+    width: 15px; height: 15px; border-radius: 50%; background: var(--nt-n-260);
+  }
+  .timeline li.now::before { background: var(--nt-red); }
+  .timeline p { margin: 0 0 .35rem; }
+  .timeline .yr {
+    font-family: var(--font-display); font-weight: var(--fw-display);
+    font-size: clamp(28px, 3.6vw, 40px); line-height: 1;
+  }
+  .timeline li.now .yr { color: var(--nt-red); }
+
+  .articles dt { margin-top: var(--space-3); }
+
+  /* The doors table's paid column. */
+  .paid { font-family: var(--font-display); font-weight: var(--fw-label); letter-spacing: .08em; text-transform: uppercase; color: var(--nt-red); }
+
+  /* The three asks: a number, a heading, a paragraph. */
+  .asks { list-style: none; margin: var(--space-3) 0; padding: 0; counter-reset: ask; }
+  .asks li { counter-increment: ask; border-top: var(--border-hair) solid var(--border-hairline); padding: var(--space-3) 0 var(--space-1); margin: 0; display: grid; grid-template-columns: 3.5rem 1fr; column-gap: var(--space-2); }
+  .asks li::before {
+    content: counter(ask); grid-row: 1 / span 2;
+    font-family: var(--font-display); font-weight: var(--fw-display); font-size: clamp(28px, 3.6vw, 40px); line-height: .9; color: var(--nt-red);
+  }
+  .asks h3 { margin-top: 0; }
+
+  .diagram { margin: clamp(28px, 4vh, 52px) 0; }
+  .diagram svg { display: block; width: 100%; max-width: 34rem; height: auto; margin-inline: auto; overflow: visible; }
+  .diagram .name { font-family: var(--font-display); font-weight: var(--fw-label); font-size: 12px; letter-spacing: .08em; fill: currentColor; }
+  .diagram .sub { font-family: var(--font-body); font-size: 11px; fill: var(--text-muted); }
+  .diagram .eyebrow-t { font-family: var(--font-display); font-weight: var(--fw-label); font-size: 10px; letter-spacing: .2em; fill: var(--text-muted); }
+  .diagram .focal-t { fill: var(--nt-red); }
+  /* The two words the paper is about, set as the one accent in Figure 3. */
+  .diagram .focal-w { fill: var(--nt-red); font-weight: var(--fw-body-strong); }
+  .diagram .box { fill: var(--nt-white); stroke: currentColor; stroke-width: 1; }
+  .diagram .box.focal { stroke: var(--nt-red); stroke-width: 2; }
+  .diagram .frame { fill: none; stroke: currentColor; stroke-width: 1; }
+  .diagram .frame.focal { stroke: var(--nt-red); stroke-width: 2; }
+  .diagram .line { stroke: currentColor; stroke-width: 1; }
+  .diagram .head { fill: currentColor; }
+  @media (forced-colors: active) {
+    .diagram .box.focal, .diagram .frame.focal { stroke: CanvasText; }
+    .diagram .focal-t, .diagram .focal-w { fill: CanvasText; }
+  }
+
+  .mark { margin: clamp(30px, 4.5vh, 56px) auto var(--space-3); max-width: 22rem; color: var(--nt-black); }
+  .mark :global(svg) { width: 100%; height: auto; display: block; }
+
+  .pull {
+    margin: clamp(30px, 4.5vh, 56px) 0; padding-left: clamp(18px, 2.4vw, 30px);
+    border-left: var(--rule-weight) solid var(--nt-red);
+    font-family: var(--font-display); font-weight: var(--fw-display);
+    text-transform: uppercase; line-height: 1.1; font-size: clamp(20px, 2.8vw, 34px);
+  }
+  .sign {
+    font-family: var(--font-display); font-weight: var(--fw-display);
+    text-transform: uppercase; letter-spacing: .06em;
+    font-size: clamp(22px, 2.6vw, 32px); margin: var(--space-3) 0 var(--space-1);
+  }
+  .notes cite { font-style: normal; font-weight: var(--fw-body-strong); }
+  .notes a { overflow-wrap: anywhere; }
+</style>
