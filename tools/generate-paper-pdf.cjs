@@ -317,7 +317,7 @@ function whey() {
         <h3>Not this</h3>
         <p>Raw whey is about 93% water. It spoils in hours. A tanker of it is a tanker of water.</p>
         <p>A greenfield spray dryer is the $15 to $30 million machine, inside a $50 to $100 million plant, and two or three years of permits.</p>
-        <p class="big" style="margin-top:14pt">$50–100M<small>Years.</small></p>
+        <p class="big" style="margin-top:14pt">$50–100M<small>And two or three years of permits.</small></p>
       </div>
       <div class="card">
         <h3>This</h3>
