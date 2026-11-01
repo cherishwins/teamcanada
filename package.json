@@ -25,13 +25,13 @@
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.6.0",
-    "@astrojs/vercel": "^11.0.11",
-    "astro": "^7.3.5",
+    "@astrojs/vercel": "^11.0.17",
+    "astro": "^7.4.4",
     "qrcode": "^1.5.4"
   },
   "devDependencies": {
     "@types/qrcode": "^1.5.6",
-    "axe-core": "^4.13.0",
+    "axe-core": "^4.14.0",
     "esbuild": "^0.28.2",
     "sharp": "^0.35.4",
     "topojson-client": "^3.1.0",
