@@ -1,0 +1,357 @@
+---
+import Read from '../../layouts/Read.astro';
+import Share from '../../components/Share.astro';
+import BearDual from '../../components/marks/BearDual.astro';
+
+/**
+ * Northern Temper Paper No. 07, 1 November 2026.
+ *
+ * Drafted here at the owner's ask ("the nukes that have accidents around
+ * the world ... I want to eliminate them as an option"), from two research
+ * runs kept unpublished at notes/the-last-switch-research.md and
+ * notes/the-last-switch-canada.md. The owner chose the posture: let the
+ * record scare, with no adjective doing the work a fact can do. Every
+ * figure on the page is typed once, as its source prints it, and
+ * footnoted; none of them has a next edition, so none is in figures.ts.
+ *
+ * The rule for a paper is that the words are the author's. This draft is
+ * offered to the owner to make theirs, as No. 02 was: the opinions are set
+ * as `p.view` and say "our view", and the byline says the paper was
+ * drafted with the research in the open. Change both if the owner signs it
+ * in the first person.
+ *
+ * Corrections the research forced on the conversation this was drafted
+ * from, kept here so the owner can see why the page differs from what they
+ * was told before the research ran:
+ *   - Goldsboro's "five of six safeguards failed" is Ralph Lapp's figure.
+ *     The Sandia engineer who studied the bomb (Parker Jones) rebutted it
+ *     in his own memo: the bomb had four, and one held. The page prints
+ *     Jones's count and says the other one is wrong.
+ *   - Goldsboro bomb 2's high explosive did NOT detonate, by the 1961
+ *     Sandia analysis and the 1981 DoD list; a 1987 Sandia history says it
+ *     did. The page says nothing exploded, per the contemporaneous pair.
+ *   - The 1981 DoD document never says "Broken Arrow". The page quotes
+ *     "accidents" and puts the flag word in the glossary.
+ *   - W76-2: about 8 kt (FAS 2025), not 5 to 7. Not on the page.
+ *   - The Walske abnormal-environment criterion is "per warhead exposure
+ *     or accident". Quoted exactly.
+ *   - Canada's NPT dates on two CNSC pages are wrong; GAC's are used. The
+ *     month the last warheads left Canada in 1984 differs by source
+ *     (January, April, July); the page prints the year.
+ *   - The CNSC's "first country" sentence carries its own qualifier,
+ *     "with significant nuclear capability"; it is quoted with it, and the
+ *     same fact sheet's two counter-facts (military uranium, 252 kg of
+ *     plutonium in used fuel) are printed beside it.
+ *
+ * THE BRAND RULES this page keeps: the United States is the weather, not
+ * the villain (its list is the longest because it published one, and the
+ * page says so before it says anything else about the list); and Canada's
+ * section is stated as what the country did. Not left out: Canada also
+ * hosted American warheads from 1963 to 1984, and the page says so in the
+ * same table as the reactors.
+ *
+ * FORM. Figure 1 follows the site's diagram discipline (CLAUDE.md). Figure
+ * 3 is the timeline the site already uses. Figures 2 and 4 are tables.
+ * ADDED for its stakeholders, as on Nos. 03 to 06: the "In brief" box, the
+ * "How to read this" note and the glossary.
+ */
+---
+<Read
+  slug="the-last-switch"
+  description={"Since 1950 nuclear weapons have crashed, burned, fallen and sunk. None is on record as having gone off, and the reason, again and again, was the last safeguard still standing. The record, from the government lists that publish it, starts over Canada. Three things Canada can do this year."}
+  standfirst={"Since 1950, nuclear weapons have crashed, burned, fallen and sunk, and none is on record as having gone off. Read how close each came, and that stops being a comfort. The record starts over Canada."}
+>
+      <section class="brief" aria-labelledby="in-brief">
+        <h2 id="in-brief">In brief</h2>
+        <ul>
+          <li>The United States counted 32 accidents with its own nuclear weapons between 1950 and 1980, and published the list in 1981. None made a nuclear explosion. In many, the conventional explosive inside the bomb went off.</li>
+          <li>The first one on that list happened off British Columbia. Nine months later, a bomb’s explosive charge went off 760 metres above the St. Lawrence. Canadians were told it was a conventional dump, and learned the truth in 2000.</li>
+          <li>In 1961 a hydrogen bomb fell on North Carolina with three of its four safeguards gone. The engineer who studied it wrote that one switch “stood between the United States and a major catastrophe.” Part of the other bomb is still under the field.</li>
+          <li>Some of these weapons were never found. Two lie off the American east coast, one off Georgia, one off Okinawa, and dozens of Soviet warheads on the floor of the Atlantic and the Pacific.</li>
+          <li>Six times, a false alarm or a misread signal put a launch decision within reach, and each time a person read it right.</li>
+          <li>Canada built the first reactor outside the United States, used it to treat cancer, sent the last American warheads home in 1984, and wrote the mandate for the treaty that would stop the world making bomb material. Three things Canada can do this year are at the end.</li>
+        </ul>
+      </section>
+
+      <h3>How to read this</h3>
+      <p>Every event here is taken from a government record where one exists: the American list of 1981, the Sandia laboratory’s own histories, the International Atomic Energy Agency’s inventory of losses at sea, and Canada’s and Britain’s published records. Where sources disagree, the page says so and uses the one written at the time. Every source is at the end.</p>
+      <p>It is written for anyone who has been told these weapons are safe, and for the people in Ottawa who could make them less necessary.</p>
+      <p class="byline">Northern Temper. Drafted with the research in the open, 1 November 2026. <a href="#sources">The receipts are at the end.</a></p>
+
+      <h2><span class="eyebrow">01 · Over Canada first</span> The record starts here.</h2>
+      <p>On 13 February 1950, an American B-36 bomber flying from Alaska to Texas lost three engines to ice over the Pacific. The crew dropped its bomb into the sea off British Columbia and bailed out over Princess Royal Island. The government’s own summary reads: “A bright flash occurred on impact.” Only the high explosive went off. The bomb carried a dummy core.<sup><a href="#note-1">1</a></sup></p>
+      <p>It is the first entry on the list.</p>
+      <p>On 10 November 1950, a B-50 in trouble jettisoned a Mark IV atomic bomb over the St. Lawrence, near Rivière-du-Loup. Its nuclear core was not aboard. Its high explosive was, and it went off 760 metres above the middle of the river, loud enough to shake both shores.<sup><a href="#note-1">1</a>, <a href="#note-3">3</a></sup></p>
+      <p>Canadians were told three conventional bombs had been dumped. The truth came out in 2000, in a letter from Defence Minister Art Eggleton to a Bloc Québécois MP, Paul Crête, who had asked.<sup><a href="#note-4">4</a></sup> The American list still records the event as “Over Water, outside United States,” because it names no foreign place but two.<sup><a href="#note-1">1</a></sup></p>
+      <p>There may be a third. The IAEA’s inventory lists an American B-36 lost off Newfoundland on 18 March 1953, with a footnote: the United States “has neither confirmed nor denied the presence of nuclear material.”<sup><a href="#note-5">5</a></sup></p>
+      <p class="pull">The first nuclear weapon accident on record happened in Canadian waters. The second was over the St. Lawrence.</p>
+
+      <h2><span class="eyebrow">02 · What counts</span> Thirty-two accidents, by the government’s own count.</h2>
+      <p>The United States did something most nuclear powers never have. In 1981 its Department of Defense published plain summaries of 32 accidents with its nuclear weapons, from 1950 to 1980. That is why most of this paper is American. Not because the United States was more careless, but because it said so in writing.<sup><a href="#note-1">1</a></sup></p>
+      <p>Its definition is broad: a weapon launched or fired by accident, a nuclear or conventional explosion, a burning weapon, contamination, or a weapon lost, stolen or jettisoned. Its finding is clear: “There never has been even a partial inadvertant U.S. nuclear detonation.” Every “detonation” in the list was conventional explosive only.<sup><a href="#note-1">1</a></sup></p>
+      <dl class="facts">
+        <div><dt>32</dt><dd>Accidents with American nuclear weapons, 1950 to 1980, in the government’s own published list.<sup><a href="#note-1">1</a></sup></dd></div>
+        <div><dt>0</dt><dd>Nuclear explosions among them. In the words of the laboratory that designs the safety, none “produced any measurable nuclear yield.”<sup><a href="#note-2">2</a></sup></dd></div>
+        <div><dt>1</dt><dd>Switch, in 1961, between a hydrogen bomb on the ground in North Carolina and its explosion.<sup><a href="#note-2">2</a>, <a href="#note-7">7</a></sup></dd></div>
+      </dl>
+      <p>Read the summaries and the zero stops sounding like a guarantee. At Palomares, Spain, in 1966, a bomber and its tanker collided. The explosive in two of four hydrogen bombs went off on impact and spread plutonium over 2.26 square kilometres around the village. About 1,400 tons of soil were shipped to the United States, and in 2015 the United States agreed to finish the job.<sup><a href="#note-5">5</a>, <a href="#note-12">12</a></sup></p>
+      <p>At Thule, Greenland, in 1968, a B-52 with four weapons aboard caught fire and crashed on the sea ice seven miles from the runway. All four were destroyed. Crews removed 237,000 cubic feet of ice, snow and water. A Danish study, reported by the National Security Archive, says one uranium component was never found.<sup><a href="#note-8">8</a>, <a href="#note-12">12</a></sup></p>
+      <p>At Mars Bluff, South Carolina, in 1958, a navigator grabbed the emergency release while securing a bomb. It fell 15,000 feet into the Gregg family’s garden. The explosive went off, and the house was torn to shreds. Nobody died.<sup><a href="#note-1">1</a>, <a href="#note-11">11</a></sup></p>
+      <p>At Damascus, Arkansas, in 1980, a worker dropped a wrench socket inside a Titan II missile silo. It caused a leak in a fuel tank. Eight and a half hours later the silo exploded and threw the missile’s nine-megaton warhead, by published estimates, out of the ground. It landed about 100 feet from the gate and released nothing. One airman, David Livingston, was killed.<sup><a href="#note-9">9</a>, <a href="#note-13">13</a></sup></p>
+      <p>The list ends in 1980. The record does not. In 2007, a B-52 flew six cruise missiles with real nuclear warheads 1,400 miles across the United States, because they had been loaded in place of dummies. They were never armed. A senator put it this way: “No one knew where they were or even missed them for over 36 hours.”<sup><a href="#note-16">16</a></sup></p>
+      <p>And 32 is a definition, not a total. One serious fire, a hydrogen bomb engulfed in burning fuel at RAF Lakenheath in England in January 1961, is not on the list at all. The journalist Eric Schlosser found it in documents released to him, along with a 1967 Defense Department compilation of about 1,000 accidents and incidents from July 1957 to March 1967 alone.<sup><a href="#note-17">17</a></sup></p>
+
+      <h2><span class="eyebrow">03 · The switch</span> Four safeguards. One held.</h2>
+      <p>On 24 January 1961, a B-52 on airborne alert over North Carolina broke up when its right wing failed. Two Mark 39 hydrogen bombs fell out as it broke apart, each of three to four megatons by published estimates. Three of the eight crew died.<sup><a href="#note-1">1</a>, <a href="#note-9">9</a></sup></p>
+      <p>The first bomb’s parachute opened, and it came down nearly intact. Its firing sequence had started on the way down. Sandia’s own history says what stopped it: “The nonoperation of the cockpit-controlled ready-safe switch prevented nuclear detonation of this bomb.”<sup><a href="#note-2">2</a>, <a href="#note-6">6</a></sup></p>
+      <figure class="diagram">
+        <svg viewBox="0 0 400 224" role="img" aria-labelledby="sw-t sw-d">
+          <title id="sw-t">The four safeguards of the Goldsboro bomb</title>
+          <desc id="sw-d">Four boxes, one above the other, for the four safety devices on the bomb that parachuted at Goldsboro in 1961. The first was set off by the fall. The second and third were made useless when the aircraft broke up. The fourth, the arm and safe switch controlled from the cockpit, was still on safe, and held. The fourth is the focus.</desc>
+          <rect x="8" y="8" width="384" height="40" class="box"/>
+          <text x="20" y="26" class="name">SAFEGUARD</text>
+          <text x="20" y="40" class="sub">set off by the fall</text>
+          <rect x="8" y="64" width="384" height="40" class="box"/>
+          <text x="20" y="82" class="name">SAFEGUARD</text>
+          <text x="20" y="96" class="sub">made useless when the aircraft broke up</text>
+          <rect x="8" y="120" width="384" height="40" class="box"/>
+          <text x="20" y="138" class="name">SAFEGUARD</text>
+          <text x="20" y="152" class="sub">made useless when the aircraft broke up</text>
+          <rect x="8" y="176" width="384" height="40" class="box focal"/>
+          <text x="20" y="194" class="name focal-t">THE ARM AND SAFE SWITCH</text>
+          <text x="20" y="208" class="sub">still on SAFE; the one that held</text>
+        </svg>
+        <figcaption>Figure 1 · The bomb that parachuted at Goldsboro. Parker Jones’s count: “One ‘set off’ by the fall. Two rendered ineffective by aircraft breakup.” The fourth was the switch.<sup><a href="#note-7">7</a></sup></figcaption>
+      </figure>
+      <p>Parker Jones, a Sandia engineer, reviewed the accident in 1969 and wrote the sentence that made Goldsboro famous when the memo was released in 2013: “One simple, dynamo-technology, low voltage switch stood between the United States and a major catastrophe!”<sup><a href="#note-7">7</a></sup></p>
+      <p>You may have read that five of six safeguards failed. That figure is wrong, and Jones said so in the same memo. The bomb had four. One held.<sup><a href="#note-7">7</a>, <a href="#note-8">8</a></sup></p>
+      <p>The second bomb’s parachutes did not open. It hit a muddy field and broke apart, and nothing exploded. Crews dug 50 feet down and could not recover the part that holds the uranium. The Air Force bought an easement on the land, so nobody may dig there without permission.<sup><a href="#note-1">1</a>, <a href="#note-2">2</a>, <a href="#note-6">6</a></sup></p>
+      <p class="pull">The record is not that the bombs are safe. It is that the last switch held.</p>
+
+      <h2><span class="eyebrow">04 · Still out there</span> Some were never found.</h2>
+      <p>The IAEA counts “seven recorded accidents” at sea that ended in the confirmed loss of one or more nuclear weapons, American and Soviet.<sup><a href="#note-5">5</a></sup> Add the ones lost near land and the list below is what the published record still cannot account for.</p>
+      <section class="tw" tabindex="0" aria-label="Figure 2, weapons never recovered, scrolls sideways">
+        <table class="keyed">
+          <thead><tr><th scope="col">Year</th> <th scope="col">Where</th> <th scope="col">What is still there</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">1956</th> <td>Mediterranean, an American B-47</td> <td>Two nuclear cores in carrying cases, with the aircraft and crew. Never found.<sup><a href="#note-1">1</a></sup></td></tr>
+            <tr><th scope="row">1957</th> <td>Atlantic, off the American east coast</td> <td>Two weapons jettisoned from a cargo plane, their nuclear parts not installed. “A search for the weapons or debris had negative results.”<sup><a href="#note-1">1</a></sup></td></tr>
+            <tr><th scope="row">1958</th> <td>Wassaw Sound, off Tybee Island, Georgia</td> <td>A Mark 15 bomb, without its core by the Air Force’s account, jettisoned after a mid-air collision. Declared “irretrievably lost.”<sup><a href="#note-1">1</a>, <a href="#note-10">10</a></sup></td></tr>
+            <tr><th scope="row">1961</th> <td>A field near Goldsboro, North Carolina</td> <td>The uranium part of one hydrogen bomb, under an easement.<sup><a href="#note-1">1</a>, <a href="#note-2">2</a></sup></td></tr>
+            <tr><th scope="row">1965</th> <td>Pacific, about 80 miles from the Okinawa island chain</td> <td>A one-megaton weapon, with its pilot and aircraft, which rolled off the carrier <i>Ticonderoga</i> into 16,000 feet of water.<sup><a href="#note-1">1</a>, <a href="#note-14">14</a></sup></td></tr>
+            <tr><th scope="row">1968</th> <td>Pacific, northwest of Hawaii, the Soviet submarine K-129</td> <td>Three ballistic missiles with one-megaton warheads. The CIA raised part of the hull in 1974 and recovered none of them.<sup><a href="#note-15">15</a></sup></td></tr>
+            <tr><th scope="row">1968</th> <td>Atlantic, southwest of the Azores, the submarine USS <i>Scorpion</i></td> <td>Two nuclear warheads, by the IAEA’s inventory.<sup><a href="#note-5">5</a></sup></td></tr>
+            <tr><th scope="row">1986</th> <td>Atlantic, northeast of Bermuda, the Soviet submarine K-219</td> <td>Sixteen missiles carrying about 30 warheads, at a depth of over five kilometres.<sup><a href="#note-15">15</a></sup></td></tr>
+            <tr><th scope="row">1989</th> <td>Norwegian Sea, the Soviet submarine <i>Komsomolets</i></td> <td>Two nuclear torpedoes. Norway has monitored the wreck since 1990; its 2019 survey found no plutonium leaking from them.<sup><a href="#note-15">15</a></sup></td></tr>
+          </tbody>
+        </table>
+      </section>
+      <p class="fig">Figure 2 · Weapons and nuclear parts never recovered, from the published record. A Soviet submarine lost in the Bay of Biscay in 1970, K-8, also went down with nuclear warheads; the count was never published.<sup><a href="#note-5">5</a></sup></p>
+      <p>On K-219, a seaman named Sergey Preminin stayed behind to shut the reactors down. He did not get out.<sup><a href="#note-15">15</a></sup></p>
+
+      <h2><span class="eyebrow">05 · The wrong signal</span> Six times, a person read it right.</h2>
+      <p>Accidents are what the machines do. The near misses are what the warnings do, and they come down to a person at a desk with minutes to decide.</p>
+      <figure class="timeline" aria-labelledby="fig-3">
+        <figcaption id="fig-3" class="fig">Figure 3 · Six false alarms and misread signals, 1962 to 1995</figcaption>
+        <ol>
+          <li><p class="yr">1962</p><p>Off Cuba, American ships drop practice depth charges to tell a Soviet submarine to surface. Its captain, Valentin Savitsky, believes he is under attack and orders a nuclear torpedo prepared. Vasili Arkhipov, the brigade’s chief of staff, sees that the Americans are signalling and calms him. The order is never passed on.<sup><a href="#note-18">18</a></sup></p></li>
+          <li><p class="yr">1979</p><p>Screens at NORAD show 1,400 Soviet missiles in flight. A training tape has been loaded into a live computer. About a dozen interceptors take off. The alarm is cleared in about six minutes.<sup><a href="#note-19">19</a></sup></p></li>
+          <li><p class="yr">1980</p><p>The screens show it again, twice in one week. The cause is a failed computer chip that cost 46 cents. Bomber crews run to their aircraft and start their engines.<sup><a href="#note-19">19</a></sup></p></li>
+          <li><p class="yr">1983</p><p>A Soviet satellite reports five American missiles launched. It has mistaken sunlight on high cloud for rocket plumes. Lieutenant Colonel Stanislav Petrov judges it false and tells his commanders so.<sup><a href="#note-20">20</a></sup></p></li>
+          <li><p class="yr">1983</p><p>A NATO exercise, Able Archer, rehearses the release of nuclear weapons, and parts of the Soviet forces go to an unusual alert. A later American review found the United States “may have inadvertently placed our relations with the Soviet Union on a hair trigger.”<sup><a href="#note-21">21</a></sup></p></li>
+          <li class="now"><p class="yr">1995</p><p>Norway launches a research rocket to study the northern lights. It had told its neighbours, but the notice never reached the right Russian officials. President Yeltsin has his nuclear briefcase opened, the only time that is known to have happened.<sup><a href="#note-22">22</a></sup></p></li>
+        </ol>
+      </figure>
+      <p class="pull">Every one of them ended with a person reading the screen right. The record does not say what happens the time someone reads it wrong.</p>
+
+      <h2><span class="eyebrow">06 · What the record proves</span> One in a million is a promise about one accident.</h2>
+      <p>The engineers did remarkable work, and the record shows it. Since 1968 American weapons have been held to a written standard. The chance of a nuclear explosion in a crash or fire must not exceed one in a million “per warhead exposure or accident.” If the explosive is set off at any single point, the chance of more than four pounds’ worth of nuclear yield must not exceed one in a million.<sup><a href="#note-23">23</a></sup></p>
+      <p>Those are odds for one event. The record is a count of how many events there have been, and the count only grows for as long as the weapons exist. In 1990 a panel of three physicists told Congress that the warhead on the Trident submarine missile, the W88, had been designed without the safer kind of explosive and sits close to a rocket motor whose fuel can detonate. The Federation of American Scientists reports that the warhead’s current refit replaces the explosive with the safer kind.<sup><a href="#note-23">23</a></sup> That is the system working, more than thirty years after the warning.</p>
+      <p>And the American list is the long one only because it was published. Britain released one table, of seven accidents and twelve incidents, and says none released radioactive material. In 2009 a British and a French submarine, both carrying nuclear missiles, collided under the Atlantic. No French list could be found. Nothing from China could be found at all.<sup><a href="#note-24">24</a></sup></p>
+      <p>On 5 February 2026, the last treaty limiting the two largest arsenals, New START, expired. It left, in the words of the Associated Press, no caps on either. Russia says it will keep to the old limits as long as the United States does.<sup><a href="#note-25">25</a></sup></p>
+      <p>There is a hard answer to all of this, and it belongs here rather than in a critic’s reply. When the Soviet Union broke up, Ukraine held the third-largest nuclear arsenal in the world. In December 1994 it gave the weapons up, and Russia, the United States and Britain signed a memorandum promising “to respect the independence and sovereignty and the existing borders of Ukraine.”<sup><a href="#note-36">36</a></sup> Twenty years later Russia took Crimea, and many people now read the lesson as: keep your weapons.</p>
+      <p class="view"><strong>Our view:</strong> every safeguard in this paper did its job, and every one of them was a probability. A probability is not a promise, and Ukraine’s lesson is that a promise is not enough either. What is left is a count anyone can check. The treaty Canada wrote and the checking Canada pays for are exactly that, and section 08 asks for more of both.</p>
+
+      <h2><span class="eyebrow">07 · What Canada does</span> Canada split the atom and treated cancer with it.</h2>
+      <p>Canada was in this from the start. The Montreal Laboratory worked on the Manhattan Project, and Canada supplied and refined uranium for the American plants. On 5 September 1945, at Chalk River, ZEEP became “the first controlled nuclear chain reaction constructed outside of the United States.”<sup><a href="#note-26">26</a>, <a href="#note-27">27</a></sup></p>
+      <p>Then Canada chose. The Canadian Nuclear Safety Commission puts it in one line: “Canada was the first country with significant nuclear capability to reject nuclear weapons.”<sup><a href="#note-26">26</a></sup></p>
+      <p>On 27 October 1951, at Victoria Hospital in London, Ontario, a team under Ivan Smith gave the world’s first cobalt-60 cancer treatment. Twelve days later in Saskatoon, Harold Johns’s team gave the first with a precisely measured dose, to a mother of four who lived another 47 years. The machines the two cities built have treated millions.<sup><a href="#note-28">28</a></sup> For decades, the NRU reactor at Chalk River supplied 30 to 40 percent of the world’s medical isotopes, and at its peak as much as 80.<sup><a href="#note-27">27</a></sup></p>
+      <p>The ledger has a second column, and it belongs on the same page.</p>
+      <section class="tw" tabindex="0" aria-label="Figure 4, Canada's record, scrolls sideways">
+        <table class="keyed">
+          <thead><tr><th scope="col">When</th> <th scope="col">What Canada did</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">1945</th> <td>Ran the first reactor outside the United States, at Chalk River.<sup><a href="#note-27">27</a></sup></td></tr>
+            <tr><th scope="row">1945 to 1965</th> <td>Supplied uranium for military purposes for two decades after the war.<sup><a href="#note-26">26</a></sup></td></tr>
+            <tr><th scope="row">1951</th> <td>Treated the first cancer patients with cobalt-60, in London and Saskatoon.<sup><a href="#note-28">28</a></sup></td></tr>
+            <tr><th scope="row">1959 to 1964</th> <td>Exported about 252 kilograms of plutonium, in used reactor fuel, to the United States.<sup><a href="#note-26">26</a></sup></td></tr>
+            <tr><th scope="row">1962</th> <td>Built the Yellowknife seismic array to detect nuclear tests, with Britain’s atomic energy authority.<sup><a href="#note-31">31</a></sup></td></tr>
+            <tr><th scope="row">1963</th> <td>Took American nuclear warheads for the BOMARC missiles at North Bay and La Macaza, on 31 December.<sup><a href="#note-29">29</a></sup></td></tr>
+            <tr><th scope="row">1968</th> <td>Signed the Non-Proliferation Treaty, on 23 July, and ratified it the following January.<sup><a href="#note-30">30</a></sup></td></tr>
+            <tr><th scope="row">1984</th> <td>Sent the last American warheads home, about 55 Genie rockets from Bagotville, Comox and Chatham. The safety commission: “the country becomes nuclear weapon-free.”<sup><a href="#note-26">26</a>, <a href="#note-29">29</a></sup></td></tr>
+            <tr><th scope="row">1995</th> <td>Wrote the mandate for a treaty banning the production of bomb material: Ambassador Gerald Shannon’s report to the Conference on Disarmament.<sup><a href="#note-30">30</a></sup></td></tr>
+            <tr><th scope="row">2018</th> <td>Chaired the 25-nation expert group that agreed, by consensus, on what that treaty should hold. Its chair, Heidi Hulan, called the report “two inches from a negotiating text.”<sup><a href="#note-30">30</a></sup></td></tr>
+            <tr><th scope="row">2019</th> <td>Hosted the international partnership on checking warhead dismantlement in Ottawa, which concluded that “multilateral verification of nuclear dismantlement is possible.”<sup><a href="#note-32">32</a></sup></td></tr>
+          </tbody>
+        </table>
+      </section>
+      <p class="fig">Figure 4 · Canada’s record, both columns. The safety commission’s fact sheet that makes the “first country” claim records the uranium and the plutonium too.<sup><a href="#note-26">26</a></sup></p>
+      <p>Canada also stands half the watch. The shortest way from Eurasia to North America runs over the pole and down across this country, and 47 of the 50 North Warning radars are on Canadian soil.<sup><a href="#note-34">34</a></sup> Sixteen of the 337 stations that listen for nuclear tests around the world are here too.<sup><a href="#note-31">31</a></sup></p>
+      <p>Ottawa’s position on the newest ban, the Treaty on the Prohibition of Nuclear Weapons, is in its own words: Canada is “not a signatory,” because the treaty “is incompatible with our NATO commitments,” and it “shares the underlying concerns about the very slow progress of disarmament.”<sup><a href="#note-33">33</a></sup> Everything below can be done by a NATO member, this year, under any government.</p>
+
+      <h2><span class="eyebrow">08 · What to do</span> Three things Canada can do this year.</h2>
+      <ol class="asks">
+        <li><h3>Open Canada’s own file.</h3><p>The United States published its accidents in 1981. Canada learned about the bomb over the St. Lawrence from a minister’s letter in 2000. National Defence should publish every record it holds of an accident or incident with a nuclear weapon in Canadian territory, waters or airspace, from 1950 to 1984, and ask Washington to confirm or deny the 1953 loss off Newfoundland.</p></li>
+        <li><h3>Finish the treaty Canada wrote.</h3><p>Canada wrote the mandate in 1995 and chaired the group that agreed on its contents in 2018. The Conference on Disarmament works by consensus and has not started. Canada has done this before: the landmine ban was negotiated outside that conference, under Canadian leadership, and signed in Ottawa in December 1997.<sup><a href="#note-35">35</a></sup> Table the 2018 report as a text, and invite the countries that will negotiate.</p></li>
+        <li><h3>Pay for the checking.</h3><p>A world with fewer weapons only happens if the count can be checked. Canada already listens for tests from Yellowknife and has shown Chalk River’s methods for proving a warhead is gone. It has given $2.5 million to that work since 2017.<sup><a href="#note-32">32</a></sup> Multiply it, and offer Chalk River as the place the methods are proven.</p></li>
+      </ol>
+      <p class="view"><strong>Our view:</strong> none of this needs a lecture to anyone. It is what Canada already does, done further. A country that turned the first reactor outside the United States into a cancer machine has the standing to ask the world to count its warheads, and the instruments to do the counting.</p>
+
+      <p class="pull">Every safeguard in this paper held. The way to keep that record is to need fewer of them.</p>
+      <figure class="mark">
+        <BearDual />
+      </figure>
+      <p class="sign">Northern Temper</p>
+      <p>November 2026</p>
+
+      <h2 id="words"><span class="eyebrow">Words used here</span> Seven terms, plainly.</h2>
+      <dl>
+        <dt>Broken Arrow</dt>
+        <dd>The American military’s flag word for an accident with a nuclear weapon. The 1981 list itself never uses it; it says “accident.”<sup><a href="#note-17">17</a></sup></dd>
+        <dt>Core, capsule or pit</dt>
+        <dd>The nuclear material at the centre of a weapon. Early bombs carried it separately, as a “capsule,” and many of the 1950s accidents involved bombs with the capsule out.</dd>
+        <dt>High explosive</dt>
+        <dd>The conventional explosive packed around the core. In a weapon it must fire perfectly evenly to make a nuclear explosion. In an accident it can go off on its own, which destroys the bomb and can scatter its plutonium.</dd>
+        <dt>Secondary</dt>
+        <dd>The second stage of a hydrogen bomb, which holds uranium and supplies most of its power. The part never recovered at Goldsboro.</dd>
+        <dt>One-point safe</dt>
+        <dd>The rule that setting off the explosive at any single point must give, at most, a one in a million chance of more than four pounds’ worth of nuclear yield.<sup><a href="#note-23">23</a></sup></dd>
+        <dt>Fissile material</dt>
+        <dd>The plutonium and highly enriched uranium a bomb is made of. The treaty Canada proposed in 1995 would stop the world making more of it.</dd>
+        <dt>Verification</dt>
+        <dd>Checking, by measurement rather than trust, that a country has done what it says: stopped testing, stopped producing, or taken a warhead apart.</dd>
+      </dl>
+
+      <h2 id="sources"><span class="eyebrow">Sources</span> Every event, named.</h2>
+      <ol class="notes">
+        <li id="note-1">United States Department of Defense, <cite>Narrative Summaries of Accidents Involving U.S. Nuclear Weapons 1950–1980</cite>, current as of April 1981: “32 accidents involving nuclear weapons”; the definition quoted in section 02; “There never has been even a partial inadvertant [sic] U.S. nuclear detonation”; “All ‘detonations’ reported in the summaries involved conventional high explosives (HE) only”; and “it is not possible to specify the location of the accidents that occurred overseas, except for Palomares and Thule.” Scanned copy hosted by the National Security Archive. <a href="https://unredacted.com/wp-content/uploads/2010/04/635.pdf">unredacted.com</a></li>
+        <li id="note-2">R. N. Brodie, <cite>A Review of the U.S. Nuclear Weapons Safety Program, 1945 to 1986</cite>, Sandia National Laboratories, SAND86-2955, February 1987: “None of the 32 accidents produced any measurable nuclear yield”; at Goldsboro, “The nonoperation of the cockpit-controlled ready-safe switch prevented nuclear detonation of this bomb” and “One of the secondary subassemblies was not recovered.” <a href="https://nsarchive2.gwu.edu/nukevault/ebb475/docs/doc%206%20sandia%201986%20(1).pdf">nsarchive2.gwu.edu</a></li>
+        <li id="note-3">Robert J. Burns, “Bombs in the Bush,” first published in <cite>The Beaver</cite> and republished by <cite>Canada’s History</cite> on 17 January 2017: the bomb “exploded 760 metres over the middle of the river” and “shook residents on both shores of the St. Lawrence”; “A cover story, that conventional bombs had been dumped in an emergency, was concocted.” <a href="https://www.canadashistory.ca/explore/politics-law/bombs-in-the-bush">canadashistory.ca</a></li>
+        <li id="note-4">“U.S. pilot dropped bomb on Quebec,” <cite>The Globe and Mail</cite> (Canadian Press), 21 February 2000: disclosed in a letter from Defence Minister Art Eggleton answering Bloc Québécois MP Paul Crête; officials had said the incident involved “three conventional 225-kilogram bombs.” The article dates the drop 10 January; the 1981 list and <cite>The Beaver</cite> give 10 November 1950, used here. <a href="https://www.theglobeandmail.com/news/national/us-pilot-dropped-bomb-on-quebec/article25455657/">theglobeandmail.com</a></li>
+        <li id="note-5">International Atomic Energy Agency, <cite>Inventory of accidents and losses at sea involving radioactive material</cite>, IAEA-TECDOC-1242, September 2001, compiled with American and Russian contributors: “There are seven recorded accidents listed in Appendix I that have resulted in the confirmed loss of one or more nuclear weapons”; Palomares, 2.26 km² contaminated; USS <i>Scorpion</i> with two nuclear warheads; K-8; and the 18 March 1953 B-36 off Newfoundland, footnoted “The US Government has neither confirmed nor denied the presence of nuclear material.” <a href="https://www-pub.iaea.org/MTCD/publications/PDF/te_1242_prn.pdf">iaea.org</a></li>
+        <li id="note-6">J. M. de Montmollin and W. R. Hoagland, <cite>Analysis of the Safety Aspects of the MK 39 MOD 2 Bombs Involved in B-52G Crash</cite>, Sandia, SCDR 81-61, February 1961: the first bomb landed “intact with only minor damage” after its fuzing sequence began; the second bomb’s parachutes “did not deploy” and “no HE explosion resulted.” <a href="https://nsarchive2.gwu.edu/nukevault/ebb475/docs/doc%205%20AEC%20report%20Goldsboro%20accident.pdf">nsarchive2.gwu.edu</a></li>
+        <li id="note-7">Parker F. Jones, Sandia, “Goldsboro Revisited or: How I Learned to Mistrust the H-Bomb,” 1969, released 2013, redacted copy: “One simple, dynamo-technology, low voltage switch stood between the United States and a major catastrophe!” and, answering the claim that more safeguards failed, “The bomb had four … One ‘set off’ by the fall. Two rendered ineffective by aircraft breakup.” <a href="https://cryptome.org/2013/09/h-bomb-safety-switch.pdf">cryptome.org</a></li>
+        <li id="note-8">William Burr, “New Details on the 1961 Goldsboro Nuclear Accident,” National Security Archive Electronic Briefing Book 475, 9 June 2014, updated 11 June 2014, including its summary of the Danish DIIS study of Thule. <a href="https://nsarchive2.gwu.edu/nukevault/ebb475/">nsarchive2.gwu.edu</a></li>
+        <li id="note-9">Yields of American weapons are classified; the figures here are published estimates from the Nuclear Weapon Archive: Mark 39, 3 to 4 megatons; W53, 9 megatons. <a href="https://nuclearweaponarchive.org/Usa/Weapons/Allbombs.html">nuclearweaponarchive.org</a></li>
+        <li id="note-10">“No Sign Of Long-Lost Nuke,” CBS News (Associated Press), 2005: a Mark 15, 7,600 pounds; the search ended 16 April 1958 and the weapon was “considered to be irretrievably lost.” <a href="https://www.cbsnews.com/news/no-sign-of-long-lost-nuke">cbsnews.com</a></li>
+        <li id="note-11">“During the Cold War, the Air Force Dropped an Unarmed Nuke on South Carolina,” <cite>Smithsonian</cite>: the navigator grabbed the emergency release; the house was “torn to shreds.” <a href="https://www.smithsonianmag.com/smart-news/during-cold-war-air-force-dropped-an-unarmed-nuke-on-south-carolina-180959078/">smithsonianmag.com</a></li>
+        <li id="note-12">James Miller, Office of the Historian, Department of State, <cite>Nuclear Accidents at Palomares, Spain in 1966 and Thule, Greenland in 1968</cite>, April 1985: Thule’s B-52 “crashed on the 7-foot-thick ice of North Star Bay approximately 7 miles from the runway”; 237,000 cubic feet of ice, snow and water removed (<a href="https://nsarchive2.gwu.edu/nukevault/ebb475/docs/doc%207.pdf">nsarchive2.gwu.edu</a>). On the 2015 agreement to finish Palomares: <cite>Physics Today</cite> (<a href="https://physicstoday.aip.org/news/us-agrees-to-clean-area-in-spain-contaminated-by-hydrogen-bombs">physicstoday.aip.org</a>).</li>
+        <li id="note-13">“Titan II Missile Explosion,” <cite>Encyclopedia of Arkansas</cite>: the warhead “landed about 100 feet from the launch complex’s entry gate”; its safety features “prevented any loss of radioactive material”; Senior Airman David Livingston was killed. <a href="https://encyclopediaofarkansas.net/entries/titan-ii-missile-explosion-2543/">encyclopediaofarkansas.net</a></li>
+        <li id="note-14">“U.S. admits losing H-bomb near Japan in ’65,” Associated Press, <cite>Deseret News</cite>, 8 May 1989: one megaton, “about 80 miles from the closest point of the Okinawa island chain.” The 1981 list had said “more than 500 miles from land.” <a href="https://www.deseret.com/1989/5/8/18806082/u-s-admits-losing-h-bomb-near-japan-in-65/">deseret.com</a></li>
+        <li id="note-15">K-129: National Security Archive Electronic Briefing Book 305, on the CIA’s history of Project Azorian (<a href="https://nsarchive2.gwu.edu/nukevault/ebb305/index.htm">nsarchive2.gwu.edu</a>). K-219: National Security Archive Briefing Book 562 (<a href="https://nsarchive.gwu.edu/node/3086">nsarchive.gwu.edu</a>). <i>Komsomolets</i>: Norwegian Radiation and Nuclear Safety Authority, <cite>DSA-info 8/2024</cite>, “no indication of any release of weapon grade plutonium from the two nuclear warheads” (<a href="https://dsa.no/publikasjoner/dsa-info-8-2024-status-of-the-sunken-nuclear-submarine-komsomolets/DSA_info_8-2024%20Komsomolets.pdf">dsa.no</a>).</li>
+        <li id="note-16">United States Senate, Committee on Armed Services, hearing of 12 February 2008, on the Minot to Barksdale flight of 29 to 30 August 2007; Senator Carl Levin. <a href="https://www.govinfo.gov/content/pkg/CHRG-110shrg45602/html/CHRG-110shrg45602.htm">govinfo.gov</a></li>
+        <li id="note-17">Eric Schlosser, interview, <cite>Bulletin of the Atomic Scientists</cite>, May 2023: Lakenheath, January 1961; a Defense Department document of 1967 listing “about 1,000 accidents and incidents, just from July 1957 to March 1967”; “Broken Arrow” as the flag word. An accident and an incident are different categories, so the two counts measure different things. <a href="https://nsarchive.gwu.edu/sites/default/files/2023-05/2023-05-09_thebulletin.org-interview_with_eric_schlosser_why_we_cant_trust_the_governments_figures_about_nuclear_close_calls.pdf">nsarchive.gwu.edu</a></li>
+        <li id="note-18">National Security Archive Briefing Book 808, “Soviet Submarines, Nuclear Torpedoes and the Cuban Missile Crisis,” 3 October 2022: the order “was never transmitted to the officer in charge of the torpedo.” <a href="https://nsarchive.gwu.edu/briefing-book/russia-programs/2022-10-03/soviet-submarines-nuclear-torpedoes-cuban-missile-crisis">nsarchive.gwu.edu</a></li>
+        <li id="note-19">National Security Archive Briefing Book 699, “False Warnings of Soviet Missile Attacks during 1979–80,” 16 March 2020. <a href="https://nsarchive.gwu.edu/briefing-book/nuclear-vault/2020-03-16/false-warnings-soviet-missile-attacks-during-1979-80-led-alert-actions-us-strategic-forces">nsarchive.gwu.edu</a></li>
+        <li id="note-20">“Stanislav Petrov, Who Averted Nuclear War, Dies at 77,” Voice of America (Associated Press), 2017. <a href="https://www.voanews.com/a/stanislav-petrov-who-averted-nuclear-war-dies-at-77/4035266.html">voanews.com</a></li>
+        <li id="note-21">President’s Foreign Intelligence Advisory Board, review of 1990, declassified 2015, National Security Archive Electronic Briefing Book 533. <a href="https://nsarchive2.gwu.edu/nukevault/ebb533-The-Able-Archer-War-Scare-Declassified-PFIAB-Report-Released/">nsarchive2.gwu.edu</a></li>
+        <li id="note-22">Atomic Heritage Foundation, National Museum of Nuclear Science and History, “Nuclear Close Calls: Norwegian Rocket Incident”: Yeltsin, “I have indeed used yesterday for the first time my ‘little black case’.” <a href="https://ahf.nuclearmuseum.org/ahf/history/nuclear-close-calls-norwegian-rocket-incident">nuclearmuseum.org</a></li>
+        <li id="note-23">Drell, Foster and Townes, <cite>Nuclear Weapons Safety: Report of the Panel on Nuclear Weapons Safety</cite>, House Committee on Armed Services, December 1990, pp. 12–13, quoting Carl Walske’s criteria of 1968 (“1 in 10^6 per warhead exposure or accident”; one-point safety, “four (4) pounds TNT equivalent”), and on the W88: “not equipped with IHE and are mounted … in close proximity to the third-stage rocket motor that uses a high energy 1.1 class detonable propellant” (<a href="https://fissilematerials.org/library/drell90.pdf">fissilematerials.org</a>). The refit: Federation of American Scientists, “United States nuclear weapons, 2025” (<a href="https://fas.org/wp-content/uploads/2025/01/United-States-nuclear-weapons-2025.pdf">fas.org</a>).</li>
+        <li id="note-24">The Ministry of Defence’s table of 17 July 2001, placed in the Libraries of both Houses in 2003, as reproduced by Nukewatch UK (<a href="https://www.nukewatch.org.uk/convoys/nuclear-weapon-convoy-accidents/">nukewatch.org.uk</a>). The 2009 collision of HMS <i>Vanguard</i> and <i>Le Triomphant</i>: New York Times News Service, via <cite>The Tech</cite>, 17 February 2009 (<a href="https://thetech.com/2009/02/17/long1-v129-n5">thetech.com</a>).</li>
+        <li id="note-25">“Russia says it will stick to New START’s nuclear arms limits as long as the U.S. does,” Associated Press via PBS NewsHour, 11 February 2026. <a href="https://www.pbs.org/newshour/world/russia-says-it-will-stick-to-new-starts-nuclear-arms-limits-as-long-as-the-u-s-does">pbs.org</a></li>
+        <li id="note-26">Canadian Nuclear Safety Commission, fact sheet “Canada’s historical role in developing nuclear weapons”: “Canada was the first country with significant nuclear capability to reject nuclear weapons”; Canada “continued to be a supplier of uranium for military purposes for two decades after the war”; “Between 1959 and 1964, about 252 kg of plutonium contained in used nuclear fuel was exported to the U.S.” (<a href="https://www.cnsc-ccsn.gc.ca/eng/resources/fact-sheets/Canadas-contribution-to-nuclear-weapons-development">cnsc-ccsn.gc.ca</a>). CNSC history: “1984 – With all nuclear weapons removed from Canada, the country becomes nuclear weapon-free” (<a href="https://www.cnsc-ccsn.gc.ca/eng/about-us/history/">cnsc-ccsn.gc.ca</a>).</li>
+        <li id="note-27">Canadian Nuclear Laboratories, on ZEEP (<a href="https://www.cnl.ca/?p=12773">cnl.ca</a>) and its health-science timeline for NRU: “Steadily delivering 30-40% of worldwide demand, at its peak as much as 80%” (<a href="https://www.cnl.ca/health-science-2/timeline/">cnl.ca</a>).</li>
+        <li id="note-28">Western News, “Battista: Cobalt-60 celebrates 60 years,” 3 November 2011, on London’s first treatment of 27 October 1951 (<a href="https://news.westernu.ca/?p=9157">news.westernu.ca</a>). University of Saskatchewan, cobalt-60 timeline and exhibit: “world’s first patient treated on 8 November 1951” with a calibrated dose; “millions of cancer patients around the world” (<a href="https://cobalt60.usask.ca/timeline.php">cobalt60.usask.ca</a>, <a href="https://cobalt60.usask.ca/exhibit.php">exhibit</a>; the first patient, <a href="https://news.usask.ca/articles/general/2017/time-travel-october-1951.php">news.usask.ca</a>).</li>
+        <li id="note-29"><cite>Legion Magazine</cite>, “BOMARC missiles come to Canada,” 25 September 2019: warheads delivered 31 December 1963 (<a href="https://legionmagazine.com/bomarc-missiles-come-to-canada/">legionmagazine.com</a>). <cite>Montreal Gazette</cite>, 15 November 1984, citing National Defence, on the last Genie rockets (<a href="https://regimentalrogue.com/bl2/Canadas-Last-Nukes-1984.html">regimentalrogue.com</a>). Sources disagree on the month in 1984, so the year alone is given.</li>
+        <li id="note-30">Global Affairs Canada, 5 March 2020: “Canada signed the NPT on July 23, 1968 and ratified on January 8, 1969” (<a href="https://www.canada.ca/en/global-affairs/news/2020/03/minister-of-foreign-affairs-marks-50th-anniversary-of-treaty-on-the-non-proliferation-of-nuclear-weapons.html">canada.ca</a>). Conference on Disarmament, CD/1299, 24 March 1995, the report of Ambassador Gerald E. Shannon, mandating a “non-discriminatory, multilateral and internationally and effectively verifiable treaty banning the production of fissile material” (<a href="https://www.nti.org/documents/92/cd1299.pdf">nti.org</a>); Global Affairs Canada on Shannon and the 2018 group (<a href="https://www.international.gc.ca/world-monde/issues_development-enjeux_developpement/peace_security-paix_securite/nuclear_radiological-nucleaire_radiologique.aspx?lang=eng">international.gc.ca</a>); <cite>Arms Control Today</cite>, July 2018, on Heidi Hulan (<a href="https://www.armscontrol.org/act/2018-07/news-briefs/fissile-material-report-points-toward-treaty">armscontrol.org</a>).</li>
+        <li id="note-31">Global Affairs Canada: “Sixteen IMS stations and laboratories are located in Canada,” of 337 worldwide (page at note 30). Natural Resources Canada, the Yellowknife Seismological Array, “established in 1962” with the UK Atomic Energy Authority (<a href="https://can-ndc.rncan.gc.ca/yka/index-en.php">rncan.gc.ca</a>).</li>
+        <li id="note-32">International Partnership for Nuclear Disarmament Verification, “IPNDV Phase II Concludes in Ottawa,” 9 January 2020, on the plenary of 3 to 5 December 2019 and the demonstrations at Chalk River (<a href="https://www.ipndv.org/news/ipndv-phase-ii-concludes-in-ottawa/">ipndv.org</a>). Canada’s $2.5 million since 2017: Global Affairs Canada (page at note 30).</li>
+        <li id="note-33">Global Affairs Canada, briefing for the Senate Standing Committee on Foreign Affairs and International Trade, 8 June 2023. <a href="https://international.canada.ca/en/global-affairs/corporate/transparency/briefing-documents/parliamentary-committee/2023-06-08-aefa">international.canada.ca</a></li>
+        <li id="note-34">Royal Canadian Air Force, “Maintaining the North Warning System,” 29 September 2020: 47 of the 50 radars are in Canada (<a href="https://www.canada.ca/en/department-national-defence/maple-leaf/rcaf/2020/09/maintaining-the-north-warning-system.html">canada.ca</a>). NORAD, established 1958: National Defence, 22 June 2022 (<a href="https://www.canada.ca/en/department-national-defence/news/2022/06/north-american-aerospace-defense-command-norad.html">canada.ca</a>).</li>
+        <li id="note-35"><cite>Arms Control Today</cite>, “The Ottawa Landmine Treaty,” September 1997: “the Canadian led effort,” conducted “outside the auspices of the United Nations and without the involvement of the major powers,” opening for signature in Ottawa on 3 and 4 December. <a href="https://www.armscontrol.org/act/1997-09/arms-control-today/ottawa-landmine-treaty">armscontrol.org</a></li>
+        <li id="note-36">Mykhailo Soldatenko, “Constructive Ambiguity of the Budapest Memorandum at 28,” <cite>Lawfare</cite>, 7 February 2023: Ukraine’s inherited arsenal was the “third largest nuclear arsenal in the world”; the guarantors agreed “to respect the independence and sovereignty and the existing borders of Ukraine”; the English text says “assurances” where the Ukrainian and Russian texts say “guarantees.” <a href="https://www.lawfaremedia.org/article/constructive-ambiguity-of-the-budapest-memorandum-at-28-making-sense-of-the-controversial-agreement">lawfaremedia.org</a></li>
+      </ol>
+      <p class="fig"><strong>A note on this edition.</strong> Where sources disagree, this page uses the one written at the time and names the other in its note. Several widely repeated figures were left out because they could not be traced to a source, among them the claim that five of six safeguards failed at Goldsboro. The research behind every line is kept with the site’s source. The same public-domain terms as the site.</p>
+
+      <Share
+        slot="after"
+        quote={"Since 1950 nuclear weapons have crashed, burned, fallen and sunk. None has gone off. At Goldsboro, North Carolina, in 1961, three of four safeguards were gone. One switch held."}
+      />
+</Read>
+
+<style>
+  .brief {
+    border-top: var(--border-key) solid var(--nt-red);
+    border-bottom: var(--border-hair) solid var(--border-hairline);
+    padding: var(--space-3) 0 var(--space-2);
+    margin-bottom: var(--space-4);
+  }
+  .brief h2 { margin-top: 0; padding-top: 0; border-top: 0; }
+  .brief li { margin-bottom: .8rem; }
+
+  .view { border-left: var(--rule-weight) solid var(--nt-red); padding-left: var(--space-2); }
+
+  .facts {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+    gap: var(--space-3); margin: clamp(28px, 4vh, 52px) 0;
+    border-top: var(--border-key) solid var(--nt-red); padding-top: var(--space-3);
+  }
+  .facts dt {
+    margin: 0; color: var(--nt-red); letter-spacing: 0;
+    font-family: var(--font-display); font-weight: var(--fw-display);
+    font-size: clamp(34px, 4.6vw, 52px); line-height: .95;
+  }
+  .facts dd { margin: var(--space-1) 0 0; font-size: var(--type-body-sm); }
+
+  .timeline { margin: clamp(28px, 4vh, 52px) 0; }
+  .timeline ol { list-style: none; margin: var(--space-2) 0 0; padding: 0; border-left: 3px solid var(--nt-n-260); }
+  .timeline li { position: relative; padding: 0 0 var(--space-3) var(--space-3); margin: 0; }
+  .timeline li::before {
+    content: ""; position: absolute; left: -9px; top: .45em;
+    width: 15px; height: 15px; background: var(--nt-n-260);
+  }
+  .timeline li.now::before { background: var(--nt-red); }
+  .timeline p { margin: 0 0 .35rem; }
+  .timeline .yr {
+    font-family: var(--font-display); font-weight: var(--fw-display);
+    font-size: clamp(28px, 3.6vw, 40px); line-height: 1;
+  }
+  .timeline li.now .yr { color: var(--nt-red); }
+
+  .asks { list-style: none; margin: var(--space-3) 0; padding: 0; counter-reset: ask; }
+  .asks li { counter-increment: ask; border-top: var(--border-hair) solid var(--border-hairline); padding: var(--space-3) 0 var(--space-1); margin: 0; display: grid; grid-template-columns: 3.5rem 1fr; column-gap: var(--space-2); }
+  .asks li::before {
+    content: counter(ask); grid-row: 1 / span 2;
+    font-family: var(--font-display); font-weight: var(--fw-display); font-size: clamp(28px, 3.6vw, 40px); line-height: .9; color: var(--nt-red);
+  }
+  .asks h3 { margin-top: 0; }
+
+  .diagram { margin: clamp(28px, 4vh, 52px) 0; }
+  .diagram svg { display: block; width: 100%; max-width: 34rem; height: auto; margin-inline: auto; overflow: visible; }
+  .diagram .name { font-family: var(--font-display); font-weight: var(--fw-label); font-size: 12px; letter-spacing: .08em; fill: currentColor; }
+  .diagram .sub { font-family: var(--font-body); font-size: 11px; fill: var(--text-muted); }
+  .diagram .focal-t { fill: var(--nt-red); }
+  .diagram .box { fill: var(--nt-white); stroke: currentColor; stroke-width: 1; }
+  .diagram .box.focal { stroke: var(--nt-red); stroke-width: 2; }
+  @media (forced-colors: active) {
+    .diagram .box.focal { stroke: CanvasText; }
+    .diagram .focal-t { fill: CanvasText; }
+  }
+
+  .mark { margin: clamp(30px, 4.5vh, 56px) auto var(--space-3); max-width: 22rem; color: var(--nt-black); }
+  .mark :global(svg) { width: 100%; height: auto; display: block; }
+
+  .pull {
+    margin: clamp(30px, 4.5vh, 56px) 0; padding-left: clamp(18px, 2.4vw, 30px);
+    border-left: var(--rule-weight) solid var(--nt-red);
+    font-family: var(--font-display); font-weight: var(--fw-display);
+    text-transform: uppercase; line-height: 1.1; font-size: clamp(20px, 2.6vw, 34px);
+  }
+  .sign {
+    font-family: var(--font-display); font-weight: var(--fw-display);
+    text-transform: uppercase; letter-spacing: .06em;
+    font-size: clamp(22px, 2.6vw, 32px); margin: var(--space-3) 0 var(--space-1);
+  }
+  .notes cite { font-style: normal; font-weight: var(--fw-body-strong); }
+  .notes a { overflow-wrap: anywhere; }
+</style>

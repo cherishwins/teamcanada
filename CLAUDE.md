@@ -181,7 +181,8 @@ one file serves both colourways. **Never reference them via `<img src>`:**
   Papers so far: No. 01 The Warning Label (6 Oct 2026), No. 02 The Waiting
   Discount (14 Oct 2026), No. 03 Common Barrel (17 Oct 2026), No. 04 Under
   the Shield (22 Oct 2026), No. 05 The Protein Leaves as Water and No. 06
-  The Notice Is Free (both 27 Oct 2026; the PDFs carried no number). **The register has done its job twice:** the
+  The Notice Is Free (both 27 Oct 2026; the PDFs carried no number), No. 07
+  The Last Switch (1 Nov 2026, drafted here). **The register has done its job twice:** the
   owner's own files for Common Barrel and for Under the Shield both said
   "No. 02" while No. 02 was live; they published as 03 and 04 and the owner
   was told why each time. Expect the next draft to say "No. 02" too. A
@@ -246,6 +247,10 @@ one file serves both colourways. **Never reference them via `<img src>`:**
   kept unpublished with a header listing the ten of its claims that are
   wrong as written; `notes/under-the-shield-research-brief.md` is the same
   for No. 04. Quote the page, not the brief.
+  `notes/the-last-switch-research.md` (the accident record, with a
+  verification table and a list of what could not be confirmed) and
+  `notes/the-last-switch-canada.md` (Canada's record) are the two research
+  files behind Paper No. 07.
 - `.github/dependabot.yml` — monthly PRs for GitHub Actions and npm, grouped.
   Every action sat on a major whose Node runtime GitHub had retired, and the
   adapter trailed a release that fixed a bug `vercel.json` works around, with
@@ -913,7 +918,7 @@ V   · THE BUILD /build    Refine · Compute · Corridor + C-5.     from teamcan
 /sources     The receipts                every figure, source, period, endpoint
 /fr          La trempe du Nord           BROUILLON, noindex, Act I only
 /offline     Service-worker fallback     noindex, OUT of the sitemap
-/read + 12 long-form pieces  5 migrated from the old site (9,162 words)
+/read + 13 long-form pieces  5 migrated from the old site (9,162 words)
                              + The Red Is the Work, written here (1,154)
                              + The Warning Label, Paper No. 01 (3,876)
                              + The Waiting Discount, Paper No. 02 (4,381)
@@ -921,6 +926,7 @@ V   · THE BUILD /build    Refine · Compute · Corridor + C-5.     from teamcan
                              + Under the Shield, Paper No. 04 (3,804)
                              + The Protein Leaves as Water, Paper No. 05 (4,838)
                              + The Notice Is Free, Paper No. 06 (2,728)
+                             + The Last Switch, Paper No. 07 (5,196)
 /join  /privacy  /terms  /404          /support is HIDDEN (noindex, unlinked)
 /feed.xml    RSS for every read
 robots.txt · llms.txt · humans.txt · site.webmanifest · sw.js · security.txt
@@ -957,6 +963,22 @@ a paper also touches the paper register in this file and, if it carries a
 published figure, `figures.ts` and the `FIXED_FIGURES` rows `/sources`
 renders. `/read`,
 the feed and the `read` card's total follow from `reads.ts`.
+
+**`/read/the-last-switch` is Northern Temper Paper No. 07** (1 November
+2026): nuclear weapon accidents, drafted here at the owner's ask and offered
+to the owner to sign, like No. 02 (opinions set as `p.view`, "our view"). The
+owner chose the posture: **let the record scare**, no adjective doing a
+fact's work. Its brand discipline: the American list is the long one
+because the United States published it, and the page says so before
+anything else about it; Canada's section is what the country did, with the
+uranium, the plutonium in used fuel and the American warheads of 1963 to
+1984 in the same table as the reactors. It answers its own hardest
+objection (Ukraine and the Budapest Memorandum) in section 06. Corrections
+the research forced are in its frontmatter; the one to keep in mind is that
+**Goldsboro's "five of six safeguards failed" is wrong** (Jones's own memo:
+four, one held), and that the 1981 list never says "Broken Arrow". Every
+figure is a document's, typed once and footnoted; none is in `figures.ts`.
+Its share card's stat, "1 of 4", is that count.
 
 **`/read/the-protein-leaves-as-water` is Northern Temper Paper No. 05 and
 `/read/the-notice-is-free` is No. 06** (both 27 October 2026): the owner's

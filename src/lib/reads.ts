@@ -55,6 +55,11 @@ export const paperImprint = (n: number) => `Northern Temper · Paper No. ${Strin
 
 export const READS: ReadMeta[] = [
   {
+    slug: 'the-last-switch', title: 'The Last Switch', imprint: paperImprint(7), paper: 7,
+    blurb: 'Since 1950 nuclear weapons have crashed, burned, fallen and sunk, and none has gone off. Read how close each came. The record starts over Canada, and ends with three things Canada can do this year.',
+    published: '2026-11-01', words: 5196,
+  },
+  {
     slug: 'the-notice-is-free', title: 'The Notice Is Free', imprint: paperImprint(6), paper: 6,
     blurb: 'A private company holds the documents for Canada’s public work, and a Canadian firm is charged to read them. The trade agreement makes the notice free and lets the file carry a price in two words. Three things a council could direct this month.',
     published: '2026-10-27', words: 2728,
