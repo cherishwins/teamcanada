@@ -43,6 +43,7 @@ AQUASTAT via the World Bank.
 ## Reading
 
 - [The reads](https://northerntemper.ca/read): long-form pieces, sourced in full
+- [The Last Switch](https://northerntemper.ca/read/the-last-switch): nuclear weapon accidents from the government records that publish them, the near misses, what was never found, and what Canada did and can do
 - [The Notice Is Free](https://northerntemper.ca/read/the-notice-is-free): the tender notice is free by law and the documents behind it are behind a private login; who holds them, since when, and what a council could direct
 - [The Protein Leaves as Water](https://northerntemper.ca/read/the-protein-leaves-as-water): Canada ships its whey south as water and buys the powder back under a surtax; a plan to dry it here, one skid beside one vat
 - [Under the Shield](https://northerntemper.ca/read/under-the-shield): a Canadian address is not a Canadian key; how Canada's sovereign and classified cloud work could fit together, with a hardened copy under the Shield

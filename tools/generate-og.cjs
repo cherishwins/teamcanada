@@ -72,6 +72,11 @@ async function buildCards(){
   line:'Public domain. Nothing here is behind a payment.', stat:'CC0', statk:'no permission needed'},
  {slug:'join',      label:'The coalition', title:'Put your name\nbehind one country',
   line:'No account. No fee. Free to leave whenever you like.', stat:'∅', statk:'nothing to sign'},
+ // Goldsboro, 1961: four safeguards, three gone, one held (Jones memo,
+ // Sandia's own history). A count from a 1969 document; nothing moves it.
+ {slug:'the-last-switch', label:paperImprint(7), title:'The last\nswitch',
+  line:'Nuclear weapons have crashed, burned, fallen and sunk since 1950. The record starts over Canada.',
+  stat:'1 of 4', statk:'safeguards still holding, Goldsboro, North Carolina, 1961'},
  // MERX's National plan, from figures.ts, dated to the day it was read: a
  // vendor's price list moves and a PNG cannot.
  {slug:'the-notice-is-free', label:paperImprint(6), title:'The notice\nis free',
