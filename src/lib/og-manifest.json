@@ -45,55 +45,120 @@
   },
   "/og/the-last-switch.png": {
     "src": "/og/the-last-switch.8674dcfe.png",
-    "alt": "Northern Temper share card, black with the two-bear mark — Northern Temper · Paper No. 07: “The last switch”. Nuclear weapons have crashed, burned, fallen and sunk since 1950. The record starts over Canada. 1 of 4, safeguards still holding, Goldsboro, North Carolina, 1961."
+    "alt": "Northern Temper share card, black with the two-bear mark — Northern Temper · Paper No. 07: “The last switch”. Nuclear weapons have crashed, burned, fallen and sunk since 1950. The record starts over Canada. 1 of 4, safeguards still holding, Goldsboro, North Carolina, 1961.",
+    "variants": {
+      "16x9": "/og/the-last-switch-16x9.b5466093.png",
+      "4x3": "/og/the-last-switch-4x3.600a0344.png",
+      "1x1": "/og/the-last-switch-1x1.141c211b.png"
+    }
   },
   "/og/the-notice-is-free.png": {
     "src": "/og/the-notice-is-free.d86c0055.png",
-    "alt": "Northern Temper share card, black with the two-bear mark — Northern Temper · Paper No. 06: “The notice is free”. The work is not. A private company holds the file for public work, and a Canadian firm pays to read it. $2,004, a year to read the country's tenders, checked 27 October 2026."
+    "alt": "Northern Temper share card, black with the two-bear mark — Northern Temper · Paper No. 06: “The notice is free”. The work is not. A private company holds the file for public work, and a Canadian firm pays to read it. $2,004, a year to read the country's tenders, checked 27 October 2026.",
+    "variants": {
+      "16x9": "/og/the-notice-is-free-16x9.ed8621e0.png",
+      "4x3": "/og/the-notice-is-free-4x3.0adee08a.png",
+      "1x1": "/og/the-notice-is-free-1x1.ec188e6a.png"
+    }
   },
   "/og/the-protein-leaves-as-water.png": {
     "src": "/og/the-protein-leaves-as-water.ba0ad82b.png",
-    "alt": "Northern Temper share card, black with the two-bear mark — Northern Temper · Paper No. 05: “The protein leaves as water”. It comes back as a bill. A plan to dry Canadian whey in Canada: one skid, beside a vat, not a new factory. 50%, surtax on the powder we buy back, from 8 September 2026."
+    "alt": "Northern Temper share card, black with the two-bear mark — Northern Temper · Paper No. 05: “The protein leaves as water”. It comes back as a bill. A plan to dry Canadian whey in Canada: one skid, beside a vat, not a new factory. 50%, surtax on the powder we buy back, from 8 September 2026.",
+    "variants": {
+      "16x9": "/og/the-protein-leaves-as-water-16x9.03d70563.png",
+      "4x3": "/og/the-protein-leaves-as-water-4x3.08da1dc8.png",
+      "1x1": "/og/the-protein-leaves-as-water-1x1.9b53076c.png"
+    }
   },
   "/og/under-the-shield.png": {
     "src": "/og/under-the-shield.e76a1ca8.png",
-    "alt": "Northern Temper share card, black with the two-bear mark — Northern Temper · Paper No. 04: “Under the Shield”. A Canadian address is not a Canadian key. How the pieces could fit. 3, locks: who owns it, who holds the keys, who gets in."
+    "alt": "Northern Temper share card, black with the two-bear mark — Northern Temper · Paper No. 04: “Under the Shield”. A Canadian address is not a Canadian key. How the pieces could fit. 3, locks: who owns it, who holds the keys, who gets in.",
+    "variants": {
+      "16x9": "/og/under-the-shield-16x9.ab0687a6.png",
+      "4x3": "/og/under-the-shield-4x3.a530865d.png",
+      "1x1": "/og/under-the-shield-1x1.7cc84631.png"
+    }
   },
   "/og/common-barrel.png": {
     "src": "/og/common-barrel.481ae0c1.png",
-    "alt": "Northern Temper share card, black with the two-bear mark — Northern Temper · Paper No. 03: “Common Barrel”. We ship the barrel south and buy the fuel back. A proposal to own the refinery instead, together. 130,000, barrels a day, owned by the people who use it."
+    "alt": "Northern Temper share card, black with the two-bear mark — Northern Temper · Paper No. 03: “Common Barrel”. We ship the barrel south and buy the fuel back. A proposal to own the refinery instead, together. 130,000, barrels a day, owned by the people who use it.",
+    "variants": {
+      "16x9": "/og/common-barrel-16x9.d79970ed.png",
+      "4x3": "/og/common-barrel-4x3.0eeaf4d5.png",
+      "1x1": "/og/common-barrel-1x1.61f17e94.png"
+    }
   },
   "/og/the-waiting-discount.png": {
     "src": "/og/the-waiting-discount.ec63bd13.png",
-    "alt": "Northern Temper share card, black with the two-bear mark — Northern Temper · Paper No. 02: “The waiting discount”. Sixty years of tailings. The ponds are cheaper to keep than to clean, and here is the arithmetic. 3.5%, of the cleanup bill, secured, September 2025."
+    "alt": "Northern Temper share card, black with the two-bear mark — Northern Temper · Paper No. 02: “The waiting discount”. Sixty years of tailings. The ponds are cheaper to keep than to clean, and here is the arithmetic. 3.5%, of the cleanup bill, secured, September 2025.",
+    "variants": {
+      "16x9": "/og/the-waiting-discount-16x9.fbbd7ba7.png",
+      "4x3": "/og/the-waiting-discount-4x3.5a33527a.png",
+      "1x1": "/og/the-waiting-discount-1x1.688cb9a1.png"
+    }
   },
   "/og/the-warning-label.png": {
     "src": "/og/the-warning-label.b95ca43a.png",
-    "alt": "Northern Temper share card, black with the two-bear mark — Northern Temper · Paper No. 01: “The warning label”. What a British law from 1887 can tell Canada about the China panic. 139, years of warning labels."
+    "alt": "Northern Temper share card, black with the two-bear mark — Northern Temper · Paper No. 01: “The warning label”. What a British law from 1887 can tell Canada about the China panic. 139, years of warning labels.",
+    "variants": {
+      "16x9": "/og/the-warning-label-16x9.1893b1c5.png",
+      "4x3": "/og/the-warning-label-4x3.a0fb9906.png",
+      "1x1": "/og/the-warning-label-1x1.8fa5aaa8.png"
+    }
   },
   "/og/the-red-is-the-work.png": {
     "src": "/og/the-red-is-the-work.28c5d894.png",
-    "alt": "Northern Temper share card, black with the two-bear mark — A reading of the leaf: “The red is the work”. Not a leaf giving up. A tree getting ready for a long winter, on purpose. 62%, of the nitrogen, taken back first."
+    "alt": "Northern Temper share card, black with the two-bear mark — A reading of the leaf: “The red is the work”. Not a leaf giving up. A tree getting ready for a long winter, on purpose. 62%, of the nitrogen, taken back first.",
+    "variants": {
+      "16x9": "/og/the-red-is-the-work-16x9.6081af6b.png",
+      "4x3": "/og/the-red-is-the-work-4x3.5c5f802c.png",
+      "1x1": "/og/the-red-is-the-work-1x1.a1e532da.png"
+    }
   },
   "/og/the-closed-loop.png": {
     "src": "/og/the-closed-loop.7c28e542.png",
-    "alt": "Northern Temper share card, black with the two-bear mark — NPSI · Working Paper No. 6: “The Closed Loop”. Korea holds the silicon. Canada holds the power. 37 GW, Hydro-Québec capacity."
+    "alt": "Northern Temper share card, black with the two-bear mark — NPSI · Working Paper No. 6: “The Closed Loop”. Korea holds the silicon. Canada holds the power. 37 GW, Hydro-Québec capacity.",
+    "variants": {
+      "16x9": "/og/the-closed-loop-16x9.adb0a6fa.png",
+      "4x3": "/og/the-closed-loop-4x3.6d11d223.png",
+      "1x1": "/og/the-closed-loop-1x1.d4d695b7.png"
+    }
   },
   "/og/the-vertical-squeeze.png": {
     "src": "/og/the-vertical-squeeze.03b68e50.png",
-    "alt": "Northern Temper share card, black with the two-bear mark — Fit For Gov · Dossier: “The Vertical Squeeze”. The most responsibility, the least revenue. 8¢, of every tax dollar."
+    "alt": "Northern Temper share card, black with the two-bear mark — Fit For Gov · Dossier: “The Vertical Squeeze”. The most responsibility, the least revenue. 8¢, of every tax dollar.",
+    "variants": {
+      "16x9": "/og/the-vertical-squeeze-16x9.03fcb8fb.png",
+      "4x3": "/og/the-vertical-squeeze-4x3.b09a9a1c.png",
+      "1x1": "/og/the-vertical-squeeze-1x1.5dc5f82a.png"
+    }
   },
   "/og/changed-my-mind.png": {
     "src": "/og/changed-my-mind.6057d57f.png",
-    "alt": "Northern Temper share card, black with the two-bear mark — An honest account: “I campaigned against this man”. A Conservative campaigner did the homework and changed his mind. 1, mind changed."
+    "alt": "Northern Temper share card, black with the two-bear mark — An honest account: “I campaigned against this man”. A Conservative campaigner did the homework and changed his mind. 1, mind changed.",
+    "variants": {
+      "16x9": "/og/changed-my-mind-16x9.48dde06d.png",
+      "4x3": "/og/changed-my-mind-4x3.beab82d3.png",
+      "1x1": "/og/changed-my-mind-1x1.6fb86523.png"
+    }
   },
   "/og/two-leaders.png": {
     "src": "/og/two-leaders.869b9cf0.png",
-    "alt": "Northern Temper share card, black with the two-bear mark — A governance reading: “Two leaders beat the wave”. Anti-incumbent anger flattened the West. Two are the exceptions. 2/7, G7 exceptions."
+    "alt": "Northern Temper share card, black with the two-bear mark — A governance reading: “Two leaders beat the wave”. Anti-incumbent anger flattened the West. Two are the exceptions. 2/7, G7 exceptions.",
+    "variants": {
+      "16x9": "/og/two-leaders-16x9.b1a54ce7.png",
+      "4x3": "/og/two-leaders-4x3.f27d03fe.png",
+      "1x1": "/og/two-leaders-1x1.6b21de65.png"
+    }
   },
   "/og/honest-answer.png": {
     "src": "/og/honest-answer.e4ba2a1e.png",
-    "alt": "Northern Temper share card, black with the two-bear mark — The record, set straight: “One question. Seven leaders.” The viral recession quiz, answered with every official figure. 7, statistics offices."
+    "alt": "Northern Temper share card, black with the two-bear mark — The record, set straight: “One question. Seven leaders.” The viral recession quiz, answered with every official figure. 7, statistics offices.",
+    "variants": {
+      "16x9": "/og/honest-answer-16x9.7a8edf0d.png",
+      "4x3": "/og/honest-answer-4x3.ba71d03f.png",
+      "1x1": "/og/honest-answer-1x1.5cf3b562.png"
+    }
   },
   "/og/sources.png": {
     "src": "/og/sources.49325ec8.png",

@@ -38,6 +38,13 @@ export interface ReadMeta {
   /** Counted from the built article by check-figures, never estimated. */
   words: number;
   /**
+   * The last SUBSTANTIVE change, YYYY-MM-DD, where there has been one: a
+   * fact or a sentence a reader would notice, not a typo or a restyle. It
+   * becomes the Article's dateModified and the page's article:modified_time.
+   * Leave it out until something changes; it is not a build stamp.
+   */
+  modified?: string;
+  /**
    * THE PAPER REGISTER. A Northern Temper paper carries its number here and
    * nowhere else. The imprint is derived from it (see `paperImprint`), so the
    * label on the page, on /read, in the feed and on the share card cannot
@@ -80,7 +87,7 @@ export const READS: ReadMeta[] = [
     blurb: 'Canada ships its crude south to be refined, then buys fuel back. A proposal to own the refinery instead, together: by the producers who fill it, the pensions that fund it, First Nations partners, and any Canadian who wants a share.',
     // Published two days before the Alberta referendum of 19 October 2026 in
     // the present tense; flipped to the past tense on 22 October 2026.
-    published: '2026-10-17', words: 2675,
+    published: '2026-10-17', modified: '2026-10-22', words: 2675,
   },
   {
     slug: 'the-waiting-discount', title: 'The Waiting Discount', imprint: paperImprint(2), paper: 2,

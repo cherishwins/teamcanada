@@ -15,10 +15,10 @@ interface Props {
   standfirst: string;
 }
 const { slug, pageTitle, description, standfirst } = Astro.props;
-const { title, imprint, published, words } = read(slug);
+const { title, imprint, published, modified, words } = read(slug);
 const path = `/read/${slug}`;
 const ogImage = `/og/${slug}.png`;
-const schema = [articleSchema({ title, description, path, image: ogImage, published, section: imprint, words })];
+const schema = [articleSchema({ title, description, path, image: ogImage, published, modified, section: imprint, words })];
 ---
 <Base title={title} pageTitle={pageTitle} description={description} path={path} ogImage={ogImage} schema={schema}>
   <Nav />

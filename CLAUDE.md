@@ -870,6 +870,18 @@ Everything is CC0 and the site is built to be repeated, not protected.
 - Sitemaps are validated XML against the sitemaps.org 0.9 schema, all URLs
   absolute on the canonical host and in the canonical form, byte for byte
   (`check-canonical`). **`/fr` is excluded while it is `noindex`.**
+- **Article markup follows Google's Article guidance, field by field** (1
+  November 2026). The author's `url` is **`/about`**, a ProfilePage whose
+  subject is the author, not the home page, which identifies the
+  publication. `image` lists each read's card at **1x1, 4x3 and 16x9** (then
+  the 1.91:1 share card): `generate-og` draws every read at the three shapes,
+  scaling the type on the taller ones, names them `slug-shape.hash.png` so the
+  immutable-cache rule in `vercel.json` covers them, and records them as
+  `variants` in `og-manifest.json`. `dateModified` comes from `modified` in
+  `reads.ts`, set only for a substantive change (Common Barrel's tense flip
+  on 22 October); never a build stamp. A different Chromium re-hashes every
+  card, so when only the shapes change, keep the new shapes and restore the
+  rest, as with the share cards.
 - Structured data: WebSite on every page, Article on each read, **Dataset on the
   six public endpoints** so the figures are findable as data.
 
@@ -927,7 +939,7 @@ V   · THE BUILD /build    Refine · Compute · Corridor + C-5.     from teamcan
                              + The Protein Leaves as Water, Paper No. 05 (4,838)
                              + The Notice Is Free, Paper No. 06 (2,728)
                              + The Last Switch, Paper No. 07 (5,196)
-/join  /privacy  /terms  /404          /support is HIDDEN (noindex, unlinked)
+/about  /join  /privacy  /terms  /404  /support is HIDDEN (noindex, unlinked)
 /feed.xml    RSS for every read
 robots.txt · llms.txt · humans.txt · site.webmanifest · sw.js · security.txt
 

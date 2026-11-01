@@ -80,6 +80,7 @@ These carry no denominator and do not move:
 
 ## Optional
 
+- [About](https://northerntemper.ca/about): who writes the site, how its figures are checked, and how to report an error
 - [Full text of the entire site, one file](https://northerntemper.ca/llms-full.txt): every page, generated from the published HTML so it cannot drift from it
 - [Machine reuse policy](https://northerntemper.ca/ai.txt): training, quoting in full and retrieval are all permitted
 - [Licence](https://northerntemper.ca/LICENSE.txt): CC0 1.0 Universal

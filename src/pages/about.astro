@@ -1,0 +1,74 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import { SITE } from '../config.mjs';
+import { READS, papers } from '../lib/reads';
+import { profileSchema } from '../lib/schema';
+
+/**
+ * The author's page, and the publication's.
+ *
+ * It exists because Google's Article guidance asks that an author's `url`
+ * lead to "a web page that uniquely identifies the author", and the author
+ * link pointed at the home page, which identifies the publication. It is
+ * marked up as a ProfilePage whose subject is the author (src/lib/schema.ts),
+ * which is what Google reads that link against. It is also the page a reader
+ * or an editor looks for before trusting a site that asks to be checked.
+ *
+ * Every statement here is about how the site works and is true of the repo
+ * as it stands; nothing is a figure, and the two counts render from reads.ts.
+ * A personal paragraph from the author is wanted and was not invented.
+ */
+const description = `Who writes Northern Temper, what it argues, how its figures are checked, and how to tell us when we are wrong.`;
+const paperCount = papers().length;
+const readCount = READS.length;
+---
+<Base title={"About"} description={description} path="/about" schema={[profileSchema('/about', description)]}>
+  <Nav />
+  <main id="main">
+    <section class="nt-light">
+      <div class="nt-wrap doc">
+        <div class="nt-label">About</div>
+        <hr class="nt-rule" />
+        <h1 class="nt-display md">About Northern Temper</h1>
+        <p class="lead">Northern Temper is a statement of Canadian character, written and built by {SITE.author}. Everything on it is in the public domain: take it, quote it, train on it, no permission and no credit needed.</p>
+
+        <h2>What it argues</h2>
+        <p>Restraint is the flex. This country makes as much fresh water as its neighbour, shares it with a fraction of the people, and has never once mentioned the tap. When it counts, Canada shows up, and what it does is done for someone, not to anyone.</p>
+        <p>The pressure from the south is the weather here, never the villain. Every page is held to one test: a Canadian should feel pride in under three seconds, and an American neighbour should feel respect without being insulted.</p>
+
+        <h2>How the figures work</h2>
+        <p>Every figure on this site is public and can be checked. The live ones are read from Statistics Canada, the Bank of Canada, Environment and Climate Change Canada and the UN’s FAO, through endpoints that need no key. When a source stops answering, the page shows the last figure that was true, with its date, and says that a source is not responding. It never shows a blank, and never a stale number without saying so.</p>
+        <p>Figures that come from a document rather than a feed are written down in one place, each with its source and period. Where the publisher runs on a cycle, the figure carries a date by which it must be checked again, and the site will not build once that date passes. <a href="/sources">The receipts</a> list every one.</p>
+
+        <h2>The papers</h2>
+        <p>There are {readCount} long reads, {paperCount} of them numbered Northern Temper papers. Some are the author’s own papers, published here with every fact checked against its source; the words and opinions stay the author’s, and each paper’s corrections are listed in its source. Others were drafted with the research in the open and mark their opinions as “our view”. Each one names its sources at the end. <a href="/read">Read them</a>.</p>
+
+        <h2>When we are wrong</h2>
+        <p>We say so on the page. The home page still carries a note headed “This page used to say eleven times”, about a water ratio built from two figures of different years, retired once that was found. A correction made in public is worth more than a page that looks as if it never needed one.</p>
+        <p>If you find an error, write to <a href={`mailto:${SITE.email}`}>{SITE.email}</a> with the page and the source. It will be checked against the source, not argued with.</p>
+
+        <h2>How it is built</h2>
+        <p>The site is static pages on Vercel, with no accounts, no ads and no cookies, and it asks the reader for nothing. It runs on a budget of zero: free public data, open typefaces, a free hosting tier. About a dozen checks run on every build and stop it when something is wrong, from a figure past its review date to a link to a page that does not exist. Every page is swept at ten screen widths for layout, contrast and accessibility before it ships.</p>
+
+        <h2>Contact</h2>
+        <p>{SITE.author}, <a href={`mailto:${SITE.email}`}>{SITE.email}</a>. In English or in French.</p>
+      </div>
+    </section>
+  </main>
+  <SiteFooter />
+</Base>
+
+<style>
+  .doc { max-width: 64ch; }
+  .doc :global(h2) {
+    font-family: var(--font-display); font-weight: var(--fw-label);
+    text-transform: uppercase; letter-spacing: .06em;
+    font-size: clamp(16px, 1.8vw, 21px);
+    margin: clamp(28px, 4vh, 48px) 0 var(--space-2);
+  }
+  .doc :global(p) { margin-bottom: var(--space-2); max-width: none; }
+  .doc :global(p.lead) { font-size: var(--type-lede); line-height: var(--lh-lede); font-weight: var(--fw-body-medium); margin: var(--space-4) 0; }
+  .doc :global(a) { color: var(--nt-red); }
+</style>

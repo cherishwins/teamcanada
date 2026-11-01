@@ -22,7 +22,7 @@ const ORDER = [
   '/read/under-the-shield', '/read/common-barrel', '/read/the-waiting-discount', '/read/the-warning-label', '/read/the-red-is-the-work',
   '/read/the-closed-loop', '/read/the-vertical-squeeze', '/read/changed-my-mind',
   '/read/two-leaders', '/read/honest-answer',
-  '/join', '/privacy', '/terms', '/fr',
+  '/about', '/join', '/privacy', '/terms', '/fr',
 ];
 
 // Indexable pages that are deliberately NOT in this file, each with the reason
