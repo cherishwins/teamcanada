@@ -18,7 +18,12 @@ import OG_MANIFEST from './og-manifest.json';
  *     data source is the discovery channel that actually fits.
  */
 
-const PERSON = { '@type': 'Person', name: SITE.author, url: SITE.origin } as const;
+/**
+ * The author, linked to the page about the author rather than to the home
+ * page. Google's author guidance asks for "a web page that uniquely identifies
+ * the author"; the home page identifies the publication, not the person.
+ */
+const PERSON = { '@type': 'Person', name: SITE.author, url: abs('/about') } as const;
 const PUBLISHER = {
   '@type': 'Organization',
   name: SITE.name,
@@ -37,6 +42,32 @@ export interface ArticleMeta {
   published: string;
   section: string;
   words?: number;
+  /** Last substantive change, YYYY-MM-DD; the publication date when absent. */
+  modified?: string;
+}
+
+type OgEntry = { src: string; variants?: Record<string, string> };
+
+function articleImages(path: string) {
+  const entry = (OG_MANIFEST as Record<string, OgEntry>)[path];
+  const main = abs(entry?.src ?? path);
+  const v = entry?.variants;
+  if (!v) return main;
+  return [v['1x1'], v['4x3'], v['16x9']].filter(Boolean).map((u) => abs(u!)).concat(main);
+}
+
+/**
+ * The /about page as a ProfilePage whose subject is the author, which is what
+ * Google reads an author's `url` against.
+ */
+export function profileSchema(path: string, description: string) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ProfilePage',
+    url: abs(path),
+    description,
+    mainEntity: { ...PERSON, email: `mailto:${SITE.email}`, worksFor: { '@type': 'Organization', name: SITE.name, url: SITE.origin } },
+  };
 }
 
 export function articleSchema(a: ArticleMeta) {
@@ -50,9 +81,11 @@ export function articleSchema(a: ArticleMeta) {
     // The content-hashed card, the same URL og:image carries. The unhashed
     // copy exists only so old links resolve; it is the one platforms cache
     // stale, which is why the cards are hashed at all.
-    image: abs((OG_MANIFEST as Record<string, { src: string }>)[a.image]?.src ?? a.image),
+    // Google asks for the article image at 1x1, 4x3 and 16x9; the generator
+    // draws each read's card at all three and records them in the manifest.
+    image: articleImages(a.image),
     datePublished: a.published,
-    dateModified: a.published,
+    dateModified: a.modified ?? a.published,
     author: PERSON,
     publisher: PUBLISHER,
     articleSection: a.section,

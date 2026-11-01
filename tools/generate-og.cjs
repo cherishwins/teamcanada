@@ -134,10 +134,13 @@ const fontCss = ['Oswald-700','Oswald-600','Inter-400','Inter-500'].map(f=>{
   return `@font-face{font-family:'${fam}';font-weight:${w};font-display:block;src:url(data:font/woff2;base64,${b}) format('woff2')}`;
 }).join('\n');
 
-const page = c => `<!doctype html><meta charset="utf-8"><style>
+// The taller shapes scale the type with them, so a square card reads as a
+// square card rather than the wide one with a hole in the middle. k is 1 at
+// 1200x630, so the share cards themselves are byte-for-byte what they were.
+const page = (c, w = 1200, h = 630) => { const k = h >= 1200 ? 1.5 : h >= 900 ? 1.25 : 1; const px = (n) => Math.round(n * k) + 'px'; return `<!doctype html><meta charset="utf-8"><style>
 ${fontCss}
 *{margin:0;padding:0;box-sizing:border-box}
-body{width:1200px;height:630px;background:#000;color:#fff;font-family:'Inter',sans-serif;overflow:hidden;position:relative}
+body{width:${w}px;height:${h}px;background:#000;color:#fff;font-family:'Inter',sans-serif;overflow:hidden;position:relative}
 .grain{position:absolute;inset:0;opacity:.16;mix-blend-mode:overlay;pointer-events:none;
  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3'/></filter><rect width='160' height='160' filter='url(%23n)' opacity='.55'/></svg>")}
 .aurora{position:absolute;inset:-20% -10% auto -10%;height:75%;filter:blur(40px);
@@ -145,14 +148,14 @@ body{width:1200px;height:630px;background:#000;color:#fff;font-family:'Inter',sa
 .wrap{position:relative;z-index:2;padding:62px 68px;height:100%;display:flex;flex-direction:column}
 .lbl{font-family:'Oswald';font-weight:600;font-size:19px;letter-spacing:.3em;text-transform:uppercase;color:#D4425A}
 .rule{height:4px;width:72px;background:#C8102E;margin:22px 0 30px}
-h1{font-family:'Oswald';font-weight:700;font-size:${c.title.length>26?76:92}px;line-height:.92;text-transform:uppercase;letter-spacing:-.005em;white-space:pre-line}
-.line{font-size:25px;line-height:1.35;color:#D8D8D8;margin-top:26px;max-width:22ch;font-weight:500}
+h1{font-family:'Oswald';font-weight:700;font-size:${px(c.title.length>26?76:92)};line-height:.92;text-transform:uppercase;letter-spacing:-.005em;white-space:pre-line}
+.line{font-size:${px(25)};line-height:1.35;color:#D8D8D8;margin-top:${px(26)};max-width:22ch;font-weight:500}
 .foot{margin-top:auto;display:flex;align-items:flex-end;justify-content:space-between;gap:40px}
 .mark{display:flex;flex-direction:column;gap:16px}
-.bear{width:250px;color:#fff;opacity:.95}
+.bear{width:${px(250)};color:#fff;opacity:.95}
 .bear svg{width:100%;height:auto;display:block}
 .stat{text-align:right}
-.sn{font-family:'Oswald';font-weight:700;font-size:78px;line-height:.84;color:#C8102E;letter-spacing:-.02em}
+.sn{font-family:'Oswald';font-weight:700;font-size:${px(78)};line-height:.84;color:#C8102E;letter-spacing:-.02em}
 .sk{font-family:'Oswald';font-weight:600;font-size:16px;letter-spacing:.2em;text-transform:uppercase;color:#9A9A9A;margin-top:12px}
 .url{font-family:'Oswald';font-weight:600;font-size:17px;letter-spacing:.28em;text-transform:uppercase;color:#9A9A9A}
 </style>
@@ -169,7 +172,7 @@ h1{font-family:'Oswald';font-weight:700;font-size:${c.title.length>26?76:92}px;l
     </div>
     <div class="stat"><div class="sn">${c.stat}</div><div class="sk">${c.statk}</div></div>
   </div>
-</div>`;
+</div>`; };
 
 
 /**
@@ -191,6 +194,20 @@ function altFor(c){
 
 /** slug -> hashed public path, filled in as each card is written. */
 const hashed = {};
+
+/**
+ * Article images in the three shapes Google asks for. Its Article guidance
+ * recommends "multiple high-resolution images ... with the following aspect
+ * ratios: 16x9, 4x3, and 1x1"; handed only the 1.91:1 share card, a carousel
+ * or a phone layout crops it, and a card that is mostly words loses words.
+ * So every read gets the same card drawn at each shape, the layout letting
+ * the footer fall to the bottom of whatever height it is given. Hashed only:
+ * nothing in the wild links to them, and schema.ts lists them in `image`.
+ */
+const SHAPES = { '16x9': [1200, 675], '4x3': [1200, 900], '1x1': [1200, 1200] };
+const READ_SLUGS = new Set(READS.map((r) => r.slug));
+/** slug -> { shape: hashed path }, for the reads. */
+const variants = {};
 /** slug -> alt text of a card kept from the last run because its source was down. */
 const kept = {};
 const MANIFEST = path.join(__dirname, '..', 'src', 'lib', 'og-manifest.json');
@@ -208,7 +225,10 @@ function writeManifest(CARDS){
     alt: 'Northern Temper share card, black with the two-bear mark, beneath the words Northern Temper.',
   } };
   for (const c of CARDS) {
-    manifest['/og/' + c.slug + '.png'] = { src: hashed[c.slug] || ('/og/' + c.slug + '.png'), alt: kept[c.slug] ?? altFor(c) };
+    manifest['/og/' + c.slug + '.png'] = {
+      src: hashed[c.slug] || ('/og/' + c.slug + '.png'), alt: kept[c.slug] ?? altFor(c),
+      ...(variants[c.slug] ? { variants: variants[c.slug] } : {}),
+    };
   }
   fs.writeFileSync(MANIFEST, JSON.stringify(manifest, null, 2) + '\n');
   console.log('  src/lib/og-manifest.json'.padEnd(34) + Object.keys(manifest).length + ' entries');
@@ -224,6 +244,10 @@ function writeManifest(CARDS){
     if (c.live === false && last && last.src !== '/og/' + c.slug + '.png' && fs.existsSync(path.join(ROOT, last.src))) {
       hashed[c.slug] = last.src;
       kept[c.slug] = last.alt;
+      if (last.variants) {
+        variants[c.slug] = last.variants;
+        for (const [k, v] of Object.entries(last.variants)) hashed[`${c.slug}-${k}`] = v;
+      }
       console.log(`  ${last.src.slice(1)}`.padEnd(34) + 'kept: its source is not responding');
       continue;
     }
@@ -250,6 +274,24 @@ function writeManifest(CARDS){
     hashed[c.slug] = `/og/${c.slug}.${hash}.png`;
     fs.writeFileSync(path.join(OUT, `${c.slug}.${hash}.png`), bytes);
     console.log(`  og/${c.slug}.${hash}.png`.padEnd(34) + Math.round(bytes.length / 1024) + 'KB');
+    if (READ_SLUGS.has(c.slug)) {
+      variants[c.slug] = {};
+      for (const [k, [w, h]] of Object.entries(SHAPES)) {
+        await p.setViewportSize({ width: w, height: h });
+        await p.setContent(page(c, w, h), { waitUntil: 'load' });
+        await p.evaluate(() => document.fonts.ready);
+        await p.waitForTimeout(120);
+        const vb = await p.screenshot();
+        const vh = crypto.createHash('sha256').update(vb).digest('hex').slice(0, 8);
+        // slug-shape.hash.png, so the immutable-cache rule in vercel.json
+        // (/og/([a-z0-9-]+\\.[0-9a-f]+)\\.png) covers these too.
+        const name = `${c.slug}-${k}.${vh}.png`;
+        fs.writeFileSync(path.join(OUT, name), vb);
+        hashed[`${c.slug}-${k}`] = variants[c.slug][k] = `/og/${name}`;
+      }
+      await p.setViewportSize({ width: 1200, height: 630 });
+      console.log(`  og/${c.slug}-{16x9,4x3,1x1}`.padEnd(34) + 'drawn');
+    }
   }
   await b.close();
   pruneStaleHashes();
