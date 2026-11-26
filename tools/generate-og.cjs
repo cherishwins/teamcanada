@@ -72,6 +72,11 @@ async function buildCards(){
   line:'Public domain. Nothing here is behind a payment.', stat:'CC0', statk:'no permission needed'},
  {slug:'join',      label:'The coalition', title:'Put your name\nbehind one country',
   line:'No account. No fee. Free to leave whenever you like.', stat:'∅', statk:'nothing to sign'},
+ // The Global Risk Institute's 2024 study, the share of Canadian pension
+ // infrastructure held at home; one study's figure, named on the page.
+ {slug:'the-model-comes-home', label:paperImprint(8), title:'The model\ncomes home',
+  line:'Canada built the way the world owns roads and power with its savings. Bring it home.',
+  stat:'7%', statk:'of Canadian pension infrastructure, at home'},
  // Goldsboro, 1961: four safeguards, three gone, one held (Jones memo,
  // Sandia's own history). A count from a 1969 document; nothing moves it.
  {slug:'the-last-switch', label:paperImprint(7), title:'The last\nswitch',

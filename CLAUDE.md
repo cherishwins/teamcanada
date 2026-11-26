@@ -182,7 +182,8 @@ one file serves both colourways. **Never reference them via `<img src>`:**
   Discount (14 Oct 2026), No. 03 Common Barrel (17 Oct 2026), No. 04 Under
   the Shield (22 Oct 2026), No. 05 The Protein Leaves as Water and No. 06
   The Notice Is Free (both 27 Oct 2026; the PDFs carried no number), No. 07
-  The Last Switch (1 Nov 2026, drafted here). **The register has done its job twice:** the
+  The Last Switch and No. 08 The Model Comes Home (both 1 Nov 2026, drafted
+  here). **The register has done its job twice:** the
   owner's own files for Common Barrel and for Under the Shield both said
   "No. 02" while No. 02 was live; they published as 03 and 04 and the owner
   was told why each time. Expect the next draft to say "No. 02" too. A
@@ -250,7 +251,8 @@ one file serves both colourways. **Never reference them via `<img src>`:**
   `notes/the-last-switch-research.md` (the accident record, with a
   verification table and a list of what could not be confirmed) and
   `notes/the-last-switch-canada.md` (Canada's record) are the two research
-  files behind Paper No. 07.
+  files behind Paper No. 07. `notes/the-model-comes-home-pensions.md` and
+  `notes/the-model-comes-home-infrastructure.md` are the same for No. 08.
 - `.github/dependabot.yml` — monthly PRs for GitHub Actions and npm, grouped.
   Every action sat on a major whose Node runtime GitHub had retired, and the
   adapter trailed a release that fixed a bug `vercel.json` works around, with
@@ -930,7 +932,7 @@ V   · THE BUILD /build    Refine · Compute · Corridor + C-5.     from teamcan
 /sources     The receipts                every figure, source, period, endpoint
 /fr          La trempe du Nord           BROUILLON, noindex, Act I only
 /offline     Service-worker fallback     noindex, OUT of the sitemap
-/read + 13 long-form pieces  5 migrated from the old site (9,162 words)
+/read + 14 long-form pieces  5 migrated from the old site (9,162 words)
                              + The Red Is the Work, written here (1,154)
                              + The Warning Label, Paper No. 01 (3,876)
                              + The Waiting Discount, Paper No. 02 (4,381)
@@ -939,6 +941,7 @@ V   · THE BUILD /build    Refine · Compute · Corridor + C-5.     from teamcan
                              + The Protein Leaves as Water, Paper No. 05 (4,838)
                              + The Notice Is Free, Paper No. 06 (2,728)
                              + The Last Switch, Paper No. 07 (5,196)
+                             + The Model Comes Home, Paper No. 08 (4,316)
 /about  /join  /privacy  /terms  /404  /support is HIDDEN (noindex, unlinked)
 /feed.xml    RSS for every read
 robots.txt · llms.txt · humans.txt · site.webmanifest · sw.js · security.txt
@@ -975,6 +978,20 @@ a paper also touches the paper register in this file and, if it carries a
 published figure, `figures.ts` and the `FIXED_FIGURES` rows `/sources`
 renders. `/read`,
 the feed and the `read` card's total follow from `reads.ts`.
+
+**`/read/the-model-comes-home` is Northern Temper Paper No. 08** (1
+November 2026): Canada's pension funds built the model the world copies for
+owning infrastructure, own most of theirs abroad (about 7% at home, against
+Australia's 46%, by one 2024 study named on the page), while municipal water
+under Canadian streets deteriorates ($124.3B poor or very poor at end-2024,
+StatCan's release of 30 Oct 2026). Its proposal keeps the deed public: public
+water corporations issue long inflation-linked bonds that pension funds buy,
+and Ottawa resumes Real Return Bonds. Drafted here from a conversation about
+mortgage tranches; the frontmatter lists what that conversation got wrong
+and what the research corrected (the CEO letter's date, the Poloz group's
+non-report, the 30% rule still in force at 31 Mar 2026). Its share card
+was redrawn once because its first line pushed the footer off the card:
+check the PNG, not only the build.
 
 **`/read/the-last-switch` is Northern Temper Paper No. 07** (1 November
 2026): nuclear weapon accidents, drafted here at the owner's ask and offered

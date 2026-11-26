@@ -32,8 +32,8 @@
     "alt": "Northern Temper share card, black with the two-bear mark — The record: “How they actually voted”. Every division. Every ballot. Counted, not characterised. 99.9%, party-line, 174 divisions to 23 Sept 2026."
   },
   "/og/read.png": {
-    "src": "/og/read.83a2c828.png",
-    "alt": "Northern Temper share card, black with the two-bear mark — The reads: “Read the homework”. Every claim, laid out in full, with sources. 37,735, words, sourced."
+    "src": "/og/read.4dae1cd0.png",
+    "alt": "Northern Temper share card, black with the two-bear mark — The reads: “Read the homework”. Every claim, laid out in full, with sources. 42,051, words, sourced."
   },
   "/og/support.png": {
     "src": "/og/support.2c97e7d7.png",
@@ -42,6 +42,15 @@
   "/og/join.png": {
     "src": "/og/join.c30db6ef.png",
     "alt": "Northern Temper share card, black with the two-bear mark — The coalition: “Put your name behind one country”. No account. No fee. Free to leave whenever you like. ∅, nothing to sign."
+  },
+  "/og/the-model-comes-home.png": {
+    "src": "/og/the-model-comes-home.417fa8a7.png",
+    "alt": "Northern Temper share card, black with the two-bear mark — Northern Temper · Paper No. 08: “The model comes home”. Canada built the way the world owns roads and power with its savings. Bring it home. 7%, of Canadian pension infrastructure, at home.",
+    "variants": {
+      "16x9": "/og/the-model-comes-home-16x9.ac5123da.png",
+      "4x3": "/og/the-model-comes-home-4x3.79a6b767.png",
+      "1x1": "/og/the-model-comes-home-1x1.72ea6c2d.png"
+    }
   },
   "/og/the-last-switch.png": {
     "src": "/og/the-last-switch.8674dcfe.png",

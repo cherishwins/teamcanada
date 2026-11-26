@@ -62,6 +62,11 @@ export const paperImprint = (n: number) => `Northern Temper · Paper No. ${Strin
 
 export const READS: ReadMeta[] = [
   {
+    slug: 'the-model-comes-home', title: 'The Model Comes Home', imprint: paperImprint(8), paper: 8,
+    blurb: 'Canada built the model the world copies for owning roads, ports and power with retirement savings, and its funds own them abroad. The water under Canadian streets is wearing out. How the model comes home, with the deed kept public.',
+    published: '2026-11-01', words: 4316,
+  },
+  {
     slug: 'the-last-switch', title: 'The Last Switch', imprint: paperImprint(7), paper: 7,
     blurb: 'Since 1950 nuclear weapons have crashed, burned, fallen and sunk, and none has gone off. Read how close each came. The record starts over Canada, and ends with three things Canada can do this year.',
     published: '2026-11-01', words: 5196,

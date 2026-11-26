@@ -1,0 +1,314 @@
+---
+import Read from '../../layouts/Read.astro';
+import Share from '../../components/Share.astro';
+import BarTable from '../../components/BarTable.astro';
+import BearDual from '../../components/marks/BearDual.astro';
+
+/**
+ * Northern Temper Paper No. 08, 1 November 2026.
+ *
+ * Drafted here at the owner's ask, from a conversation about mortgage
+ * bonds, tranches and inflation that ended on a question: who holds the
+ * long, slow end of the debt, and who owns the asset instead? The owner
+ * chose the thesis "bring the pensions home" from four offered. Two
+ * research runs sit unpublished at notes/the-model-comes-home-pensions.md
+ * and notes/the-model-comes-home-infrastructure.md, each with a list of
+ * what could not be confirmed. Every figure here is typed once, as its
+ * source prints it, and footnoted; none has a publishing cycle short
+ * enough to need figures.ts, and each names the date it was true.
+ *
+ * The rule for a paper is that the words are the author's. This draft is
+ * offered to the owner to make theirs, as Nos. 02 and 07 were: the
+ * opinions are set as `p.view` and say "our view", and the byline says the
+ * paper was drafted with the research in the open.
+ *
+ * WHAT THE CONVERSATION GOT WRONG, kept out of the page: that rating
+ * agencies stamped the bottom tranche AAA (it was the senior tranches, and
+ * the re-pooled middle ones); that Fink's 1983 CMOs carried default risk
+ * (they were agency-backed: the risk they sliced was early payment); and
+ * that official CPI hides a 6% "real" inflation (no independent measure
+ * shows it). None of that is in this paper.
+ *
+ * WHAT THE RESEARCH CORRECTED, so a reader of other coverage can see why
+ * the page differs: the CEOs' letter was 6 March 2024, not February; the
+ * Poloz group is "a working group" in Budget 2024 and published no report,
+ * so no finding is attributed to it; the 30% rule was announced for removal
+ * in December 2024 and was still in the regulation at 31 March 2026; the
+ * "$141 billion" water gap is the 2016 report card's, and the 2019 edition
+ * printed no dollar figure; the Fraser Institute's "73 percent tax" is a
+ * framing of one index window and is not used; the water polls were all
+ * commissioned by a union and say so.
+ *
+ * THE TOTALS are sums of each fund's own latest year-end, which fall three
+ * months apart and mix net assets with assets under management, so the
+ * page says "about". The 7% and 46% are one study's (Global Risk Institute,
+ * 2024), named as such.
+ *
+ * BRAND: the subject of the sentences is what Canada built and does. The
+ * United States and Australia are neighbours and peers here, never foils;
+ * Australia is the country that took the Canadian model home first.
+ */
+---
+<Read
+  slug="the-model-comes-home"
+  description={"Canada invented the way the world's retirement savings own roads, ports and power, and its pension funds own them in Britain, Australia and Chile. At home they hold about 7% of their infrastructure, while the water under Canadian streets needs renewing faster than it is renewed. How the model comes home, with the assets kept public."}
+  standfirst={"Canada built the model the world copies for owning roads, ports and power with retirement savings. Its funds own airports abroad. Under our own streets the pipes are wearing out. Here is how the model comes home, and the water stays public."}
+>
+      <section class="brief" aria-labelledby="in-brief">
+        <h2 id="in-brief">In brief</h2>
+        <ul>
+          <li>Canada built the pension model the world studies: arm’s-length boards, in-house teams, and direct ownership of real assets. Eight funds now hold about $2.6 trillion.</li>
+          <li>They own ports in Britain and Australia, airports across Europe, power lines and toll roads. By one study, Canadian funds keep about 7% of their infrastructure at home. Australian funds keep 46%.</li>
+          <li>Under Canadian streets, $124.3 billion of municipal water, wastewater and stormwater assets were in poor or very poor condition at the end of 2024, up from 2022. Across all core public infrastructure, owners spent about a ninth of what renewal required.</li>
+          <li>The money did not refuse Canada. Most Canadian infrastructure was never offered to it: airports sit with not-for-profit authorities, water with municipalities, and a rule Ottawa promised to remove in 2024 was still in force this spring.</li>
+          <li>Nobody here wants the water sold, and nothing in this paper sells it. The proposal is the other way round: the pipes stay public, and Canadians’ own retirement savings lend to them, at a return that keeps pace with prices.</li>
+          <li>Three things Canada can do this year are at the end.</li>
+        </ul>
+      </section>
+
+      <h3>How to read this</h3>
+      <p>Every figure is taken from the funds’ own annual reports, Statistics Canada, the federal budget documents and the auditors who checked them, and each names the date it was true. The eight funds close their years three months apart, so their totals are given as “about”. Every source is at the end.</p>
+      <p>It is written for the people who could move it: a council deciding how to fund its pipes, a provincial ministry setting up a water corporation, a pension investment committee, Finance Canada, and any Canadian who pays into a plan.</p>
+      <p class="byline">Northern Temper. Drafted with the research in the open, 1 November 2026. <a href="#sources">The receipts are at the end.</a></p>
+
+      <h2><span class="eyebrow">01 · The model</span> Canada built it.</h2>
+      <p>In 1990, Ontario gave its teachers’ pension plan an arm’s-length board and told it to invest like an owner. Until then the plan’s money sat in Ontario government debentures that could not be traded. Seven years later, Parliament did the same for the Canada Pension Plan.<sup><a href="#note-1">1</a>, <a href="#note-2">2</a></sup></p>
+      <p>The law that created CPP Investments gives it one job: “to invest its assets with a view to achieving a maximum rate of return, without undue risk of loss.” Changing that law takes Ottawa plus two-thirds of the provinces holding two-thirds of the population. CPP Investments points out that this is a higher bar than amending the Constitution.<sup><a href="#note-2">2</a>, <a href="#note-3">3</a></sup></p>
+      <p>The result became known abroad as the Canadian model. The funds hire their own investment teams, pay them to stay, and buy real things outright: ports, power lines, toll roads, buildings. In 2017 the World Bank published a study to teach it to other countries. Its summary: “Independent investment decision-making is essential.”<sup><a href="#note-4">4</a></sup></p>
+      <dl class="facts">
+        <div><dt>$2.6T</dt><dd>About what Canada’s eight largest public pension funds hold, summing each one’s latest year-end, 31 December 2025 or 31 March 2026.<sup><a href="#note-5">5</a></sup></dd></div>
+        <div><dt>$793.3B</dt><dd>CPP Investments alone, at 31 March 2026, with $119.2 billion of it invested in Canada, “an all-time high in dollar terms”.<sup><a href="#note-3">3</a></sup></dd></div>
+        <div><dt>2.9%</dt><dd>Canada’s share of world stock markets, by the MSCI all-country index, 30 September 2026.<sup><a href="#note-6">6</a></sup></dd></div>
+      </dl>
+      <p>That last number matters, and it cuts against the easy version of this argument. Measured against the size of Canada’s stock market, the funds are already heavily invested at home: by their own reports, between about 12% and 49% of each fund is in Canada.<sup><a href="#note-5">5</a></sup> The gap this paper is about is narrower, and harder to see. It is the roads, pipes and power that Canadians use every day.</p>
+
+      <h2><span class="eyebrow">02 · Where the model works</span> Ports in Britain. Airports in Europe. Toll roads in Sydney.</h2>
+      <p>The funds are very good at owning infrastructure. Most of what they own is somewhere else.</p>
+      <section class="tw" tabindex="0" aria-label="Figure 1, infrastructure owned by Canadian pension funds, scrolls sideways">
+        <table class="keyed">
+          <thead><tr><th scope="col">Fund</th> <th scope="col">Abroad</th> <th scope="col">At home</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">CPP Investments</th> <td>33.9% of Associated British Ports, Britain’s largest port operator, and Sydney toll roads, both agreed for sale in October 2026.<sup><a href="#note-7">7</a>, <a href="#note-8">8</a></sup></td> <td>Highway 407 ETR in Ontario, majority stake since 2019.<sup><a href="#note-9">9</a></sup></td></tr>
+            <tr><th scope="row">La Caisse (formerly CDPQ)</th> <td>The Port of Brisbane, the New South Wales transmission grid, Eurostar, a share of Britain’s Sizewell C nuclear plant.<sup><a href="#note-5">5</a></sup></td> <td>The REM, Montréal’s automated light rail, which it built and owns.<sup><a href="#note-5">5</a></sup></td></tr>
+            <tr><th scope="row">Ontario Teachers’</th> <td>Five European airports, among them Brussels, Copenhagen and London City, owned from 2001 until their sale in 2025.<sup><a href="#note-5">5</a></sup></td> <td>About $100 billion of its gross assets are in Canada.<sup><a href="#note-5">5</a></sup></td></tr>
+            <tr><th scope="row">PSP Investments</th> <td>AviAlliance, which owns or holds stakes in the airports of Athens, Düsseldorf, Hamburg, San Juan, Aberdeen, Glasgow and Southampton.<sup><a href="#note-10">10</a></sup></td> <td>A share of Highway 407 ETR.<sup><a href="#note-9">9</a></sup></td></tr>
+            <tr><th scope="row">OMERS</th> <td>About 32% of the parent of Thames Water in London, written off in full.<sup><a href="#note-11">11</a></sup></td> <td>A stake in Bruce Power, which supplies about 30% of Ontario’s electricity.<sup><a href="#note-12">12</a></sup></td></tr>
+            <tr><th scope="row">BCI</th> <td>An infrastructure portfolio of $36.5 billion, gross, with renewable resources.<sup><a href="#note-5">5</a></sup></td> <td>Container terminals on the West Coast, the Golden Ears Bridge, and the Canada Line SkyTrain under a partnership contract.<sup><a href="#note-5">5</a></sup></td></tr>
+          </tbody>
+        </table>
+      </section>
+      <p class="fig">Figure 1 · What six of the eight funds own, from their own reports and releases. Not a complete list.</p>
+      <p>Australia learned from the same model and did one thing differently: it brought it home. Its retirement funds led the purchase of Sydney Airport, which stays majority Australian owned, and hold half the 99-year lease on Ausgrid, Sydney’s electricity network. In October 2026, Australian-owned capital agreed to buy the British ports that CPP Investments and OMERS were selling.<sup><a href="#note-7">7</a>, <a href="#note-13">13</a></sup></p>
+      <BarTable name="Figure 2" rowHead="Pension funds of" columns={['Share of infrastructure held at home']} unit="percent" rows={[
+        { label: 'Australia', values: [46] },
+        { label: 'Canada', values: [7] },
+      ]}>Figure 2 · The share of each country’s pension infrastructure held at home, from one study by the Global Risk Institute, 2024. The same study found Canadian funds keep 57% of their real estate at home.<sup><a href="#note-14">14</a></sup></BarTable>
+      <p class="pull">Canada taught the world to own its infrastructure with its retirement savings. Australia was the student that brought it home.</p>
+
+      <h2><span class="eyebrow">03 · Under our streets</span> The water is the biggest asset Canada owns, and it is wearing out.</h2>
+      <p>On 30 October 2026, Statistics Canada published its newest count of the country’s public infrastructure. At the end of 2024, local and regional governments held more than $2.0 trillion of it. More than half of that value, 52%, is water: drinking water, wastewater and stormwater.<sup><a href="#note-15">15</a></sup></p>
+      <p>It is almost all local. Of 200,520 kilometres of drinking-water pipe in the survey, 199,220 kilometres belong to local and regional governments. The same is true of the wastewater pipe.<sup><a href="#note-15">15</a></sup></p>
+      <p>And it is getting worse. In 2024, municipal water assets worth $124.3 billion to replace were in poor or very poor condition, 14% of the total and 3 percentage points more than in 2022. “Very poor” is Statistics Canada’s term for an asset where “health and safety hazards exist”.<sup><a href="#note-15">15</a></sup></p>
+      <BarTable name="Figure 3" rowHead="Municipal asset" columns={['Poor or very poor, share of value']} unit="percent" rows={[
+        { label: 'Public transit', values: [18] },
+        { label: 'Roads', values: [18] },
+        { label: 'Drinking water', values: [17] },
+        { label: 'Wastewater', values: [16] },
+        { label: 'Stormwater', values: [9] },
+        { label: 'Bridges and tunnels', values: [9] },
+      ]}>Figure 3 · Municipal assets in poor or very poor condition at the end of 2024, as a share of replacement value. Each row adds Statistics Canada’s two rounded shares.<sup><a href="#note-15">15</a></sup></BarTable>
+      <p>The repair bill is not being paid at the rate it grows. At the end of 2022, the owners of Canada’s core public infrastructure estimated that $294.4 billion was needed to rehabilitate or replace what they had. That year they put $31.3 billion into renewal, 11% of it.<sup><a href="#note-16">16</a></sup></p>
+      <p>Ottawa built a bank for this, the Canada Infrastructure Bank. By March 2025 it had invested $15.8 billion in 94 projects. Of that, $247 million was in water and wastewater.<sup><a href="#note-17">17</a></sup></p>
+
+      <h2><span class="eyebrow">04 · Why the money went abroad</span> It was never offered the pipes.</h2>
+      <p>The easy story is that the funds chose London over Lethbridge. The evidence says something else. The 2024 study that found the 7% put the barrier on the supply side: few Canadian public assets are open to investment, and permits take an average of 249 days here against 80 in the United States. Its authors warned against forcing the funds to invest at home.<sup><a href="#note-14">14</a></sup></p>
+      <p>Look at what is for sale. Canada’s big airports are run by not-for-profit authorities on federal ground leases. Water belongs to municipalities. In December 2024, Ottawa said it would look at changing the airport leases, at lowering the 90 per cent threshold that limits municipally owned utility corporations, and at removing a rule that stops a pension plan owning more than 30% of the votes of a Canadian company.<sup><a href="#note-18">18</a></sup></p>
+      <p>The 30% rule was still in the federal regulation at 31 March 2026, word for word.<sup><a href="#note-19">19</a></sup></p>
+      <p>Since then the money has moved. In April 2026 Ottawa launched the Canada Strong Fund, a $25 billion sovereign wealth fund. In September, CPP Investments and Brookfield launched a $50 billion fund for Canadian infrastructure and industry, and Ontario Teachers’ set out an additional $10 billion for Canada by the end of 2027. OMERS has committed at least $10 billion over five years.<sup><a href="#note-20">20</a></sup></p>
+      <p>Not one of those announcements names a water pipe. The funds invest in what they can buy, and the largest public asset in the country is not on the list.</p>
+      <p class="pull">The money did not refuse Canada. Nobody offered it the pipes.</p>
+
+      <h2><span class="eyebrow">05 · The worry</span> Canadians want the water public. So does this paper.</h2>
+      <p>The first answer to any proposal like this is “privatization”, and it deserves a straight reply. Every poll found on the question says Canadians want water in public hands: three-quarters in a national survey in 2001, three-quarters of British Columbians in 2005. All of those polls were commissioned by a public-sector union, and no independent national poll was found.<sup><a href="#note-21">21</a></sup></p>
+      <p>Ontario has already written the public answer into law. Its 2025 act lets the province move a region’s water into a new public corporation, starting with Peel, and the government has committed that the corporation will stay publicly owned. A bill this spring proposed making that 100% public ownership a legal requirement.<sup><a href="#note-22">22</a></sup></p>
+      <p>The record of foreign ownership is the best argument for keeping it that way. OMERS owned about 32% of the parent of Thames Water, London’s water company, and wrote off a holding once worth about $1 billion. Canadian retirement money’s stake in London’s water ended as a total loss.<sup><a href="#note-11">11</a></sup></p>
+      <p>The REM shows the other lesson. La Caisse built Montréal’s new light rail and owns it, and the project’s cost grew from $6.3 billion financed in 2018 to $8.34 billion. In May 2026 its leadership told the National Assembly that it would build the REM differently today, and leave running it to a local operator.<sup><a href="#note-23">23</a></sup></p>
+      <p>There is a model already working that keeps both lessons. EPCOR is owned by the City of Edmonton, pays the city a dividend, and builds, finances and runs a wastewater plant for Regina under a 30-year partnership that Regina’s voters chose in 2013.<sup><a href="#note-24">24</a></sup> Public ownership and outside capital are not opposites. The question is only who holds the deed.</p>
+      <p>Here is the part that changes the argument. When the Canada Infrastructure Bank told Parliament in 2022 that its pension fund partners were private money, the Parliamentary Budget Officer disagreed. Under Statistics Canada’s definitions, his office counts public pension funds as “government entities”.<sup><a href="#note-25">25</a></sup></p>
+      <p class="view"><strong>Our view:</strong> a public pension fund lending to a public water corporation is not privatization. It is Canadians lending to themselves, through teachers’, nurses’, municipal workers’ and federal employees’ plans and the CPP, with the pipes kept in public hands. The model that is correct to fear is a foreign owner holding the deed. The model that is correct to build is the deed staying with the city and the savings staying in Canada.</p>
+
+      <h2><span class="eyebrow">06 · The bond</span> Long, slow and tied to prices: what a water pipe pays, and what a pension needs.</h2>
+      <p>A pension has to pay people for decades, in dollars that inflation will shrink. The asset that fits it best pays a steady return for decades that rises with prices. That is what infrastructure pays, and it is why the funds own so much of it.<sup><a href="#note-26">26</a></sup></p>
+      <p>Canada used to sell exactly that kind of bond. In November 2022, Ottawa stopped issuing Real Return Bonds, its inflation-linked bonds, citing “low demand for this product”. The actuaries asked it to reconsider, the Bank of Canada’s fixed-income advisory forum unanimously agreed it should, and a survey of 13 large holders in 2024 found not one that supported the decision.<sup><a href="#note-27">27</a></sup></p>
+      <p>Five years earlier, Ottawa had stopped selling Canada Savings Bonds, the bond ordinary Canadians bought at the bank, also for declining demand.<sup><a href="#note-27">27</a></sup> In April 2026 it announced a retail product for the Canada Strong Fund, in which “initial invested capital will be protected”. Its design has not been published.<sup><a href="#note-20">20</a></sup></p>
+      <figure class="diagram">
+        <svg viewBox="0 0 400 264" role="img" aria-labelledby="bd-t bd-d">
+          <title id="bd-t">How the model comes home</title>
+          <desc id="bd-d">Four boxes, one above the other, joined by arrows. Canadians pay into their pension plans. The plans buy a long, inflation-linked water bond. The bond is issued by a publicly owned water corporation, which keeps the deed. The corporation renews the pipes, and its rates repay the bond. The publicly owned corporation is the focus.</desc>
+          <rect x="8" y="8" width="384" height="48" class="box"/>
+          <text x="20" y="28" class="name">CANADIANS</text>
+          <text x="20" y="44" class="sub">pay into their pension plans, and the CPP</text>
+          <path d="M200 56 V64" class="line" fill="none"/>
+          <polygon points="196,64 200,72 204,64" class="head"/>
+          <rect x="8" y="72" width="384" height="48" class="box"/>
+          <text x="20" y="92" class="name">THE PLANS</text>
+          <text x="20" y="108" class="sub">buy a long water bond that rises with prices</text>
+          <path d="M200 120 V128" class="line" fill="none"/>
+          <polygon points="196,128 200,136 204,128" class="head"/>
+          <rect x="8" y="136" width="384" height="48" class="box focal"/>
+          <text x="20" y="156" class="name focal-t">A PUBLIC WATER CORPORATION</text>
+          <text x="20" y="172" class="sub">owned by its municipalities; it keeps the deed</text>
+          <path d="M200 184 V192" class="line" fill="none"/>
+          <polygon points="196,192 200,200 204,192" class="head"/>
+          <rect x="8" y="200" width="384" height="56" class="box"/>
+          <text x="20" y="220" class="name">THE PIPES</text>
+          <text x="20" y="236" class="sub">renewed now; water rates repay the bond</text>
+          <text x="20" y="250" class="sub">over the life of the asset</text>
+        </svg>
+        <figcaption>Figure 4 · The proposal. The savings and the deed both stay in Canada, and the asset stays public.</figcaption>
+      </figure>
+      <p class="view"><strong>Our view:</strong> the bond that fits a water pipe is the bond Canada stopped selling. Bring it back, and let the water corporations issue it. The retirement savings of the people who drink the water then pay for the pipes, and are paid back by the same water rates, in dollars that keep their value.</p>
+
+      <h2><span class="eyebrow">07 · The case against</span> Three objections, taken seriously.</h2>
+      <p><strong>Diversification.</strong> A Canadian pension already depends on Canadian jobs. Putting more of its money in Canada concentrates that risk. CPP Investments says so plainly: it diversifies “across the world” to protect the fund from risks to Canada’s economy.<sup><a href="#note-3">3</a></sup> That is why this paper asks for lending against public assets, with returns tied to prices, and not for a quota.</p>
+      <p><strong>Fiduciary duty.</strong> The law requires these funds to act for their members, not for a government. A policy that pushed them into poor investments would break that, and South Korea shows what happens: a former minister was jailed for pressuring the national pension fund to back a merger that hurt it.<sup><a href="#note-28">28</a>, <a href="#note-29">29</a></sup> The proposal here works only if the bond earns a fair return on its own merits.</p>
+      <p><strong>Returns at home.</strong> The evidence is mixed, not one-sided. Canada’s stock market lagged the American one over the two decades to 2025. But a 2026 study found Canadian funds did better at home than abroad in private equity and venture capital.<sup><a href="#note-30">30</a></sup> Infrastructure, priced fairly, is closer to the second case than the first.</p>
+      <p class="view"><strong>Our view:</strong> every one of these objections argues against forcing the money home. None of them argues against offering it something worth buying. That is a different policy, and it fits what the funds say of themselves: they invest at home “when opportunities meet our requirements”.<sup><a href="#note-3">3</a></sup></p>
+
+      <h2><span class="eyebrow">08 · What to do</span> Three things Canada can do this year.</h2>
+      <ol class="asks">
+        <li><h3>Finish the rule Ottawa already announced.</h3><p>The removal of the 30% rule was promised in December 2024 and was still in the regulation this spring. Amend it, and publish the airport-lease and utility-threshold reviews announced the same day, so the funds know what is on offer.<sup><a href="#note-18">18</a>, <a href="#note-19">19</a></sup></p></li>
+        <li><h3>Let public water corporations borrow from Canadians.</h3><p>Provinces setting up water corporations, as Ontario has, can give them the power to issue long bonds whose payments rise with inflation, with the deed held publicly by law. The Canada Infrastructure Bank already lends to municipal water systems that stay publicly owned, as in Manitoba, and can lend alongside the pensions.<sup><a href="#note-17">17</a>, <a href="#note-22">22</a></sup></p></li>
+        <li><h3>Bring back the Real Return Bond.</h3><p>Resume federal inflation-linked bonds, as the actuaries and the bond market’s own advisory forum asked. And design the Canada Strong Fund’s retail product so that any Canadian can hold a piece of the country’s renewed infrastructure, the way their pension already could.<sup><a href="#note-20">20</a>, <a href="#note-27">27</a></sup></p></li>
+      </ol>
+      <p class="view"><strong>Our view:</strong> Canada does not have to choose between keeping its water public and paying to renew it. It invented the way the world’s savings own infrastructure. It can use that invention on its own streets, with the deed staying with the people who drink the water.</p>
+
+      <p class="pull">Canada built the model. Bring it home, and keep the deed.</p>
+      <figure class="mark">
+        <BearDual />
+      </figure>
+      <p class="sign">Northern Temper</p>
+      <p>November 2026</p>
+
+      <h2 id="words"><span class="eyebrow">Words used here</span> Seven terms, plainly.</h2>
+      <dl>
+        <dt>The Canadian model</dt>
+        <dd>A way of running a public pension plan: an arm’s-length board, an in-house investment team, and direct ownership of real assets rather than only stocks and bonds.<sup><a href="#note-4">4</a></sup></dd>
+        <dt>Maple 8</dt>
+        <dd>An informal name for Canada’s eight largest public pension investors: CPP Investments, La Caisse, Ontario Teachers’, PSP Investments, OMERS, BCI, AIMCo and HOOPP.</dd>
+        <dt>Infrastructure</dt>
+        <dd>The physical systems a country runs on: water and sewer pipes, roads, bridges, ports, airports, transit, power lines.</dd>
+        <dt>Replacement value</dt>
+        <dd>What it would cost to replace an asset today, which is how Statistics Canada measures the size of public infrastructure.<sup><a href="#note-15">15</a></sup></dd>
+        <dt>Real Return Bond</dt>
+        <dd>A federal bond whose payments rise with the consumer price index, so the lender is repaid in dollars that keep their value. Ottawa stopped issuing them in 2022.<sup><a href="#note-27">27</a></sup></dd>
+        <dt>The 30% rule</dt>
+        <dd>A federal pension regulation that stops a plan owning more than 30% of the votes that elect a company’s board.<sup><a href="#note-19">19</a></sup></dd>
+        <dt>Fiduciary duty</dt>
+        <dd>The legal obligation of a fund to act in the interest of its members, with the care of a prudent person handling someone else’s property.<sup><a href="#note-29">29</a></sup></dd>
+      </dl>
+
+      <h2 id="sources"><span class="eyebrow">Sources</span> Every figure, named.</h2>
+      <ol class="notes">
+        <li id="note-1">Keith Ambachtsheer, “How Peter Drucker Revolutionized Canada’s Public Sector Pension System,” Harvard Law School Forum on Corporate Governance, 8 December 2022, on the 1990 Ontario Teachers’ Pension Act and the move out of non-marketable Ontario debentures. <a href="https://corpgov.law.harvard.edu/2022/12/08/how-peter-drucker-revolutionized-canadas-public-sector-pension-system-lessons-for-americans/">corpgov.law.harvard.edu</a></li>
+        <li id="note-2"><cite>Canada Pension Plan Investment Board Act</cite>, S.C. 1997, c. 40, section 5. <a href="https://laws-lois.justice.gc.ca/eng/acts/C-8.3/page-1.html">laws-lois.justice.gc.ca</a></li>
+        <li id="note-3">CPP Investments, <cite>Annual Report 2026</cite>: net assets of $793.3 billion at 31 March 2026; “$119.2 billion invested in Canada – an all-time high in dollar terms”; the amending formula, “a higher requirement than the requirement for making changes to the Canadian Constitution”; “we diversify our investments across the world” (<a href="https://www.cppinvestments.com/wp-content/uploads/attachments/CPP-Investments-F26-Annual-Report-English.pdf">cppinvestments.com</a>). Net assets also in its release of 20 May 2026 (<a href="https://www.newswire.ca/news-releases/cpp-investments-net-assets-total-793-3-billion-at-2026-fiscal-year-end-814459989.html">newswire.ca</a>).</li>
+        <li id="note-4">Fiona Stewart, World Bank, “Delivering secure retirement: lessons from Canada,” 18 December 2017, on the World Bank study <cite>The Evolution of the Canadian Pension Model</cite>: “Independent investment decision-making is essential.” <a href="https://blogs.worldbank.org/en/psd/delivering-secure-retirement-lessons-canada">blogs.worldbank.org</a></li>
+        <li id="note-5">The eight funds’ own latest reports, summed by us: CPP Investments $793.3B (31 Mar 2026, note 3); La Caisse $517.3B, with its Port of Brisbane, TransGrid, Eurostar, Sizewell C and REM holdings (31 Dec 2025, <a href="https://www.lacaisse.com/sites/default/files/medias/pdf/en/ra/2025_lacaisse_annual_report.pdf">annual report</a>); Ontario Teachers’ $279.4B, its five European airports and about $100 billion in Canada (<a href="https://www.otpp.com/content/dam/otpp/documents/reports/2025-ar/otpp-2025-annual-report-eng.pdf">annual report</a>; <a href="https://www.cantechletter.com/newswires/ontario-teachers-sets-objective-to-invest-an-additional-10-billion-in-canada-by-the-end-of-2027/">release</a>); PSP $320.6B (31 Mar 2026, <a href="https://www.investpsp.com/en/news/psp-investments-outperforms-10-year-benchmarks-and-posts-solid-performance-in-fiscal-2026">release</a>); BCI $265.4B net, $36.5B infrastructure and its West Coast holdings (31 Mar 2026, <a href="https://www.bci.ca/wp-content/uploads/2026/08/2026-About-BCI-2P-General-Secured.pdf">fact sheet</a>); AIMCo $194.7B under management, 40.2% in Canada (<a href="https://2025.annualreports.aimco.ca/">annual report</a>); OMERS $145.2B (<a href="https://www.omers.com/news/omers-earns-8-2-billion-in-net-investment-income-in-2025">release</a>); HOOPP $131.9B, about 49% in Canada (<a href="https://hoopp.com/docs/default-source/investments-library/annual-reports/hoopp-2025-annual-report.pdf">annual report</a>). The year-ends fall three months apart and BCI, AIMCo and La Caisse also manage non-pension money, so the total is given as about $2.6 trillion.</li>
+        <li id="note-6">MSCI ACWI Index factsheet, 30 September 2026: Canada 2.9%. <a href="https://www.msci.com/documents/10199/8d97d244-4685-4200-a24c-3e2942e3adeb">msci.com</a></li>
+        <li id="note-7">The Canadian Press via CP24, “CPP Investments and OMERS selling Associated British Ports stakes to IFM Investors,” 21 October 2026: CPP 33.9%, OMERS 30.0%; IFM is owned by Australian pension funds. <a href="https://www.cp24.com/news/money/2026/10/21/cpp-investments-and-omers-selling-associated-british-ports-stakes-to-ifm-investors">cp24.com</a></li>
+        <li id="note-8"><cite>BNN Bloomberg</cite>, “CPP Investments selling Australian toll road assets for $4.5 billion,” 1 October 2026. <a href="https://www.bnnbloomberg.ca/business/company-news/2026/10/01/cpp-investments-selling-australian-toll-road-assets-for-45-billion/">bnnbloomberg.ca</a></li>
+        <li id="note-9">CPP Investment Board, release of 15 August 2019, the purchase of 10.01% of 407 International for $3.0 billion, for a 50.01% stake (<a href="https://www.newswire.ca/news-releases/cppib-increases-investment-in-407-international-inc--879428070.html">newswire.ca</a>). PSP Investments, on the 2025 transactions: “Ferrovial at 48.29%, CPP Investments and other institutional investors at 44.20%, and PSP Investments at 7.51%” (<a href="https://www.investpsp.com/en/news/psp-investments-and-cpp-investments-complete-407-etr-transactions/">investpsp.com</a>).</li>
+        <li id="note-10">PSP Investments, “AviAlliance completes acquisition of AGS Airports,” 28 January 2025: AviAlliance is “a wholly-owned subsidiary of PSP Investments”. <a href="https://www.investpsp.com/en/news/avialliance-completes-acquisition-of-ags-airports/">investpsp.com</a></li>
+        <li id="note-11"><cite>The Globe and Mail</cite>, 15 July 2025: OMERS “owns around 32 per cent of Kemble”, Thames Water’s parent, and “wrote off the holding last year, which was once worth around $1-billion”. <a href="https://www.theglobeandmail.com/business/article-thames-water-nationalization-165-billion-loss">theglobeandmail.com</a></li>
+        <li id="note-12">TC Energy, release of 15 September 2023 (SEC filing), on Bruce Power’s owners including OMERS: “Bruce Power supplies clean electricity to 30 per cent of Ontario.” <a href="https://www.sec.gov/Archives/edgar/data/1232384/000123238423000072/a09152023-tcenergyannoun.htm">sec.gov</a></li>
+        <li id="note-13">IFM Investors, on Ausgrid, 20 October 2016: IFM and AustralianSuper took “a 50.4% interest in a 99-year lease of Ausgrid” (<a href="https://www.ifminvestors.com/en-gb/news--insights/media-centre/six-million-australians-to-invest-in-ausgrid-as-ifm-investors-and-australiansuper-acquire-a-majority-stake/">ifminvestors.com</a>); and on Sydney Airport, 8 March 2022: “Sydney Airport will continue to be majority Australian owned” (<a href="https://www.ifminvestors.com/news-and-insights/media-centre/acquisition-of-sydney-airport-complete/">ifminvestors.com</a>).</li>
+        <li id="note-14">Ambachtsheer, Betermier and Flynn, Global Risk Institute, 2024, as reported by <cite>ai-CIO</cite>, 14 June 2024: Canadian funds hold about 7% of infrastructure and 57% of real estate at home, Australian funds 46% of infrastructure; permits average 249 days in Canada against 80 in the United States; “We caution against adopting government policies that mandate Canadian pension funds to invest domestically.” <a href="https://ai-cio.com/news/home-bias-do-canadian-pensions-need-to-invest-more-in-canada">ai-cio.com</a></li>
+        <li id="note-15">Statistics Canada, <cite>The Daily</cite>, “Canada’s Core Public Infrastructure Survey, 2024,” 30 October 2026: “over $2.0 trillion”; water “more than half (52%)”; “$124.3 billion in 2024, representing 14% of the total value of these assets and increasing 3 percentage points from 2022”; the definitions of replacement value and condition (<a href="https://www150.statcan.gc.ca/n1/daily-quotidien/261030/dq261030b-eng.htm">statcan.gc.ca</a>). Kilometres of pipe by owner, Table 1 (<a href="https://www150.statcan.gc.ca/n1/daily-quotidien/261030/t001b-eng.htm">table</a>); condition by asset, Table 2 (<a href="https://www150.statcan.gc.ca/n1/daily-quotidien/261030/t002b-eng.htm">table</a>).</li>
+        <li id="note-16">Statistics Canada, <cite>The Daily</cite>, “Canada’s Core Public Infrastructure Survey: Required renewal budgets, 2022,” 24 June 2025: “$294.4 billion was required”; “$31.3 billion was invested to renew existing assets (11% of required renewal budgets)”. <a href="https://www150.statcan.gc.ca/n1/daily-quotidien/250624/dq250624b-eng.htm">statcan.gc.ca</a></li>
+        <li id="note-17">Canada Infrastructure Bank, <cite>Annual Report 2024-25</cite>: “94 projects with a total capital value of $46.1 billion and $15.8 billion in CIB investment”, of which “$247 million invested in water and wastewater infrastructure” (<a href="https://cdn.cib-bic.ca/files/documents/reports/en/CIB-2024-25-Annual-Report.pdf">cib-bic.ca</a>). On Brandon and Red-Seine-Rat, Manitoba, up to $140 million, assets that “will continue to remain publicly owned and operated by the municipalities” (<a href="https://cib-bic.ca/en/medias/articles/cib-commits-140-million-to-new-water-and-wastewater-infrastructure-in-manitoba/">cib-bic.ca</a>).</li>
+        <li id="note-18">Department of Finance, “Unlocking pension investment in Canada,” 13 December 2024: “Removing the current rule limiting investments in Canadian entities by pension funds to no more than 30 per cent”; “exploring potential changes to airport authority ground leases”; “lowering the 90 per cent threshold that currently limits municipal-owned utility corporations”. <a href="https://www.canada.ca/en/department-finance/news/2024/12/unlocking-pension-investment-in-canada.html">canada.ca</a></li>
+        <li id="note-19"><cite>Pension Benefits Standards Regulations, 1985</cite> (SOR/87-19), Schedule III, s. 11(1), consolidated to 31 March 2026: an administrator “shall not … invest the moneys of the plan in the securities of a corporation to which are attached more than 30 per cent of the votes that may be cast to elect the directors”. No later version was checked. <a href="https://laws-lois.justice.gc.ca/eng/XML/SOR-87-19.xml">laws-lois.justice.gc.ca</a></li>
+        <li id="note-20">Department of Finance, “Canada Strong Fund,” 27 April 2026: “$25 billion over 3 years”; a retail product in which “initial invested capital will be protected” (<a href="https://www.canada.ca/en/department-finance/news/2026/04/canada-strong-fund.html">canada.ca</a>). <cite>Investment Executive</cite> (Canadian Press), on CPP Investments and Brookfield’s $50 billion fund, 15 September 2026 (<a href="https://www.investmentexecutive.com/news/industry/cpp-investments-brookfield-launch-50b-fund-to-invest-in-big-canadian-projects/">investmentexecutive.com</a>). Ontario Teachers’, “an additional $10 billion by the end of 2027” (note 5). OMERS, “at least $10 billion in new investments in Canada … over the next five years” (<a href="https://www.omers.com/news/omers-earns-6-9-billion-in-the-first-six-months-of-2026">omers.com</a>).</li>
+        <li id="note-21">EKOS for the Canadian Union of Public Employees, January 2001: “Fully three-quarters support public control of water services” (<a href="https://cupe.ca/ekos-poll-shows-canadians-reject-privatization">cupe.ca</a>); Ipsos Reid for CUPE, October 2005: 75% of British Columbians opposed privatization of water services. Both were commissioned by a union; no independent national poll was found.</li>
+        <li id="note-22">Government of Ontario, Environmental Registry notice 025-1098, on Bill 60 and the Water and Wastewater Public Corporations Act, 2025 (Royal Assent 27 November 2025), with Peel as the first corporation and a commitment to “keeping the proposed new corporation publicly-owned” (<a href="https://ero.ontario.ca/notice/025-1098">ero.ontario.ca</a>). Peel Region’s letter on Bill 98, 28 April 2026, welcoming “the requirement for 100 percent public sector ownership” (<a href="https://ero.ontario.ca/public/public_uploads/2026-04/Bill%2098%20ERO%20026-0301%20Amedments%20to%20WWPC%20Act%20and%20SDWA.pdf">ero.ontario.ca</a>). Whether Bill 98 has passed was not confirmed.</li>
+        <li id="note-23">Canada Infrastructure Bank, 22 August 2018: the loan that “completes the project’s $6.3-billion financing” (<a href="https://cib-bic.ca/en/medias/articles/cib-invests-in-reseau-express-metropolitain-project-with-1-28-billion-15-year-loan/">cib-bic.ca</a>); CDPQ Infra fact sheet, “$8.34 B” total cost (<a href="https://cdpqinfra.com/en/node/9791">cdpqinfra.com</a>); <cite>Noovo Info</cite>, 12 May 2026: La Caisse “construirait différemment le REM” (<a href="https://www.noovo.info/nouvelles/transport/article/rem-si-cetait-a-refaire-la-caisse-de-depot-procederait-autrement/">noovo.info</a>).</li>
+        <li id="note-24">EPCOR, fourth-quarter 2025 results, on its dividend to the City of Edmonton (<a href="https://www.epcor.com/ca/en/news/media-releases/2026-02-26-quarterly-results-q4.html">epcor.com</a>); <cite>Global News</cite>, 25 September 2013, on Regina’s vote, 57.1% for the partnership option (<a href="https://globalnews.ca/news/864292/voters-choose-p3-funding-model">globalnews.ca</a>); <cite>Water Canada</cite>, 15 July 2014, on the 30-year agreement with EPCOR (<a href="https://www.watercanada.net/regina-finalizes-agreement-with-treatment-plant-contractor/">watercanada.net</a>).</li>
+        <li id="note-25">House of Commons Standing Committee on Transport, Infrastructure and Communities, report on the Canada Infrastructure Bank, 2022: the Parliamentary Budget Officer “considers all sources of funding for current CIB projects, including public pension funds … to be ‘government entities’”. <a href="https://www.noscommunes.ca/Content/Committee/441/TRAN/Reports/RP11664128/tranrp03/tranrp03-e.pdf">noscommunes.ca</a></li>
+        <li id="note-26">Luciano Arvin, “Bring Canada’s pension funds back home to build our own economy,” <cite>Policy Options</cite>, 1 December 2025, on why pension funds favour infrastructure’s inflation-linked returns. <a href="https://policyoptions.irpp.org/2025/12/pension-funds-canada-economy/">policyoptions.irpp.org</a></li>
+        <li id="note-27">Fall Economic Statement 2022, Annex 2: “The government has decided to cease issuance of Real Return Bonds (RRBs) effective immediately … This decision reflects low demand for this product” (<a href="https://budget.canada.ca/fes-eea/2022/report-rapport/anx2-en.html">budget.canada.ca</a>). The Canadian Fixed-Income Forum’s unanimous disagreement, reported by <cite>Wealth Professional</cite>, 20 December 2022 (<a href="https://www.wealthprofessional.ca/investments/fixed-income/feds-face-pushback-over-planned-end-to-inflation-protected-bonds/372469">wealthprofessional.ca</a>). William Robson and Alexandre Laurin, “Cancel the RRB Cancellation,” C.D. Howe Institute, 22 August 2024: of 13 institutional holders surveyed, none supported the decision (<a href="https://cdhowe.org/publication/cancel-rrb-cancellation/">cdhowe.org</a>). The Canadian Institute of Actuaries asked “that the decision to cease issuing real return bonds be reconsidered”, as reported in January 2023 (<a href="https://legalwriter.net/2023/01/withdrawal-of-real-return-bonds-could-financially-impact-db-pension-plans-cia/">legalwriter.net</a>). Budget 2017, Annex 2, on ending Canada Savings Bonds (<a href="https://www.budget.canada.ca/2017/docs/plan/anx-02-en.html">budget.canada.ca</a>).</li>
+        <li id="note-28"><cite>ai-CIO</cite>, 12 June 2017, on the conviction of South Korea’s former health minister for pressuring the National Pension Service over the Samsung C&amp;T merger. <a href="https://www.ai-cio.com/news/former-korean-minister-found-guilty-pressuring-pension/">ai-cio.com</a></li>
+        <li id="note-29"><cite>Pension Benefits Standards Act, 1985</cite>, s. 8(4): “the degree of care that a person of ordinary prudence would exercise in dealing with the property of another person” (<a href="https://laws-lois.justice.gc.ca/eng/XML/P-7.01.xml">laws-lois.justice.gc.ca</a>). Bob Baldwin, C.D. Howe Institute, 28 May 2024: “Being forced into concessional investing is an unacceptable outcome” (<a href="https://cdhowe.org/publication/bob-baldwin-dont-handcuff-big-pension-plans-canada/">cdhowe.org</a>).</li>
+        <li id="note-30">Cumming, Johan and Monteiro, Fraser Institute, 2026, as reported by <cite>Benefits and Pensions Monitor</cite>, 27 March 2026: $100 in the TSX Composite became $329.49 from January 2005 to November 2025, against $570.06 in the S&amp;P 500; at home, Canadian pensions’ average venture capital IRR was 25.8% against 4.9% abroad. <a href="https://www.benefitsandpensionsmonitor.com/investments/alternative-investments/canadian-pensions-win-at-home-in-pe-but-lose-in-public-markets/393290">benefitsandpensionsmonitor.com</a></li>
+      </ol>
+      <p class="fig"><strong>A note on this edition.</strong> Several widely repeated claims were left out because they could not be traced to a source or were wrong as stated, among them a February date for the CEOs’ letter, findings attributed to a working group that published none, and a “$141 billion” water gap from a 2016 report presented as current. The research behind every line is kept with the site’s source. The same public-domain terms as the site.</p>
+
+      <Share
+        slot="after"
+        quote={"Canada built the model the world copies for owning roads, ports and power with retirement savings. Its funds own airports in Europe. The pipes under our own streets are wearing out. Bring the model home, and keep the deed public."}
+      />
+</Read>
+
+<style>
+  .brief {
+    border-top: var(--border-key) solid var(--nt-red);
+    border-bottom: var(--border-hair) solid var(--border-hairline);
+    padding: var(--space-3) 0 var(--space-2);
+    margin-bottom: var(--space-4);
+  }
+  .brief h2 { margin-top: 0; padding-top: 0; border-top: 0; }
+  .brief li { margin-bottom: .8rem; }
+
+  .view { border-left: var(--rule-weight) solid var(--nt-red); padding-left: var(--space-2); }
+
+  .facts {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+    gap: var(--space-3); margin: clamp(28px, 4vh, 52px) 0;
+    border-top: var(--border-key) solid var(--nt-red); padding-top: var(--space-3);
+  }
+  .facts dt {
+    margin: 0; color: var(--nt-red); letter-spacing: 0;
+    font-family: var(--font-display); font-weight: var(--fw-display);
+    font-size: clamp(34px, 4.6vw, 52px); line-height: .95;
+  }
+  .facts dd { margin: var(--space-1) 0 0; font-size: var(--type-body-sm); }
+
+  .asks { list-style: none; margin: var(--space-3) 0; padding: 0; counter-reset: ask; }
+  .asks li { counter-increment: ask; border-top: var(--border-hair) solid var(--border-hairline); padding: var(--space-3) 0 var(--space-1); margin: 0; display: grid; grid-template-columns: 3.5rem 1fr; column-gap: var(--space-2); }
+  .asks li::before {
+    content: counter(ask); grid-row: 1 / span 2;
+    font-family: var(--font-display); font-weight: var(--fw-display); font-size: clamp(28px, 3.6vw, 40px); line-height: .9; color: var(--nt-red);
+  }
+  .asks h3 { margin-top: 0; }
+
+  .diagram { margin: clamp(28px, 4vh, 52px) 0; }
+  .diagram svg { display: block; width: 100%; max-width: 34rem; height: auto; margin-inline: auto; overflow: visible; }
+  .diagram .name { font-family: var(--font-display); font-weight: var(--fw-label); font-size: 12px; letter-spacing: .08em; fill: currentColor; }
+  .diagram .sub { font-family: var(--font-body); font-size: 11px; fill: var(--text-muted); }
+  .diagram .focal-t { fill: var(--nt-red); }
+  .diagram .box { fill: var(--nt-white); stroke: currentColor; stroke-width: 1; }
+  .diagram .box.focal { stroke: var(--nt-red); stroke-width: 2; }
+  .diagram .line { stroke: currentColor; stroke-width: 1; }
+  .diagram .head { fill: currentColor; }
+  @media (forced-colors: active) {
+    .diagram .box.focal { stroke: CanvasText; }
+    .diagram .focal-t { fill: CanvasText; }
+  }
+
+  .mark { margin: clamp(30px, 4.5vh, 56px) auto var(--space-3); max-width: 22rem; color: var(--nt-black); }
+  .mark :global(svg) { width: 100%; height: auto; display: block; }
+
+  .pull {
+    margin: clamp(30px, 4.5vh, 56px) 0; padding-left: clamp(18px, 2.4vw, 30px);
+    border-left: var(--rule-weight) solid var(--nt-red);
+    font-family: var(--font-display); font-weight: var(--fw-display);
+    text-transform: uppercase; line-height: 1.1; font-size: clamp(20px, 2.6vw, 34px);
+  }
+  .sign {
+    font-family: var(--font-display); font-weight: var(--fw-display);
+    text-transform: uppercase; letter-spacing: .06em;
+    font-size: clamp(22px, 2.6vw, 32px); margin: var(--space-3) 0 var(--space-1);
+  }
+  .notes cite { font-style: normal; font-weight: var(--fw-body-strong); }
+  .notes a { overflow-wrap: anywhere; }
+</style>
